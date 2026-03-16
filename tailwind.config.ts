@@ -10,17 +10,17 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: "#fef2f2",
-          100: "#fee2e2",
-          200: "#fecaca",
-          300: "#fca5a5",
-          400: "#f87171",
-          500: "#ef4444",
-          600: "#dc2626",
-          700: "#b91c1c",
-          800: "#991b1b",
-          900: "#7f1d1d",
-          950: "#450a0a",
+          50: "#fff7ed",
+          100: "#ffedd5",
+          200: "#fed7aa",
+          300: "#fdba74",
+          400: "#fb923c",
+          500: "#f97316",
+          600: "#ea580c",
+          700: "#c2410c",
+          800: "#9a3412",
+          900: "#7c2d12",
+          950: "#431407",
         },
         dark: {
           50: "#f8fafc",
@@ -31,7 +31,9 @@ const config: Config = {
           500: "#64748b",
           600: "#475569",
           700: "#334155",
+          750: "#2a3a50",
           800: "#1e293b",
+          850: "#111827",
           900: "#0f172a",
           950: "#020617",
         },
@@ -43,7 +45,13 @@ const config: Config = {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "hero-pattern":
-          "linear-gradient(135deg, rgba(15,23,42,0.97) 0%, rgba(15,23,42,0.75) 60%, rgba(15,23,42,0.4) 100%)",
+          "linear-gradient(135deg, rgba(15,23,42,0.97) 0%, rgba(15,23,42,0.80) 60%, rgba(15,23,42,0.45) 100%)",
+      },
+      boxShadow: {
+        "premium": "0 4px 24px -4px rgba(0,0,0,0.35)",
+        "premium-lg": "0 12px 48px -8px rgba(0,0,0,0.50)",
+        "brand": "0 4px 20px -4px rgba(249,115,22,0.40)",
+        "brand-lg": "0 8px 32px -4px rgba(249,115,22,0.45)",
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out",

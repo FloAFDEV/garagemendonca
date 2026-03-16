@@ -42,64 +42,71 @@ const services = [
 
 export default function ServicesOverview() {
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-dark-850">
       <div className="container mx-auto px-4">
 
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
           <div>
             <div className="section-divider" />
-            <span className="eyebrow">Ce que nous faisons</span>
-            <h2 className="section-title max-w-lg">
+            <span className="eyebrow-light">Ce que nous faisons</span>
+            <h2 className="section-title-light max-w-lg">
               Tous vos besoins<br />automobiles couverts
             </h2>
           </div>
           <Link
             href="/services"
-            className="inline-flex items-center gap-2 text-dark-600 hover:text-brand-600 font-semibold transition-colors mt-6 lg:mt-0 group text-sm"
+            className="inline-flex items-center gap-2 text-dark-400 hover:text-brand-400 font-semibold transition-colors mt-6 lg:mt-0 group text-sm"
           >
             Tous nos services en détail
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-dark-100">
+        {/* ── Grille cartes sombres ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {services.map(({ id, num, Icon, title, description, items }) => (
             <Link
               key={id}
               href={`/services#${id}`}
-              className="group bg-white p-9 hover:bg-dark-50 transition-colors duration-200 relative"
+              className="group relative bg-dark-900 rounded-xl border border-dark-700 hover:border-brand-500/40 p-8 transition-all duration-300 hover:shadow-premium hover:-translate-y-1 overflow-hidden"
             >
-              {/* Numéro en filigrane */}
-              <span className="absolute top-6 right-8 font-heading font-black text-5xl text-dark-100 group-hover:text-dark-150 transition-colors select-none">
+              {/* Numéro filigrane */}
+              <span
+                className="absolute top-5 right-6 font-heading font-black text-6xl text-white/5 select-none group-hover:text-brand-500/10 transition-colors"
+                aria-hidden="true"
+              >
                 {num}
               </span>
 
+              {/* Ligne accent top au hover */}
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-brand-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true" />
+
               {/* Icône */}
-              <div className="w-12 h-12 bg-brand-600 rounded-lg flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-200">
-                <Icon size={22} className="text-white" strokeWidth={1.75} />
+              <div className="w-13 h-13 w-12 h-12 bg-brand-500/15 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-500/25 transition-colors duration-300 ring-1 ring-brand-500/20">
+                <Icon size={22} className="text-brand-400" strokeWidth={1.75} />
               </div>
 
-              <h3 className="font-heading font-bold text-dark-900 text-xl mb-3">
+              <h3 className="font-heading font-bold text-white text-xl mb-3">
                 {title}
               </h3>
-              <p className="text-dark-500 text-sm leading-relaxed mb-6">
+
+              <p className="text-dark-400 text-sm leading-relaxed mb-6">
                 {description}
               </p>
 
-              {/* Liste courte */}
-              <ul className="space-y-1.5 mb-6">
+              {/* Liste */}
+              <ul className="space-y-2 mb-7">
                 {items.map((item) => (
-                  <li key={item} className="flex items-center gap-2.5 text-sm text-dark-600">
-                    <span className="w-1 h-1 bg-brand-600 rounded-full flex-shrink-0" />
+                  <li key={item} className="flex items-center gap-2.5 text-sm text-dark-400 group-hover:text-dark-300 transition-colors">
+                    <span className="w-1 h-1 bg-brand-500 rounded-full flex-shrink-0" aria-hidden="true" />
                     {item}
                   </li>
                 ))}
               </ul>
 
               {/* Lien */}
-              <div className="flex items-center gap-2 text-sm font-semibold text-brand-600 group-hover:gap-3 transition-all">
+              <div className="flex items-center gap-2 text-sm font-semibold text-dark-500 group-hover:text-brand-400 transition-colors group-hover:gap-3 duration-200">
                 En savoir plus
                 <ArrowRight size={14} />
               </div>

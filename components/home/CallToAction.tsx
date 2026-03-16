@@ -1,67 +1,83 @@
 import Link from "next/link";
-import { Phone, MessageSquare, ShieldCheck } from "lucide-react";
+import { Phone, MessageSquare, CalendarDays, ShieldCheck } from "lucide-react";
+
+const reassurances = ["Devis 100% gratuit", "Réponse sous 24h", "Avec ou sans RDV", "Prix transparents"];
 
 export default function CallToAction() {
   return (
-    <section className="bg-brand-600 relative overflow-hidden">
-      {/* Motif géométrique sobre */}
+    <section className="relative overflow-hidden bg-dark-900 border-y border-dark-800">
+
+      {/* ── Accent bar top ── */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600" aria-hidden="true" />
+
+      {/* ── Lueur orange subtile centre-gauche ── */}
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute left-0 top-0 bottom-0 w-2/3 opacity-[0.04]"
         style={{
-          backgroundImage:
-            "repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)",
-          backgroundSize: "30px 30px",
+          background: "radial-gradient(ellipse at 20% 50%, #f97316 0%, transparent 70%)",
         }}
+        aria-hidden="true"
       />
-      {/* Ombre intérieure droite */}
-      <div className="absolute top-0 right-0 bottom-0 w-1/3 bg-gradient-to-l from-brand-700/50 to-transparent pointer-events-none" />
 
       <div className="relative container mx-auto px-4 py-20">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12">
 
-          {/* Texte gauche */}
+          {/* ── Texte ── */}
           <div className="lg:max-w-xl">
             <div className="flex items-center gap-3 mb-5">
-              <ShieldCheck size={18} className="text-white/70" />
-              <span className="text-white/80 font-semibold text-xs uppercase tracking-[0.18em]">
+              <ShieldCheck size={16} className="text-brand-400" aria-hidden="true" />
+              <span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
                 Devis gratuit · Sans engagement
               </span>
             </div>
-            <h2 className="font-heading font-black text-white text-4xl md:text-5xl leading-tight mb-5">
-              Besoin d&apos;une réparation<br />rapide et fiable ?
+
+            <h2 className="font-heading font-black text-white text-4xl md:text-5xl leading-[1.08] mb-5">
+              Besoin d&apos;une réparation<br />
+              <span className="text-brand-400">rapide et fiable ?</span>
             </h2>
-            <p className="text-white/80 text-base leading-relaxed">
+
+            <p className="text-dark-400 text-base leading-relaxed mb-8">
               Contactez-nous par téléphone ou via notre formulaire.
               Nous intervenons sur tous types de véhicules et établissons
-              un devis détaillé sous 24h.
+              un devis détaillé et transparent sous 24h.
             </p>
+
+            {/* Réassurances */}
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              {reassurances.map((item) => (
+                <span key={item} className="flex items-center gap-2 text-dark-400 text-sm">
+                  <span className="w-1.5 h-1.5 bg-brand-500 rounded-full" aria-hidden="true" />
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
-          {/* Actions droite */}
-          <div className="flex flex-col gap-4 lg:flex-shrink-0">
+          {/* ── Actions ── */}
+          <div className="flex flex-col gap-4 lg:min-w-[280px]">
             <a
               href="tel:0532002038"
-              className="inline-flex items-center justify-center gap-3 bg-white text-brand-700 hover:bg-dark-50 font-bold px-8 py-4 rounded-lg text-base transition-colors shadow-xl"
+              className="inline-flex items-center justify-center gap-3 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold px-8 py-4.5 py-[18px] rounded-lg text-base transition-all duration-200 shadow-brand-lg hover:shadow-brand hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-brand-400"
             >
               <Phone size={19} />
               05 32 00 20 38
             </a>
+
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-3 border-2 border-white/50 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-lg text-base transition-colors"
+              className="inline-flex items-center justify-center gap-3 border border-dark-600 hover:border-dark-500 text-dark-300 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5"
             >
               <MessageSquare size={18} />
               Envoyer un message
             </Link>
 
-            <div className="flex flex-wrap gap-x-5 gap-y-2 text-white/70 text-xs mt-1">
-              {["Réponse sous 24h", "Prix transparents", "Avec ou sans RDV"].map((item) => (
-                <span key={item} className="flex items-center gap-1.5">
-                  <span className="w-1 h-1 bg-white/60 rounded-full" />
-                  {item}
-                </span>
-              ))}
-            </div>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-3 border border-dark-600 hover:border-dark-500 text-dark-300 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5"
+            >
+              <CalendarDays size={18} />
+              Prendre rendez-vous
+            </Link>
           </div>
         </div>
       </div>

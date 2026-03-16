@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Clock, Facebook, Instagram } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Facebook, Instagram, ExternalLink } from "lucide-react";
 
 const footerLinks = {
   services: [
@@ -16,17 +16,28 @@ const footerLinks = {
   ],
 };
 
+const hours = [
+  { day: "Lun – Jeu", time: "08h–12h / 14h–19h" },
+  { day: "Vendredi", time: "08h–12h / 14h–18h" },
+  { day: "Sam – Dim", time: "Fermé" },
+];
+
 export default function Footer() {
   return (
-    <footer className="bg-dark-900 text-dark-300">
-      {/* Main footer */}
+    <footer className="bg-dark-950 text-dark-400">
+
+      {/* ── Bande accent top ── */}
+      <div className="h-1 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600" aria-hidden="true" />
+
+      {/* ── Corps principal ── */}
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
+
+          {/* Colonne 1 — Marque */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-5 group">
-              <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center shadow-brand flex-shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3" />
                   <rect x="9" y="11" width="14" height="10" rx="2" />
                   <circle cx="12" cy="21" r="1" />
@@ -34,28 +45,35 @@ export default function Footer() {
                 </svg>
               </div>
               <div>
-                <div className="font-heading font-bold text-white text-lg leading-none">
-                  Garage Mendonca
+                <div className="font-heading font-bold text-white text-lg leading-tight">
+                  Garage Mendonça
                 </div>
-                <div className="text-xs text-dark-500 mt-0.5">depuis 1993</div>
+                <div className="text-xs text-dark-500 mt-0.5">Depuis 1993 · Drémil-Lafage</div>
               </div>
             </Link>
-            <p className="text-sm leading-relaxed text-dark-400 mb-6">
-              Garage indépendant spécialisé dans l&apos;entretien, la réparation
-              et la vente de véhicules d&apos;occasion depuis plus de 30 ans en
-              région toulousaine.
+
+            <p className="text-sm leading-relaxed text-dark-500 mb-6">
+              Garage indépendant spécialisé en entretien, réparation et vente de
+              véhicules depuis plus de 30 ans en région toulousaine.
+              Spécialiste BMW, Audi et Volkswagen.
             </p>
+
+            {/* Réseaux sociaux */}
             <div className="flex items-center gap-3">
               <a
-                href="#"
-                className="w-9 h-9 bg-dark-800 hover:bg-brand-600 rounded-lg flex items-center justify-center transition-colors"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-dark-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
                 aria-label="Facebook"
               >
                 <Facebook size={16} />
               </a>
               <a
-                href="#"
-                className="w-9 h-9 bg-dark-800 hover:bg-brand-600 rounded-lg flex items-center justify-center transition-colors"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 bg-dark-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
                 aria-label="Instagram"
               >
                 <Instagram size={16} />
@@ -63,9 +81,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Services */}
+          {/* Colonne 2 — Services */}
           <div>
-            <h4 className="font-heading font-semibold text-white mb-5">
+            <h4 className="font-heading font-semibold text-white mb-5 text-sm">
               Nos Services
             </h4>
             <ul className="space-y-3">
@@ -73,19 +91,16 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2"
+                    className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
                   >
-                    <span className="w-1 h-1 bg-brand-600 rounded-full flex-shrink-0" />
+                    <span className="w-1 h-1 bg-brand-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors" aria-hidden="true" />
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
 
-          {/* Navigation */}
-          <div>
-            <h4 className="font-heading font-semibold text-white mb-5">
+            <h4 className="font-heading font-semibold text-white mt-8 mb-5 text-sm">
               Navigation
             </h4>
             <ul className="space-y-3">
@@ -93,9 +108,9 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2"
+                    className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
                   >
-                    <span className="w-1 h-1 bg-brand-600 rounded-full flex-shrink-0" />
+                    <span className="w-1 h-1 bg-brand-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors" aria-hidden="true" />
                     {link.label}
                   </Link>
                 </li>
@@ -103,28 +118,41 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Colonne 3 — Contact */}
           <div>
-            <h4 className="font-heading font-semibold text-white mb-5">
+            <h4 className="font-heading font-semibold text-white mb-5 text-sm">
               Contact
             </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-sm">
-                <MapPin size={16} className="text-brand-500 mt-0.5 flex-shrink-0" />
-                <span>
-                  6 Avenue de la Mouyssaguese
-                  <br />
-                  31280 Drémil-Lafage
-                </span>
+                <MapPin size={16} className="text-brand-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <div>
+                  <span className="block leading-relaxed">
+                    6 Avenue de la Mouyssaguese<br />
+                    31280 Drémil-Lafage
+                  </span>
+                  <a
+                    href="https://maps.google.com/?q=Garage+Mendonca+Drémil-Lafage"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-brand-500 hover:text-brand-400 text-xs mt-2 transition-colors"
+                  >
+                    Ouvrir Google Maps
+                    <ExternalLink size={11} aria-hidden="true" />
+                  </a>
+                </div>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Phone size={16} className="text-brand-500 flex-shrink-0" />
-                <a href="tel:0532002038" className="hover:text-brand-400 transition-colors">
+                <Phone size={16} className="text-brand-500 flex-shrink-0" aria-hidden="true" />
+                <a
+                  href="tel:0532002038"
+                  className="hover:text-brand-400 transition-colors font-medium"
+                >
                   05 32 00 20 38
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Mail size={16} className="text-brand-500 flex-shrink-0" />
+                <Mail size={16} className="text-brand-500 flex-shrink-0" aria-hidden="true" />
                 <a
                   href="mailto:contact@garagemendonca.com"
                   className="hover:text-brand-400 transition-colors break-all"
@@ -132,25 +160,58 @@ export default function Footer() {
                   contact@garagemendonca.com
                 </a>
               </li>
-              <li className="flex items-start gap-3 text-sm">
-                <Clock size={16} className="text-brand-500 mt-0.5 flex-shrink-0" />
-                <div>
-                  <div>Lun–Jeu : 08h–12h / 14h–19h</div>
-                  <div>Vendredi : 08h–12h / 14h–18h</div>
-                </div>
-              </li>
             </ul>
+          </div>
+
+          {/* Colonne 4 — Horaires */}
+          <div>
+            <h4 className="font-heading font-semibold text-white mb-5 text-sm">
+              Horaires d&apos;ouverture
+            </h4>
+            <div className="flex items-center gap-2 mb-4">
+              <Clock size={15} className="text-brand-500" aria-hidden="true" />
+              <span className="text-xs text-dark-500">Avec ou sans rendez-vous</span>
+            </div>
+            <ul className="space-y-3">
+              {hours.map(({ day, time }) => (
+                <li key={day} className="flex items-center justify-between text-sm py-2 border-b border-dark-800 last:border-0">
+                  <span className="text-dark-400">{day}</span>
+                  <span
+                    className={`font-semibold text-xs ${
+                      time === "Fermé" ? "text-dark-600" : "text-white"
+                    }`}
+                  >
+                    {time}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            {/* CTA contact */}
+            <a
+              href="tel:0532002038"
+              className="inline-flex items-center gap-2 mt-6 btn-primary text-sm py-2.5 w-full justify-center"
+            >
+              <Phone size={15} />
+              Appeler le garage
+            </a>
           </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
+      {/* ── Barre de bas ── */}
       <div className="border-t border-dark-800">
-        <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-dark-500">
-          <p>© {new Date().getFullYear()} Garage Auto Mendonca. Tous droits réservés.</p>
-          <p>
-            Siret · N° SIRET — 6 Av. de la Mouyssaguese, 31280 Drémil-Lafage
-          </p>
+        <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-dark-600">
+          <p>© {new Date().getFullYear()} Garage Auto Mendonça. Tous droits réservés.</p>
+          <div className="flex items-center gap-5">
+            <Link href="/contact" className="hover:text-dark-400 transition-colors">
+              Mentions légales
+            </Link>
+            <Link href="/contact" className="hover:text-dark-400 transition-colors">
+              Politique de confidentialité
+            </Link>
+            <span className="text-dark-700">Drémil-Lafage, 31280</span>
+          </div>
         </div>
       </div>
     </footer>

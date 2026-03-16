@@ -11,7 +11,7 @@ const badges = [
     Icon: Award,
     value: "Spécialisé",
     label: "BMW · Audi · VW",
-    description: "Mécaniciens formés aux marques allemandes. Toutes marques bienvenues.",
+    description: "Mécaniciens formés sur marques allemandes. Toutes marques et modèles acceptés.",
   },
   {
     Icon: Car,
@@ -23,25 +23,24 @@ const badges = [
     Icon: KeyRound,
     value: "9",
     label: "Véhicules de prêt",
-    description: "Un véhicule de courtoisie est mis à votre disposition pendant toute intervention.",
+    description: "Un véhicule de courtoisie mis à votre disposition pendant toute la durée des travaux.",
   },
 ];
 
 export default function TrustBadges() {
   return (
-    <section className="bg-dark-900 border-t border-dark-800">
+    <section className="bg-dark-950 border-b border-dark-800" aria-label="Nos points forts">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-dark-800">
-          {badges.map(({ Icon, value, label, description }, i) => (
+          {badges.map(({ Icon, value, label, description }) => (
             <div
               key={label}
-              className={`group px-8 py-10 transition-colors duration-300 hover:bg-dark-800/50 ${
-                i === 0 ? "" : "border-l-0"
-              }`}
+              className="group px-6 lg:px-8 py-10 transition-colors duration-300 hover:bg-dark-900/60"
             >
+              {/* Icône + valeur en ligne */}
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-brand-600/15 rounded-lg flex items-center justify-center group-hover:bg-brand-600/25 transition-colors">
-                  <Icon size={20} className="text-brand-400" />
+                <div className="w-10 h-10 bg-brand-500/15 rounded-lg flex items-center justify-center group-hover:bg-brand-500/25 transition-colors ring-1 ring-brand-500/20">
+                  <Icon size={19} className="text-brand-400" />
                 </div>
                 <div className="font-heading font-black text-2xl text-white leading-none">
                   {value}
@@ -50,7 +49,7 @@ export default function TrustBadges() {
               <div className="font-semibold text-white text-sm mb-1.5 leading-tight">
                 {label}
               </div>
-              <p className="text-dark-400 text-xs leading-relaxed">
+              <p className="text-dark-500 text-xs leading-relaxed">
                 {description}
               </p>
             </div>
