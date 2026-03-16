@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     template: "%s | Garage Auto Mendonca",
   },
   description:
-    "Garage automobile indépendant depuis 30 ans à Drémil-Lafage (31). Entretien, réparation mécanique, carrosserie, diagnostic et vente de véhicules d'occasion. Appelez le 05 61 83 78 05.",
+    "Garage automobile indépendant depuis 30 ans à Drémil-Lafage (31). Entretien, réparation mécanique, carrosserie, diagnostic et vente de véhicules d'occasion. Appelez le 05 32 00 20 38.",
   keywords: [
     "garage automobile",
     "réparation voiture",

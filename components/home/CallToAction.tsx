@@ -23,11 +23,11 @@ export default function CallToAction() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="tel:0561837805"
+            href="tel:0532002038"
             className="btn-primary text-base py-4 px-10 shadow-2xl shadow-brand-600/30"
           >
             <Phone size={18} />
-            05 61 83 78 05
+            05 32 00 20 38
           </a>
           <Link
             href="/contact"

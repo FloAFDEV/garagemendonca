@@ -60,10 +60,10 @@ export default function MapContact() {
                   <div>
                     <p className="text-xs text-dark-400 font-medium mb-0.5">Téléphone</p>
                     <a
-                      href="tel:0561837805"
+                      href="tel:0532002038"
                       className="text-dark-900 font-semibold hover:text-brand-600 transition-colors"
                     >
-                      05 61 83 78 05
+                      05 32 00 20 38
                     </a>
                   </div>
                 </div>

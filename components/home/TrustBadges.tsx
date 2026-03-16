@@ -1,35 +1,35 @@
-import { Calendar, ShieldCheck, Car, Clock } from "lucide-react";
+import { Calendar, ShieldCheck, Car, KeyRound } from "lucide-react";
 
 const badges = [
   {
     Icon: Calendar,
     value: "30+",
     label: "Ans d'expérience",
-    description: "Fondé en 1993, un savoir-faire éprouvé au fil des décennies",
+    description: "M. Victor Mendonça et son équipe vous servent avec passion depuis plus de 30 ans",
     color: "text-brand-500",
     bg: "bg-brand-50",
   },
   {
     Icon: ShieldCheck,
-    value: "500+",
-    label: "Clients satisfaits",
-    description: "Une réputation locale bâtie sur la confiance et le sérieux",
+    value: "Toutes",
+    label: "Marques acceptées",
+    description: "Spécialistes BMW, Audi et Volkswagen — toutes marques acceptées",
     color: "text-emerald-500",
     bg: "bg-emerald-50",
   },
   {
     Icon: Car,
-    value: "100+",
-    label: "Véhicules vendus/an",
-    description: "Un stock de VO soigneusement sélectionné et contrôlé",
+    value: "VO",
+    label: "Boîte automatique",
+    description: "Large sélection de véhicules d'occasion en boîte automatique, vérifiés et garantis",
     color: "text-blue-500",
     bg: "bg-blue-50",
   },
   {
-    Icon: Clock,
-    value: "48h",
-    label: "Délai d'intervention",
-    description: "Nous nous engageons sur des délais rapides et respectés",
+    Icon: KeyRound,
+    value: "9",
+    label: "Véhicules de prêt",
+    description: "Véhicule de courtoisie offert pendant toute la durée de votre intervention",
     color: "text-violet-500",
     bg: "bg-violet-50",
   },
@@ -48,8 +48,8 @@ export default function TrustBadges() {
             Un garage qui mérite votre confiance
           </h2>
           <p className="section-subtitle mx-auto mt-4 text-center">
-            Depuis plus de 30 ans, Garage Mendonca accompagne les automobilistes
-            de Drémil-Lafage et des environs avec rigueur et transparence.
+            Depuis plus de 30 ans, M. Victor Mendonça et son équipe accompagnent
+            les automobilistes de Drémil-Lafage et des environs avec rigueur et transparence.
           </p>
         </div>
 

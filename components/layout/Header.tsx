@@ -36,8 +36,8 @@ export default function Header() {
         <div className="container mx-auto px-4 flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Phone size={13} />
-            <a href="tel:0561837805" className="hover:underline font-medium">
-              05 61 83 78 05
+            <a href="tel:0532002038" className="hover:underline font-medium">
+              05 32 00 20 38
             </a>
             <span className="mx-3 opacity-50">|</span>
             <span>Lun–Jeu : 08h–12h / 14h–19h &nbsp;•&nbsp; Ven : 08h–12h / 14h–18h</span>
@@ -91,7 +91,7 @@ export default function Header() {
           {/* CTA button */}
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="tel:0561837805"
+              href="tel:0532002038"
               className="btn-primary text-sm py-2.5"
             >
               <Phone size={15} />
@@ -129,11 +129,11 @@ export default function Header() {
             ))}
             <div className="border-t border-dark-700 mt-2 pt-3">
               <a
-                href="tel:0561837805"
+                href="tel:0532002038"
                 className="btn-primary w-full justify-center text-sm"
               >
                 <Phone size={15} />
-                05 61 83 78 05
+                05 32 00 20 38
               </a>
             </div>
           </div>

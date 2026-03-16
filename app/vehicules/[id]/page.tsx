@@ -189,11 +189,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                 {/* CTA */}
                 <div className="space-y-3">
                   <a
-                    href="tel:0561837805"
+                    href="tel:0532002038"
                     className="btn-primary w-full justify-center"
                   >
                     <Phone size={17} />
-                    Appeler : 05 61 83 78 05
+                    Appeler : 05 32 00 20 38
                   </a>
                   <Link
                     href={`/contact?vehicule=${encodeURIComponent(`${vehicle.brand} ${vehicle.model} ${vehicle.year}`)}`}

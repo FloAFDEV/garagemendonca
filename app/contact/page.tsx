@@ -7,7 +7,7 @@ import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 export const metadata: Metadata = {
   title: "Contact & Devis",
   description:
-    "Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 61 83 78 05 ou envoyez-nous un message pour un devis gratuit.",
+    "Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message pour un devis gratuit.",
 };
 
 function ContactFormWrapper({ searchParams }: { searchParams: Record<string, string> }) {
@@ -82,15 +82,15 @@ export default async function ContactPage({ searchParams }: PageProps) {
                   <div>
                     <p className="text-xs text-dark-400 font-medium">Téléphone</p>
                     <a
-                      href="tel:0561837805"
+                      href="tel:0532002038"
                       className="font-heading font-bold text-dark-900 text-xl hover:text-brand-600 transition-colors"
                     >
-                      05 61 83 78 05
+                      05 32 00 20 38
                     </a>
                   </div>
                 </div>
                 <a
-                  href="tel:0561837805"
+                  href="tel:0532002038"
                   className="btn-primary w-full justify-center mt-2"
                 >
                   <Phone size={16} />

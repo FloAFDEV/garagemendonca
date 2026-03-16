@@ -73,7 +73,7 @@ export default function ServicesPage() {
                         {service.title}
                       </h2>
                       <a
-                        href="tel:0561837805"
+                        href="tel:0532002038"
                         className="btn-primary w-fit mt-6 text-sm"
                       >
                         <Phone size={15} />
@@ -154,11 +154,11 @@ export default function ServicesPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="tel:0561837805"
+              href="tel:0532002038"
               className="inline-flex items-center gap-2 bg-white text-brand-700 font-bold px-8 py-4 rounded-lg hover:bg-brand-50 transition-colors"
             >
               <Phone size={18} />
-              05 61 83 78 05
+              05 32 00 20 38
             </a>
             <Link
               href="/contact"
