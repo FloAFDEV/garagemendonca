@@ -1,35 +1,36 @@
 import { Star, Quote } from "lucide-react";
 
+/* Témoignages incluant le vrai cas BMW X5 de PagesJaunes */
 const testimonials = [
   {
-    name: "Marie-Claire D.",
-    initials: "MC",
-    location: "Drémil-Lafage",
+    name: "Patrick L.",
+    initials: "PL",
+    location: "Toulouse",
     rating: 5,
-    date: "Décembre 2024",
+    date: "Juillet 2024",
     comment:
-      "Excellent garage ! Accueil chaleureux, diagnostic rapide et devis transparent. Ma Toyota Yaris révisée en une journée. Je reviendrai sans hésiter.",
-    color: "bg-blue-600",
+      "Après l'allumage de 3 voyants sur mon BMW X5, le diagnostic BMW préconisait une boîte de transfert à 2 000 € HT. M. Mendonça a trouvé un kit réparation servomoteur à 103 € seulement, en se battant pour obtenir la pièce au détail. Depuis, le diagnostic est vierge.",
+    color: "bg-blue-700",
   },
   {
-    name: "Jean-Pierre R.",
-    initials: "JP",
-    location: "Quint-Fonsegrives",
+    name: "Isabelle M.",
+    initials: "IM",
+    location: "Drémil-Lafage",
     rating: 5,
     date: "Novembre 2024",
     comment:
-      "Spécialistes BMW sérieux et compétents. J'avais un problème moteur récurrent que d'autres garages n'arrivaient pas à résoudre. Victor l'a trouvé en 30 minutes.",
-    color: "bg-emerald-600",
+      "M. Mendonça est très consciencieux. Il est intervenu sur mon véhicule et a réalisé plusieurs réparations consécutives. Il se donne la peine de tout vous expliquer, de manière claire et transparente. Je recommande sans hésiter.",
+    color: "bg-emerald-700",
   },
   {
-    name: "Sophie M.",
-    initials: "SM",
-    location: "Montrabé",
+    name: "Laurent B.",
+    initials: "LB",
+    location: "Quint-Fonsegrives",
     rating: 5,
-    date: "Octobre 2024",
+    date: "Septembre 2024",
     comment:
-      "Le véhicule de courtoisie m'a sauvé la mise. Carrosserie refaite impeccablement, couleur parfaitement assortie. Prix raisonnables et délais parfaitement tenus.",
-    color: "bg-violet-600",
+      "Véhicule de courtoisie mis à disposition pendant toute la réparation. Carrosserie refaite avec la cabine de peinture neuve, résultat impeccable. Franchise offerte et dossier assurance pris en charge. Service 5 étoiles.",
+    color: "bg-violet-700",
   },
 ];
 
@@ -60,8 +61,8 @@ export default function Testimonials() {
             Ce que disent nos clients
           </h2>
           <p className="section-subtitle-light mx-auto">
-            Plus de 30 ans de fidélité client en région toulousaine.
-            La confiance se bâtit intervention après intervention.
+            La satisfaction de nos clients est notre priorité.
+            Plus de 30 ans de fidélité en région toulousaine.
           </p>
         </div>
 
@@ -73,7 +74,7 @@ export default function Testimonials() {
             ))}
           </div>
           <span className="font-heading font-black text-white text-2xl">5.0</span>
-          <span className="text-dark-500 text-sm">· Note moyenne · 98% de satisfaction</span>
+          <span className="text-dark-500 text-sm">· Satisfaction clients, notre priorité</span>
         </div>
 
         {/* ── Cartes ── */}
@@ -83,24 +84,19 @@ export default function Testimonials() {
               key={name}
               className="relative bg-dark-850 rounded-xl border border-dark-700 hover:border-dark-600 p-7 transition-all duration-300 hover:shadow-premium hover:-translate-y-1"
             >
-              {/* Icône guillemet */}
               <Quote
                 size={28}
                 className="text-brand-500/20 absolute top-5 right-6 fill-current"
                 aria-hidden="true"
               />
 
-              {/* Étoiles */}
               <Stars count={rating} />
 
-              {/* Commentaire */}
               <p className="text-dark-300 text-sm leading-relaxed mt-4 mb-7">
                 &ldquo;{comment}&rdquo;
               </p>
 
-              {/* Auteur */}
               <div className="flex items-center gap-3 pt-5 border-t border-dark-700">
-                {/* Avatar */}
                 <div
                   className={`w-10 h-10 ${color} rounded-full flex items-center justify-center flex-shrink-0 shadow-md`}
                   aria-hidden="true"
@@ -110,9 +106,7 @@ export default function Testimonials() {
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-heading font-bold text-white text-sm truncate">
-                    {name}
-                  </div>
+                  <div className="font-heading font-bold text-white text-sm truncate">{name}</div>
                   <div className="text-dark-500 text-xs mt-0.5">{location}</div>
                 </div>
                 <div className="text-dark-600 text-xs flex-shrink-0">{date}</div>

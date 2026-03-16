@@ -8,8 +8,8 @@ const services = [
     Icon: Wrench,
     title: "Entretien & Révision",
     description:
-      "Vidange, filtres, distribution, freinage — maintenance complète selon les préconisations constructeur. Garantie constructeur conservée.",
-    items: ["Vidange & filtres", "Courroie de distribution", "Freinage complet", "Révision constructeur"],
+      "Nous réalisons la mise au point moteur, la réparation de toute marque de véhicule ainsi que l'entretien. Nous assurons la révision garantie constructeur, la vidange et la préparation pour le contrôle technique. Les préconisations constructeur sont toujours respectées.",
+    items: ["Vidange & remplacement filtres", "Révision garantie constructeur", "Préparation contrôle technique", "Remplacement courroie de distribution"],
   },
   {
     id: "mecanique",
@@ -17,8 +17,8 @@ const services = [
     Icon: Settings,
     title: "Réparation Mécanique",
     description:
-      "Spécialistes BMW, Audi et Volkswagen. Nos mécaniciens diagnostiquent et réparent toutes pannes mécaniques, toutes marques.",
-    items: ["Moteur & boîte de vitesses", "Embrayage & suspension", "Mise au point moteur", "Réparation toutes marques"],
+      "Spécialistes BMW, Audi et Volkswagen, nous intervenons sur tous types de véhicules. Diagnostic en 10 minutes, réparation moteur, embrayage, suspension. Un devis pièce et main-d'œuvre est établi avant toute intervention. Professionnels qualifiés et continuellement formés.",
+    items: ["Diagnostic en 10 minutes", "Moteur, embrayage, boîte de vitesses", "Suspensions & amortisseurs", "Spécialiste BMW · Audi · VW · Mercedes"],
   },
   {
     id: "carrosserie",
@@ -26,17 +26,17 @@ const services = [
     Icon: Paintbrush,
     title: "Carrosserie & Peinture",
     description:
-      "Débosselage, peinture teinte constructeur, remplacement de vitrage. Votre carrosserie traitée avec précision.",
-    items: ["Débosselage & redressage", "Peinture teinte constructeur", "Remplacement vitrage", "Rénovation optiques"],
+      "Atelier carrosserie équipé d'une cabine de peinture neuve. Réparation d'ailes, débosselage, peinture teinte constructeur. Prise en charge du dossier d'assurance et d'expertise suite à un sinistre. Nettoyage intérieur et extérieur inclus après toute réparation.",
+    items: ["Cabine de peinture neuve", "Réparation ailes & carrosserie", "Prise en charge dossier assurance", "Nettoyage véhicule après réparation"],
   },
   {
     id: "diagnostic",
     num: "04",
     Icon: Cpu,
-    title: "Diagnostic Électronique",
+    title: "Diagnostic & Pannes",
     description:
-      "Équipements de dernière génération pour identifier et effacer les codes défaut de tous les constructeurs.",
-    items: ["Lecture codes défaut", "Diagnostic toutes marques", "Reprogrammation calculateurs", "Test batterie & alternateur"],
+      "Diagnostic électronique en 10 minutes pour tous constructeurs. Lecture et effacement des codes défaut OBD. Nettoyage et régénération du filtre à particules, gestion des pertes de puissance, réparation turbo et vanne EGR. Toutes marques acceptées.",
+    items: ["Diagnostic OBD en 10 minutes", "Filtre à particules (DPF)", "Réparation turbo & vanne EGR", "Réparation boîte de vitesse automatique"],
   },
 ];
 
@@ -51,7 +51,7 @@ export default function ServicesOverview() {
             <div className="section-divider" />
             <span className="eyebrow-light">Ce que nous faisons</span>
             <h2 className="section-title-light max-w-lg">
-              Tous vos besoins<br />automobiles couverts
+              Spécialistes de la mécanique,<br />la carrosserie et la vente
             </h2>
           </div>
           <Link
@@ -79,11 +79,11 @@ export default function ServicesOverview() {
                 {num}
               </span>
 
-              {/* Ligne accent top au hover */}
+              {/* Accent top */}
               <div className="absolute top-0 left-0 right-0 h-0.5 bg-brand-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true" />
 
               {/* Icône */}
-              <div className="w-13 h-13 w-12 h-12 bg-brand-500/15 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-500/25 transition-colors duration-300 ring-1 ring-brand-500/20">
+              <div className="w-12 h-12 bg-brand-500/15 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-500/25 transition-colors duration-300 ring-1 ring-brand-500/20">
                 <Icon size={22} className="text-brand-400" strokeWidth={1.75} />
               </div>
 
@@ -95,7 +95,6 @@ export default function ServicesOverview() {
                 {description}
               </p>
 
-              {/* Liste */}
               <ul className="space-y-2 mb-7">
                 {items.map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm text-dark-400 group-hover:text-dark-300 transition-colors">
@@ -105,7 +104,6 @@ export default function ServicesOverview() {
                 ))}
               </ul>
 
-              {/* Lien */}
               <div className="flex items-center gap-2 text-sm font-semibold text-dark-500 group-hover:text-brand-400 transition-colors group-hover:gap-3 duration-200">
                 En savoir plus
                 <ArrowRight size={14} />

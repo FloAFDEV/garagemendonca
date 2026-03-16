@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Clock, Facebook, Instagram, ExternalLink } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Facebook, Youtube, ExternalLink } from "lucide-react";
 
 const footerLinks = {
   services: [
     { href: "/services#entretien", label: "Entretien & Révision" },
     { href: "/services#mecanique", label: "Réparation Mécanique" },
     { href: "/services#carrosserie", label: "Carrosserie & Peinture" },
-    { href: "/services#diagnostic", label: "Diagnostic Électronique" },
+    { href: "/services#diagnostic", label: "Diagnostic & Pannes" },
   ],
   navigation: [
     { href: "/", label: "Accueil" },
@@ -52,13 +52,13 @@ export default function Footer() {
               </div>
             </Link>
 
-            <p className="text-sm leading-relaxed text-dark-500 mb-6">
-              Garage indépendant spécialisé en entretien, réparation et vente de
-              véhicules depuis plus de 30 ans en région toulousaine.
-              Spécialiste BMW, Audi et Volkswagen.
+            <p className="text-sm leading-relaxed text-dark-500 mb-5">
+              Avec une expérience de plus de 30 ans, le Garage Mendonça est
+              votre spécialiste de la mécanique, la carrosserie et la vente
+              en région toulousaine. Nous parlons portugais et français.
             </p>
 
-            {/* Réseaux sociaux */}
+            {/* Réseaux sociaux (présents sur le site original) */}
             <div className="flex items-center gap-3">
               <a
                 href="https://facebook.com"
@@ -70,23 +70,23 @@ export default function Footer() {
                 <Facebook size={16} />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 bg-dark-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
-                aria-label="Instagram"
+                aria-label="YouTube"
               >
-                <Instagram size={16} />
+                <Youtube size={16} />
               </a>
             </div>
           </div>
 
-          {/* Colonne 2 — Services */}
+          {/* Colonne 2 — Services + Nav */}
           <div>
             <h4 className="font-heading font-semibold text-white mb-5 text-sm">
               Nos Services
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3 mb-8">
               {footerLinks.services.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -100,7 +100,7 @@ export default function Footer() {
               ))}
             </ul>
 
-            <h4 className="font-heading font-semibold text-white mt-8 mb-5 text-sm">
+            <h4 className="font-heading font-semibold text-white mb-5 text-sm">
               Navigation
             </h4>
             <ul className="space-y-3">
@@ -132,12 +132,12 @@ export default function Footer() {
                     31280 Drémil-Lafage
                   </span>
                   <a
-                    href="https://maps.google.com/?q=Garage+Mendonca+Drémil-Lafage"
+                    href="https://maps.google.com/?q=Garage+Mendonca+6+Avenue+de+la+Mouyssaguese+31280+Dremil-Lafage"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-brand-500 hover:text-brand-400 text-xs mt-2 transition-colors"
                   >
-                    Ouvrir Google Maps
+                    Ouvrir dans Google Maps
                     <ExternalLink size={11} aria-hidden="true" />
                   </a>
                 </div>
@@ -172,7 +172,7 @@ export default function Footer() {
               <Clock size={15} className="text-brand-500" aria-hidden="true" />
               <span className="text-xs text-dark-500">Avec ou sans rendez-vous</span>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-3 mb-6">
               {hours.map(({ day, time }) => (
                 <li key={day} className="flex items-center justify-between text-sm py-2 border-b border-dark-800 last:border-0">
                   <span className="text-dark-400">{day}</span>
@@ -187,10 +187,9 @@ export default function Footer() {
               ))}
             </ul>
 
-            {/* CTA contact */}
             <a
               href="tel:0532002038"
-              className="inline-flex items-center gap-2 mt-6 btn-primary text-sm py-2.5 w-full justify-center"
+              className="inline-flex items-center gap-2 btn-primary text-sm py-2.5 w-full justify-center"
             >
               <Phone size={15} />
               Appeler le garage
@@ -199,10 +198,10 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* ── Barre de bas ── */}
+      {/* ── Barre légale ── */}
       <div className="border-t border-dark-800">
         <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-dark-600">
-          <p>© {new Date().getFullYear()} Garage Auto Mendonça. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} Garage Auto Mendonça · SARL · SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700 €</p>
           <div className="flex items-center gap-5">
             <Link href="/contact" className="hover:text-dark-400 transition-colors">
               Mentions légales
@@ -210,7 +209,7 @@ export default function Footer() {
             <Link href="/contact" className="hover:text-dark-400 transition-colors">
               Politique de confidentialité
             </Link>
-            <span className="text-dark-700">Drémil-Lafage, 31280</span>
+            <span className="text-dark-700">NAF 4520A</span>
           </div>
         </div>
       </div>

@@ -4,14 +4,14 @@ import { Phone, ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
 const credibilityStats = [
   { value: "30+", label: "Ans d'expérience" },
   { value: "+1 000", label: "Véhicules réparés" },
-  { value: "98%", label: "Clients satisfaits" },
+  { value: "160", label: "Points de contrôle" },
   { value: "9", label: "Véhicules de prêt" },
 ];
 
 const trustBadges = [
-  { Icon: ShieldCheck, text: "Devis gratuit, sans engagement" },
-  { Icon: Clock, text: "Réponse sous 24h garantie" },
-  { Icon: Award, text: "Spécialiste BMW · Audi · Volkswagen" },
+  { Icon: ShieldCheck, text: "Devis pièce & main-d'œuvre avant toute intervention" },
+  { Icon: Clock, text: "Accueil avec ou sans rendez-vous" },
+  { Icon: Award, text: "Spécialiste BMW · Audi · Volkswagen · Mercedes" },
 ];
 
 export default function Hero() {
@@ -28,16 +28,15 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      {/* ── Overlay multi-couches pour profondeur ── */}
+      {/* ── Overlays multi-couches ── */}
       <div className="absolute inset-0 bg-gradient-to-r from-dark-950/98 via-dark-950/85 to-dark-950/40" aria-hidden="true" />
       <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/30 to-transparent" aria-hidden="true" />
-      {/* Teinte chaude subtile en haut à droite */}
       <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-brand-600/8 to-transparent" aria-hidden="true" />
 
-      {/* ── Bande accent gauche ── */}
+      {/* ── Trait accent gauche ── */}
       <div className="absolute top-0 left-0 w-1 h-full bg-brand-500" aria-hidden="true" />
 
-      {/* ── Contenu principal ── */}
+      {/* ── Contenu ── */}
       <div className="relative flex-1 flex items-center">
         <div className="container mx-auto px-4 pt-40 pb-20">
           <div className="max-w-2xl xl:max-w-3xl">
@@ -46,27 +45,25 @@ export default function Hero() {
             <div className="flex items-center gap-3 mb-8 animate-fade-in">
               <div className="w-8 h-px bg-brand-500" />
               <span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
-                Garage indépendant · Drémil-Lafage · Depuis 1993
+                Garagiste Drémil-Lafage · Haute-Garonne · Depuis 1993
               </span>
             </div>
 
-            {/* Titre */}
+            {/* Titre — adapté du H1 réel */}
             <h1 className="font-heading font-black text-white text-5xl md:text-6xl xl:text-7xl leading-[1.03] mb-6 animate-slide-up">
-              Votre mécanique,
-              <br className="hidden sm:block" />
-              entre des mains{" "}
+              Garage auto<br />
+              à{" "}
               <span className="relative">
-                <span className="text-brand-500">expertes</span>
-                {/* Soulignement décoratif */}
+                <span className="text-brand-500">Drémil-Lafage</span>
                 <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-500/50" aria-hidden="true" />
               </span>
             </h1>
 
-            {/* Sous-titre rassurant */}
+            {/* Texte exact du site original */}
             <p className="text-dark-300 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
-              Entretien, réparation mécanique, carrosserie et vente de véhicules
-              d&apos;occasion. M. Victor Mendonça et son équipe vous accueillent
-              avec ou sans rendez-vous.
+              Avec une expérience de plus de 30 ans, le Garage Mendonça est
+              votre spécialiste de la mécanique, la carrosserie et la vente
+              en région toulousaine.
             </p>
 
             {/* CTA */}
@@ -82,7 +79,7 @@ export default function Hero() {
                 href="/contact"
                 className="btn-outline text-base py-4 px-8"
               >
-                Demander un devis
+                Demander un devis gratuit
                 <ArrowRight size={17} />
               </Link>
             </div>
@@ -102,7 +99,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ── Badges flottants droite — desktop ── */}
+      {/* ── Badges flottants — desktop ── */}
       <div className="absolute bottom-14 right-8 hidden xl:flex flex-col gap-3 animate-fade-in">
         {trustBadges.map(({ Icon, text }) => (
           <div
@@ -115,7 +112,7 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* ── Indicateur scroll ── */}
+      {/* ── Scroll indicator ── */}
       <div className="relative pb-10 flex flex-col items-center gap-2 text-dark-600" aria-hidden="true">
         <span className="text-xs uppercase tracking-widest">Découvrir</span>
         <div className="w-px h-8 bg-gradient-to-b from-dark-600 to-transparent" />

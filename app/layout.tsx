@@ -4,27 +4,28 @@ import StickyCallButton from "@/components/ui/StickyCallButton";
 
 export const metadata: Metadata = {
   title: {
-    default: "Garage Auto Mendonca — Réparation & Vente de Véhicules à Drémil-Lafage",
-    template: "%s | Garage Auto Mendonca",
+    default: "Garage Auto Mendonça — Garagiste Drémil-Lafage (31) — Mécanique, Carrosserie, Vente",
+    template: "%s | Garage Auto Mendonça — Drémil-Lafage",
   },
   description:
-    "Garage automobile indépendant depuis 30 ans à Drémil-Lafage (31). Entretien, réparation mécanique, carrosserie, diagnostic et vente de véhicules d'occasion. Spécialiste BMW, Audi, Volkswagen. Appelez le 05 32 00 20 38.",
+    "Avec une expérience de plus de 30 ans, le Garage Mendonça est votre spécialiste de la mécanique, la carrosserie et la vente à Drémil-Lafage (31). Spécialiste BMW, Audi, Volkswagen. Diagnostic en 10 minutes. Appelez le 05 32 00 20 38.",
   keywords: [
     "garage automobile",
+    "garagiste Drémil-Lafage",
     "réparation voiture",
     "mécanique",
     "carrosserie",
     "Drémil-Lafage",
+    "Haute-Garonne",
     "Toulouse",
-    "véhicules occasion",
-    "BMW",
-    "Audi",
-    "Volkswagen",
-    "boîte automatique",
+    "véhicules occasion boîte automatique",
+    "spécialiste BMW Audi Volkswagen",
+    "diagnostic électronique",
   ],
   openGraph: {
-    title: "Garage Auto Mendonca — Expert automobile depuis 30 ans",
-    description: "Entretien, réparation et vente de véhicules à Drémil-Lafage. Spécialiste BMW, Audi, VW.",
+    title: "Garage Auto Mendonça — Spécialiste automobile Drémil-Lafage",
+    description:
+      "Avec une expérience de plus de 30 ans, le Garage Mendonça est votre spécialiste de la mécanique, la carrosserie et la vente en région toulousaine.",
     type: "website",
     locale: "fr_FR",
   },
