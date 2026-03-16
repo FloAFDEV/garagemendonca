@@ -18,7 +18,7 @@ const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
   return (
-    <Link href={`/vehicules/${vehicle.id}`} className="card group block">
+    <Link href={`/vehicules/${vehicle.id}`} className="card group block focus-visible:ring-2 focus-visible:ring-brand-400 rounded-xl">
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-dark-100">
         <Image
@@ -80,9 +80,9 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
           <span className="font-heading font-black text-2xl text-dark-900">
             {vehicle.price.toLocaleString("fr-FR")} €
           </span>
-          <span className="flex items-center gap-1.5 text-sm font-semibold text-brand-600 group-hover:text-brand-700">
+          <span className="flex items-center gap-1.5 text-sm font-semibold text-brand-600 group-hover:text-brand-700 group-hover:gap-2.5 transition-all duration-200">
             Voir le détail
-            <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>
       </div>

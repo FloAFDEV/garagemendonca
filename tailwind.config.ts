@@ -48,27 +48,35 @@ const config: Config = {
           "linear-gradient(135deg, rgba(15,23,42,0.97) 0%, rgba(15,23,42,0.80) 60%, rgba(15,23,42,0.45) 100%)",
       },
       boxShadow: {
-        "premium": "0 4px 24px -4px rgba(0,0,0,0.35)",
+        "premium":    "0 4px 24px -4px rgba(0,0,0,0.35)",
         "premium-lg": "0 12px 48px -8px rgba(0,0,0,0.50)",
-        "brand": "0 4px 20px -4px rgba(249,115,22,0.40)",
-        "brand-lg": "0 8px 32px -4px rgba(249,115,22,0.45)",
+        "brand":      "0 4px 20px -4px rgba(249,115,22,0.35)",
+        "brand-lg":   "0 8px 32px -4px rgba(249,115,22,0.40)",
+        "card":       "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)",
+        "card-hover": "0 8px 24px -4px rgba(0,0,0,0.30), 0 4px 8px -2px rgba(0,0,0,0.20)",
+      },
+      scale: {
+        "107": "1.07",
+      },
+      transitionDuration: {
+        "400": "400ms",
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease-out",
-        "slide-up": "slideUp 0.5s ease-out",
-        "slide-in-right": "slideInRight 0.5s ease-out",
+        "fade-in":       "fadeIn 0.5s ease-out both",
+        "slide-up":      "slideUp 0.55s ease-out both",
+        "slide-in-right":"slideInRight 0.5s ease-out both",
       },
       keyframes: {
         fadeIn: {
-          "0%": { opacity: "0" },
+          "0%":   { opacity: "0" },
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "0%":   { opacity: "0", transform: "translateY(22px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         slideInRight: {
-          "0%": { opacity: "0", transform: "translateX(24px)" },
+          "0%":   { opacity: "0", transform: "translateX(22px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
       },

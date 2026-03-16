@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Phone, MessageSquare, CalendarDays, ShieldCheck } from "lucide-react";
+import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
 const reassurances = ["Devis 100% gratuit", "Réponse sous 24h", "Avec ou sans RDV", "Prix transparents"];
 
@@ -19,6 +20,7 @@ export default function CallToAction() {
         aria-hidden="true"
       />
 
+      <AnimateOnScroll>
       <div className="relative container mx-auto px-4 py-20">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12">
 
@@ -57,7 +59,7 @@ export default function CallToAction() {
           <div className="flex flex-col gap-4 lg:min-w-[280px]">
             <a
               href="tel:0532002038"
-              className="inline-flex items-center justify-center gap-3 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold px-8 py-4.5 py-[18px] rounded-lg text-base transition-all duration-200 shadow-brand-lg hover:shadow-brand hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-brand-400"
+              className="inline-flex items-center justify-center gap-3 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold px-8 py-[18px] rounded-lg text-base transition-all duration-200 shadow-brand-lg hover:shadow-brand hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-brand-400"
             >
               <Phone size={19} />
               05 32 00 20 38
@@ -81,6 +83,7 @@ export default function CallToAction() {
           </div>
         </div>
       </div>
+      </AnimateOnScroll>
     </section>
   );
 }
