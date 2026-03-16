@@ -10,17 +10,17 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: "#fff7ed",
-          100: "#ffedd5",
-          200: "#fed7aa",
-          300: "#fdba74",
-          400: "#fb923c",
-          500: "#f97316",
-          600: "#ea580c",
-          700: "#c2410c",
-          800: "#9a3412",
-          900: "#7c2d12",
-          950: "#431407",
+          50: "#fef2f2",
+          100: "#fee2e2",
+          200: "#fecaca",
+          300: "#fca5a5",
+          400: "#f87171",
+          500: "#ef4444",
+          600: "#dc2626",
+          700: "#b91c1c",
+          800: "#991b1b",
+          900: "#7f1d1d",
+          950: "#450a0a",
         },
         dark: {
           50: "#f8fafc",
@@ -38,17 +38,17 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
-        heading: ["Montserrat", "system-ui", "sans-serif"],
+        heading: ["Manrope", "system-ui", "sans-serif"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "hero-pattern":
-          "linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.7) 100%)",
+          "linear-gradient(135deg, rgba(15,23,42,0.97) 0%, rgba(15,23,42,0.75) 60%, rgba(15,23,42,0.4) 100%)",
       },
       animation: {
-        "fade-in": "fadeIn 0.6s ease-out",
-        "slide-up": "slideUp 0.6s ease-out",
-        "slide-in-right": "slideInRight 0.6s ease-out",
+        "fade-in": "fadeIn 0.5s ease-out",
+        "slide-up": "slideUp 0.5s ease-out",
+        "slide-in-right": "slideInRight 0.5s ease-out",
       },
       keyframes: {
         fadeIn: {
@@ -56,11 +56,11 @@ const config: Config = {
           "100%": { opacity: "1" },
         },
         slideUp: {
-          "0%": { opacity: "0", transform: "translateY(30px)" },
+          "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         slideInRight: {
-          "0%": { opacity: "0", transform: "translateX(30px)" },
+          "0%": { opacity: "0", transform: "translateX(24px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
       },

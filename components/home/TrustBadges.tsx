@@ -1,74 +1,56 @@
-import { Calendar, ShieldCheck, Car, KeyRound } from "lucide-react";
+import { Calendar, Award, Car, KeyRound } from "lucide-react";
 
 const badges = [
   {
     Icon: Calendar,
     value: "30+",
     label: "Ans d'expérience",
-    description: "M. Victor Mendonça et son équipe vous servent avec passion depuis plus de 30 ans",
-    color: "text-brand-500",
-    bg: "bg-brand-50",
+    description: "M. Victor Mendonça vous accompagne depuis 1993 avec son équipe de professionnels.",
   },
   {
-    Icon: ShieldCheck,
-    value: "Toutes",
-    label: "Marques acceptées",
-    description: "Spécialistes BMW, Audi et Volkswagen — toutes marques acceptées",
-    color: "text-emerald-500",
-    bg: "bg-emerald-50",
+    Icon: Award,
+    value: "Spécialisé",
+    label: "BMW · Audi · VW",
+    description: "Mécaniciens formés aux marques allemandes. Toutes marques bienvenues.",
   },
   {
     Icon: Car,
     value: "VO",
     label: "Boîte automatique",
-    description: "Large sélection de véhicules d'occasion en boîte automatique, vérifiés et garantis",
-    color: "text-blue-500",
-    bg: "bg-blue-50",
+    description: "Stock sélectionné de véhicules d'occasion en boîte automatique, contrôlés et garantis.",
   },
   {
     Icon: KeyRound,
     value: "9",
     label: "Véhicules de prêt",
-    description: "Véhicule de courtoisie offert pendant toute la durée de votre intervention",
-    color: "text-violet-500",
-    bg: "bg-violet-50",
+    description: "Un véhicule de courtoisie est mis à votre disposition pendant toute intervention.",
   },
 ];
 
 export default function TrustBadges() {
   return (
-    <section className="py-20 bg-white">
+    <section className="bg-dark-900 border-t border-dark-800">
       <div className="container mx-auto px-4">
-        {/* Section intro */}
-        <div className="text-center mb-14">
-          <span className="inline-block text-brand-600 font-semibold text-sm uppercase tracking-widest mb-3">
-            Pourquoi nous choisir
-          </span>
-          <h2 className="section-title">
-            Un garage qui mérite votre confiance
-          </h2>
-          <p className="section-subtitle mx-auto mt-4 text-center">
-            Depuis plus de 30 ans, M. Victor Mendonça et son équipe accompagnent
-            les automobilistes de Drémil-Lafage et des environs avec rigueur et transparence.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {badges.map(({ Icon, value, label, description, color, bg }) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-dark-800">
+          {badges.map(({ Icon, value, label, description }, i) => (
             <div
               key={label}
-              className="group p-8 rounded-2xl border border-dark-100 hover:border-brand-200 hover:shadow-xl hover:shadow-brand-50 transition-all duration-300 hover:-translate-y-1 cursor-default"
+              className={`group px-8 py-10 transition-colors duration-300 hover:bg-dark-800/50 ${
+                i === 0 ? "" : "border-l-0"
+              }`}
             >
-              <div
-                className={`w-14 h-14 ${bg} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}
-              >
-                <Icon size={26} className={color} />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-brand-600/15 rounded-lg flex items-center justify-center group-hover:bg-brand-600/25 transition-colors">
+                  <Icon size={20} className="text-brand-400" />
+                </div>
+                <div className="font-heading font-black text-2xl text-white leading-none">
+                  {value}
+                </div>
               </div>
-              <div className="font-heading font-black text-4xl text-dark-900 mb-1">
-                {value}
+              <div className="font-semibold text-white text-sm mb-1.5 leading-tight">
+                {label}
               </div>
-              <div className="font-semibold text-dark-800 mb-2">{label}</div>
-              <p className="text-dark-500 text-sm leading-relaxed">
+              <p className="text-dark-400 text-xs leading-relaxed">
                 {description}
               </p>
             </div>
