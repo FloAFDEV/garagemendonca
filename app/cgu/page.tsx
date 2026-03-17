@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Conditions Générales d'Utilisation — Garage Mendonça",
   description:
     "Conditions Générales d'Utilisation du site internet du Garage Auto Mendonça à Drémil-Lafage (31).",
+  robots: { index: false, follow: false },
 };
 
 const sections = [

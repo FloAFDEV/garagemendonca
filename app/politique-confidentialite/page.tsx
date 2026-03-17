@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Politique de confidentialité — Garage Mendonça",
   description:
     "Politique de confidentialité et protection des données personnelles du Garage Auto Mendonça (RGPD).",
+  robots: { index: false, follow: false },
 };
 
 const sections = [

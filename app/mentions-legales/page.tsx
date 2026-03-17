@@ -5,6 +5,7 @@ import MainLayout from "@/components/layout/MainLayout";
 export const metadata: Metadata = {
   title: "Mentions Légales — Garage Mendonça",
   description: "Mentions légales du site internet du Garage Auto Mendonça à Drémil-Lafage (31).",
+  robots: { index: false, follow: false },
 };
 
 const sections = [
