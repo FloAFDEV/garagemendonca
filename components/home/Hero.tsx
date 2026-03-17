@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
 
 const credibilityStats = [
@@ -18,13 +19,18 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
 
-      {/* Fond photo */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=1920&q=85')" }}
-        role="img"
-        aria-label="Atelier du Garage Auto Mendonça à Drémil-Lafage"
-      />
+      {/* Fond photo — façade du garage */}
+      <div className="absolute inset-0" role="img" aria-label="Façade du Garage Auto Mendonça à Drémil-Lafage">
+        <Image
+          src="/images/garage-hero.jpg"
+          alt=""
+          fill
+          priority
+          quality={90}
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+      </div>
 
       {/* Overlays */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#0f172a]/92 via-[#0f172a]/72 to-[#0f172a]/30" aria-hidden="true" />

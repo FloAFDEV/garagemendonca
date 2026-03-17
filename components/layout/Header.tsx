@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, Phone } from "lucide-react";
 import clsx from "clsx";
 
@@ -59,22 +60,16 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 md:h-[72px]">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group" aria-label="Garage Mendonça – Accueil">
-            <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center shadow-brand transition-all duration-200 group-hover:scale-105">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3" />
-                <rect x="9" y="11" width="14" height="10" rx="2" />
-                <circle cx="12" cy="21" r="1" />
-                <circle cx="20" cy="21" r="1" />
-              </svg>
-            </div>
-            <div>
-              <div className="font-heading font-bold text-[#0f172a] leading-none text-base">
-                Garage Mendonça
-              </div>
-              <div className="text-[11px] text-[#475569] leading-none mt-0.5">
-                Drémil-Lafage · depuis 1993
-              </div>
+          <Link href="/" className="flex items-center group" aria-label="Garage Mendonça – Accueil">
+            <div className="relative h-11 w-[148px] overflow-hidden rounded-lg transition-opacity duration-200 group-hover:opacity-90">
+              <Image
+                src="/images/logo.png"
+                alt="Garage Mendonça"
+                fill
+                priority
+                className="object-contain object-left"
+                sizes="148px"
+              />
             </div>
           </Link>
 
