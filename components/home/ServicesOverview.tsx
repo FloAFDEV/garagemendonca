@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Wrench, Settings, Paintbrush, Cpu, ArrowRight } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import BrandsStrip from "@/components/home/BrandsStrip";
 
 const services = [
   {
@@ -9,8 +10,8 @@ const services = [
     Icon: Wrench,
     title: "Entretien & Révision",
     description:
-      "Service de proximité pour tous les véhicules toutes marques. Techniciens formés aux technologies Renault, PSA, BMW, Audi et Volkswagen. Les préconisations constructeur sont toujours respectées.",
-    items: ["Révision garantie constructeur", "Pneus, climatisation & amortisseurs", "Préparation contrôle technique", "Courroie de distribution"],
+      "Service de proximité pour tous véhicules toutes marques. Préconisations constructeur toujours respectées.",
+    items: ["Révision garantie constructeur", "Pneus, clim & amortisseurs", "Contrôle technique", "Courroie de distribution"],
   },
   {
     id: "mecanique",
@@ -18,8 +19,8 @@ const services = [
     Icon: Settings,
     title: "Mécanique & Électronique",
     description:
-      "Généraliste et expert, nous intervenons sur toutes les réparations mécaniques et électroniques. Spécialistes BMW, Audi et Volkswagen. Réparation de pièces électroniques à coût maîtrisé, en restant dans le réseau professionnel.",
-    items: ["Spécialiste BMW · Audi · VW · Renault · PSA", "Moteur, embrayage, boîte de vitesses", "Réparation pièces électroniques", "Devis pièce & main-d'œuvre avant intervention"],
+      "Spécialistes BMW, Audi et Volkswagen. Réparation électronique à coût maîtrisé, devis avant intervention.",
+    items: ["Spécialiste BMW · Audi · VW", "Moteur, embrayage, boîte", "Réparation pièces électro.", "Devis pièce & main-d'œuvre"],
   },
   {
     id: "diagnostic",
@@ -27,8 +28,8 @@ const services = [
     Icon: Cpu,
     title: "Diagnostic & Motoriste",
     description:
-      "Atelier conseil easydiag — spécialiste de la combustion et des encrassements moteurs depuis plus de 12 ans. Diagnostic électronique en 10 minutes sur tous constructeurs, toutes marques.",
-    items: ["Diagnostic OBD en 10 minutes", "Nettoyage admission & DPF", "Réparation turbo & vanne EGR", "Gestion pertes de puissance"],
+      "Spécialiste combustion & encrassements depuis +12 ans. Diagnostic OBD en 10 minutes, toutes marques.",
+    items: ["Diagnostic OBD en 10 min", "Nettoyage admission & DPF", "Réparation turbo & EGR", "Pertes de puissance"],
   },
   {
     id: "carrosserie",
@@ -36,8 +37,8 @@ const services = [
     Icon: Paintbrush,
     title: "Carrosserie & Vitrage",
     description:
-      "Nouvelle cabine de peinture pour des finitions irréprochables. Tôlerie, collision, pare-brise et lunette arrière toutes marques. Véhicule de courtoisie disponible, dossier assurance pris en charge.",
-    items: ["Nouvelle cabine de peinture", "Pare-brise & lunette arrière", "Véhicule de courtoisie inclus", "Dossier assurance & expertise sinistre"],
+      "Nouvelle cabine de peinture. Tôlerie, collision, pare-brise toutes marques. Véhicule de courtoisie inclus.",
+    items: ["Nouvelle cabine de peinture", "Pare-brise & lunette arrière", "Véhicule de courtoisie", "Dossier assurance inclus"],
   },
 ];
 
@@ -66,15 +67,15 @@ export default function ServicesOverview() {
           </div>
         </AnimateOnScroll>
 
-        {/* ── Grille cartes ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* ── Grille cartes — 1 col mobile / 2 tablette / 4 desktop ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
           {services.map(({ id, num, Icon, title, description, items }, i) => (
             <AnimateOnScroll key={id} delay={i * 90}>
               <Link
                 href={`/services#${id}`}
-                className="group relative bg-white rounded-2xl border border-slate-200 p-8 lg:p-10 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 overflow-hidden block h-full"
+                className="group relative bg-white rounded-2xl border border-slate-200 p-6 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 overflow-hidden flex flex-col h-full"
               >
-                {/* Trait accent haut — visible au hover */}
+                {/* Trait accent haut */}
                 <div
                   className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-brand-500 to-brand-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-2xl"
                   aria-hidden="true"
@@ -82,43 +83,46 @@ export default function ServicesOverview() {
 
                 {/* Numéro filigrane */}
                 <span
-                  className="absolute top-6 right-7 font-heading font-black text-7xl text-slate-100 select-none group-hover:text-brand-50 transition-colors"
+                  className="absolute top-4 right-5 font-heading font-black text-6xl text-slate-100 select-none group-hover:text-brand-50 transition-colors"
                   aria-hidden="true"
                 >
                   {num}
                 </span>
 
                 {/* Icône */}
-                <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center mb-7 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-colors duration-250">
-                  <Icon size={22} className="text-brand-500" strokeWidth={1.75} />
+                <div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center mb-5 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-colors duration-250 flex-shrink-0">
+                  <Icon size={19} className="text-brand-500" strokeWidth={1.75} />
                 </div>
 
-                <h3 className="font-heading font-bold text-[#0f172a] text-xl mb-3 leading-snug">
+                <h3 className="font-heading font-bold text-[#0f172a] text-base mb-2 leading-snug">
                   {title}
                 </h3>
 
-                <p className="text-[#475569] text-sm leading-[1.75] mb-7">
+                <p className="text-[#475569] text-xs leading-[1.7] mb-5">
                   {description}
                 </p>
 
                 {/* Prestations */}
-                <ul className="space-y-2.5 mb-8">
+                <ul className="space-y-2 mb-5 flex-1">
                   {items.map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-sm text-[#475569]">
+                    <li key={item} className="flex items-center gap-2.5 text-xs text-[#475569]">
                       <span className="w-1.5 h-1.5 bg-brand-500 rounded-full flex-shrink-0" aria-hidden="true" />
                       {item}
                     </li>
                   ))}
                 </ul>
 
-                <div className="flex items-center gap-2 text-sm font-semibold text-slate-400 group-hover:text-brand-500 transition-all duration-200 group-hover:gap-3">
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 group-hover:text-brand-500 transition-all duration-200 group-hover:gap-3 mt-auto">
                   En savoir plus
-                  <ArrowRight size={14} />
+                  <ArrowRight size={12} />
                 </div>
               </Link>
             </AnimateOnScroll>
           ))}
         </div>
+
+        {/* ── Bandeau logos marques ── */}
+        <BrandsStrip />
       </div>
     </section>
   );
