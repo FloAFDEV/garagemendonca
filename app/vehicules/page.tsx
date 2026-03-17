@@ -3,24 +3,41 @@
 import { useState, useMemo } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import VehicleCard from "@/components/vehicles/VehicleCard";
+import VehicleFilters, { FilterState, INITIAL_FILTERS } from "@/components/vehicles/VehicleFilters";
 import { vehicles } from "@/lib/data";
-import { Car, SlidersHorizontal, ClipboardCheck, Wrench, BookOpen, ShieldCheck, X } from "lucide-react";
+import { Car, ClipboardCheck, Wrench, BookOpen, ShieldCheck } from "lucide-react";
 
-const FUELS = Array.from(new Set(vehicles.map((v) => v.fuel)));
-const PRICE_MAX = Math.max(...vehicles.map((v) => v.price));
-const PRICE_MIN = Math.min(...vehicles.map((v) => v.price));
+/* Options dérivées du catalogue (recalculées une fois au module level) */
+const ALL_BRANDS = Array.from(new Set(vehicles.map((v) => v.brand))).sort();
+const ALL_FUELS  = Array.from(new Set(vehicles.map((v) => v.fuel)));
 
 export default function VehiculesPage() {
-  const [fuelFilter, setFuelFilter] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "km-asc">("price-asc");
+  const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
 
   const filtered = useMemo(() => {
-    let list = fuelFilter ? vehicles.filter((v) => v.fuel === fuelFilter) : [...vehicles];
-    if (sortBy === "price-asc") list.sort((a, b) => a.price - b.price);
-    if (sortBy === "price-desc") list.sort((a, b) => b.price - a.price);
-    if (sortBy === "km-asc") list.sort((a, b) => a.mileage - b.mileage);
+    let list = [...vehicles];
+
+    if (filters.brands.length > 0)
+      list = list.filter((v) => filters.brands.includes(v.brand));
+
+    if (filters.fuels.length > 0)
+      list = list.filter((v) => filters.fuels.includes(v.fuel));
+
+    if (filters.kmMax !== null)
+      list = list.filter((v) => v.mileage <= filters.kmMax!);
+
+    if (filters.priceMax !== null)
+      list = list.filter((v) => v.price <= filters.priceMax!);
+
+    switch (filters.sortBy) {
+      case "price-asc":  list.sort((a, b) => a.price - b.price);   break;
+      case "price-desc": list.sort((a, b) => b.price - a.price);   break;
+      case "km-asc":     list.sort((a, b) => a.mileage - b.mileage); break;
+      case "year-desc":  list.sort((a, b) => b.year - a.year);     break;
+    }
+
     return list;
-  }, [fuelFilter, sortBy]);
+  }, [filters]);
 
   return (
     <MainLayout>
@@ -46,81 +63,43 @@ export default function VehiculesPage() {
         </div>
       </section>
 
-      {/* ── Grille véhicules ── */}
-      <section className="py-16 bg-[#f8fafc]">
+      {/* ── Catalogue ── */}
+      <section className="py-12 bg-[#f8fafc]">
         <div className="container mx-auto px-4">
 
-          {/* Barre filtres */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-            <div className="flex items-center gap-2 text-[#475569]">
-              <Car size={18} className="text-brand-600" aria-hidden="true" />
-              <span className="font-semibold text-[#0f172a]">
-                {filtered.length} véhicule{filtered.length > 1 ? "s" : ""}
-                {fuelFilter ? ` · ${fuelFilter}` : " disponibles"}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Filtre carburant */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <SlidersHorizontal size={15} className="text-[#475569]" aria-hidden="true" />
-                {FUELS.map((fuel) => (
-                  <button
-                    key={fuel}
-                    onClick={() => setFuelFilter(fuelFilter === fuel ? null : fuel)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-150 ${
-                      fuelFilter === fuel
-                        ? "bg-brand-500 text-white border-brand-500"
-                        : "bg-white text-[#475569] border-slate-200 hover:border-brand-300 hover:text-brand-600"
-                    }`}
-                    aria-pressed={fuelFilter === fuel}
-                  >
-                    {fuel}
-                  </button>
-                ))}
-                {fuelFilter && (
-                  <button
-                    onClick={() => setFuelFilter(null)}
-                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[#475569] transition-colors"
-                    aria-label="Effacer le filtre carburant"
-                  >
-                    <X size={13} />
-                  </button>
-                )}
-              </div>
-
-              {/* Tri */}
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                className="pl-3 pr-8 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-[#475569] bg-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none cursor-pointer"
-                aria-label="Trier les véhicules"
-              >
-                <option value="price-asc">Prix croissant</option>
-                <option value="price-desc">Prix décroissant</option>
-                <option value="km-asc">Kilométrage croissant</option>
-              </select>
-            </div>
-          </div>
+          {/* Filtres */}
+          <VehicleFilters
+            filters={filters}
+            onChange={setFilters}
+            availableBrands={ALL_BRANDS}
+            availableFuels={ALL_FUELS}
+            totalCount={vehicles.length}
+            filteredCount={filtered.length}
+          />
 
           {/* Grille */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((vehicle, i) => (
-              <VehicleCard key={vehicle.id} vehicle={vehicle} priority={i === 0} />
-            ))}
-          </div>
-
-          {/* État vide */}
-          {filtered.length === 0 && (
-            <div className="text-center py-20">
+          {filtered.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map((vehicle, i) => (
+                <VehicleCard key={vehicle.id} vehicle={vehicle} priority={i === 0} />
+              ))}
+            </div>
+          ) : (
+            /* État vide */
+            <div className="text-center py-24 bg-white rounded-2xl border border-slate-200">
               <Car size={48} className="text-slate-300 mx-auto mb-4" aria-hidden="true" />
-              <h2 className="font-heading font-bold text-[#0f172a] text-xl mb-2">Aucun véhicule pour ce filtre</h2>
-              <p className="text-[#475569] mb-4">
-                Essayez un autre critère ou{" "}
-                <button onClick={() => setFuelFilter(null)} className="text-brand-600 font-semibold hover:underline">
-                  affichez tous les véhicules
-                </button>.
+              <h2 className="font-heading font-bold text-[#0f172a] text-xl mb-2">
+                Aucun véhicule pour ces critères
+              </h2>
+              <p className="text-[#475569] text-sm mb-6 max-w-xs mx-auto">
+                Essayez d&apos;élargir votre recherche en modifiant ou en supprimant certains filtres.
               </p>
+              <button
+                onClick={() => setFilters(INITIAL_FILTERS)}
+                className="btn-primary"
+              >
+                Voir tous les véhicules
+              </button>
             </div>
           )}
         </div>
@@ -134,11 +113,11 @@ export default function VehiculesPage() {
               { Icon: ClipboardCheck, label: "Contrôle technique récent" },
               { Icon: Wrench,         label: "Révision complète effectuée" },
               { Icon: BookOpen,       label: "Carnet d'entretien vérifié" },
-              { Icon: ShieldCheck,    label: "Garantie 6 à 12 mois" },
+              { Icon: ShieldCheck,    label: "Garantie 6 à 12 mois km illimités" },
             ].map(({ Icon, label }) => (
               <div key={label} className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-brand-50 border border-brand-100 rounded-lg flex items-center justify-center flex-shrink-0" aria-hidden="true">
-                  <Icon size={17} className="text-brand-500" strokeWidth={1.75} />
+                  <Icon size={17} className="text-brand-500" strokeWidth={1.75} aria-hidden="true" />
                 </div>
                 <span className="font-semibold text-[#0f172a] text-sm">{label}</span>
               </div>
