@@ -11,8 +11,8 @@ const footerLinks = {
   navigation: [
     { href: "/", label: "Accueil" },
     { href: "/vehicules", label: "Véhicules d'occasion" },
+    { href: "/produit", label: "Notre offre VO" },
     { href: "/contact", label: "Contact & Devis" },
-    { href: "/admin/login", label: "Espace Admin" },
   ],
 };
 
@@ -202,11 +202,14 @@ export default function Footer() {
         <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-600">
           <p>© {new Date().getFullYear()} Garage Auto Mendonça · SARL · SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700 €</p>
           <div className="flex items-center gap-5">
-            <Link href="/contact" className="hover:text-slate-400 transition-colors">
+            <Link href="/mentions-legales" className="hover:text-slate-400 transition-colors">
               Mentions légales
             </Link>
-            <Link href="/contact" className="hover:text-slate-400 transition-colors">
-              Politique de confidentialité
+            <Link href="/cgu" className="hover:text-slate-400 transition-colors">
+              CGU
+            </Link>
+            <Link href="/politique-confidentialite" className="hover:text-slate-400 transition-colors">
+              Confidentialité
             </Link>
             <span className="text-slate-700">NAF 4520A</span>
           </div>

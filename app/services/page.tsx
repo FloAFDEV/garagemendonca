@@ -154,21 +154,15 @@ export default function ServicesPage() {
           <h2 className="font-heading font-black text-white text-3xl md:text-4xl mb-4">
             Besoin d&apos;un devis ou d&apos;un rendez-vous ?
           </h2>
-          <p className="text-[#475569] text-lg mb-8">
+          <p className="text-slate-300 text-lg mb-8">
             Contactez-nous dès maintenant. Réponse en moins de 24h. Accueil avec ou sans rendez-vous.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="tel:0532002038"
-              className="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold px-8 py-4 rounded-lg shadow-brand-lg transition-all hover:-translate-y-0.5"
-            >
+            <a href="tel:0532002038" className="btn-primary text-base py-4 px-8">
               <Phone size={18} />
               05 32 00 20 38
             </a>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 border-2 border-white/20 hover:border-dark-500 text-slate-300 hover:text-white font-bold px-8 py-4 rounded-lg transition-all hover:-translate-y-0.5"
-            >
+            <Link href="/contact" className="btn-outline text-base py-4 px-8">
               Formulaire de contact
               <ArrowRight size={18} />
             </Link>

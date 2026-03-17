@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import MainLayout from "@/components/layout/MainLayout";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import { vehicles } from "@/lib/data";
-import { Car, SlidersHorizontal } from "lucide-react";
+import { Car, SlidersHorizontal, ClipboardCheck, Wrench, BookOpen, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Véhicules d'occasion",
@@ -79,15 +79,17 @@ export default function VehiculesPage() {
       {/* Guarantee banner */}
       <section className="py-12 bg-white border-t border-slate-200">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-center">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 text-center">
             {[
-              { icon: "✅", label: "Contrôle technique récent" },
-              { icon: "🔧", label: "Révision complète effectuée" },
-              { icon: "📋", label: "Carnet d'entretien vérifié" },
-              { icon: "🛡️", label: "Garantie véhicule d'occasion" },
-            ].map(({ icon, label }) => (
+              { Icon: ClipboardCheck, label: "Contrôle technique récent" },
+              { Icon: Wrench,          label: "Révision complète effectuée" },
+              { Icon: BookOpen,        label: "Carnet d'entretien vérifié" },
+              { Icon: ShieldCheck,     label: "Garantie véhicule d'occasion" },
+            ].map(({ Icon, label }) => (
               <div key={label} className="flex items-center gap-3">
-                <span className="text-2xl">{icon}</span>
+                <div className="w-9 h-9 bg-brand-50 border border-brand-100 rounded-lg flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                  <Icon size={17} className="text-brand-500" strokeWidth={1.75} />
+                </div>
                 <span className="font-semibold text-[#0f172a] text-sm">{label}</span>
               </div>
             ))}
