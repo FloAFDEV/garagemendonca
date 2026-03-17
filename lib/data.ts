@@ -15,7 +15,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     featured: true,
     critAir: "2",
-    isAvailable: true,
+    status: "available",
     description:
       "Toyota AYGO boîte automatique, Crit'Air 2. Idéale en ville, très économique. Vérifiée en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois kilométrages illimités. Révision boîte automatique effectuée.",
     features: {
@@ -46,7 +46,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     featured: true,
     critAir: "2",
-    isAvailable: true,
+    status: "available",
     description:
       "Nissan Micra 1.4 88 ch Acenta, boîte automatique, Crit'Air 2. Véhicule français, bien entretenu, carnet à jour. Vérification en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités. Révision boîte automatique incluse.",
     features: {
@@ -77,7 +77,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     featured: true,
     critAir: "2",
-    isAvailable: true,
+    status: "available",
     description:
       "Suzuki Swift 1.2i 94 ch GLX Pack, boîte automatique et toit ouvrant panoramique. Très bien équipée : climatisation automatique, bluetooth, régulateur de vitesse. 250 à 500 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités, vérification 160 points.",
     features: {
@@ -108,7 +108,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     featured: true,
     critAir: "2",
-    isAvailable: true,
+    status: "available",
     description:
       "Nissan Pixo 1.0i 68 ch Acenta, boîte automatique, 1ère main. Petite citadine très maniable, faible consommation. Entretien complet réalisé par notre atelier. Garantie 6 à 12 mois km illimités, vérification 160 points.",
     features: {
@@ -139,7 +139,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     featured: false,
     critAir: "2",
-    isAvailable: true,
+    status: "available",
     description:
       "Opel Agila 1.2i 85 ch Edition, boîte automatique, 1ère main. Véhicule bien entretenu, révisé par notre atelier avant mise en vente. Parfaite pour les déplacements quotidiens. Garantie 6 à 12 mois km illimités.",
     features: {
@@ -170,7 +170,7 @@ export const vehicles: Vehicle[] = [
     doors: 5,
     featured: false,
     critAir: "2",
-    isAvailable: true,
+    status: "available",
     description:
       "Hyundai i10 boîte automatique. Légère, économique et facile à garer. Parfaite pour la ville et les trajets courts. Véhicule contrôlé et révisé par notre atelier, prêt à rouler. Garantie 6 à 12 mois km illimités.",
     features: {

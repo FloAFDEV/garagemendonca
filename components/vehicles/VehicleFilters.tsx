@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { ChevronDown, X, SlidersHorizontal, Check, RotateCcw } from "lucide-react";
 
 /* ─────────── types ─────────── */
@@ -95,14 +96,14 @@ function BrandLogo({ brand }: { brand: string }) {
   }
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       src={logoUrl}
       alt=""
-      aria-hidden="true"
-      className="w-8 h-8 object-contain flex-shrink-0"
+      aria-hidden={true}
+      width={32}
+      height={32}
+      className="object-contain flex-shrink-0"
       onError={() => setFailed(true)}
-      loading="lazy"
     />
   );
 }
