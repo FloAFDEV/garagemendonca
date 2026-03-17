@@ -5,61 +5,120 @@ import { PhoneCall, Search, FileText, Wrench, CarFront } from "lucide-react";
 
 const steps = [
   { num: "01", icon: PhoneCall, title: "Prise de contact", desc: "Appelez le 05 32 00 20 38 ou envoyez un message. Accueil avec ou sans rendez-vous." },
-  { num: "02", icon: Search, title: "Diagnostic", desc: "Diagnostic en 10 min sur équipement dernière génération. Toutes marques." },
-  { num: "03", icon: FileText, title: "Devis transparent", desc: "Devis pièce et main-d'œuvre détaillé avant toute intervention. Aucune surprise." },
-  { num: "04", icon: Wrench, title: "Réparation", desc: "Intervention par nos mécaniciens qualifiés. Préconisations constructeur respectées." },
-  { num: "05", icon: CarFront, title: "Restitution", desc: "Véhicule restitué propre avec nettoyage et compte-rendu complet des travaux." },
+  { num: "02", icon: Search,    title: "Diagnostic",       desc: "Diagnostic en 10 min sur équipement dernière génération. Toutes marques." },
+  { num: "03", icon: FileText,  title: "Devis transparent", desc: "Devis pièce et main-d'œuvre détaillé avant toute intervention. Aucune surprise." },
+  { num: "04", icon: Wrench,    title: "Réparation",        desc: "Intervention par nos mécaniciens qualifiés. Préconisations constructeur respectées." },
+  { num: "05", icon: CarFront,  title: "Restitution",       desc: "Véhicule restitué propre avec nettoyage et compte-rendu complet des travaux." },
 ];
 
 const ProcessSection = () => {
   return (
-    <section id="process" className="py-24 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="process" className="py-24 bg-[#0f172a]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+
+        {/* ── Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <p className="text-brand-500 font-semibold text-sm tracking-widest uppercase mb-3">Comment ça se passe</p>
-          <h2 className="font-heading font-bold text-3xl sm:text-4xl text-[#0f172a]">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold tracking-wide mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+            Notre processus
+          </span>
+          <h2 className="font-heading font-black text-white text-3xl sm:text-4xl md:text-5xl">
             Du diagnostic à la restitution
           </h2>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="relative text-center"
-            >
-              <div className="h-14 w-14 mx-auto rounded-full bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mb-4">
-                <step.icon className="h-6 w-6 text-brand-500" />
-              </div>
-              <span className="text-[10px] font-bold text-brand-500 tracking-widest uppercase">{step.num}</span>
-              <h3 className="font-heading font-semibold text-[#0f172a] mt-1 mb-2">{step.title}</h3>
-              <p className="text-xs text-[#475569] leading-relaxed">{step.desc}</p>
-              {/* Connector line */}
-              {i < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-7 left-[calc(50%+35px)] w-[calc(100%-70px)] h-px bg-slate-200" />
-              )}
-            </motion.div>
-          ))}
+
+        {/* ── Timeline ── */}
+        <div className="relative">
+
+          {/* Ligne verticale centrale */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10 -translate-x-1/2 hidden sm:block" aria-hidden="true" />
+
+          <div className="flex flex-col gap-10">
+            {steps.map((step, i) => {
+              const isLeft = i % 2 === 0;
+              const Icon = step.icon;
+
+              return (
+                <motion.div
+                  key={step.num}
+                  initial={{ opacity: 0, x: isLeft ? -24 : 24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08, duration: 0.45, ease: "easeOut" }}
+                  className="relative grid grid-cols-1 sm:grid-cols-[1fr,auto,1fr] items-center gap-4 sm:gap-0"
+                >
+                  {/* Colonne gauche */}
+                  {isLeft ? (
+                    <div className="bg-[#151e2d] border border-white/8 rounded-xl p-5 flex items-center justify-between gap-4">
+                      <div className="flex-1 text-right">
+                        <p className="text-white font-heading font-bold text-base mb-1">{step.title}</p>
+                        <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                      </div>
+                      <div className="flex-shrink-0 w-11 h-11 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center">
+                        <Icon className="h-5 w-5 text-brand-400" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="hidden sm:block" />
+                  )}
+
+                  {/* Badge numéro (centre) */}
+                  <div className="hidden sm:flex items-center justify-center w-16 flex-shrink-0">
+                    <div className="w-11 h-11 rounded-full bg-[#1a2438] border border-white/10 flex items-center justify-center z-10">
+                      <span className="text-brand-400 font-heading font-black text-xs tracking-widest">{step.num}</span>
+                    </div>
+                  </div>
+
+                  {/* Colonne droite */}
+                  {!isLeft ? (
+                    <div className="bg-[#151e2d] border border-white/8 rounded-xl p-5 flex items-center gap-4">
+                      <div className="flex-shrink-0 w-11 h-11 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center">
+                        <Icon className="h-5 w-5 text-brand-400" />
+                      </div>
+                      <div>
+                        <p className="text-white font-heading font-bold text-base mb-1">{step.title}</p>
+                        <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="hidden sm:block" />
+                  )}
+
+                  {/* Mobile : carte pleine largeur */}
+                  <div className="sm:hidden bg-[#151e2d] border border-white/8 rounded-xl p-5 flex items-center gap-4">
+                    <div className="flex-shrink-0 w-11 h-11 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center">
+                      <Icon className="h-5 w-5 text-brand-400" />
+                    </div>
+                    <div>
+                      <span className="text-brand-400 font-black text-[10px] tracking-widest uppercase">{step.num}</span>
+                      <p className="text-white font-heading font-bold text-base mt-0.5 mb-1">{step.title}</p>
+                      <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
+
+        {/* ── Badge courtoisie ── */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-12 text-center"
+          className="mt-16 text-center"
         >
-          <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-slate-200 text-sm text-[#475569]">
-            <CarFront className="h-4 w-4 text-brand-500" />
-            <span>Véhicule de courtoisie disponible — <strong className="text-[#0f172a]">9 véhicules</strong> offerts pendant l'intervention</span>
+          <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#151e2d] border border-white/8 text-sm text-slate-300">
+            <CarFront className="h-4 w-4 text-brand-400" />
+            <span>Véhicule de courtoisie disponible — <strong className="text-white">9 véhicules</strong> offerts pendant l'intervention</span>
           </div>
         </motion.div>
+
       </div>
     </section>
   );
