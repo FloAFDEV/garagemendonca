@@ -36,7 +36,7 @@ export default function CallToAction() {
                 <span className="text-brand-400">rapide et fiable ?</span>
               </h2>
 
-              <p className="text-slate-400 text-base leading-relaxed mb-8">
+              <p className="text-slate-200 text-base leading-relaxed mb-8">
                 Contactez-nous par téléphone ou via notre formulaire.
                 Nous intervenons sur tous types de véhicules et établissons
                 un devis détaillé et transparent sous 24h.
@@ -45,7 +45,7 @@ export default function CallToAction() {
               {/* Réassurances */}
               <div className="flex flex-wrap gap-x-6 gap-y-2">
                 {reassurances.map((item) => (
-                  <span key={item} className="flex items-center gap-2 text-slate-400 text-sm">
+                  <span key={item} className="flex items-center gap-2 text-slate-200 text-sm">
                     <span className="w-1.5 h-1.5 bg-brand-500 rounded-full" aria-hidden="true" />
                     {item}
                   </span>
@@ -65,7 +65,7 @@ export default function CallToAction() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/40 text-slate-300 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
+                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/40 text-slate-100 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
               >
                 <MessageSquare size={18} />
                 Envoyer un message
@@ -73,7 +73,7 @@ export default function CallToAction() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/40 text-slate-300 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
+                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/40 text-slate-100 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
               >
                 <CalendarDays size={18} />
                 Prendre rendez-vous

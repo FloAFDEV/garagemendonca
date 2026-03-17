@@ -59,7 +59,7 @@ export default function Hero() {
             </h1>
 
             {/* Texte */}
-            <p className="text-slate-300 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
+            <p className="text-slate-100 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
               Avec une expérience de plus de 30 ans, le Garage Mendonça est
               votre spécialiste de la mécanique, la carrosserie et la vente
               en région toulousaine.
@@ -90,7 +90,7 @@ export default function Hero() {
                   <div className="font-heading font-black text-3xl text-white leading-none mb-1">
                     {value}
                   </div>
-                  <div className="text-slate-400 text-xs leading-snug">{label}</div>
+                  <div className="text-slate-300 text-xs leading-snug">{label}</div>
                 </div>
               ))}
             </div>
@@ -112,7 +112,7 @@ export default function Hero() {
       </div>
 
       {/* ── Scroll indicator ── */}
-      <div className="relative pb-10 flex flex-col items-center gap-2 text-white/40" aria-hidden="true">
+      <div className="relative pb-10 flex flex-col items-center gap-2 text-white/60" aria-hidden="true">
         <span className="text-xs uppercase tracking-widest">Découvrir</span>
         <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent" />
       </div>
