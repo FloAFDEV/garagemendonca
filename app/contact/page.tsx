@@ -147,7 +147,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
             </div>
 
             {/* Formulaire */}
-            <div className="lg:col-span-3 lg:order-1">
+            <div id="contact-form" className="lg:col-span-3 lg:order-1">
               <h2 className="font-heading font-bold text-[#0f172a] text-2xl mb-6">Envoyez-nous un message</h2>
               <Suspense fallback={<div className="h-96 bg-white rounded-2xl animate-pulse border border-slate-200" />}>
                 <ContactFormWrapper searchParams={params} />
@@ -158,7 +158,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
           {/* Carte */}
           <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2889.1234567890!2d1.5678901234!3d43.6789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ae913a72ec4f5b%3A0xe4c1d2b3f5a7e8c9!2s6%20Av.%20de%20la%20Mouyssaguese%2C%2031280%20Dr%C3%A9mil-Lafage%2C%20France!5e0!3m2!1sfr!2sfr!4v1699999999999!5m2!1sfr!2sfr"
+              src="https://maps.google.com/maps?q=6+Avenue+de+la+Mouyssaguese,+31280+Dr%C3%A9mil-Lafage,+France&z=16&output=embed"
               width="100%"
               height="400"
               style={{ border: 0 }}

@@ -45,7 +45,12 @@ export default function TrustBadges() {
             <AnimateOnScroll key={label} delay={i * 80}>
               <div className={clsx(
                 "group px-6 lg:px-8 py-10 transition-colors duration-250 hover:bg-slate-50",
-                i > 0 && "border-l border-slate-200"
+                // Mobile (2-col): border-l only on odd-indexed items (right column)
+                // Desktop (4-col): border-l on all except first
+                i % 2 !== 0 && "border-l border-slate-200",
+                i % 2 === 0 && i > 0 && "lg:border-l lg:border-slate-200",
+                // Top border for second row on mobile
+                i >= 2 && "border-t border-slate-200"
               )}>
                 {/* Icône + valeur */}
                 <div className="flex items-center gap-3 mb-4">

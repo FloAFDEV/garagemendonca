@@ -64,7 +64,7 @@ export default function CallToAction() {
               </a>
 
               <Link
-                href="/contact"
+                href="/contact#contact-form"
                 className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/40 text-slate-100 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
               >
                 <MessageSquare size={18} />
@@ -72,7 +72,7 @@ export default function CallToAction() {
               </Link>
 
               <Link
-                href="/contact"
+                href="/contact#contact-form"
                 className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/40 text-slate-100 hover:text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
               >
                 <CalendarDays size={18} />

@@ -177,6 +177,23 @@
   }
 }
 
+/* ══════════════════════════════════════
+   MOUVEMENT RÉDUIT — prefers-reduced-motion
+══════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-slide-in-right {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .scroll-visible {
+    transition: none !important;
+  }
+}
+
 /* Barre de défilement sobre */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f1f5f9; }

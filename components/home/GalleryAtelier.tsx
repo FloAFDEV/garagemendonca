@@ -1,3 +1,4 @@
+import Image from "next/image";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 
 const photos = [
@@ -61,15 +62,15 @@ export default function GalleryAtelier() {
             {photos.map(({ src, alt, caption, span }) => (
               <div
                 key={src}
-                className={`relative overflow-hidden rounded-xl bg-dark-800 group ${span}`}
+                className={`relative overflow-hidden rounded-xl bg-dark-800 group min-h-[180px] ${span}`}
               >
                 {/* Photo */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={src}
                   alt={alt}
-                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-107"
-                  style={{ minHeight: "180px" }}
+                  fill
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-107"
+                  sizes="(max-width: 1024px) 50vw, 25vw"
                   loading="lazy"
                 />
 

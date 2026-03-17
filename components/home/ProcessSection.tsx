@@ -47,7 +47,7 @@ function StepCard({
         bg-white rounded-2xl border border-slate-200
         px-6 py-5 shadow-card
         hover:shadow-card-hover hover:-translate-y-[2px]
-        transition-shadow,transform duration-300
+        transition-all duration-300
         ${isLeft ? "flex-row-reverse text-right" : "flex-row text-left"}
       `}
     >

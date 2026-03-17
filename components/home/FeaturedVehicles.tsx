@@ -46,7 +46,7 @@ export default function FeaturedVehicles() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {featured.map((vehicle, i) => (
             <AnimateOnScroll key={vehicle.id} delay={i * 90}>
-              <VehicleCard vehicle={vehicle} />
+              <VehicleCard vehicle={vehicle} priority={i === 0} />
             </AnimateOnScroll>
           ))}
         </div>
