@@ -10,17 +10,17 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50:  "#fffbeb",
-          100: "#fef3c7",
-          200: "#fde68a",
-          300: "#fcd34d",
-          400: "#fbbf24",
-          500: "#f59e0b",
-          600: "#d97706",
-          700: "#b45309",
-          800: "#92400e",
-          900: "#78350f",
-          950: "#451a03",
+          50:  "#fff1f2",
+          100: "#ffe0e4",
+          200: "#ffc2cb",
+          300: "#ff94a3",
+          400: "#f95c72",
+          500: "#c8102e",   /* Rouge logo Garage Mendonça */
+          600: "#a50e25",
+          700: "#880c1e",
+          800: "#6e0a18",
+          900: "#5c0815",
+          950: "#330509",
         },
         dark: {
           50: "#f8fafc",
@@ -50,8 +50,8 @@ const config: Config = {
       boxShadow: {
         "premium":    "0 4px 24px -4px rgba(0,0,0,0.35)",
         "premium-lg": "0 12px 48px -8px rgba(0,0,0,0.50)",
-        "brand":      "0 4px 20px -4px rgba(245,158,11,0.35)",
-        "brand-lg":   "0 8px 32px -4px rgba(245,158,11,0.40)",
+        "brand":      "0 4px 20px -4px rgba(200,16,46,0.35)",
+        "brand-lg":   "0 8px 32px -4px rgba(200,16,46,0.40)",
         "card":       "0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)",
         "card-hover": "0 8px 24px -4px rgba(0,0,0,0.12), 0 4px 8px -2px rgba(0,0,0,0.06)",
       },

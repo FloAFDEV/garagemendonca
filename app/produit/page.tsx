@@ -52,7 +52,6 @@ export default function ProduitPage() {
 
       {/* ── Hero ── */}
       <section className="relative bg-[#0f172a] pt-36 pb-24 overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 h-full bg-brand-500" aria-hidden="true" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-3xl">

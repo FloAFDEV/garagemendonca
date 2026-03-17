@@ -28,7 +28,6 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" aria-hidden="true" />
 
       {/* Trait accent gauche */}
-      <div className="absolute top-0 left-0 w-1 h-full bg-brand-500" aria-hidden="true" />
 
       {/* Contenu */}
       <div className="relative flex-1 flex items-center">

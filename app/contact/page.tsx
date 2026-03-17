@@ -36,7 +36,6 @@ export default async function ContactPage({ searchParams }: PageProps) {
 
       {/* ── Hero ── */}
       <section className="bg-[#0f172a] pt-36 pb-20 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 h-full bg-brand-500" aria-hidden="true" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-3xl">
