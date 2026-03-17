@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { Phone, ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
-
-const credibilityStats = [
-  { value: "30+", label: "Ans d'expérience" },
-  { value: "+1 200", label: "Réparations réalisées" },
-  { value: "98%", label: "Clients satisfaits" },
-  { value: "9", label: "Véhicules de prêt" },
-];
+import StatsCounter from "@/components/home/StatsCounter";
 
 const trustBadges = [
   { Icon: ShieldCheck, text: "Devis pièce & main-d'œuvre avant toute intervention" },
@@ -78,17 +72,8 @@ export default function Hero() {
               </Link>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/15 animate-fade-in">
-              {credibilityStats.map(({ value, label }) => (
-                <div key={label} className="text-center sm:text-left">
-                  <div className="font-heading font-black text-3xl md:text-4xl text-white leading-none mb-1">
-                    {value}
-                  </div>
-                  <div className="text-slate-300 text-xs leading-snug">{label}</div>
-                </div>
-              ))}
-            </div>
+            {/* Stats — animation compteur */}
+            <StatsCounter />
           </div>
         </div>
       </div>
