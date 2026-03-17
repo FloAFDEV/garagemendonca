@@ -36,29 +36,15 @@ const steps = [
 
 export default function ProcessSteps() {
   return (
-    <section className="py-24 bg-dark-900 relative overflow-hidden">
-      {/* Grille texture très subtile */}
-      <div
-        className="absolute inset-0 opacity-[0.025]"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 1px,transparent 80px), repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 1px,transparent 80px)",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative container mx-auto px-4">
+    <section className="py-28 bg-white">
+      <div className="container mx-auto px-4">
 
         {/* ── Header ── */}
         <AnimateOnScroll>
           <div className="max-w-xl mb-16">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-px bg-brand-500" />
-              <span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.16em]">
-                Comment ça se passe
-              </span>
-            </div>
-            <h2 className="font-heading font-extrabold text-[#f9fafb] text-3xl md:text-4xl leading-tight">
+            <div className="section-divider" />
+            <span className="eyebrow">Comment ça se passe</span>
+            <h2 className="section-title">
               Du diagnostic à la restitution,<br />un processus clair et transparent
             </h2>
           </div>
@@ -67,7 +53,7 @@ export default function ProcessSteps() {
         {/* ── Étapes ── */}
         <div className="relative">
           {/* Ligne de connexion desktop */}
-          <div className="hidden lg:block absolute top-9 left-0 right-0 h-px bg-dark-700" aria-hidden="true" />
+          <div className="hidden lg:block absolute top-9 left-0 right-0 h-px bg-slate-200" aria-hidden="true" />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-5">
             {steps.map(({ num, Icon, title, description }, i) => (
@@ -75,25 +61,25 @@ export default function ProcessSteps() {
                 <div className="relative flex flex-col group">
                   <div className="flex lg:flex-col items-center lg:items-start gap-4 lg:gap-0 mb-5 lg:mb-6">
                     {/* Cercle numéroté */}
-                    <div className="relative z-10 w-[72px] h-[72px] lg:w-[60px] lg:h-[60px] flex-shrink-0 bg-dark-900 border-2 border-dark-700 rounded-full flex items-center justify-center transition-colors duration-300 group-hover:border-brand-500/40">
+                    <div className="relative z-10 w-[72px] h-[72px] lg:w-[60px] lg:h-[60px] flex-shrink-0 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center shadow-sm transition-all duration-300 group-hover:border-brand-200 group-hover:shadow-[0_0_0_4px_rgba(249,115,22,0.08)]">
                       <div className="w-11 h-11 lg:w-9 lg:h-9 bg-brand-500 rounded-full flex items-center justify-center shadow-brand">
                         <Icon size={18} className="text-white" strokeWidth={1.75} />
                       </div>
                     </div>
                     {/* Numéro — mobile */}
-                    <span className="lg:hidden font-heading font-black text-dark-600 text-2xl leading-none">
+                    <span className="lg:hidden font-heading font-black text-slate-300 text-2xl leading-none">
                       {num}
                     </span>
                   </div>
 
-                  <span className="hidden lg:block font-heading font-black text-dark-600/70 text-xs mb-2 tracking-wider">
+                  <span className="hidden lg:block font-heading font-black text-slate-300 text-xs mb-2 tracking-wider">
                     {num}
                   </span>
 
-                  <h3 className="font-heading font-bold text-[#f9fafb] text-base mb-2 leading-snug">
+                  <h3 className="font-heading font-bold text-[#0f172a] text-base mb-2 leading-snug">
                     {title}
                   </h3>
-                  <p className="text-[#9ca3af] text-sm leading-[1.65]">
+                  <p className="text-[#475569] text-sm leading-[1.65]">
                     {description}
                   </p>
                 </div>
@@ -104,8 +90,8 @@ export default function ProcessSteps() {
 
         {/* ── CTA bas ── */}
         <AnimateOnScroll delay={200}>
-          <div className="mt-16 pt-12 border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <p className="text-[#9ca3af] text-sm max-w-md leading-relaxed">
+          <div className="mt-16 pt-12 border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <p className="text-[#475569] text-sm max-w-md leading-relaxed">
               Véhicule de courtoisie disponible pendant toute intervention —
               9 véhicules offerts ou 1 véhicule neuf à 16 € HT/jour.
             </p>

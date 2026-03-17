@@ -52,8 +52,8 @@ const config: Config = {
         "premium-lg": "0 12px 48px -8px rgba(0,0,0,0.50)",
         "brand":      "0 4px 20px -4px rgba(249,115,22,0.35)",
         "brand-lg":   "0 8px 32px -4px rgba(249,115,22,0.40)",
-        "card":       "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08)",
-        "card-hover": "0 8px 24px -4px rgba(0,0,0,0.30), 0 4px 8px -2px rgba(0,0,0,0.20)",
+        "card":       "0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)",
+        "card-hover": "0 8px 24px -4px rgba(0,0,0,0.12), 0 4px 8px -2px rgba(0,0,0,0.06)",
       },
       scale: {
         "107": "1.07",

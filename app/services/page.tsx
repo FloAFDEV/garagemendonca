@@ -42,7 +42,7 @@ export default function ServicesPage() {
               Spécialistes de la mécanique,<br />
               <span className="text-gradient">la carrosserie et la vente</span>
             </h1>
-            <p className="text-dark-400 text-xl leading-relaxed max-w-2xl">
+            <p className="text-[#475569] text-xl leading-relaxed max-w-2xl">
               Avec une expérience de plus de 30 ans dans le domaine, M. Vitor Mendonça,
               le dirigeant, ainsi que son équipe de professionnels mettent à votre service
               leurs compétences et leur savoir-faire, afin de vous prodiguer des prestations
@@ -73,7 +73,7 @@ export default function ServicesPage() {
                       >
                         {iconMap[service.icon]}
                       </div>
-                      <h2 className="font-heading font-black text-dark-900 text-3xl mb-4">
+                      <h2 className="font-heading font-black text-[#0f172a] text-3xl mb-4">
                         {service.title}
                       </h2>
                       <a
@@ -87,17 +87,17 @@ export default function ServicesPage() {
 
                     {/* Panneau droit */}
                     <div className="lg:col-span-2 bg-white p-10">
-                      <p className="text-dark-600 text-lg leading-relaxed mb-8">
+                      <p className="text-[#475569] text-lg leading-relaxed mb-8">
                         {service.description}
                       </p>
-                      <h3 className="font-semibold text-dark-900 mb-5">
+                      <h3 className="font-semibold text-[#0f172a] mb-5">
                         Nos prestations incluent :
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {service.features.map((feature) => (
                           <div
                             key={feature}
-                            className="flex items-start gap-3 text-dark-700 text-sm"
+                            className="flex items-start gap-3 text-[#0f172a] text-sm"
                           >
                             <CheckCircle2
                               size={17}
@@ -134,12 +134,12 @@ export default function ServicesPage() {
               ].map(({ value, label }) => (
                 <div
                   key={label}
-                  className="bg-white rounded-2xl p-6 border border-dark-100 text-center shadow-sm"
+                  className="bg-white rounded-2xl p-6 border border-slate-200 text-center shadow-sm"
                 >
                   <div className="font-heading font-black text-brand-600 text-xl mb-2">
                     {value}
                   </div>
-                  <div className="text-dark-600 text-sm">{label}</div>
+                  <div className="text-[#475569] text-sm">{label}</div>
                 </div>
               ))}
             </div>
@@ -154,7 +154,7 @@ export default function ServicesPage() {
           <h2 className="font-heading font-black text-white text-3xl md:text-4xl mb-4">
             Besoin d&apos;un devis ou d&apos;un rendez-vous ?
           </h2>
-          <p className="text-dark-400 text-lg mb-8">
+          <p className="text-[#475569] text-lg mb-8">
             Contactez-nous dès maintenant. Réponse en moins de 24h. Accueil avec ou sans rendez-vous.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -167,7 +167,7 @@ export default function ServicesPage() {
             </a>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 border-2 border-dark-600 hover:border-dark-500 text-dark-300 hover:text-white font-bold px-8 py-4 rounded-lg transition-all hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 border-2 border-white/20 hover:border-dark-500 text-slate-300 hover:text-white font-bold px-8 py-4 rounded-lg transition-all hover:-translate-y-0.5"
             >
               Formulaire de contact
               <ArrowRight size={18} />

@@ -24,7 +24,7 @@ const hours = [
 
 export default function Footer() {
   return (
-    <footer className="bg-dark-950 text-dark-400">
+    <footer className="bg-slate-900 text-slate-400">
 
       {/* ── Bande accent top ── */}
       <div className="h-1 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600" aria-hidden="true" />
@@ -48,23 +48,22 @@ export default function Footer() {
                 <div className="font-heading font-bold text-white text-lg leading-tight">
                   Garage Mendonça
                 </div>
-                <div className="text-xs text-dark-500 mt-0.5">Depuis 1993 · Drémil-Lafage</div>
+                <div className="text-xs text-slate-500 mt-0.5">Depuis 1993 · Drémil-Lafage</div>
               </div>
             </Link>
 
-            <p className="text-sm leading-relaxed text-dark-500 mb-5">
+            <p className="text-sm leading-relaxed text-slate-500 mb-5">
               Avec une expérience de plus de 30 ans, le Garage Mendonça est
               votre spécialiste de la mécanique, la carrosserie et la vente
               en région toulousaine. Nous parlons portugais et français.
             </p>
 
-            {/* Réseaux sociaux (présents sur le site original) */}
             <div className="flex items-center gap-3">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 bg-dark-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
+                className="w-9 h-9 bg-slate-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
                 aria-label="Facebook"
               >
                 <Facebook size={16} />
@@ -73,7 +72,7 @@ export default function Footer() {
                 href="https://youtube.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 bg-dark-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
+                className="w-9 h-9 bg-slate-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
                 aria-label="YouTube"
               >
                 <Youtube size={16} />
@@ -93,7 +92,7 @@ export default function Footer() {
                     href={link.href}
                     className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
                   >
-                    <span className="w-1 h-1 bg-brand-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors" aria-hidden="true" />
+                    <span className="w-1 h-1 bg-slate-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors" aria-hidden="true" />
                     {link.label}
                   </Link>
                 </li>
@@ -110,7 +109,7 @@ export default function Footer() {
                     href={link.href}
                     className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
                   >
-                    <span className="w-1 h-1 bg-brand-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors" aria-hidden="true" />
+                    <span className="w-1 h-1 bg-slate-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors" aria-hidden="true" />
                     {link.label}
                   </Link>
                 </li>
@@ -135,7 +134,7 @@ export default function Footer() {
                     href="https://maps.google.com/?q=Garage+Mendonca+6+Avenue+de+la+Mouyssaguese+31280+Dremil-Lafage"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-brand-500 hover:text-brand-400 text-xs mt-2 transition-colors"
+                    className="inline-flex items-center gap-1 text-brand-400 hover:text-brand-300 text-xs mt-2 transition-colors"
                   >
                     Ouvrir dans Google Maps
                     <ExternalLink size={11} aria-hidden="true" />
@@ -170,15 +169,15 @@ export default function Footer() {
             </h4>
             <div className="flex items-center gap-2 mb-4">
               <Clock size={15} className="text-brand-500" aria-hidden="true" />
-              <span className="text-xs text-dark-500">Avec ou sans rendez-vous</span>
+              <span className="text-xs text-slate-500">Avec ou sans rendez-vous</span>
             </div>
             <ul className="space-y-3 mb-6">
               {hours.map(({ day, time }) => (
-                <li key={day} className="flex items-center justify-between text-sm py-2 border-b border-dark-800 last:border-0">
-                  <span className="text-dark-400">{day}</span>
+                <li key={day} className="flex items-center justify-between text-sm py-2 border-b border-slate-800 last:border-0">
+                  <span className="text-slate-400">{day}</span>
                   <span
                     className={`font-semibold text-xs ${
-                      time === "Fermé" ? "text-dark-600" : "text-white"
+                      time === "Fermé" ? "text-slate-600" : "text-white"
                     }`}
                   >
                     {time}
@@ -199,17 +198,17 @@ export default function Footer() {
       </div>
 
       {/* ── Barre légale ── */}
-      <div className="border-t border-dark-800">
-        <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-dark-600">
+      <div className="border-t border-slate-800">
+        <div className="container mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-600">
           <p>© {new Date().getFullYear()} Garage Auto Mendonça · SARL · SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700 €</p>
           <div className="flex items-center gap-5">
-            <Link href="/contact" className="hover:text-dark-400 transition-colors">
+            <Link href="/contact" className="hover:text-slate-400 transition-colors">
               Mentions légales
             </Link>
-            <Link href="/contact" className="hover:text-dark-400 transition-colors">
+            <Link href="/contact" className="hover:text-slate-400 transition-colors">
               Politique de confidentialité
             </Link>
-            <span className="text-dark-700">NAF 4520A</span>
+            <span className="text-slate-700">NAF 4520A</span>
           </div>
         </div>
       </div>

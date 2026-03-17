@@ -26,7 +26,7 @@ export default function VehiculesPage() {
               Véhicules{" "}
               <span className="text-gradient">d&apos;occasion</span>
             </h1>
-            <p className="text-dark-400 text-xl leading-relaxed max-w-2xl">
+            <p className="text-[#475569] text-xl leading-relaxed max-w-2xl">
               Chaque véhicule de notre stock est soigneusement inspecté,
               révisé et contrôlé avant mise en vente. Garantie qualité Garage
               Mendonca.
@@ -40,14 +40,14 @@ export default function VehiculesPage() {
         <div className="container mx-auto px-4">
           {/* Results bar */}
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2 text-dark-600">
+            <div className="flex items-center gap-2 text-[#475569]">
               <Car size={18} className="text-brand-600" />
               <span className="font-semibold">
                 {vehicles.length} véhicule{vehicles.length > 1 ? "s" : ""} disponible
                 {vehicles.length > 1 ? "s" : ""}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-dark-500">
+            <div className="flex items-center gap-2 text-sm text-[#475569]">
               <SlidersHorizontal size={16} />
               Tous les véhicules
             </div>
@@ -63,11 +63,11 @@ export default function VehiculesPage() {
           {/* Empty state fallback */}
           {vehicles.length === 0 && (
             <div className="text-center py-20">
-              <Car size={48} className="text-dark-300 mx-auto mb-4" />
-              <h3 className="font-heading font-bold text-dark-700 text-xl mb-2">
+              <Car size={48} className="text-slate-500 mx-auto mb-4" />
+              <h3 className="font-heading font-bold text-[#0f172a] text-xl mb-2">
                 Aucun véhicule disponible
               </h3>
-              <p className="text-dark-500">
+              <p className="text-[#475569]">
                 Notre stock est en cours de renouvellement. Contactez-nous pour
                 connaître nos prochaines arrivées.
               </p>
@@ -77,7 +77,7 @@ export default function VehiculesPage() {
       </section>
 
       {/* Guarantee banner */}
-      <section className="py-12 bg-white border-t border-dark-100">
+      <section className="py-12 bg-white border-t border-slate-200">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-center">
             {[
@@ -88,7 +88,7 @@ export default function VehiculesPage() {
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center gap-3">
                 <span className="text-2xl">{icon}</span>
-                <span className="font-semibold text-dark-700 text-sm">{label}</span>
+                <span className="font-semibold text-[#0f172a] text-sm">{label}</span>
               </div>
             ))}
           </div>

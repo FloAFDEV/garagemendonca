@@ -27,12 +27,12 @@ export default function Header() {
       className={clsx(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-dark-900/96 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.06)] shadow-lg"
-          : "bg-transparent"
+          ? "bg-white shadow-[0_1px_0_#e2e8f0,0_4px_16px_rgba(0,0,0,0.08)]"
+          : "bg-white/95 backdrop-blur-sm shadow-[0_1px_0_#e2e8f0]"
       )}
     >
-      {/* ── Barre info supérieure — sobre, pas orange ── */}
-      <div className="bg-dark-950/90 border-b border-white/[0.06] text-[#9ca3af] text-xs py-2 hidden md:block">
+      {/* ── Barre info supérieure ── */}
+      <div className="bg-[#0f172a] text-slate-400 text-xs py-2 hidden md:block">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Phone size={12} className="text-brand-400" aria-hidden="true" />
@@ -56,7 +56,7 @@ export default function Header() {
 
       {/* ── Nav principale ── */}
       <nav className="container mx-auto px-4" aria-label="Navigation principale">
-        <div className="flex items-center justify-between h-16 md:h-18 md:h-[72px]">
+        <div className="flex items-center justify-between h-16 md:h-[72px]">
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group" aria-label="Garage Mendonça – Accueil">
@@ -69,10 +69,10 @@ export default function Header() {
               </svg>
             </div>
             <div>
-              <div className="font-heading font-bold text-white leading-none text-base">
+              <div className="font-heading font-bold text-[#0f172a] leading-none text-base">
                 Garage Mendonça
               </div>
-              <div className="text-[11px] text-[#9ca3af] leading-none mt-0.5">
+              <div className="text-[11px] text-[#475569] leading-none mt-0.5">
                 Drémil-Lafage · depuis 1993
               </div>
             </div>
@@ -84,7 +84,7 @@ export default function Header() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-[#9ca3af] hover:text-white font-medium px-4 py-2 rounded-lg hover:bg-white/8 transition-all duration-150 text-sm focus-visible:ring-2 focus-visible:ring-brand-400"
+                  className="text-[#475569] hover:text-[#0f172a] font-medium px-4 py-2 rounded-lg hover:bg-slate-100 transition-all duration-150 text-sm focus-visible:ring-2 focus-visible:ring-brand-400"
                 >
                   {link.label}
                 </Link>
@@ -106,7 +106,7 @@ export default function Header() {
           {/* Burger mobile */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors focus-visible:ring-2 focus-visible:ring-brand-400"
+            className="md:hidden text-[#0f172a] p-2 rounded-lg hover:bg-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-brand-400"
             aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
@@ -123,18 +123,18 @@ export default function Header() {
             isOpen ? "max-h-[380px] pb-4 opacity-100" : "max-h-0 opacity-0"
           )}
         >
-          <div className="bg-dark-850 rounded-2xl p-3 flex flex-col gap-0.5 border border-white/[0.06]">
+          <div className="bg-white rounded-2xl p-3 flex flex-col gap-0.5 border border-slate-200 shadow-md">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="text-[#9ca3af] hover:text-white font-medium px-4 py-3 rounded-xl hover:bg-white/8 transition-colors text-sm"
+                className="text-[#475569] hover:text-[#0f172a] font-medium px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-sm"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="border-t border-white/[0.06] mt-2 pt-3">
+            <div className="border-t border-slate-100 mt-2 pt-3">
               <a
                 href="tel:0532002038"
                 className="btn-primary w-full justify-center text-sm"

@@ -46,7 +46,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
               Contactez-nous &{" "}
               <span className="text-gradient">demandez un devis</span>
             </h1>
-            <p className="text-dark-400 text-xl leading-relaxed max-w-2xl">
+            <p className="text-[#475569] text-xl leading-relaxed max-w-2xl">
               Appelez-nous directement ou envoyez-nous un message. Nous
               répondons sous 24h et vous proposons un devis gratuit et détaillé.
             </p>
@@ -74,13 +74,13 @@ export default async function ContactPage({ searchParams }: PageProps) {
               </h2>
 
               {/* Phone */}
-              <div className="bg-white rounded-2xl border border-dark-100 shadow-sm p-6">
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center">
                     <Phone size={22} className="text-brand-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-dark-400 font-medium">Téléphone</p>
+                    <p className="text-xs text-[#475569] font-medium">Téléphone</p>
                     <a
                       href="tel:0532002038"
                       className="font-heading font-bold text-dark-900 text-xl hover:text-brand-600 transition-colors"
@@ -99,13 +99,13 @@ export default async function ContactPage({ searchParams }: PageProps) {
               </div>
 
               {/* Email */}
-              <div className="bg-white rounded-2xl border border-dark-100 shadow-sm p-6">
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
                     <Mail size={22} className="text-brand-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-dark-400 font-medium mb-1">Email</p>
+                    <p className="text-xs text-[#475569] font-medium mb-1">Email</p>
                     <a
                       href="mailto:contact@garagemendonca.com"
                       className="font-semibold text-dark-900 hover:text-brand-600 transition-colors text-sm break-all"
@@ -117,13 +117,13 @@ export default async function ContactPage({ searchParams }: PageProps) {
               </div>
 
               {/* Address */}
-              <div className="bg-white rounded-2xl border border-dark-100 shadow-sm p-6">
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
                     <MapPin size={22} className="text-brand-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-dark-400 font-medium mb-1">Adresse</p>
+                    <p className="text-xs text-[#475569] font-medium mb-1">Adresse</p>
                     <p className="font-semibold text-dark-900 text-sm leading-relaxed">
                       6 Avenue de la Mouyssaguese
                       <br />
@@ -143,7 +143,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
               </div>
 
               {/* Hours */}
-              <div className="bg-white rounded-2xl border border-dark-100 shadow-sm p-6">
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center">
                     <Clock size={22} className="text-brand-600" />
@@ -156,7 +156,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
                       key={day}
                       className="flex items-center justify-between text-sm border-b border-dark-50 pb-2 last:border-0 last:pb-0"
                     >
-                      <span className="text-dark-600">{day}</span>
+                      <span className="text-[#475569]">{day}</span>
                       <span
                         className={`font-medium ${open ? "text-dark-900" : "text-red-500"}`}
                       >
@@ -170,7 +170,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
           </div>
 
           {/* Map */}
-          <div className="mt-10 rounded-2xl overflow-hidden border border-dark-200 shadow-sm">
+          <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2889.1234567890!2d1.5678901234!3d43.6789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ae913a72ec4f5b%3A0xe4c1d2b3f5a7e8c9!2s6%20Av.%20de%20la%20Mouyssaguese%2C%2031280%20Dr%C3%A9mil-Lafage%2C%20France!5e0!3m2!1sfr!2sfr!4v1699999999999!5m2!1sfr!2sfr"
               width="100%"

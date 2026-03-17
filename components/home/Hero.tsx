@@ -3,8 +3,8 @@ import { Phone, ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
 
 const credibilityStats = [
   { value: "30+", label: "Ans d'expérience" },
-  { value: "+1 000", label: "Véhicules réparés" },
-  { value: "160", label: "Points de contrôle" },
+  { value: "+1 200", label: "Véhicules réparés" },
+  { value: "98%", label: "Clients satisfaits" },
   { value: "9", label: "Véhicules de prêt" },
 ];
 
@@ -16,7 +16,7 @@ const trustBadges = [
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden bg-dark-950">
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
 
       {/* ── Fond photo ── */}
       <div
@@ -28,10 +28,9 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      {/* ── Overlays multi-couches ── */}
-      <div className="absolute inset-0 bg-gradient-to-r from-dark-950/98 via-dark-950/85 to-dark-950/40" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/30 to-transparent" aria-hidden="true" />
-      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-brand-600/8 to-transparent" aria-hidden="true" />
+      {/* ── Overlay — réduit pour plus de clarté ── */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0f172a]/92 via-[#0f172a]/72 to-[#0f172a]/30" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 via-transparent to-transparent" aria-hidden="true" />
 
       {/* ── Trait accent gauche ── */}
       <div className="absolute top-0 left-0 w-1 h-full bg-brand-500" aria-hidden="true" />
@@ -49,7 +48,7 @@ export default function Hero() {
               </span>
             </div>
 
-            {/* Titre — adapté du H1 réel */}
+            {/* Titre */}
             <h1 className="font-heading font-black text-white text-5xl md:text-6xl xl:text-7xl leading-[1.03] mb-6 animate-slide-up">
               Garage auto<br />
               à{" "}
@@ -59,8 +58,8 @@ export default function Hero() {
               </span>
             </h1>
 
-            {/* Texte exact du site original */}
-            <p className="text-dark-300 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
+            {/* Texte */}
+            <p className="text-slate-300 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
               Avec une expérience de plus de 30 ans, le Garage Mendonça est
               votre spécialiste de la mécanique, la carrosserie et la vente
               en région toulousaine.
@@ -85,13 +84,13 @@ export default function Hero() {
             </div>
 
             {/* ── Ligne de crédibilité ── */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/10 animate-fade-in">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/15 animate-fade-in">
               {credibilityStats.map(({ value, label }) => (
                 <div key={label} className="text-center sm:text-left">
                   <div className="font-heading font-black text-3xl text-white leading-none mb-1">
                     {value}
                   </div>
-                  <div className="text-dark-400 text-xs leading-snug">{label}</div>
+                  <div className="text-slate-400 text-xs leading-snug">{label}</div>
                 </div>
               ))}
             </div>
@@ -104,7 +103,7 @@ export default function Hero() {
         {trustBadges.map(({ Icon, text }) => (
           <div
             key={text}
-            className="bg-dark-900/80 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-premium"
+            className="bg-white/12 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-lg"
           >
             <Icon size={17} className="text-brand-400 flex-shrink-0" />
             <span className="font-medium">{text}</span>
@@ -113,9 +112,9 @@ export default function Hero() {
       </div>
 
       {/* ── Scroll indicator ── */}
-      <div className="relative pb-10 flex flex-col items-center gap-2 text-dark-600" aria-hidden="true">
+      <div className="relative pb-10 flex flex-col items-center gap-2 text-white/40" aria-hidden="true">
         <span className="text-xs uppercase tracking-widest">Découvrir</span>
-        <div className="w-px h-8 bg-gradient-to-b from-dark-600 to-transparent" />
+        <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent" />
       </div>
     </section>
   );

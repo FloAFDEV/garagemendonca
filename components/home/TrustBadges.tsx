@@ -34,30 +34,29 @@ const badges = [
 
 export default function TrustBadges() {
   return (
-    <section className="bg-dark-950 border-b border-white/[0.05]" aria-label="Nos engagements">
+    <section className="bg-white border-b border-slate-200" aria-label="Nos engagements">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {badges.map(({ Icon, value, label, description }, i) => (
             <AnimateOnScroll key={label} delay={i * 80}>
               <div className={clsx(
-                "group px-6 lg:px-8 py-10 transition-colors duration-250 hover:bg-white/[0.03]",
-                /* Séparateurs — seulement entre colonnes visibles */
-                i > 0 && "border-l border-white/[0.06]"
+                "group px-6 lg:px-8 py-10 transition-colors duration-250 hover:bg-slate-50",
+                i > 0 && "border-l border-slate-200"
               )}>
                 {/* Icône + valeur */}
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-9 h-9 bg-brand-500/10 rounded-lg flex items-center justify-center ring-1 ring-brand-500/15 group-hover:bg-brand-500/20 transition-colors">
-                    <Icon size={17} className="text-brand-400" />
+                  <div className="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center ring-1 ring-brand-200 group-hover:bg-brand-100 transition-colors">
+                    <Icon size={17} className="text-brand-500" />
                   </div>
-                  <div className="font-heading font-black text-lg text-[#f9fafb] leading-tight">
+                  <div className="font-heading font-black text-lg text-[#0f172a] leading-tight">
                     {value}
                   </div>
                 </div>
 
-                <div className="font-semibold text-[#f9fafb] text-sm mb-2 leading-snug">
+                <div className="font-semibold text-[#0f172a] text-sm mb-2 leading-snug">
                   {label}
                 </div>
-                <p className="text-[#9ca3af] text-xs leading-relaxed">
+                <p className="text-[#475569] text-xs leading-relaxed">
                   {description}
                 </p>
               </div>
@@ -69,7 +68,6 @@ export default function TrustBadges() {
   );
 }
 
-// clsx inline pour éviter une dépendance supplémentaire
 function clsx(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }

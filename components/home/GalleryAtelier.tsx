@@ -48,7 +48,7 @@ export default function GalleryAtelier() {
                 Un équipement<br />professionnel
               </h2>
             </div>
-            <p className="text-[#9ca3af] text-sm leading-relaxed max-w-sm mt-4 lg:mt-0">
+            <p className="text-slate-400 text-sm leading-relaxed max-w-sm mt-4 lg:mt-0">
               Des outils de dernière génération, un atelier organisé avec soin.
               La précision de notre travail se voit dès le premier regard.
             </p>

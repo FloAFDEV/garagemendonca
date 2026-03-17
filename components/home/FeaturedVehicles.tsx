@@ -15,7 +15,7 @@ export default function FeaturedVehicles() {
   const featured = vehicles.filter((v) => v.featured).slice(0, 3);
 
   return (
-    <section className="py-24 bg-dark-50">
+    <section className="py-28 bg-white">
       <div className="container mx-auto px-4">
 
         {/* ── Header ── */}
@@ -51,19 +51,19 @@ export default function FeaturedVehicles() {
           ))}
         </div>
 
-        {/* ── Bannière garanties réelles ── */}
+        {/* ── Bannière garanties ── */}
         <AnimateOnScroll delay={150}>
-          <div className="bg-dark-900 rounded-xl border border-dark-700 p-6">
+          <div className="bg-[#f8fafc] rounded-2xl border border-slate-200 p-6">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div className="flex items-start gap-3">
-                <ShieldCheck size={22} className="text-brand-400 mt-0.5 flex-shrink-0" />
+                <ShieldCheck size={22} className="text-brand-500 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-white font-semibold text-sm mb-1">
+                  <p className="text-[#0f172a] font-semibold text-sm mb-1">
                     Tous nos véhicules sont expertisés et garantis
                   </p>
                   <div className="flex flex-wrap gap-x-5 gap-y-1">
                     {guarantees.map((g) => (
-                      <span key={g} className="text-dark-400 text-xs flex items-center gap-1.5">
+                      <span key={g} className="text-[#475569] text-xs flex items-center gap-1.5">
                         <span className="w-1 h-1 bg-brand-500 rounded-full" aria-hidden="true" />
                         {g}
                       </span>
