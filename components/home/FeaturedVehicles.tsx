@@ -12,7 +12,14 @@ const guarantees = [
 ];
 
 export default function FeaturedVehicles() {
-  const featured = vehicles.filter((v) => v.featured).slice(0, 4);
+  /* 4 derniers arrivages triés par createdAt décroissant */
+  const latest = [...vehicles]
+    .sort((a, b) => {
+      const da = a.createdAt ?? "0000-00-00";
+      const db = b.createdAt ?? "0000-00-00";
+      return db.localeCompare(da);
+    })
+    .slice(0, 4);
 
   return (
     <section className="py-28 bg-white">
@@ -23,13 +30,13 @@ export default function FeaturedVehicles() {
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-14">
             <div>
               <div className="section-divider" />
-              <span className="eyebrow">Notre stock</span>
+              <span className="eyebrow">Derniers arrivages</span>
               <h2 className="section-title">
-                Occasions boîte automatique
+                Nos dernières occasions
               </h2>
               <p className="section-subtitle mt-3 max-w-lg">
-                Pour rouler dans une nouvelle voiture sans casser votre tirelire.
-                Des véhicules en bon état, bien entretenus, à faible kilométrage.
+                Fraîchement entrées en stock, révisées et garanties 6 à 12 mois
+                kilométrage illimité. Boîte automatique, toutes prêtes à rouler.
               </p>
             </div>
             <Link
@@ -44,7 +51,7 @@ export default function FeaturedVehicles() {
 
         {/* ── Grid ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {featured.map((vehicle, i) => (
+          {latest.map((vehicle, i) => (
             <AnimateOnScroll key={vehicle.id} delay={i * 90}>
               <VehicleCard vehicle={vehicle} priority={i === 0} />
             </AnimateOnScroll>

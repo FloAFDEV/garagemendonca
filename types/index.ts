@@ -47,6 +47,8 @@ export interface Vehicle {
   // Mise en avant
   featured?: boolean;
   featuredOrder?: number;     // position parmi les "à la une" (1 = premier)
+  // Date d'entrée en stock — format ISO 8601 (YYYY-MM-DD)
+  createdAt?: string;
   // Caractéristiques structurées
   features?: VehicleFeatures;
 }
