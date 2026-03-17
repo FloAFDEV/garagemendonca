@@ -61,14 +61,14 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center group" aria-label="Garage Mendonça – Accueil">
-            <div className="relative h-11 w-[148px] overflow-hidden rounded-lg transition-opacity duration-200 group-hover:opacity-90">
+            <div className="relative h-14 w-[185px] overflow-hidden rounded-lg transition-opacity duration-200 group-hover:opacity-90">
               <Image
                 src="/images/logo.png"
                 alt="Garage Mendonça"
                 fill
                 priority
                 className="object-contain object-left"
-                sizes="148px"
+                sizes="185px"
               />
             </div>
           </Link>
