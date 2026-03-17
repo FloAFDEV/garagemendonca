@@ -117,7 +117,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     "@type": "BreadcrumbList",
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://garagemendonca.vercel.app/" },
-      { "@type": "ListItem", "position": 2, "name": "Véhicules", "item": "https://garagemendonca.vercel.app/vehicules" },
+      { "@type": "ListItem", "position": 2, "name": "Occasions", "item": "https://garagemendonca.vercel.app/vehicules" },
       { "@type": "ListItem", "position": 3, "name": vehicleName },
     ],
   };
@@ -135,7 +135,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             <ol className="flex items-center gap-2 text-xs text-[#64748b]">
               <li><Link href="/" className="hover:text-brand-600 transition-colors">Accueil</Link></li>
               <li aria-hidden="true">/</li>
-              <li><Link href="/vehicules" className="hover:text-brand-600 transition-colors">Véhicules</Link></li>
+              <li><Link href="/vehicules" className="hover:text-brand-600 transition-colors">Occasions</Link></li>
               <li aria-hidden="true">/</li>
               <li className="text-[#0f172a] font-medium truncate max-w-[200px]">{vehicleName}</li>
             </ol>

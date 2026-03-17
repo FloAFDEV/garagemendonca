@@ -10,7 +10,7 @@ const footerLinks = {
   ],
   navigation: [
     { href: "/", label: "Accueil" },
-    { href: "/vehicules", label: "Véhicules d'occasion" },
+    { href: "/vehicules", label: "Occasions" },
     { href: "/produit", label: "Notre offre VO" },
     { href: "/contact", label: "Contact & Devis" },
   ],

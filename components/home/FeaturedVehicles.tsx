@@ -12,7 +12,7 @@ const guarantees = [
 ];
 
 export default function FeaturedVehicles() {
-  const featured = vehicles.filter((v) => v.featured).slice(0, 3);
+  const featured = vehicles.filter((v) => v.featured).slice(0, 4);
 
   return (
     <section className="py-28 bg-white">
@@ -25,7 +25,7 @@ export default function FeaturedVehicles() {
               <div className="section-divider" />
               <span className="eyebrow">Notre stock</span>
               <h2 className="section-title">
-                Véhicules d&apos;occasion<br />boîte automatique
+                Occasions boîte automatique
               </h2>
               <p className="section-subtitle mt-3 max-w-lg">
                 Pour rouler dans une nouvelle voiture sans casser votre tirelire.
@@ -43,7 +43,7 @@ export default function FeaturedVehicles() {
         </AnimateOnScroll>
 
         {/* ── Grid ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {featured.map((vehicle, i) => (
             <AnimateOnScroll key={vehicle.id} delay={i * 90}>
               <VehicleCard vehicle={vehicle} priority={i === 0} />

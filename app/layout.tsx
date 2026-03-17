@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "mécanique BMW Audi Volkswagen",
     "carrosserie peinture",
     "diagnostic OBD",
-    "véhicules occasion boîte automatique",
+    "occasions boîte automatique",
     "devis gratuit mécanique",
     "contrôle technique",
     "filtre à particules DPF",

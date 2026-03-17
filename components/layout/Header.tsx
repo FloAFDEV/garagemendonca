@@ -9,7 +9,7 @@ import clsx from "clsx";
 const navLinks = [
   { href: "/", label: "Accueil" },
   { href: "/services", label: "Services" },
-  { href: "/vehicules", label: "Véhicules" },
+  { href: "/vehicules", label: "Occasions" },
   { href: "/contact", label: "Contact" },
 ];
 

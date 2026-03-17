@@ -73,7 +73,7 @@ export default function NotFound() {
           {/* Liens rapides */}
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              { href: "/vehicules", label: "Véhicules d'occasion", Icon: Car },
+              { href: "/vehicules", label: "Occasions", Icon: Car },
               { href: "/contact", label: "Contact & Devis", Icon: Phone },
             ].map(({ href, label, Icon }) => (
               <Link
