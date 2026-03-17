@@ -7,7 +7,7 @@ const badges = [
     value: "+30 ANS",
     label: "D'expérience",
     description:
-      "M. Vitor Mendonça et son équipe de professionnels mettent à votre service leurs compétences et leur savoir-faire depuis 1993.",
+      "M. Vitor Mendonça, le dirigeant, ainsi que son équipe de professionnels mettent à votre service leurs compétences et leurs savoir-faire, afin de vous prodiguer des prestations de qualité.",
   },
   {
     Icon: ShieldCheck,

@@ -162,14 +162,13 @@ export const services: Service[] = [
     id: "carrosserie",
     title: "Carrosserie & Peinture",
     description:
-      "Notre atelier carrosserie est équipé d'une cabine de peinture neuve. Réparation d'ailes, débosselage, peinture teinte constructeur. Prise en charge du dossier d'assurance et d'expertise suite à un sinistre. Nettoyage intérieur et extérieur inclus après toute réparation de carrosserie.",
+      "Le Garage Mendonça a investi dans une nouvelle cabine de peinture. Spécialisé dans le remplacement de pare-brise et lunette arrière de tous véhicules, ainsi que dans les petits travaux de tôlerie et simple collision. Prise en charge du dossier d'assurance et d'expertise suite à un sinistre.",
     icon: "paintbrush",
     features: [
       "Cabine de peinture neuve",
-      "Débosselage et redressage carrosserie",
-      "Peinture teinte constructeur",
+      "Remplacement pare-brise et lunette arrière",
+      "Petits travaux de tôlerie, simple collision",
       "Réparation et remplacement d'ailes",
-      "Remplacement et réparation vitrage / pare-brise",
       "Prise en charge dossier assurance & expertise sinistre",
       "Nettoyage intérieur et extérieur inclus",
       "Rénovation optiques et phares",
