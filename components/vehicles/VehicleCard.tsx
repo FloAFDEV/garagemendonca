@@ -111,7 +111,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
           >
             {vehicle.price.toLocaleString("fr-FR")} €
           </span>
-          <div className="w-full bg-brand-500 group-hover:bg-brand-600 text-[#0f172a] font-semibold text-sm py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
+          <div className="w-full bg-brand-500 group-hover:bg-brand-600 text-white font-semibold text-sm py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
             Voir le véhicule
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
           </div>
