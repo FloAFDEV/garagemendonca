@@ -13,6 +13,10 @@ export interface Vehicle {
   color: string;
   doors: number;
   featured?: boolean;
+  // Extended — Supabase-ready
+  critAir?: string;
+  isAvailable?: boolean;
+  features?: Record<string, string>;
 }
 
 export interface Service {

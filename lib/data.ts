@@ -14,8 +14,19 @@ export const vehicles: Vehicle[] = [
     color: "Blanc",
     doors: 5,
     featured: true,
+    critAir: "2",
+    isAvailable: true,
     description:
       "Toyota AYGO boîte automatique, Crit'Air 2. Idéale en ville, très économique. Vérifiée en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois kilométrages illimités. Révision boîte automatique effectuée.",
+    features: {
+      "Finition": "X-Play",
+      "Motorisation": "1.0 VVT-i 68 ch",
+      "Provenance": "Française",
+      "Carnet d'entretien": "À jour",
+      "Contrôle technique": "À jour",
+      "Garantie": "6 à 12 mois km illimités",
+      "Nb propriétaires": "1",
+    },
     images: [
       "https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&q=80",
       "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&q=80",
@@ -34,8 +45,19 @@ export const vehicles: Vehicle[] = [
     color: "Gris Métallisé",
     doors: 5,
     featured: true,
+    critAir: "2",
+    isAvailable: true,
     description:
-      "Nissan Micra 1.4 88 ch Acenta, boîte automatique, Crit'Air 2. Véhicule français, bien entretenu, carnet à jour. Vérification en 160 points. Garantie 6 à 12 mois km illimités. Révision boîte automatique incluse.",
+      "Nissan Micra 1.4 88 ch Acenta, boîte automatique, Crit'Air 2. Véhicule français, bien entretenu, carnet à jour. Vérification en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités. Révision boîte automatique incluse.",
+    features: {
+      "Finition": "Acenta",
+      "Motorisation": "1.4 88 ch",
+      "Provenance": "Française",
+      "Carnet d'entretien": "À jour",
+      "Contrôle technique": "À jour",
+      "Garantie": "6 à 12 mois km illimités",
+      "Nb propriétaires": "1",
+    },
     images: [
       "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800&q=80",
       "https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?w=800&q=80",
@@ -54,8 +76,19 @@ export const vehicles: Vehicle[] = [
     color: "Rouge",
     doors: 5,
     featured: true,
+    critAir: "2",
+    isAvailable: true,
     description:
-      "Suzuki Swift 1.2i 94 ch GLX Pack, boîte automatique et toit ouvrant. Très bien équipée, climatisation, bluetooth. 250 à 500 km parcourus avant vente. Garantie 6 à 12 mois km illimités, vérification 160 points.",
+      "Suzuki Swift 1.2i 94 ch GLX Pack, boîte automatique et toit ouvrant panoramique. Très bien équipée : climatisation automatique, bluetooth, régulateur de vitesse. 250 à 500 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités, vérification 160 points.",
+    features: {
+      "Finition": "GLX Pack",
+      "Motorisation": "1.2i 94 ch",
+      "Options": "Toit ouvrant, clim auto, bluetooth",
+      "Provenance": "Française",
+      "Carnet d'entretien": "À jour",
+      "Contrôle technique": "À jour",
+      "Garantie": "6 à 12 mois km illimités",
+    },
     images: [
       "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
       "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80",
@@ -74,8 +107,19 @@ export const vehicles: Vehicle[] = [
     color: "Argent",
     doors: 5,
     featured: true,
+    critAir: "2",
+    isAvailable: true,
     description:
-      "Nissan Pixo 1.0i 68 ch Acenta, boîte automatique, 1ère main. Petite citadine très maniable, consommation faible. Entretien complet réalisé. Garantie 6 à 12 mois km illimités, vérification 160 points.",
+      "Nissan Pixo 1.0i 68 ch Acenta, boîte automatique, 1ère main. Petite citadine très maniable, faible consommation. Entretien complet réalisé par notre atelier. Garantie 6 à 12 mois km illimités, vérification 160 points.",
+    features: {
+      "Finition": "Acenta",
+      "Motorisation": "1.0i 68 ch",
+      "Provenance": "Française",
+      "Nb propriétaires": "1",
+      "Carnet d'entretien": "À jour",
+      "Contrôle technique": "À jour",
+      "Garantie": "6 à 12 mois km illimités",
+    },
     images: [
       "https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800&q=80",
       "https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=800&q=80",
@@ -94,8 +138,19 @@ export const vehicles: Vehicle[] = [
     color: "Bleu",
     doors: 5,
     featured: false,
+    critAir: "2",
+    isAvailable: true,
     description:
-      "Opel Agila 1.2i 85 ch Edition, boîte automatique, 1ère main. Véhicule bien entretenu, révisé par notre atelier. Parfaite pour les déplacements quotidiens. Garantie 6 à 12 mois km illimités.",
+      "Opel Agila 1.2i 85 ch Edition, boîte automatique, 1ère main. Véhicule bien entretenu, révisé par notre atelier avant mise en vente. Parfaite pour les déplacements quotidiens. Garantie 6 à 12 mois km illimités.",
+    features: {
+      "Finition": "Edition",
+      "Motorisation": "1.2i 85 ch",
+      "Provenance": "Française",
+      "Nb propriétaires": "1",
+      "Carnet d'entretien": "À jour",
+      "Contrôle technique": "À jour",
+      "Garantie": "6 à 12 mois km illimités",
+    },
     images: [
       "https://images.unsplash.com/photo-1617469767807-42f8d20f0be8?w=800&q=80",
       "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80",
@@ -114,8 +169,17 @@ export const vehicles: Vehicle[] = [
     color: "Blanc",
     doors: 5,
     featured: false,
+    critAir: "2",
+    isAvailable: true,
     description:
-      "Hyundai i10 boîte automatique. Légère, économique et facile à garer. Parfaite pour la ville et les trajets courts. Véhicule contrôlé et révisé, prêt à rouler. Garantie 6 à 12 mois km illimités.",
+      "Hyundai i10 boîte automatique. Légère, économique et facile à garer. Parfaite pour la ville et les trajets courts. Véhicule contrôlé et révisé par notre atelier, prêt à rouler. Garantie 6 à 12 mois km illimités.",
+    features: {
+      "Motorisation": "1.0i 67 ch",
+      "Provenance": "Française",
+      "Carnet d'entretien": "À jour",
+      "Contrôle technique": "À jour",
+      "Garantie": "6 à 12 mois km illimités",
+    },
     images: [
       "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80",
       "https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=800&q=80",
