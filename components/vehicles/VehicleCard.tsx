@@ -24,7 +24,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
   return (
     <Link
       href={`/vehicules/${vehicle.id}`}
-      className="card group block focus-visible:ring-2 focus-visible:ring-brand-400 rounded-xl"
+      className="group block bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400 rounded-xl"
       aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
     >
       {/* Image */}
@@ -35,19 +35,19 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
           fill
           priority={priority}
           className="object-cover group-hover:scale-105 transition-transform duration-500"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
-        {/* Prix */}
+        {/* Prix overlay */}
         <div
-          className="absolute top-3 right-3 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-black text-lg px-3 py-1.5 rounded-xl"
+          className="absolute top-2.5 right-2.5 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-bold text-base px-2.5 py-1 rounded-lg"
           aria-hidden="true"
         >
           {vehicle.price.toLocaleString("fr-FR")} €
         </div>
         {vehicle.featured && (
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-2.5 left-2.5">
             <Badge variant="orange">
-              <Star size={11} className="fill-current" aria-hidden="true" />
+              <Star size={10} className="fill-current" aria-hidden="true" />
               À la une
             </Badge>
           </div>
@@ -55,51 +55,51 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
       </div>
 
       {/* Contenu */}
-      <div className="p-5">
+      <div className="p-4">
         <div className="mb-3">
-          <h3 className="font-heading font-bold text-[#0f172a] text-xl leading-tight">
+          <h3 className="font-heading font-semibold text-[#0f172a] text-base leading-tight">
             {vehicle.brand} {vehicle.model}
           </h3>
-          <p className="text-[#64748b] text-sm mt-1">{vehicle.color} · {vehicle.year}</p>
+          <p className="text-[#64748b] text-xs mt-0.5">{vehicle.color} · {vehicle.year}</p>
         </div>
 
         {/* Specs */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          <div className="flex flex-col items-center bg-[#f8fafc] rounded-xl py-3 px-2">
-            <Calendar size={15} className="text-brand-500 mb-1" aria-hidden="true" />
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-2 px-1">
+            <Calendar size={13} className="text-brand-500 mb-0.5" aria-hidden="true" />
             <span className="text-xs font-semibold text-[#334155]">{vehicle.year}</span>
           </div>
-          <div className="flex flex-col items-center bg-[#f8fafc] rounded-xl py-3 px-2">
-            <Gauge size={15} className="text-brand-500 mb-1" aria-hidden="true" />
-            <span className="text-xs font-semibold text-[#334155]">
+          <div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-2 px-1">
+            <Gauge size={13} className="text-brand-500 mb-0.5" aria-hidden="true" />
+            <span className="text-xs font-semibold text-[#334155] truncate w-full text-center">
               {vehicle.mileage.toLocaleString("fr-FR")} km
             </span>
           </div>
-          <div className="flex flex-col items-center bg-[#f8fafc] rounded-xl py-3 px-2">
-            <Fuel size={15} className="text-brand-500 mb-1" aria-hidden="true" />
-            <span className="text-xs font-semibold text-[#334155]">{vehicle.fuel}</span>
+          <div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-2 px-1">
+            <Fuel size={13} className="text-brand-500 mb-0.5" aria-hidden="true" />
+            <span className="text-xs font-semibold text-[#334155] truncate w-full text-center">{vehicle.fuel}</span>
           </div>
         </div>
 
         {/* Badges */}
-        <div className="flex items-center gap-2 flex-wrap mb-4">
+        <div className="flex items-center gap-1.5 flex-wrap mb-3">
           <Badge variant={fuelVariants[vehicle.fuel] ?? "gray"}>{vehicle.fuel}</Badge>
           <Badge variant="gray">{vehicle.transmission}</Badge>
           <Badge variant="gray">{vehicle.power} ch</Badge>
         </div>
 
-        {/* CTA */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+        {/* Prix + CTA */}
+        <div className="pt-3 border-t border-slate-100 space-y-2.5">
           <span
-            className="font-heading font-black text-2xl text-[#0f172a]"
+            className="block font-heading font-bold text-lg text-[#0f172a]"
             aria-label={priceLabel}
           >
             {vehicle.price.toLocaleString("fr-FR")} €
           </span>
-          <span className="flex items-center gap-1.5 text-sm font-semibold text-brand-600 group-hover:text-brand-700 group-hover:gap-2.5 transition-all duration-200" aria-hidden="true">
-            Voir le détail
-            <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
-          </span>
+          <div className="w-full bg-brand-500 group-hover:bg-brand-600 text-[#0f172a] font-semibold text-sm py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
+            Voir le véhicule
+            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+          </div>
         </div>
       </div>
     </Link>

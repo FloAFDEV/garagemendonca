@@ -29,9 +29,9 @@ export default function Hero() {
         aria-label="Atelier du Garage Auto Mendonça à Drémil-Lafage"
       />
 
-      {/* Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#0f172a]/92 via-[#0f172a]/72 to-[#0f172a]/30" aria-hidden="true" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 via-transparent to-transparent" aria-hidden="true" />
+      {/* Overlays — contraste renforcé */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" aria-hidden="true" />
 
       {/* Trait accent gauche */}
       <div className="absolute top-0 left-0 w-1 h-full bg-brand-500" aria-hidden="true" />
@@ -50,7 +50,7 @@ export default function Hero() {
             </div>
 
             {/* H1 */}
-            <h1 className="font-heading font-black text-white text-5xl md:text-6xl xl:text-7xl leading-[1.03] mb-6 animate-slide-up">
+            <h1 className="font-heading font-black text-white text-5xl md:text-6xl xl:text-7xl leading-[1.03] mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
               Votre garage<br />
               de confiance à{" "}
               <span className="relative">
