@@ -43,10 +43,11 @@ export default function ServicesPage() {
               <span className="text-gradient">la carrosserie et la vente</span>
             </h1>
             <p className="text-dark-400 text-xl leading-relaxed max-w-2xl">
-              Avec une expérience de plus de 30 ans, M. Vitor Mendonça et son équipe
-              de professionnels mettent à votre service leurs compétences et leur
-              savoir-faire. Diagnostic en 10 minutes. Devis pièce et main-d&apos;œuvre
-              avant toute intervention. Toutes marques acceptées.
+              Avec une expérience de plus de 30 ans dans le domaine, M. Vitor Mendonça,
+              le dirigeant, ainsi que son équipe de professionnels mettent à votre service
+              leurs compétences et leur savoir-faire, afin de vous prodiguer des prestations
+              de qualité. Diagnostic en 10 minutes. Devis pièce et main-d&apos;œuvre avant
+              toute intervention. Toutes marques acceptées.
             </p>
           </div>
         </div>
