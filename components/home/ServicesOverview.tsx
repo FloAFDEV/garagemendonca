@@ -9,35 +9,35 @@ const services = [
     Icon: Wrench,
     title: "Entretien & Révision",
     description:
-      "Nous réalisons la mise au point moteur, la réparation de toute marque de véhicule ainsi que l'entretien. Nous assurons la révision garantie constructeur, la vidange et la préparation pour le contrôle technique. Les préconisations constructeur sont toujours respectées.",
-    items: ["Vidange & remplacement filtres", "Révision garantie constructeur", "Préparation contrôle technique", "Remplacement courroie de distribution"],
+      "Service de proximité pour tous les véhicules toutes marques. Techniciens formés aux technologies Renault, PSA, BMW, Audi et Volkswagen. Les préconisations constructeur sont toujours respectées.",
+    items: ["Révision garantie constructeur", "Pneus, climatisation & amortisseurs", "Préparation contrôle technique", "Courroie de distribution"],
   },
   {
     id: "mecanique",
     num: "02",
     Icon: Settings,
-    title: "Réparation Mécanique",
+    title: "Mécanique & Électronique",
     description:
-      "Spécialistes BMW, Audi et Volkswagen, nous intervenons sur tous types de véhicules. Diagnostic en 10 minutes, réparation moteur, embrayage, suspension. Un devis pièce et main-d'œuvre est établi avant toute intervention. Professionnels qualifiés et continuellement formés.",
-    items: ["Diagnostic en 10 minutes", "Moteur, embrayage, boîte de vitesses", "Suspensions & amortisseurs", "Spécialiste BMW · Audi · VW · Mercedes"],
-  },
-  {
-    id: "carrosserie",
-    num: "03",
-    Icon: Paintbrush,
-    title: "Carrosserie & Peinture",
-    description:
-      "Le Garage Mendonça a investi dans une nouvelle cabine de peinture. Spécialisé dans le remplacement de pare-brise et lunette arrière, les petits travaux de tôlerie et simple collision. Prise en charge du dossier d'assurance et d'expertise suite à un sinistre.",
-    items: ["Cabine de peinture neuve", "Pare-brise & lunette arrière", "Tôlerie & petits travaux de carrosserie", "Prise en charge dossier assurance"],
+      "Généraliste et expert, nous intervenons sur toutes les réparations mécaniques et électroniques. Spécialistes BMW, Audi et Volkswagen. Réparation de pièces électroniques à coût maîtrisé, en restant dans le réseau professionnel.",
+    items: ["Spécialiste BMW · Audi · VW · Renault · PSA", "Moteur, embrayage, boîte de vitesses", "Réparation pièces électroniques", "Devis pièce & main-d'œuvre avant intervention"],
   },
   {
     id: "diagnostic",
-    num: "04",
+    num: "03",
     Icon: Cpu,
-    title: "Diagnostic & Pannes",
+    title: "Diagnostic & Motoriste",
     description:
-      "Diagnostic électronique en 10 minutes pour tous constructeurs. Lecture et effacement des codes défaut OBD. Nettoyage et régénération du filtre à particules, gestion des pertes de puissance, réparation turbo et vanne EGR. Toutes marques acceptées.",
-    items: ["Diagnostic OBD en 10 minutes", "Filtre à particules (DPF)", "Réparation turbo & vanne EGR", "Réparation boîte de vitesse automatique"],
+      "Atelier conseil easydiag — spécialiste de la combustion et des encrassements moteurs depuis plus de 12 ans. Diagnostic électronique en 10 minutes sur tous constructeurs, toutes marques.",
+    items: ["Diagnostic OBD en 10 minutes", "Nettoyage admission & DPF", "Réparation turbo & vanne EGR", "Gestion pertes de puissance"],
+  },
+  {
+    id: "carrosserie",
+    num: "04",
+    Icon: Paintbrush,
+    title: "Carrosserie & Vitrage",
+    description:
+      "Nouvelle cabine de peinture pour des finitions irréprochables. Tôlerie, collision, pare-brise et lunette arrière toutes marques. Véhicule de courtoisie disponible, dossier assurance pris en charge.",
+    items: ["Nouvelle cabine de peinture", "Pare-brise & lunette arrière", "Véhicule de courtoisie inclus", "Dossier assurance & expertise sinistre"],
   },
 ];
 
