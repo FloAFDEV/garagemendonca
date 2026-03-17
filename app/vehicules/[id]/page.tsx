@@ -66,7 +66,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
   ]);
   if (!vehicle) notFound();
 
-  const isAvailable = vehicle.isAvailable !== false;
+  const isAvailable = vehicle.status !== "sold";
   const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
   const contactHref = `/contact?vehicule=${encodeURIComponent(vehicleName)}`;
 
