@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import MainLayout from "@/components/layout/MainLayout";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import VehicleFilters, { FilterState, INITIAL_FILTERS } from "@/components/vehicles/VehicleFilters";
@@ -11,8 +12,15 @@ import { Car, ClipboardCheck, Wrench, BookOpen, ShieldCheck } from "lucide-react
 const ALL_BRANDS = Array.from(new Set(vehicles.map((v) => v.brand))).sort();
 const ALL_FUELS  = Array.from(new Set(vehicles.map((v) => v.fuel)));
 
-export default function VehiculesPage() {
-  const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
+/* ─── Contenu catalogue (séparé pour useSearchParams + Suspense) ─── */
+function CatalogueContent() {
+  const searchParams = useSearchParams();
+  const brandParam = searchParams.get("brand");
+
+  const [filters, setFilters] = useState<FilterState>({
+    ...INITIAL_FILTERS,
+    brands: brandParam ? [brandParam] : [],
+  });
 
   const filtered = useMemo(() => {
     let list = [...vehicles];
@@ -40,6 +48,47 @@ export default function VehiculesPage() {
   }, [filters]);
 
   return (
+    <>
+      {/* Filtres */}
+      <VehicleFilters
+        filters={filters}
+        onChange={setFilters}
+        availableBrands={ALL_BRANDS}
+        availableFuels={ALL_FUELS}
+        totalCount={vehicles.length}
+        filteredCount={filtered.length}
+      />
+
+      {/* Grille */}
+      {filtered.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {filtered.map((vehicle, i) => (
+            <VehicleCard key={vehicle.id} vehicle={vehicle} priority={i === 0} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-24 bg-white rounded-2xl border border-slate-200">
+          <Car size={48} className="text-slate-300 mx-auto mb-4" aria-hidden="true" />
+          <h2 className="font-heading font-bold text-[#0f172a] text-xl mb-2">
+            Aucun véhicule pour ces critères
+          </h2>
+          <p className="text-[#475569] text-sm mb-6 max-w-xs mx-auto">
+            Essayez d&apos;élargir votre recherche en modifiant ou en supprimant certains filtres.
+          </p>
+          <button
+            onClick={() => setFilters(INITIAL_FILTERS)}
+            className="btn-primary"
+          >
+            Voir tous les véhicules
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
+export default function VehiculesPage() {
+  return (
     <MainLayout>
       {/* ── Hero ── */}
       <section className="bg-[#0f172a] pt-36 pb-20 relative overflow-hidden">
@@ -66,42 +115,18 @@ export default function VehiculesPage() {
       {/* ── Catalogue ── */}
       <section className="py-12 bg-[#f8fafc]">
         <div className="container mx-auto px-4">
-
-          {/* Filtres */}
-          <VehicleFilters
-            filters={filters}
-            onChange={setFilters}
-            availableBrands={ALL_BRANDS}
-            availableFuels={ALL_FUELS}
-            totalCount={vehicles.length}
-            filteredCount={filtered.length}
-          />
-
-          {/* Grille */}
-          {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filtered.map((vehicle, i) => (
-                <VehicleCard key={vehicle.id} vehicle={vehicle} priority={i === 0} />
-              ))}
+          <Suspense fallback={
+            <div className="animate-pulse space-y-4">
+              <div className="h-10 bg-slate-200 rounded-xl w-2/3" />
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-64 bg-slate-200 rounded-xl" />
+                ))}
+              </div>
             </div>
-          ) : (
-            /* État vide */
-            <div className="text-center py-24 bg-white rounded-2xl border border-slate-200">
-              <Car size={48} className="text-slate-300 mx-auto mb-4" aria-hidden="true" />
-              <h2 className="font-heading font-bold text-[#0f172a] text-xl mb-2">
-                Aucun véhicule pour ces critères
-              </h2>
-              <p className="text-[#475569] text-sm mb-6 max-w-xs mx-auto">
-                Essayez d&apos;élargir votre recherche en modifiant ou en supprimant certains filtres.
-              </p>
-              <button
-                onClick={() => setFilters(INITIAL_FILTERS)}
-                className="btn-primary"
-              >
-                Voir tous les véhicules
-              </button>
-            </div>
-          )}
+          }>
+            <CatalogueContent />
+          </Suspense>
         </div>
       </section>
 

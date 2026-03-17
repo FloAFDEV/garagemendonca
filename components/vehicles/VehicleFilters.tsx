@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { ChevronDown, X, SlidersHorizontal, Check, RotateCcw } from "lucide-react";
+import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 
 /* ─────────── types ─────────── */
 export type SortOption = "price-asc" | "price-desc" | "km-asc" | "year-desc";
@@ -59,35 +60,11 @@ const SORT_OPTIONS: { label: string; value: SortOption }[] = [
   { label: "Plus récent", value: "year-desc" },
 ];
 
-/* Logos marques — Wikimedia (déjà dans remotePatterns) */
-const BRAND_LOGOS: Record<string, string> = {
-  Audi:         "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/100px-Audi-Logo_2016.svg.png",
-  BMW:          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/64px-BMW.svg.png",
-  Citroën:      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Citroen_2022.svg/120px-Citroen_2022.svg.png",
-  Fiat:         "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Fiat_Automobiles_logo.svg/120px-Fiat_Automobiles_logo.svg.png",
-  Ford:         "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/120px-Ford_logo_flat.svg.png",
-  Honda:        "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Honda_Logo.svg/100px-Honda_Logo.svg.png",
-  Hyundai:      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hyundai_Motor_Company_logo.svg/120px-Hyundai_Motor_Company_logo.svg.png",
-  Kia:          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.svg/120px-Kia-logo.svg.png",
-  Mercedes:     "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/64px-Mercedes-Logo.svg.png",
-  Nissan:       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Nissan_2020_logo.svg/120px-Nissan_2020_logo.svg.png",
-  Opel:         "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Opel_logo_2021.svg/100px-Opel_logo_2021.svg.png",
-  Peugeot:      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Logo_Peugeot.svg/64px-Logo_Peugeot.svg.png",
-  Renault:      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Renault_2021_Text.svg/120px-Renault_2021_Text.svg.png",
-  Seat:         "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/SEAT_logo.svg/120px-SEAT_logo.svg.png",
-  Skoda:        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/%C5%A0koda_Auto_logo.svg/100px-%C5%A0koda_Auto_logo.svg.png",
-  Suzuki:       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/120px-Suzuki_logo_2.svg.png",
-  Toyota:       "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carlogo.svg/100px-Toyota_carlogo.svg.png",
-  Volkswagen:   "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/64px-Volkswagen_logo_2019.svg.png",
-  Volvo:        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Volvo_wordmark.svg/120px-Volvo_wordmark.svg.png",
-};
-
 /* ─────────── sous-composant : logo marque ─────────── */
 function BrandLogo({ brand }: { brand: string }) {
-  const [failed, setFailed] = useState(false);
-  const logoUrl = BRAND_LOGOS[brand];
+  const logoPath = BRAND_LOGO_MAP[brand];
 
-  if (!logoUrl || failed) {
+  if (!logoPath) {
     return (
       <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-[#64748b] flex-shrink-0">
         {brand[0]}
@@ -97,13 +74,12 @@ function BrandLogo({ brand }: { brand: string }) {
 
   return (
     <Image
-      src={logoUrl}
+      src={logoPath}
       alt=""
-      aria-hidden={true}
+      aria-hidden
       width={32}
       height={32}
       className="object-contain flex-shrink-0"
-      onError={() => setFailed(true)}
     />
   );
 }

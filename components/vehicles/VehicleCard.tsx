@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
 import Badge from "@/components/ui/Badge";
+import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -56,11 +57,25 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 
       {/* Contenu */}
       <div className="p-4">
-        <div className="mb-3">
-          <h3 className="font-heading font-semibold text-[#0f172a] text-base leading-tight">
-            {vehicle.brand} {vehicle.model}
-          </h3>
-          <p className="text-[#64748b] text-xs mt-0.5">{vehicle.color} · {vehicle.year}</p>
+        <div className="flex items-start gap-2.5 mb-3">
+          {BRAND_LOGO_MAP[vehicle.brand] && (
+            <div className="w-9 h-9 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
+              <Image
+                src={BRAND_LOGO_MAP[vehicle.brand]}
+                alt=""
+                aria-hidden
+                width={28}
+                height={28}
+                className="object-contain w-full h-full"
+              />
+            </div>
+          )}
+          <div className="min-w-0">
+            <h3 className="font-heading font-semibold text-[#0f172a] text-base leading-tight">
+              {vehicle.brand} {vehicle.model}
+            </h3>
+            <p className="text-[#64748b] text-xs mt-0.5">{vehicle.color} · {vehicle.year}</p>
+          </div>
         </div>
 
         {/* Specs */}

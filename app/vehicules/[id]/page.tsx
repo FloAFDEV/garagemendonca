@@ -9,6 +9,8 @@ import {
   getRelatedVehicles,
   getVehicleStaticParams,
 } from "@/lib/vehicles";
+import Image from "next/image";
+import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 import {
   ArrowLeft,
   Phone,
@@ -149,30 +151,44 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
           {/* ── En-tête ── */}
           <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-2 flex-wrap">
-                {vehicle.featured && (
-                  <span className="inline-flex items-center gap-1.5 bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    <Star size={11} aria-hidden="true" />
-                    À la une
+            <div className="flex items-start gap-4">
+              {/* Logo marque */}
+              {BRAND_LOGO_MAP[vehicle.brand] && (
+                <div className="w-16 h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-2 flex items-center justify-center">
+                  <Image
+                    src={BRAND_LOGO_MAP[vehicle.brand]}
+                    alt={vehicle.brand}
+                    width={48}
+                    height={48}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
+              )}
+              <div>
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  {vehicle.featured && (
+                    <span className="inline-flex items-center gap-1.5 bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      <Star size={11} aria-hidden="true" />
+                      À la une
+                    </span>
+                  )}
+                  <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${
+                    isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-slate-400"}`} aria-hidden="true" />
+                    {isAvailable ? "Disponible" : "Vendu"}
                   </span>
-                )}
-                <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${
-                  isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-slate-400"}`} aria-hidden="true" />
-                  {isAvailable ? "Disponible" : "Vendu"}
-                </span>
+                </div>
+                <h1 className="font-heading font-black text-[#0f172a] text-3xl md:text-4xl leading-tight">
+                  {vehicle.brand} {vehicle.model}
+                  {vehicle.features?.["Finition"] && (
+                    <span className="text-[#64748b] font-medium text-xl ml-2">{vehicle.features["Finition"]}</span>
+                  )}
+                </h1>
+                <p className="text-[#64748b] mt-1.5 text-sm">
+                  {vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km · {vehicle.fuel} · {vehicle.transmission} · {vehicle.power} ch
+                </p>
               </div>
-              <h1 className="font-heading font-black text-[#0f172a] text-3xl md:text-4xl leading-tight">
-                {vehicle.brand} {vehicle.model}
-                {vehicle.features?.["Finition"] && (
-                  <span className="text-[#64748b] font-medium text-xl ml-2">{vehicle.features["Finition"]}</span>
-                )}
-              </h1>
-              <p className="text-[#64748b] mt-1.5 text-sm">
-                {vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km · {vehicle.fuel} · {vehicle.transmission} · {vehicle.power} ch
-              </p>
             </div>
             {/* Prix desktop */}
             <div className="hidden sm:block text-right">
