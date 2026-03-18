@@ -11,7 +11,7 @@ interface StatDef {
 }
 
 const STATS: StatDef[] = [
-  { prefix: "",  target: 30,   suffix: "+", thousands: false, label: "Ans d'expérience" },
+  { prefix: "",  target: 25,   suffix: "+", thousands: false, label: "Ans d'expérience" },
   { prefix: "+", target: 1200, suffix: "",  thousands: true,  label: "Réparations réalisées" },
   { prefix: "",  target: 98,   suffix: "%", thousands: false, label: "Clients satisfaits" },
   { prefix: "",  target: 9,    suffix: "",  thousands: false, label: "Véhicules de prêt" },

@@ -37,7 +37,7 @@ const photos = [
 
 export default function GalleryAtelier() {
   return (
-    <section className="py-24 bg-dark-950">
+    <section className="py-28 bg-dark-950">
       <Container>
 
         {/* ── Header ── */}

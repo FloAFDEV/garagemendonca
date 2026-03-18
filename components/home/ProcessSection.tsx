@@ -69,7 +69,7 @@ export default function ProcessSection() {
   const reduced = useReducedMotion() ?? false;
 
   return (
-    <section id="process" className="py-24 bg-white" aria-labelledby="process-title">
+    <section id="process" className="py-28 bg-white" aria-labelledby="process-title">
       <Container>
 
         {/* ── En-tête ── */}

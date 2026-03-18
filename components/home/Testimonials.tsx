@@ -64,7 +64,7 @@ export default function Testimonials() {
             </h2>
             <p className="section-subtitle mx-auto">
               La satisfaction de nos clients est notre priorité.
-              Plus de 30 ans de fidélité en région toulousaine.
+              Plus de 25 ans de fidélité en région toulousaine.
             </p>
           </div>
         </AnimateOnScroll>

@@ -20,7 +20,7 @@ export default function CallToAction() {
       />
 
       <AnimateOnScroll>
-        <Container className="relative py-24">
+        <Container className="relative py-28">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-14">
 
             {/* ── Texte ── */}
@@ -58,7 +58,7 @@ export default function CallToAction() {
             <div className="flex flex-col gap-4 lg:min-w-[280px]">
               <a
                 href="tel:0532002038"
-                className="inline-flex items-center justify-center gap-3 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold px-8 py-[18px] rounded-lg text-base transition-all duration-200 shadow-brand-lg hover:shadow-brand hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-brand-400"
+                className="inline-flex items-center justify-center gap-3 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold px-8 py-[18px] rounded-lg text-base transition-all duration-200 shadow-brand hover:shadow-brand-lg hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a]"
               >
                 <Phone size={19} />
                 05 32 00 20 38

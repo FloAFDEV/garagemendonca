@@ -91,8 +91,8 @@ export default function ServicesOverview() {
                 </span>
 
                 {/* Icône */}
-                <div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center mb-5 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-colors duration-250 flex-shrink-0">
-                  <Icon size={19} className="text-brand-500" strokeWidth={1.75} />
+                <div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center mb-5 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-all duration-250 flex-shrink-0 group-hover:scale-110 group-hover:ring-brand-200">
+                  <Icon size={19} className="text-brand-500 transition-transform duration-250 group-hover:scale-110" strokeWidth={1.75} />
                 </div>
 
                 <h3 className="font-heading font-bold text-[#0f172a] text-base mb-2 leading-snug">

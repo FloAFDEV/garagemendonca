@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
+import { Phone, ArrowRight, ShieldCheck, Clock, Award, ChevronDown } from "lucide-react";
 import StatsCounter from "@/components/home/StatsCounter";
 import Container from "@/components/ui/Container";
 
@@ -89,9 +89,9 @@ export default function Hero() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="relative pb-10 flex flex-col items-center gap-2 text-white/60" aria-hidden="true">
-        <span className="text-xs uppercase tracking-widest">Découvrir</span>
-        <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent" />
+      <div className="relative pb-10 flex flex-col items-center gap-1 text-white/50" aria-hidden="true">
+        <span className="text-[10px] uppercase tracking-widest">Découvrir</span>
+        <ChevronDown size={18} className="motion-safe:animate-bounce" />
       </div>
     </section>
   );
