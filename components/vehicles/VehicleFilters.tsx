@@ -112,7 +112,7 @@ function Dropdown({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all duration-150 ${
+        className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-semibold transition-all duration-150 ${
           active
             ? "bg-brand-500 text-white border-brand-500 shadow-sm"
             : "bg-white text-[#0f172a] border-slate-200 hover:border-brand-400 hover:text-brand-600"
@@ -195,7 +195,7 @@ export default function VehicleFilters({
               role="option"
               aria-selected={selected}
               onClick={() => toggleBrand(brand)}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-slate-50 transition-colors text-left"
             >
               <BrandLogo brand={brand} />
               <span className="flex-1 font-medium text-[#0f172a]">{brand}</span>
@@ -221,7 +221,7 @@ export default function VehicleFilters({
               role="option"
               aria-selected={selected}
               onClick={() => { set("kmMax", value); }}
-              className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 text-sm transition-colors ${selected ? "bg-brand-50 text-brand-600 font-semibold" : "hover:bg-slate-50 text-[#0f172a]"}`}
+              className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm transition-colors ${selected ? "bg-brand-50 text-brand-600 font-semibold" : "hover:bg-slate-50 text-[#0f172a]"}`}
             >
               {label}
               {selected && <Check size={14} className="text-brand-500 flex-shrink-0" aria-hidden="true" />}
@@ -244,7 +244,7 @@ export default function VehicleFilters({
               role="option"
               aria-selected={selected}
               onClick={() => { set("priceMax", value); }}
-              className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 text-sm transition-colors ${selected ? "bg-brand-50 text-brand-600 font-semibold" : "hover:bg-slate-50 text-[#0f172a]"}`}
+              className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm transition-colors ${selected ? "bg-brand-50 text-brand-600 font-semibold" : "hover:bg-slate-50 text-[#0f172a]"}`}
             >
               {label}
               {selected && <Check size={14} className="text-brand-500 flex-shrink-0" aria-hidden="true" />}
@@ -292,7 +292,7 @@ export default function VehicleFilters({
               type="button"
               onClick={() => toggleFuel(fuel)}
               aria-pressed={selected}
-              className={`px-3 py-2 rounded-xl border text-xs font-semibold transition-all duration-150 ${
+              className={`px-3 py-2.5 min-h-[44px] rounded-xl border text-xs font-semibold transition-all duration-150 ${
                 selected
                   ? "bg-brand-500 text-white border-brand-500"
                   : "bg-white text-[#475569] border-slate-200 hover:border-brand-300 hover:text-brand-600"
@@ -311,7 +311,7 @@ export default function VehicleFilters({
       <select
         value={filters.sortBy}
         onChange={(e) => set("sortBy", e.target.value as SortOption)}
-        className="pl-3 pr-8 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-[#475569] bg-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none cursor-pointer"
+        className="pl-3 pr-8 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-[#475569] bg-white focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none cursor-pointer"
         aria-label="Trier les véhicules"
       >
         {SORT_OPTIONS.map(({ label, value }) => (
@@ -324,7 +324,7 @@ export default function VehicleFilters({
         <button
           type="button"
           onClick={reset}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-[#475569] bg-white hover:bg-slate-50 hover:border-slate-300 transition-all"
+          className="flex items-center gap-1.5 px-3 py-2.5 min-h-[44px] rounded-xl border border-slate-200 text-xs font-semibold text-[#475569] bg-white hover:bg-slate-50 hover:border-slate-300 transition-all"
         >
           <RotateCcw size={13} aria-hidden="true" />
           Réinitialiser
@@ -349,7 +349,7 @@ export default function VehicleFilters({
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className={`sm:hidden flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-semibold transition-all ${mobileOpen || isFiltered ? "bg-brand-500 text-white border-brand-500" : "bg-white border-slate-200 text-[#475569]"}`}
+            className={`sm:hidden flex items-center gap-2 px-3 py-3 rounded-xl border text-sm font-semibold transition-all ${mobileOpen || isFiltered ? "bg-brand-500 text-white border-brand-500" : "bg-white border-slate-200 text-[#475569]"}`}
             aria-expanded={mobileOpen}
           >
             <SlidersHorizontal size={15} aria-hidden="true" />
@@ -374,7 +374,7 @@ export default function VehicleFilters({
           {filters.brands.map((b) => (
             <span key={b} className="inline-flex items-center gap-1.5 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold px-2.5 py-1 rounded-full">
               {b}
-              <button type="button" onClick={() => toggleBrand(b)} aria-label={`Retirer le filtre ${b}`} className="hover:text-brand-900">
+              <button type="button" onClick={() => toggleBrand(b)} aria-label={`Retirer le filtre ${b}`} className="p-1 hover:text-brand-900">
                 <X size={11} aria-hidden="true" />
               </button>
             </span>
@@ -382,7 +382,7 @@ export default function VehicleFilters({
           {filters.fuels.map((f) => (
             <span key={f} className="inline-flex items-center gap-1.5 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold px-2.5 py-1 rounded-full">
               {f}
-              <button type="button" onClick={() => toggleFuel(f)} aria-label={`Retirer le filtre ${f}`} className="hover:text-brand-900">
+              <button type="button" onClick={() => toggleFuel(f)} aria-label={`Retirer le filtre ${f}`} className="p-1 hover:text-brand-900">
                 <X size={11} aria-hidden="true" />
               </button>
             </span>
@@ -390,7 +390,7 @@ export default function VehicleFilters({
           {filters.kmMax !== null && (
             <span className="inline-flex items-center gap-1.5 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold px-2.5 py-1 rounded-full">
               ≤ {filters.kmMax.toLocaleString("fr-FR")} km
-              <button type="button" onClick={() => set("kmMax", null)} aria-label="Retirer le filtre kilométrage" className="hover:text-brand-900">
+              <button type="button" onClick={() => set("kmMax", null)} aria-label="Retirer le filtre kilométrage" className="p-1 hover:text-brand-900">
                 <X size={11} aria-hidden="true" />
               </button>
             </span>
@@ -398,7 +398,7 @@ export default function VehicleFilters({
           {filters.priceMax !== null && (
             <span className="inline-flex items-center gap-1.5 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-semibold px-2.5 py-1 rounded-full">
               ≤ {filters.priceMax.toLocaleString("fr-FR")} €
-              <button type="button" onClick={() => set("priceMax", null)} aria-label="Retirer le filtre prix" className="hover:text-brand-900">
+              <button type="button" onClick={() => set("priceMax", null)} aria-label="Retirer le filtre prix" className="p-1 hover:text-brand-900">
                 <X size={11} aria-hidden="true" />
               </button>
             </span>

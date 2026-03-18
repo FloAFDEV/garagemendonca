@@ -79,7 +79,7 @@ export default function NotFound() {
               <Link
                 key={href}
                 href={href}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 text-[#475569] text-sm hover:border-brand-300 hover:text-brand-600 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-white border border-slate-200 text-[#475569] text-sm hover:border-brand-300 hover:text-brand-600 transition-all duration-200 shadow-sm"
               >
                 <Icon size={13} aria-hidden="true" />
                 {label}

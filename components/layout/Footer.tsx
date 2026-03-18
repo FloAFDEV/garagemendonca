@@ -186,7 +186,7 @@ export default function Footer() {
 
             <a
               href="tel:0532002038"
-              className="inline-flex items-center gap-2 btn-primary text-sm py-2.5 w-full justify-center"
+              className="inline-flex items-center gap-2 btn-primary text-sm py-3 w-full justify-center"
             >
               <Phone size={15} />
               Appeler le garage
