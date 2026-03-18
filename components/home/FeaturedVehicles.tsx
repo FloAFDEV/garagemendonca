@@ -3,6 +3,7 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import { vehicles } from "@/lib/data";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import Container from "@/components/ui/Container";
 
 const guarantees = [
   "Garantie 6 à 12 mois km illimités",
@@ -23,7 +24,7 @@ export default function FeaturedVehicles() {
 
   return (
     <section className="py-28 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
 
         {/* ── Header ── */}
         <AnimateOnScroll>
@@ -88,7 +89,7 @@ export default function FeaturedVehicles() {
             </div>
           </div>
         </AnimateOnScroll>
-      </div>
+      </Container>
     </section>
   );
 }

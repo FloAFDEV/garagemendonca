@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import MainLayout from "@/components/layout/MainLayout";
+import Container from "@/components/ui/Container";
 import ContactForm from "@/components/contact/ContactForm";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 
@@ -37,7 +38,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
       {/* ── Hero ── */}
       <section className="bg-[#0f172a] pt-36 pb-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <Container className="relative">
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-px bg-brand-500" aria-hidden="true" />
@@ -54,12 +55,12 @@ export default async function ContactPage({ searchParams }: PageProps) {
               répondons sous 24h et vous proposons un devis gratuit et détaillé.
             </p>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Contenu ── */}
       <section className="py-16 bg-[#f8fafc]">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
 
             {/* Sidebar coordonnées — en premier sur mobile */}
@@ -167,7 +168,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
               title="Plan d'accès au Garage Mendonça — 6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage"
             />
           </div>
-        </div>
+        </Container>
       </section>
     </MainLayout>
   );

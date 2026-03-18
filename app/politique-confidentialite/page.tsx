@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
+import Container from "@/components/ui/Container";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité — Garage Mendonça",
@@ -104,7 +105,7 @@ export default function PolitiqueConfidentialitePage() {
 
       {/* ── Header ── */}
       <section className="bg-[#f8fafc] border-b border-slate-200 pt-32 pb-12">
-        <div className="container mx-auto px-4">
+        <Container>
           <div className="max-w-2xl">
             <div className="section-divider" />
             <span className="eyebrow">Protection des données</span>
@@ -116,12 +117,12 @@ export default function PolitiqueConfidentialitePage() {
               </Link>
             </p>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Encadré RGPD ── */}
       <section className="py-8 bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4">
+        <Container>
           <div className="max-w-3xl bg-brand-50 border border-brand-100 rounded-xl px-6 py-4 flex items-start gap-4">
             <div className="w-8 h-8 bg-brand-500/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-brand-500">
@@ -136,12 +137,12 @@ export default function PolitiqueConfidentialitePage() {
               </p>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Contenu ── */}
       <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+        <Container>
           <div className="max-w-3xl space-y-10">
             {sections.map(({ title, content }) => (
               <div key={title}>
@@ -183,7 +184,7 @@ export default function PolitiqueConfidentialitePage() {
               </a>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
     </MainLayout>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Phone, ArrowRight, ShieldCheck, Clock, Award } from "lucide-react";
 import StatsCounter from "@/components/home/StatsCounter";
+import Container from "@/components/ui/Container";
 
 const trustBadges = [
   { Icon: ShieldCheck, text: "Devis pièce & main-d'œuvre avant toute intervention" },
@@ -31,7 +32,7 @@ export default function Hero() {
 
       {/* Contenu */}
       <div className="relative flex-1 flex items-center">
-        <div className="container mx-auto px-4 pt-40 pb-20">
+        <Container className="pt-40 pb-20">
           <div className="max-w-2xl xl:max-w-3xl">
 
             {/* Eyebrow */}
@@ -74,7 +75,7 @@ export default function Hero() {
             {/* Stats — animation compteur */}
             <StatsCounter />
           </div>
-        </div>
+        </Container>
       </div>
 
       {/* Badges flottants — desktop */}

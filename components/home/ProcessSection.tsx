@@ -9,6 +9,7 @@ import {
   CarFront,
   type LucideIcon,
 } from "lucide-react";
+import Container from "@/components/ui/Container";
 
 /* ─────────────── données ─────────────── */
 
@@ -69,7 +70,7 @@ export default function ProcessSection() {
 
   return (
     <section id="process" className="py-24 bg-white" aria-labelledby="process-title">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
 
         {/* ── En-tête ── */}
         <motion.div
@@ -164,7 +165,7 @@ export default function ProcessSection() {
             </p>
           </div>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin, Clock, Facebook, Youtube, ExternalLink } from "lucide-react";
+import Container from "@/components/ui/Container";
 
 const footerLinks = {
   services: [
@@ -30,7 +31,7 @@ export default function Footer() {
       <div className="h-1 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600" aria-hidden="true" />
 
       {/* ── Corps principal ── */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <Container className="py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* Colonne 1 — Marque */}
@@ -193,11 +194,11 @@ export default function Footer() {
             </a>
           </div>
         </div>
-      </div>
+      </Container>
 
       {/* ── Barre légale ── */}
       <div className="border-t border-slate-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+        <Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-600">
           <p>© {new Date().getFullYear()} Garage Auto Mendonça · SARL · SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700 €</p>
           <div className="flex items-center gap-5">
             <Link href="/mentions-legales" className="hover:text-slate-400 transition-colors">
@@ -211,7 +212,7 @@ export default function Footer() {
             </Link>
             <span className="text-slate-700">NAF 4520A</span>
           </div>
-        </div>
+        </Container>
       </div>
     </footer>
   );

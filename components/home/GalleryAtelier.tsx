@@ -1,5 +1,6 @@
 import Image from "next/image";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import Container from "@/components/ui/Container";
 
 const photos = [
   {
@@ -37,7 +38,7 @@ const photos = [
 export default function GalleryAtelier() {
   return (
     <section className="py-24 bg-dark-950">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
 
         {/* ── Header ── */}
         <AnimateOnScroll>
@@ -88,7 +89,7 @@ export default function GalleryAtelier() {
             ))}
           </div>
         </AnimateOnScroll>
-      </div>
+      </Container>
     </section>
   );
 }

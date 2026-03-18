@@ -1,5 +1,6 @@
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import Container from "@/components/ui/Container";
 
 const hours = [
   { day: "Lundi – Jeudi", time: "08h00–12h00  /  14h00–19h00" },
@@ -10,7 +11,7 @@ const hours = [
 export default function MapContact() {
   return (
     <section className="py-24 bg-[#f1f5f9]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
 
         <AnimateOnScroll>
           <div className="text-center mb-14">
@@ -131,7 +132,7 @@ export default function MapContact() {
             </div>
           </AnimateOnScroll>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

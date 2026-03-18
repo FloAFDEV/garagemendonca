@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Wrench, Settings, Paintbrush, Cpu, ArrowRight } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import BrandsStrip from "@/components/home/BrandsStrip";
+import Container from "@/components/ui/Container";
 
 const services = [
   {
@@ -45,7 +46,7 @@ const services = [
 export default function ServicesOverview() {
   return (
     <section className="py-28 bg-[#f8fafc]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
 
         {/* ── Header ── */}
         <AnimateOnScroll>
@@ -123,7 +124,7 @@ export default function ServicesOverview() {
 
         {/* ── Bandeau logos marques ── */}
         <BrandsStrip />
-      </div>
+      </Container>
     </section>
   );
 }

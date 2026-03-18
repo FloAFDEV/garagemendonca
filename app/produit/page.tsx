@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
+import Container from "@/components/ui/Container";
 import { vehicles } from "@/lib/data";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import {
@@ -53,7 +54,7 @@ export default function ProduitPage() {
       {/* ── Hero ── */}
       <section className="relative bg-[#0f172a] pt-36 pb-24 overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <Container className="relative">
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-px bg-brand-500" aria-hidden="true" />
@@ -81,12 +82,12 @@ export default function ProduitPage() {
               </a>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Garanties ── */}
       <section className="py-16 bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {guarantees.map(({ Icon, title, desc }) => (
               <div key={title} className="text-center">
@@ -101,13 +102,13 @@ export default function ProduitPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Véhicules à la une ── */}
       {featured.length > 0 && (
         <section className="py-20 bg-[#f8fafc]">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Container>
             <div className="flex items-end justify-between mb-10">
               <div>
                 <div className="section-divider" />
@@ -131,14 +132,14 @@ export default function ProduitPage() {
                 <VehicleCard key={vehicle.id} vehicle={vehicle} />
               ))}
             </div>
-          </div>
+          </Container>
         </section>
       )}
 
       {/* ── Autres véhicules ── */}
       {rest.length > 0 && (
         <section className="py-20 bg-white">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Container>
             <div className="flex items-end justify-between mb-10">
               <div>
                 <div className="section-divider" />
@@ -159,13 +160,13 @@ export default function ProduitPage() {
                 Voir tous les véhicules ({vehicles.length} disponibles)
               </Link>
             </div>
-          </div>
+          </Container>
         </section>
       )}
 
       {/* ── Chiffres clés ── */}
       <section className="py-16 bg-[#f8fafc] border-t border-slate-200">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center max-w-3xl mx-auto">
             {[
               { value: "30+", label: "Ans d'expérience" },
@@ -179,12 +180,12 @@ export default function ProduitPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Avis clients ── */}
       <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
           <div className="max-w-2xl mx-auto text-center mb-10">
             <div className="section-divider mx-auto" />
             <span className="eyebrow">Ils nous font confiance</span>
@@ -207,13 +208,13 @@ export default function ProduitPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── CTA final ── */}
       <section className="py-16 bg-[#0f172a] relative">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600" aria-hidden="true" />
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <Container className="text-center">
           <h2 className="font-heading font-black text-white text-3xl md:text-4xl mb-4">
             Un véhicule vous intéresse ?
           </h2>
@@ -230,7 +231,7 @@ export default function ProduitPage() {
               <ArrowRight size={17} />
             </Link>
           </div>
-        </div>
+        </Container>
       </section>
     </MainLayout>
   );

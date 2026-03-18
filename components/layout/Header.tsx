@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, Phone } from "lucide-react";
 import clsx from "clsx";
+import Container from "@/components/ui/Container";
 
 const navLinks = [
   { href: "/", label: "Accueil" },
@@ -34,7 +35,7 @@ export default function Header() {
     >
       {/* ── Barre info supérieure ── */}
       <div className="bg-[#0f172a] text-slate-400 text-xs py-2 hidden md:block">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <Container className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Phone size={12} className="text-brand-400" aria-hidden="true" />
             <a
@@ -52,11 +53,11 @@ export default function Header() {
           >
             contact@garagemendonca.com
           </a>
-        </div>
+        </Container>
       </div>
 
       {/* ── Nav principale ── */}
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Navigation principale">
+      <Container as="nav" aria-label="Navigation principale">
         <div className="flex items-center justify-between h-16 md:h-[72px]">
 
           {/* Logo */}
@@ -140,7 +141,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-      </nav>
+      </Container>
     </header>
   );
 }

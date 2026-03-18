@@ -1,5 +1,6 @@
 import { Phone, ScanSearch, FileText, Wrench, CheckCircle2 } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import Container from "@/components/ui/Container";
 
 const steps = [
   {
@@ -37,7 +38,7 @@ const steps = [
 export default function ProcessSteps() {
   return (
     <section className="py-28 bg-white">
-      <div className="container mx-auto px-4">
+      <Container>
 
         {/* ── Header ── */}
         <AnimateOnScroll>
@@ -101,7 +102,7 @@ export default function ProcessSteps() {
             </a>
           </div>
         </AnimateOnScroll>
-      </div>
+      </Container>
     </section>
   );
 }

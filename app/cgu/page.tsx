@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
+import Container from "@/components/ui/Container";
 
 export const metadata: Metadata = {
   title: "Conditions Générales d'Utilisation — Garage Mendonça",
@@ -77,7 +78,7 @@ export default function CguPage() {
 
       {/* ── Header ── */}
       <section className="bg-[#f8fafc] border-b border-slate-200 pt-32 pb-12">
-        <div className="container mx-auto px-4">
+        <Container>
           <div className="max-w-2xl">
             <div className="section-divider" />
             <span className="eyebrow">Utilisation du site</span>
@@ -89,12 +90,12 @@ export default function CguPage() {
               </Link>
             </p>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Contenu ── */}
       <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+        <Container>
           <div className="max-w-3xl space-y-10">
             {sections.map(({ title, content }) => (
               <div key={title}>
@@ -128,7 +129,7 @@ export default function CguPage() {
               </Link>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
     </MainLayout>
   );

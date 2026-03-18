@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Phone, MessageSquare, CalendarDays, ShieldCheck } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import Container from "@/components/ui/Container";
 
 const reassurances = ["Devis 100% gratuit", "Réponse sous 24h", "Avec ou sans RDV", "Prix transparents"];
 
@@ -19,7 +20,7 @@ export default function CallToAction() {
       />
 
       <AnimateOnScroll>
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <Container className="relative py-24">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-14">
 
             {/* ── Texte ── */}
@@ -80,7 +81,7 @@ export default function CallToAction() {
               </Link>
             </div>
           </div>
-        </div>
+        </Container>
       </AnimateOnScroll>
     </section>
   );

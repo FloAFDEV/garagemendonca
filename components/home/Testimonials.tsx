@@ -1,5 +1,6 @@
 import { Star, Quote } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
+import Container from "@/components/ui/Container";
 
 const testimonials = [
   {
@@ -51,7 +52,7 @@ function Stars({ count }: { count: number }) {
 export default function Testimonials() {
   return (
     <section className="py-28 bg-[#f8fafc]">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <Container>
 
         {/* ── Header ── */}
         <AnimateOnScroll>
@@ -117,7 +118,7 @@ export default function Testimonials() {
             </AnimateOnScroll>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

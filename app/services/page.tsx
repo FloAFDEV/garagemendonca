@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import MainLayout from "@/components/layout/MainLayout";
+import Container from "@/components/ui/Container";
 import { services } from "@/lib/data";
 import {
   Wrench,
@@ -46,7 +47,7 @@ export default function ServicesPage() {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/3 rounded-full blur-[180px] pointer-events-none" aria-hidden="true" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-500/2 rounded-full blur-[150px] pointer-events-none" aria-hidden="true" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Container className="relative">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-500" aria-hidden="true" />
             <span className="text-brand-500 text-xs font-medium tracking-wide uppercase">Nos expertises</span>
@@ -60,12 +61,12 @@ export default function ServicesPage() {
             Diagnostic en 10 minutes, devis pièce et main-d&apos;œuvre avant toute intervention
             — sans mauvaise surprise. Toutes marques acceptées.
           </p>
-        </div>
+        </Container>
       </section>
 
       {/* ── Services — fond clair ── */}
       <section className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
           <div className="space-y-10">
             {services.map((service, index) => {
               const isOdd = index % 2 === 0; // impair = image gauche
@@ -169,12 +170,12 @@ export default function ServicesPage() {
               );
             })}
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── Pourquoi nous faire confiance — fond sombre ── */}
       <section className="py-20 bg-dark-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Container>
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-500" aria-hidden="true" />
@@ -202,13 +203,13 @@ export default function ServicesPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* ── CTA ── */}
       <section className="py-16 bg-dark-900 relative border-t border-dark-700">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-500/40 to-transparent" aria-hidden="true" />
-        <div className="container mx-auto px-4 text-center">
+        <Container className="text-center">
           <h2 className="font-heading font-bold text-white text-3xl md:text-4xl mb-4">
             Besoin d&apos;un devis ou d&apos;un rendez-vous&nbsp;?
           </h2>
@@ -231,7 +232,7 @@ export default function ServicesPage() {
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Link>
           </div>
-        </div>
+        </Container>
       </section>
 
     </MainLayout>
