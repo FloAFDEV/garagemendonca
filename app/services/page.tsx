@@ -68,18 +68,12 @@ export default function ServicesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="space-y-10">
             {services.map((service, index) => {
-              const infoFirst = index % 2 === 0;
+              const isOdd = index % 2 === 0; // impair = image gauche
 
-              const infoPanel = (
-                <div
-                  className={[
-                    "lg:col-span-2 p-8 sm:p-10 flex flex-col justify-center bg-white",
-                    infoFirst
-                      ? "lg:order-1 border-b lg:border-b-0 lg:border-r border-slate-200"
-                      : "lg:order-3 border-b lg:border-b-0 lg:border-l border-slate-200",
-                  ].join(" ")}
-                >
-                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-brand-500/15 to-brand-500/5 border border-brand-500/10 flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-brand-500/10 transition-shadow duration-500">
+              /* Bloc info : icon + titre + bouton */
+              const infoContent = (
+                <>
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-brand-500/15 to-brand-500/5 border border-brand-500/10 flex items-center justify-center mb-5 group-hover:shadow-lg group-hover:shadow-brand-500/10 transition-shadow duration-500">
                     {iconMap[service.icon]}
                   </div>
                   <h2 className="font-heading font-bold text-2xl sm:text-3xl text-slate-900 mb-4 leading-tight">
@@ -87,18 +81,19 @@ export default function ServicesPage() {
                   </h2>
                   <a
                     href="tel:0532002038"
-                    className="inline-flex items-center gap-2 w-fit px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 text-white text-sm font-bold hover:shadow-lg hover:shadow-brand-500/25 transition-all duration-300 mt-2"
+                    className="inline-flex items-center gap-2 w-fit px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 text-white text-sm font-bold hover:shadow-lg hover:shadow-brand-500/25 transition-all duration-300"
                     aria-label={`Demander un devis pour ${service.title}`}
                   >
                     <Phone className="h-4 w-4" aria-hidden="true" />
                     Demander un devis
                   </a>
-                </div>
+                </>
               );
 
-              const contentPanel = (
-                <div className={["lg:col-span-3 p-8 sm:p-10 bg-white", infoFirst ? "lg:order-2" : "lg:order-2"].join(" ")}>
-                  <p className="text-slate-500 leading-relaxed mb-7 text-sm sm:text-base">
+              /* Bloc contenu : description + features */
+              const contentContent = (
+                <>
+                  <p className="text-slate-500 leading-relaxed mb-6 text-sm sm:text-base">
                     {service.description}
                   </p>
                   <h3 className="font-heading font-semibold text-sm text-slate-800 mb-4 tracking-wide">
@@ -112,24 +107,18 @@ export default function ServicesPage() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </>
               );
 
+              /* Image full-height */
               const imagePanel = (
-                <div
-                  className={[
-                    "lg:col-span-2 relative overflow-hidden min-h-[220px]",
-                    infoFirst
-                      ? "lg:order-3 border-t lg:border-t-0 lg:border-l border-slate-200"
-                      : "lg:order-1 border-b lg:border-b-0 lg:border-r border-slate-200",
-                  ].join(" ")}
-                >
+                <div className="relative min-h-[260px] lg:min-h-full overflow-hidden">
                   <Image
                     src={service.image}
                     alt={service.title}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 28vw"
+                    sizes="(max-width: 1024px) 100vw, 35vw"
                   />
                 </div>
               );
@@ -141,11 +130,41 @@ export default function ServicesPage() {
                   className="group relative rounded-2xl border border-slate-200 overflow-hidden hover:border-brand-500/30 hover:shadow-xl transition-all duration-500 scroll-mt-24"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-500/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden="true" />
-                  <div className="relative grid grid-cols-1 lg:grid-cols-[2fr_3fr_2fr] gap-0">
-                    {infoPanel}
-                    {contentPanel}
-                    {imagePanel}
-                  </div>
+
+                  {isOdd ? (
+                    /* ── Impair : image gauche | colonne droite (info ↑ + contenu ↓) ── */
+                    <div className="relative grid grid-cols-1 lg:grid-cols-[2fr_3fr]">
+                      {/* Image gauche */}
+                      <div className="border-b lg:border-b-0 lg:border-r border-slate-200">
+                        {imagePanel}
+                      </div>
+                      {/* Colonne droite : empilée */}
+                      <div className="flex flex-col">
+                        <div className="p-8 sm:p-10 flex flex-col border-b border-slate-200 bg-white">
+                          {infoContent}
+                        </div>
+                        <div className="p-8 sm:p-10 flex-1 bg-white">
+                          {contentContent}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* ── Pair : contenu gauche | info centre | image droite ── */
+                    <div className="relative grid grid-cols-1 lg:grid-cols-[3fr_2fr_3fr]">
+                      {/* Contenu gauche */}
+                      <div className="p-8 sm:p-10 bg-white border-b lg:border-b-0 lg:border-r border-slate-200">
+                        {contentContent}
+                      </div>
+                      {/* Info centre */}
+                      <div className="p-8 sm:p-10 bg-slate-50 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-slate-200">
+                        {infoContent}
+                      </div>
+                      {/* Image droite */}
+                      <div className="border-t lg:border-t-0">
+                        {imagePanel}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
