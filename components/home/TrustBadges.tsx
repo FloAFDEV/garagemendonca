@@ -4,9 +4,9 @@ import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 const badges = [
   {
     Icon: Calendar,
-    value: "+30 ANS",
+    value: "+25 ANS",
     label: "D'expérience",
-    pill: "Depuis 1993",
+    pill: "Depuis 2001",
     description:
       "M. Vitor Mendonça et son équipe mettent leur savoir-faire à votre service pour des prestations de qualité.",
     iconBg:   "bg-amber-50",

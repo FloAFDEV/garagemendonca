@@ -9,12 +9,12 @@ export const metadata: Metadata = {
     template: "%s | Garage Auto Mendonça — Drémil-Lafage",
   },
   description:
-    "Garage auto à Drémil-Lafage (31) — Mécanique, carrosserie, diagnostic et vente VO depuis 1993. Spécialiste BMW, Audi, Volkswagen. Diagnostic en 10 min, devis gratuit, 9 véhicules de prêt. ☎ 05 32 00 20 38.",
+    "Garage auto à Drémil-Lafage (31) — Mécanique, carrosserie, diagnostic et vente VO depuis 2001. Spécialiste japonaises, boîte automatique. Diagnostic en 10 min, devis gratuit, 9 véhicules de prêt. ☎ 05 32 00 20 38.",
   keywords: [
     "garage automobile Drémil-Lafage",
     "garagiste Toulouse",
     "réparation voiture 31",
-    "mécanique BMW Audi Volkswagen",
+    "mécanique japonaises boîte automatique",
     "carrosserie peinture",
     "diagnostic OBD",
     "occasions boîte automatique",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Garage Auto Mendonça — Spécialiste automobile Drémil-Lafage",
     description:
-      "Garage auto à Drémil-Lafage (31) depuis 1993. Mécanique, carrosserie, vente VO. Spécialiste BMW · Audi · Volkswagen · Mercedes. Diagnostic en 10 min.",
+      "Garage auto à Drémil-Lafage (31) depuis 2001. Mécanique, carrosserie, vente VO. Spécialiste japonaises · boîte automatique. Diagnostic en 10 min.",
     type: "website",
     locale: "fr_FR",
   },
@@ -35,7 +35,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "AutoRepair",
   "name": "Garage Auto Mendonça",
-  "description": "Spécialiste de la mécanique, carrosserie et vente de véhicules d'occasion à Drémil-Lafage depuis 1993.",
+  "description": "Spécialiste de la mécanique, carrosserie et vente de véhicules d'occasion japonais à boîte automatique à Drémil-Lafage depuis 2001.",
   "url": "https://www.garagemendonca.com",
   "telephone": "+33532002038",
   "email": "contact@garagemendonca.com",

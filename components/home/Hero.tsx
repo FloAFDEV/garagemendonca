@@ -5,7 +5,7 @@ import StatsCounter from "@/components/home/StatsCounter";
 const trustBadges = [
   { Icon: ShieldCheck, text: "Devis pièce & main-d'œuvre avant toute intervention" },
   { Icon: Clock, text: "Accueil avec ou sans rendez-vous" },
-  { Icon: Award, text: "Spécialiste BMW · Audi · Volkswagen · Mercedes" },
+  { Icon: Award, text: "Spécialiste japonaises · boîte automatique" },
 ];
 
 export default function Hero() {
@@ -38,7 +38,7 @@ export default function Hero() {
             <div className="flex items-center gap-3 mb-8 animate-fade-in">
               <div className="w-8 h-px bg-brand-500" aria-hidden="true" />
               <span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
-                Garagiste Drémil-Lafage · Haute-Garonne · Depuis 1993
+                Garagiste Drémil-Lafage · Haute-Garonne · Depuis 2001
               </span>
             </div>
 
@@ -55,8 +55,8 @@ export default function Hero() {
             {/* Sous-titre (p, pas h2) */}
             <p className="text-slate-100 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
               Mécaniciens qualifiés, équipement dernière génération, devis
-              transparent avant toute intervention. Toutes marques, spécialiste
-              BMW · Audi · Volkswagen depuis 1993.
+              transparent avant toute intervention. Spécialiste japonaises
+              et boîte automatique depuis 2001. Jeunes conducteurs, seniors &amp; PMR bienvenus.
             </p>
 
             {/* CTA */}

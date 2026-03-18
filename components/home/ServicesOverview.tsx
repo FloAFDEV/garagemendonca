@@ -19,8 +19,8 @@ const services = [
     Icon: Settings,
     title: "Mécanique & Électronique",
     description:
-      "Spécialistes BMW, Audi et Volkswagen. Réparation électronique à coût maîtrisé, devis avant intervention.",
-    items: ["Spécialiste BMW · Audi · VW", "Moteur, embrayage, boîte", "Réparation pièces électro.", "Devis pièce & main-d'œuvre"],
+      "Spécialiste véhicules japonais et boîtes automatiques. Réparation électronique à coût maîtrisé, devis avant intervention.",
+    items: ["Spécialiste japonaises", "Moteur, embrayage, boîte auto", "Réparation pièces électro.", "Devis pièce & main-d'œuvre"],
   },
   {
     id: "diagnostic",
@@ -28,7 +28,7 @@ const services = [
     Icon: Cpu,
     title: "Diagnostic & Motoriste",
     description:
-      "Spécialiste combustion & encrassements depuis +12 ans. Diagnostic OBD en 10 minutes, toutes marques.",
+      "Spécialiste combustion & encrassements depuis 2001. Diagnostic OBD en 10 minutes, toutes marques.",
     items: ["Diagnostic OBD en 10 min", "Nettoyage admission & DPF", "Réparation turbo & EGR", "Pertes de puissance"],
   },
   {

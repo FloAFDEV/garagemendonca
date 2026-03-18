@@ -198,7 +198,7 @@ export const services: Service[] = [
     id: "entretien",
     title: "Entretien & Révision",
     description:
-      "Motoriste spécialiste depuis plus de 12 ans, le Garage Mendonça assure l'entretien de tous les véhicules toutes marques avec un service de proximité, une écoute et une qualité d'intervention constante. Techniciens formés aux technologies Renault, PSA (Peugeot, Citroën), BMW, Audi et Volkswagen. Les préconisations constructeur sont toujours respectées.",
+      "Depuis 2001, le Garage Mendonça assure l'entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Accueil adapté aux jeunes conducteurs, seniors et personnes à mobilité réduite. Les préconisations constructeur sont toujours respectées.",
     icon: "wrench",
     image: "/images/entretien.webp",
     features: [
@@ -216,14 +216,14 @@ export const services: Service[] = [
     id: "mecanique",
     title: "Réparation Mécanique & Électronique",
     description:
-      "À la fois généraliste et expert, le Garage Mendonça intervient aussi bien sur l'entretien courant que les réparations les plus techniques, sur tous les véhicules quelle que soit leur marque. Spécialistes BMW, Audi et Volkswagen, nos mécaniciens qualifiés et continuellement formés assurent le meilleur service. Réparation de pièces électroniques automobiles souvent hors de prix — à coût acceptable, en restant dans le réseau professionnel.",
+      "À la fois généraliste et expert, le Garage Mendonça intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé, en restant dans le réseau professionnel.",
     icon: "settings",
     image: "/images/mecanique.webp",
     features: [
       "Réparation moteur, embrayage & boîte de vitesses",
       "Suspensions, direction et amortisseurs",
       "Réparation pièces électroniques automobiles",
-      "Spécialiste BMW · Audi · VW · Mercedes · Renault · PSA",
+      "Spécialiste japonaises · boîte automatique",
       "Réparation boîte de vitesse automatique",
       "Mise au point moteur",
       "Devis pièce & main-d'œuvre avant toute intervention",
@@ -234,7 +234,7 @@ export const services: Service[] = [
     id: "diagnostic",
     title: "Diagnostic & Motoriste",
     description:
-      "Votre Garage Mendonça, atelier conseil easydiag, est spécialiste de la combustion, de la tribologie et des encrassements moteurs depuis plus de 12 ans. Diagnostic électronique en 10 minutes sur tous constructeurs. Consultez-nous pour le nettoyage et la régénération de votre filtre à particules, toute perte de puissance moteur, un témoin OBD allumé, ou un turbo et une vanne EGR défaillants.",
+      "Votre Garage Mendonça, atelier conseil easydiag depuis 2001, est spécialiste de la combustion, de la tribologie et des encrassements moteurs. Diagnostic électronique en 10 minutes sur tous constructeurs, avec une expertise particulière sur les moteurs japonais. Consultez-nous pour le nettoyage et la régénération de votre filtre à particules, toute perte de puissance moteur, un témoin OBD allumé, ou un turbo et une vanne EGR défaillants.",
     icon: "cpu",
     image: "/images/diagnostic.webp",
     features: [
@@ -252,7 +252,7 @@ export const services: Service[] = [
     id: "carrosserie",
     title: "Carrosserie, Vitrage & Services",
     description:
-      "Le Garage Mendonça a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques (Renault, Peugeot, BMW, Mercedes, Volkswagen…). Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",
+      "Le Garage Mendonça a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",
     icon: "paintbrush",
     image: "/images/carrosserie.webp",
     features: [

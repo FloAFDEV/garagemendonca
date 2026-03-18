@@ -48,14 +48,12 @@ export default function Footer() {
                 <div className="font-heading font-bold text-white text-lg leading-tight">
                   Garage Mendonça
                 </div>
-                <div className="text-xs text-slate-500 mt-0.5">Depuis 1993 · Drémil-Lafage</div>
+                <div className="text-xs text-slate-500 mt-0.5">Depuis 2001 · Drémil-Lafage</div>
               </div>
             </Link>
 
             <p className="text-sm leading-relaxed text-slate-500 mb-5">
-              Avec une expérience de plus de 30 ans, le Garage Mendonça est
-              votre spécialiste de la mécanique, la carrosserie et la vente
-              en région toulousaine. Nous parlons portugais et français.
+              Spécialiste des voitures japonaises et boîtes automatiques depuis 2001, le Garage Mendonça accueille jeunes conducteurs, seniors et personnes à mobilité réduite. Nous parlons portugais et français.
             </p>
 
             <div className="flex items-center gap-3">

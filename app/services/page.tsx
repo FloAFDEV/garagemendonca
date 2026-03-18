@@ -20,7 +20,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Nos Services",
   description:
-    "Mécanique, carrosserie, diagnostic et entretien à Drémil-Lafage (31). Spécialiste BMW, Audi, Volkswagen, Mercedes. Diagnostic OBD en 10 min, devis pièce & main-d'œuvre gratuit. Toutes marques.",
+    "Mécanique, carrosserie, diagnostic et entretien à Drémil-Lafage (31). Spécialiste japonaises et boîte automatique depuis 2001. Jeunes conducteurs, seniors, PMR bienvenus. Diagnostic OBD en 10 min, devis gratuit.",
 };
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -32,7 +32,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const trustCards = [
   { Icon: ClipboardCheck, title: "Devis gratuit",  sub: "Pièce & main-d'œuvre avant intervention" },
-  { Icon: Car,            title: "Toutes marques", sub: "BMW · Audi · VW · Mercedes · Renault · PSA" },
+  { Icon: Car,            title: "Spécialiste japonaises", sub: "Jeunes conducteurs · Seniors · PMR" },
   { Icon: Shield,         title: "Garantie",       sub: "6 à 12 mois km illimités (VO)" },
   { Icon: Award,          title: "160 points",     sub: "De contrôle sur chaque véhicule" },
 ];
@@ -53,7 +53,7 @@ export default function ServicesPage() {
           </div>
           <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-5">
             Mécanique, carrosserie &amp; vente<br />
-            <span className="text-brand-400">depuis 1993 à Drémil-Lafage</span>
+            <span className="text-brand-400">depuis 2001 à Drémil-Lafage</span>
           </h1>
           <p className="text-dark-300 text-base sm:text-lg leading-relaxed max-w-2xl">
             Mécaniciens qualifiés et continuellement formés, équipements dernière génération.
