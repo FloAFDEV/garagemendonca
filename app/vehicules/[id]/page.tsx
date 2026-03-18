@@ -233,7 +233,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
               {/* Description */}
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
                 <h2 className="font-heading font-bold text-[#0f172a] text-xl mb-4">Description</h2>
-                <p className="text-[#475569] leading-relaxed text-[15px]">{vehicle.description}</p>
+                <p className="text-[#475569] leading-relaxed text-[15px] max-w-2xl">{vehicle.description}</p>
                 <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {[
                     "Contrôle technique à jour",

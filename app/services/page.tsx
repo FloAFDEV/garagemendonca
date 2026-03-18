@@ -94,7 +94,7 @@ export default function ServicesPage() {
               /* Bloc contenu : description + features */
               const contentContent = (
                 <>
-                  <p className="text-slate-500 leading-relaxed mb-6 text-sm sm:text-base">
+                  <p className="text-slate-500 leading-relaxed mb-6 text-sm sm:text-base max-w-prose">
                     {service.description}
                   </p>
                   <h3 className="font-heading font-semibold text-sm text-slate-800 mb-4 tracking-wide">
@@ -213,7 +213,7 @@ export default function ServicesPage() {
           <h2 className="font-heading font-bold text-white text-3xl md:text-4xl mb-4">
             Besoin d&apos;un devis ou d&apos;un rendez-vous&nbsp;?
           </h2>
-          <p className="text-dark-300 text-lg mb-8">
+          <p className="text-dark-300 text-lg mb-8 max-w-2xl mx-auto">
             Contactez-nous dès maintenant. Réponse en moins de 24h. Accueil avec ou sans rendez-vous.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
