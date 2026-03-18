@@ -69,7 +69,7 @@ export default function ProcessSection() {
 
   return (
     <section id="process" className="py-24 bg-white" aria-labelledby="process-title">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── En-tête ── */}
         <motion.div

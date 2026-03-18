@@ -23,7 +23,7 @@ export default function FeaturedVehicles() {
 
   return (
     <section className="py-28 bg-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── Header ── */}
         <AnimateOnScroll>
@@ -80,7 +80,7 @@ export default function FeaturedVehicles() {
               </div>
               <Link
                 href="/vehicules"
-                className="btn-primary text-sm py-2.5 flex-shrink-0"
+                className="btn-primary text-sm py-3 flex-shrink-0"
               >
                 Voir le stock complet
                 <ArrowRight size={15} />

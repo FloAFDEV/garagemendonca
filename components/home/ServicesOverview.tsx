@@ -45,7 +45,7 @@ const services = [
 export default function ServicesOverview() {
   return (
     <section className="py-28 bg-[#f8fafc]">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── Header ── */}
         <AnimateOnScroll>

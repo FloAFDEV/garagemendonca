@@ -34,7 +34,7 @@ export default function Header() {
     >
       {/* ── Barre info supérieure ── */}
       <div className="bg-[#0f172a] text-slate-400 text-xs py-2 hidden md:block">
-        <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Phone size={12} className="text-brand-400" aria-hidden="true" />
             <a
@@ -56,7 +56,7 @@ export default function Header() {
       </div>
 
       {/* ── Nav principale ── */}
-      <nav className="container mx-auto px-4" aria-label="Navigation principale">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Navigation principale">
         <div className="flex items-center justify-between h-16 md:h-[72px]">
 
           {/* Logo */}
@@ -79,7 +79,7 @@ export default function Header() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-[#475569] hover:text-[#0f172a] font-medium px-4 py-2 rounded-lg hover:bg-slate-100 transition-all duration-150 text-sm focus-visible:ring-2 focus-visible:ring-brand-400"
+                  className="text-[#475569] hover:text-[#0f172a] font-medium px-4 py-3 rounded-lg hover:bg-slate-100 transition-all duration-150 text-sm focus-visible:ring-2 focus-visible:ring-brand-400"
                 >
                   {link.label}
                 </Link>
@@ -91,7 +91,7 @@ export default function Header() {
           <div className="hidden md:flex items-center">
             <a
               href="tel:0532002038"
-              className="btn-primary text-sm py-2.5 px-5"
+              className="btn-primary text-sm py-3 px-5"
             >
               <Phone size={14} />
               Prendre RDV

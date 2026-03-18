@@ -10,7 +10,7 @@ const hours = [
 export default function MapContact() {
   return (
     <section className="py-24 bg-[#f1f5f9]">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
         <AnimateOnScroll>
           <div className="text-center mb-14">

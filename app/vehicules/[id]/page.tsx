@@ -128,7 +128,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
 
       <div className="bg-[#f8fafc] min-h-screen">
-        <div className="container mx-auto px-4 pt-28 pb-28 sm:pb-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-28 sm:pb-12">
 
           {/* ── Navigation ── */}
           <nav aria-label="Fil d'Ariane" className="mb-3">

@@ -93,7 +93,7 @@ export default function VehiculesPage() {
       {/* ── Hero ── */}
       <section className="bg-[#0f172a] pt-36 pb-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="max-w-3xl">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-8 h-px bg-brand-500" aria-hidden="true" />
@@ -113,7 +113,7 @@ export default function VehiculesPage() {
 
       {/* ── Catalogue ── */}
       <section className="py-12 bg-[#f8fafc]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Suspense fallback={
             <div className="animate-pulse space-y-4">
               <div className="h-10 bg-slate-200 rounded-xl w-2/3" />
@@ -131,7 +131,7 @@ export default function VehiculesPage() {
 
       {/* ── Bannière garanties ── */}
       <section className="py-12 bg-white border-t border-slate-200">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 text-center">
             {[
               { Icon: ClipboardCheck, label: "Contrôle technique récent" },
