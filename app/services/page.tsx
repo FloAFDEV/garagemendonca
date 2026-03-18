@@ -112,7 +112,7 @@ export default function ServicesPage() {
 
               /* Image full-height */
               const imagePanel = (
-                <div className="relative min-h-[260px] lg:min-h-full overflow-hidden">
+                <div className="relative min-h-[220px] lg:min-h-0 overflow-hidden">
                   <Image
                     src={service.image}
                     alt={service.title}
