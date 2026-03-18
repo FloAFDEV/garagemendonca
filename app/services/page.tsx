@@ -108,7 +108,7 @@ export default function ServicesPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
                     {service.features.map((feature) => (
                       <div key={feature} className="flex items-start gap-2.5">
-                        <CircleCheck className="h-4 w-4 text-brand-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                        <CircleCheck className="h-4 w-4 text-brand-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
                         <span className="text-sm text-dark-300 leading-snug">{feature}</span>
                       </div>
                     ))}
