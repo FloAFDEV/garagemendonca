@@ -112,7 +112,7 @@ export default function ServicesPage() {
 
               /* Image full-height */
               const imagePanel = (
-                <div className="relative min-h-[220px] lg:min-h-0 overflow-hidden">
+                <div className="relative min-h-[220px] lg:min-h-0 h-full overflow-hidden">
                   <Image
                     src={service.image}
                     alt={service.title}
@@ -135,7 +135,7 @@ export default function ServicesPage() {
                     /* ── Impair : image gauche | colonne droite (info ↑ + contenu ↓) ── */
                     <div className="relative grid grid-cols-1 lg:grid-cols-[2fr_3fr]">
                       {/* Image gauche */}
-                      <div className="border-b lg:border-b-0 lg:border-r border-slate-200">
+                      <div className="border-b lg:border-b-0 lg:border-r border-slate-200 h-full">
                         {imagePanel}
                       </div>
                       {/* Colonne droite : empilée */}
@@ -160,7 +160,7 @@ export default function ServicesPage() {
                         {infoContent}
                       </div>
                       {/* Image droite */}
-                      <div className="border-t lg:border-t-0">
+                      <div className="border-t lg:border-t-0 h-full">
                         {imagePanel}
                       </div>
                     </div>
