@@ -7,20 +7,30 @@
  *
  * Largeur max : 80rem (1280px) · Padding : px-4 → sm:px-6 → lg:px-8
  */
+import type { ComponentPropsWithoutRef, ElementType } from "react";
 
-interface ContainerProps {
-  children: React.ReactNode;
+type ContainerOwnProps<T extends ElementType = "div"> = {
+  /** Balise HTML ou composant React à rendre (défaut : "div") */
+  as?: T;
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
-}
+  children?: React.ReactNode;
+};
 
-export default function Container({
+type ContainerProps<T extends ElementType = "div"> = ContainerOwnProps<T> &
+  Omit<ComponentPropsWithoutRef<T>, keyof ContainerOwnProps<T>>;
+
+export default function Container<T extends ElementType = "div">({
+  as,
   children,
   className = "",
-  as: Tag = "div",
-}: ContainerProps) {
+  ...rest
+}: ContainerProps<T>) {
+  const Tag = as ?? "div";
   return (
-    <Tag className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${className}`.trim()}>
+    <Tag
+      className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${className}`.trim()}
+      {...rest}
+    >
       {children}
     </Tag>
   );
