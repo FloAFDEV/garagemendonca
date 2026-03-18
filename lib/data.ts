@@ -200,7 +200,7 @@ export const services: Service[] = [
     description:
       "Motoriste spécialiste depuis plus de 12 ans, le Garage Mendonça assure l'entretien de tous les véhicules toutes marques avec un service de proximité, une écoute et une qualité d'intervention constante. Techniciens formés aux technologies Renault, PSA (Peugeot, Citroën), BMW, Audi et Volkswagen. Les préconisations constructeur sont toujours respectées.",
     icon: "wrench",
-    image: "/images/services/entretien.webp",
+    image: "/images/entretien.webp",
     features: [
       "Vidange huile moteur & remplacement filtres",
       "Révision garantie constructeur",
@@ -218,7 +218,7 @@ export const services: Service[] = [
     description:
       "À la fois généraliste et expert, le Garage Mendonça intervient aussi bien sur l'entretien courant que les réparations les plus techniques, sur tous les véhicules quelle que soit leur marque. Spécialistes BMW, Audi et Volkswagen, nos mécaniciens qualifiés et continuellement formés assurent le meilleur service. Réparation de pièces électroniques automobiles souvent hors de prix — à coût acceptable, en restant dans le réseau professionnel.",
     icon: "settings",
-    image: "/images/services/mecanique.webp",
+    image: "/images/mecanique.webp",
     features: [
       "Réparation moteur, embrayage & boîte de vitesses",
       "Suspensions, direction et amortisseurs",
@@ -236,7 +236,7 @@ export const services: Service[] = [
     description:
       "Votre Garage Mendonça, atelier conseil easydiag, est spécialiste de la combustion, de la tribologie et des encrassements moteurs depuis plus de 12 ans. Diagnostic électronique en 10 minutes sur tous constructeurs. Consultez-nous pour le nettoyage et la régénération de votre filtre à particules, toute perte de puissance moteur, un témoin OBD allumé, ou un turbo et une vanne EGR défaillants.",
     icon: "cpu",
-    image: "/images/services/diagnostic.webp",
+    image: "/images/diagnostic.webp",
     features: [
       "Diagnostic OBD / OBD2 en 10 minutes, toutes marques",
       "Nettoyage admission diesel",
@@ -254,7 +254,7 @@ export const services: Service[] = [
     description:
       "Le Garage Mendonça a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques (Renault, Peugeot, BMW, Mercedes, Volkswagen…). Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",
     icon: "paintbrush",
-    image: "/images/services/carrosserie.webp",
+    image: "/images/carrosserie.webp",
     features: [
       "Tôlerie, peinture, réparation plastiques — cabine neuve",
       "Pare-brise & lunette arrière (particuliers et utilitaires)",
