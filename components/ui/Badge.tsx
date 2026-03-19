@@ -11,7 +11,7 @@ const variants = {
   green: "bg-emerald-100 text-emerald-700",
   blue: "bg-blue-100 text-blue-700",
   gray: "bg-dark-100 text-dark-600",
-  red: "bg-red-100 text-red-700",
+  red: "bg-red-500 text-white",
 };
 
 export default function Badge({ children, variant = "gray", className }: BadgeProps) {

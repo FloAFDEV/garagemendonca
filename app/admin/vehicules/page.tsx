@@ -255,7 +255,7 @@ export default function AdminVehiclesPage() {
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => handleDelete(vehicle.id)}
-                              className="px-2 py-1 text-xs bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg transition-colors font-medium"
+                              className="px-2 py-1 text-xs bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors font-medium"
                             >
                               Confirmer
                             </button>
