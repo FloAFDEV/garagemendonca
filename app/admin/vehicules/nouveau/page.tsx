@@ -15,6 +15,12 @@ import Link from "next/link";
 
 const fuelOptions = ["Essence", "Diesel", "Hybride", "Électrique", "GPL"];
 const transmissionOptions = ["Manuelle", "Automatique"];
+const statusOptions: { value: string; label: string; desc: string }[] = [
+  { value: "draft",     label: "Brouillon",   desc: "Non visible côté public" },
+  { value: "published", label: "Publié",       desc: "Visible immédiatement" },
+  { value: "scheduled", label: "Programmé",    desc: "Visible à la date choisie" },
+  { value: "sold",      label: "Vendu",        desc: "Visible avec badge « Vendu »" },
+];
 
 interface VehicleForm {
   brand: string;
@@ -29,6 +35,8 @@ interface VehicleForm {
   doors: string;
   description: string;
   images: string[];
+  vehicleStatus: string;
+  published_at: string;
 }
 
 const emptyForm: VehicleForm = {
@@ -44,6 +52,8 @@ const emptyForm: VehicleForm = {
   doors: "5",
   description: "",
   images: [],
+  vehicleStatus: "draft",
+  published_at: "",
 };
 
 export default function NewVehiclePage() {
@@ -297,6 +307,49 @@ export default function NewVehiclePage() {
               onChange={handleChange}
               className={inputClass + " resize-none"}
             />
+          </div>
+
+          {/* Section: Publication */}
+          <div className="bg-dark-900 rounded-2xl border border-dark-800 p-6">
+            <h3 className="font-heading font-semibold text-white mb-6">
+              Publication
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className={labelClass}>Statut <span className="text-brand-500">*</span></label>
+                <select
+                  name="vehicleStatus"
+                  value={form.vehicleStatus}
+                  onChange={handleChange}
+                  className={inputClass}
+                >
+                  {statusOptions.map(({ value, label }) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </select>
+                <p className="text-dark-500 text-xs mt-1.5">
+                  {statusOptions.find((o) => o.value === form.vehicleStatus)?.desc}
+                </p>
+              </div>
+              {form.vehicleStatus === "scheduled" && (
+                <div>
+                  <label className={labelClass}>
+                    Date de publication <span className="text-brand-500">*</span>
+                  </label>
+                  <input
+                    name="published_at"
+                    type="datetime-local"
+                    value={form.published_at}
+                    onChange={handleChange}
+                    required={form.vehicleStatus === "scheduled"}
+                    className={inputClass}
+                  />
+                  <p className="text-dark-500 text-xs mt-1.5">
+                    L&apos;annonce sera automatiquement publiée à cette date.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Section: Photos */}

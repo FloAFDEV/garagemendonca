@@ -2,7 +2,11 @@
 //  Statut métier d'un véhicule
 //  Mirrors: CREATE TYPE vehicle_status AS ENUM (...)
 // ─────────────────────────────────────────────
-export type VehicleStatus = "available" | "reserved" | "sold";
+// draft      → brouillon, non visible côté public
+// published  → visible
+// scheduled  → visible uniquement à partir de published_at
+// sold       → reste visible avec badge "Vendu"
+export type VehicleStatus = "draft" | "published" | "scheduled" | "sold";
 
 // ─────────────────────────────────────────────
 //  Rôles utilisateur (multi-garage)
@@ -87,6 +91,10 @@ export interface Vehicle {
   critAir?: string;
   // Statut métier
   status?: VehicleStatus;
+  // Publication programmée (ISO 8601) — utilisé quand status === "scheduled"
+  published_at?: string;
+  // Date de vente (ISO 8601) — renseignée quand status === "sold"
+  sold_at?: string;
   // Mise en avant
   featured?: boolean;
   featuredOrder?: number;      // position parmi les "à la une" (1 = premier)

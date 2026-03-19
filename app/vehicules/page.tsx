@@ -5,9 +5,13 @@ import { useSearchParams } from "next/navigation";
 import MainLayout from "@/components/layout/MainLayout";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import VehicleFilters, { FilterState, INITIAL_FILTERS } from "@/components/vehicles/VehicleFilters";
-import { vehicles } from "@/lib/data";
-import { Car, ClipboardCheck, Wrench, BookOpen, ShieldCheck } from "lucide-react";
+import { vehicles as allVehiclesRaw } from "@/lib/data";
+import { isPubliclyVisible } from "@/lib/vehicles";
+import { Car, ClipboardCheck, Wrench, BookOpen, ShieldCheck, EyeOff } from "lucide-react";
 import Container from "@/components/ui/Container";
+
+/* Only publicly visible vehicles (published + sold + scheduled passé) */
+const vehicles = allVehiclesRaw.filter(isPubliclyVisible);
 
 /* Options dérivées du catalogue (recalculées une fois au module level) */
 const ALL_BRANDS = Array.from(new Set(vehicles.map((v) => v.brand))).sort();
@@ -22,9 +26,11 @@ function CatalogueContent() {
     ...INITIAL_FILTERS,
     brands: brandParam ? [brandParam] : [],
   });
+  const [hideSold, setHideSold] = useState(false);
 
   const filtered = useMemo(() => {
     let list = [...vehicles];
+    if (hideSold) list = list.filter((v) => v.status !== "sold");
 
     if (filters.brands.length > 0)
       list = list.filter((v) => filters.brands.includes(v.brand));
@@ -51,14 +57,30 @@ function CatalogueContent() {
   return (
     <>
       {/* Filtres */}
-      <VehicleFilters
-        filters={filters}
-        onChange={setFilters}
-        availableBrands={ALL_BRANDS}
-        availableFuels={ALL_FUELS}
-        totalCount={vehicles.length}
-        filteredCount={filtered.length}
-      />
+      <div className="flex flex-wrap items-center gap-3 mb-2">
+        <div className="flex-1 min-w-0">
+          <VehicleFilters
+            filters={filters}
+            onChange={setFilters}
+            availableBrands={ALL_BRANDS}
+            availableFuels={ALL_FUELS}
+            totalCount={vehicles.length}
+            filteredCount={filtered.length}
+          />
+        </div>
+        <button
+          onClick={() => setHideSold((v) => !v)}
+          className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border transition-colors flex-shrink-0 ${
+            hideSold
+              ? "bg-[#0f172a] border-[#0f172a] text-white"
+              : "bg-white border-slate-200 text-[#475569] hover:border-slate-400"
+          }`}
+          aria-pressed={hideSold}
+        >
+          <EyeOff size={15} aria-hidden="true" />
+          {hideSold ? "Vendus masqués" : "Masquer les vendus"}
+        </button>
+      </div>
 
       {/* Grille */}
       {filtered.length > 0 ? (

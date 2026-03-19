@@ -35,9 +35,19 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
           alt={altText}
           fill
           priority={priority}
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className={`object-cover transition-transform duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
+
+        {/* Overlay Vendu */}
+        {vehicle.status === "sold" && (
+          <div className="absolute inset-0 bg-[#0f172a]/55 flex items-center justify-center" aria-hidden="true">
+            <span className="bg-slate-700 text-white font-heading font-black text-lg px-5 py-2 rounded-xl tracking-wide rotate-[-8deg] shadow-lg select-none">
+              Vendu
+            </span>
+          </div>
+        )}
+
         {/* Prix overlay */}
         <div
           className="absolute top-2.5 right-2.5 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-bold text-base px-2.5 py-1 rounded-lg"
@@ -45,7 +55,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
         >
           {vehicle.price.toLocaleString("fr-FR")} €
         </div>
-        {vehicle.featured && (
+        {vehicle.featured && vehicle.status !== "sold" && (
           <div className="absolute top-2.5 left-2.5">
             <Badge variant="orange">
               <Star size={10} className="fill-current" aria-hidden="true" />
@@ -111,10 +121,16 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
           >
             {vehicle.price.toLocaleString("fr-FR")} €
           </span>
-          <div className="w-full bg-brand-500 group-hover:bg-brand-600 text-white font-semibold text-sm py-3 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
-            Voir le véhicule
-            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
-          </div>
+          {vehicle.status === "sold" ? (
+            <div className="w-full bg-slate-200 text-slate-500 font-semibold text-sm py-3 rounded-lg flex items-center justify-center gap-2 cursor-default">
+              Vendu
+            </div>
+          ) : (
+            <div className="w-full bg-brand-500 group-hover:bg-brand-600 text-white font-semibold text-sm py-3 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
+              Voir le véhicule
+              <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+            </div>
+          )}
         </div>
       </div>
     </Link>

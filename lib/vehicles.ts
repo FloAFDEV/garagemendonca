@@ -16,7 +16,7 @@
  * de la migration Supabase.
  */
 
-import type { Vehicle, VehicleCreateInput, VehicleUpdateInput } from "@/types";
+import type { Vehicle, VehicleStatus, VehicleCreateInput, VehicleUpdateInput } from "@/types";
 import { vehicles as mockVehicles } from "./data";
 
 /* ─── helpers mock ─── */
@@ -26,16 +26,51 @@ function now(): string {
   return new Date().toISOString();
 }
 
+/* ─── Visibilité publique ───────────────────────────────────────────────────
+ * Règles :
+ *   published  → toujours visible
+ *   sold       → visible avec badge "Vendu"
+ *   scheduled  → visible uniquement si published_at est passé
+ *   draft      → jamais visible côté public
+ * ─────────────────────────────────────────────────────────────────────────── */
+export function isPubliclyVisible(vehicle: Vehicle): boolean {
+  const s = vehicle.status ?? "draft";
+  if (s === "published") return true;
+  if (s === "sold") return true;
+  if (s === "scheduled") {
+    return !!vehicle.published_at && new Date(vehicle.published_at) <= new Date();
+  }
+  return false; // draft
+}
+
 /* ──────────────────────────────────────────
    READ
 ────────────────────────────────────────── */
 
 /**
- * Récupère tous les véhicules.
+ * Récupère les véhicules visibles côté public (published + sold + scheduled passé).
+ * draft et scheduled futur sont exclus.
  * @param garageId  Si fourni, filtre par garage (mode isolated).
- *                  Si omis, retourne tous les véhicules (mode shared / superadmin).
  */
 export async function getAllVehicles(garageId?: string): Promise<Vehicle[]> {
+  // Future Supabase:
+  // let q = supabase.from("vehicles").select("*")
+  //   .in("status", ["published", "sold"])
+  //   .or("status.eq.scheduled,published_at.lte." + now())
+  //   .order("created_at", { ascending: false });
+  // if (garageId) q = q.eq("garage_id", garageId);
+  // const { data } = await q;
+  // return data ?? [];
+
+  const base = garageId ? _store.filter((v) => v.garageId === garageId) : _store;
+  return base.filter(isPubliclyVisible);
+}
+
+/**
+ * Récupère TOUS les véhicules pour l'interface admin (toutes statuts inclus).
+ * @param garageId  Si fourni, filtre par garage.
+ */
+export async function getAllVehiclesAdmin(garageId?: string): Promise<Vehicle[]> {
   // Future Supabase:
   // let q = supabase.from("vehicles").select("*").order("created_at", { ascending: false });
   // if (garageId) q = q.eq("garage_id", garageId);
@@ -64,17 +99,17 @@ export async function getFeaturedVehicles(limit = 3, garageId?: string): Promise
   // const { data } = await q;
   // return data ?? [];
   const base = garageId ? _store.filter((v) => v.garageId === garageId) : _store;
-  return base.filter((v) => v.featured).slice(0, limit);
+  return base.filter((v) => isPubliclyVisible(v) && v.featured).slice(0, limit);
 }
 
 export async function getRelatedVehicles(excludeId: string, limit = 3, garageId?: string): Promise<Vehicle[]> {
   // Future Supabase:
-  // let q = supabase.from("vehicles").select("*").neq("id", excludeId).limit(limit);
+  // let q = supabase.from("vehicles").select("*").neq("id", excludeId).in("status", ["published", "sold"]).limit(limit);
   // if (garageId) q = q.eq("garage_id", garageId);
   // const { data } = await q;
   // return data ?? [];
   const base = garageId ? _store.filter((v) => v.garageId === garageId) : _store;
-  return base.filter((v) => v.id !== excludeId).slice(0, limit);
+  return base.filter((v) => isPubliclyVisible(v) && v.id !== excludeId).slice(0, limit);
 }
 
 export async function getVehicleStaticParams(): Promise<{ id: string }[]> {
