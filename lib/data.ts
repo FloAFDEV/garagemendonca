@@ -1,8 +1,30 @@
-import { Vehicle, Service } from "@/types";
+import { Vehicle, Service, Garage } from "@/types";
 
+// ─────────────────────────────────────────────
+//  Garage(s) fictifs — données de démonstration
+// ─────────────────────────────────────────────
+export const garages: Garage[] = [
+  {
+    id: "garage-mendonca",
+    name: "Garage Auto Mendonça",
+    slug: "garage-mendonca",
+    address: "6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage",
+    phone: "05 32 00 20 38",
+    email: "contact@garagemendonca.com",
+    plan: "isolated",
+    createdAt: "2001-01-01T00:00:00Z",
+    updatedAt: "2025-01-01T00:00:00Z",
+  },
+];
+
+// ─────────────────────────────────────────────
+//  Véhicules fictifs — données de démonstration
+//  garageId lié au garage ci-dessus
+// ─────────────────────────────────────────────
 export const vehicles: Vehicle[] = [
   {
     id: "1",
+    garageId: "garage-mendonca",
     brand: "Toyota",
     model: "AYGO",
     year: 2020,
@@ -17,6 +39,7 @@ export const vehicles: Vehicle[] = [
     critAir: "2",
     status: "available",
     createdAt: "2025-11-30",
+    updatedAt: "2025-11-30T00:00:00Z",
     description:
       "Toyota AYGO boîte automatique, Crit'Air 2. Idéale en ville, très économique. Vérifiée en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois kilométrages illimités. Révision boîte automatique effectuée.",
     features: {
@@ -35,6 +58,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "2",
+    garageId: "garage-mendonca",
     brand: "Nissan",
     model: "Micra",
     year: 2019,
@@ -49,6 +73,7 @@ export const vehicles: Vehicle[] = [
     critAir: "2",
     status: "available",
     createdAt: "2025-12-15",
+    updatedAt: "2025-12-15T00:00:00Z",
     description:
       "Nissan Micra 1.4 88 ch Acenta, boîte automatique, Crit'Air 2. Véhicule français, bien entretenu, carnet à jour. Vérification en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités. Révision boîte automatique incluse.",
     features: {
@@ -67,6 +92,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "3",
+    garageId: "garage-mendonca",
     brand: "Suzuki",
     model: "Swift",
     year: 2018,
@@ -81,6 +107,7 @@ export const vehicles: Vehicle[] = [
     critAir: "2",
     status: "available",
     createdAt: "2026-01-20",
+    updatedAt: "2026-01-20T00:00:00Z",
     description:
       "Suzuki Swift 1.2i 94 ch GLX Pack, boîte automatique et toit ouvrant panoramique. Très bien équipée : climatisation automatique, bluetooth, régulateur de vitesse. 250 à 500 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités, vérification 160 points.",
     features: {
@@ -99,6 +126,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "4",
+    garageId: "garage-mendonca",
     brand: "Nissan",
     model: "Pixo",
     year: 2017,
@@ -113,6 +141,7 @@ export const vehicles: Vehicle[] = [
     critAir: "2",
     status: "available",
     createdAt: "2026-02-05",
+    updatedAt: "2026-02-05T00:00:00Z",
     description:
       "Nissan Pixo 1.0i 68 ch Acenta, boîte automatique, 1ère main. Petite citadine très maniable, faible consommation. Entretien complet réalisé par notre atelier. Garantie 6 à 12 mois km illimités, vérification 160 points.",
     features: {
@@ -131,6 +160,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "5",
+    garageId: "garage-mendonca",
     brand: "Opel",
     model: "Agila",
     year: 2016,
@@ -145,6 +175,7 @@ export const vehicles: Vehicle[] = [
     critAir: "2",
     status: "available",
     createdAt: "2026-02-25",
+    updatedAt: "2026-02-25T00:00:00Z",
     description:
       "Opel Agila 1.2i 85 ch Edition, boîte automatique, 1ère main. Véhicule bien entretenu, révisé par notre atelier avant mise en vente. Parfaite pour les déplacements quotidiens. Garantie 6 à 12 mois km illimités.",
     features: {
@@ -163,6 +194,7 @@ export const vehicles: Vehicle[] = [
   },
   {
     id: "6",
+    garageId: "garage-mendonca",
     brand: "Hyundai",
     model: "i10",
     year: 2018,
@@ -177,6 +209,7 @@ export const vehicles: Vehicle[] = [
     critAir: "2",
     status: "available",
     createdAt: "2026-03-10",
+    updatedAt: "2026-03-10T00:00:00Z",
     description:
       "Hyundai i10 boîte automatique. Légère, économique et facile à garer. Parfaite pour la ville et les trajets courts. Véhicule contrôlé et révisé par notre atelier, prêt à rouler. Garantie 6 à 12 mois km illimités.",
     features: {

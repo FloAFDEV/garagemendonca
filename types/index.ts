@@ -5,6 +5,47 @@
 export type VehicleStatus = "available" | "reserved" | "sold";
 
 // ─────────────────────────────────────────────
+//  Rôles utilisateur (multi-garage)
+//  Mirrors: CREATE TYPE user_role AS ENUM (...)
+// ─────────────────────────────────────────────
+export type UserRole = "superadmin" | "admin" | "staff";
+
+// ─────────────────────────────────────────────
+//  Plan d'un garage
+//  isolated = voit uniquement ses véhicules
+//  shared   = voit tous les véhicules (catalogue commun)
+// ─────────────────────────────────────────────
+export type GaragePlan = "isolated" | "shared";
+
+// ─────────────────────────────────────────────
+//  Garage
+//  Mirrors: table "garages"
+// ─────────────────────────────────────────────
+export interface Garage {
+  id: string;                  // uuid
+  name: string;                // "Garage Auto Mendonça"
+  slug: string;                // "garage-mendonca" (URL-safe)
+  address?: string;            // "6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage"
+  phone?: string;              // "05 32 00 20 38"
+  email?: string;              // "contact@garagemendonca.com"
+  plan: GaragePlan;            // gestion du stock
+  createdAt: string;           // ISO 8601
+  updatedAt: string;           // ISO 8601
+}
+
+// ─────────────────────────────────────────────
+//  Utilisateur lié à un garage
+//  Mirrors: table "garage_users"
+// ─────────────────────────────────────────────
+export interface GarageUser {
+  id: string;                  // uuid
+  garageId: string;            // FK → garages.id
+  email: string;
+  role: UserRole;
+  createdAt: string;           // ISO 8601
+}
+
+// ─────────────────────────────────────────────
 //  Caractéristiques techniques typées
 //  Mirrors: vehicles.features JSONB
 //  Toutes les clés sont optionnelles.
@@ -25,9 +66,11 @@ export interface VehicleFeatures {
 
 // ─────────────────────────────────────────────
 //  Véhicule
+//  Mirrors: table "vehicles"
 // ─────────────────────────────────────────────
 export interface Vehicle {
-  id: string;
+  id: string;                  // uuid (ou slug court pour les données mock)
+  garageId?: string;           // FK → garages.id (requis en multi-garage)
   brand: string;
   model: string;
   year: number;
@@ -36,22 +79,30 @@ export interface Vehicle {
   price: number;
   description: string;
   images: string[];
-  thumbnailUrl?: string;      // image principale mise en cache (Supabase Storage)
+  thumbnailUrl?: string;       // image principale mise en cache (Supabase Storage)
   transmission: "Manuelle" | "Automatique";
   power: number;
   color: string;
   doors: number;
   critAir?: string;
-  // Statut métier (remplace isAvailable)
+  // Statut métier
   status?: VehicleStatus;
   // Mise en avant
   featured?: boolean;
-  featuredOrder?: number;     // position parmi les "à la une" (1 = premier)
-  // Date d'entrée en stock — format ISO 8601 (YYYY-MM-DD)
+  featuredOrder?: number;      // position parmi les "à la une" (1 = premier)
+  // Timestamps — format ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)
   createdAt?: string;
+  updatedAt?: string;
   // Caractéristiques structurées
   features?: VehicleFeatures;
 }
+
+// ─────────────────────────────────────────────
+//  Payload de création / mise à jour d'un véhicule
+//  (id, createdAt, updatedAt sont gérés par la base)
+// ─────────────────────────────────────────────
+export type VehicleCreateInput = Omit<Vehicle, "id" | "createdAt" | "updatedAt">;
+export type VehicleUpdateInput = Partial<VehicleCreateInput>;
 
 // ─────────────────────────────────────────────
 //  Service

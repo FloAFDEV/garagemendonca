@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import StickyCallButton from "@/components/ui/StickyCallButton";
 import SkipToContent from "@/components/ui/SkipToContent";
 
 export const metadata: Metadata = {
@@ -104,7 +103,6 @@ export default function RootLayout({
       <body>
         <SkipToContent />
         {children}
-        <StickyCallButton />
       </body>
     </html>
   );

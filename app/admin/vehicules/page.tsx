@@ -10,8 +10,6 @@ import {
   Pencil,
   Trash2,
   Eye,
-  ChevronUp,
-  ChevronDown,
   Car,
 } from "lucide-react";
 import Link from "next/link";
@@ -134,12 +132,13 @@ export default function AdminVehiclesPage() {
                         >
                           <Eye size={15} />
                         </Link>
-                        <button
+                        <Link
+                          href={`/admin/vehicules/${vehicle.id}/modifier`}
                           className="p-2 text-dark-400 hover:text-blue-400 hover:bg-dark-700 rounded-lg transition-colors"
                           title="Modifier"
                         >
                           <Pencil size={15} />
-                        </button>
+                        </Link>
                         {deleteConfirm === vehicle.id ? (
                           <div className="flex items-center gap-1">
                             <button
