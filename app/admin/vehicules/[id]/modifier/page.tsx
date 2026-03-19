@@ -19,9 +19,10 @@ import Link from "next/link";
 const fuelOptions = ["Essence", "Diesel", "Hybride", "Électrique", "GPL"] as const;
 const transmissionOptions = ["Manuelle", "Automatique"] as const;
 const statusOptions: { value: VehicleStatus; label: string; color: string }[] = [
-  { value: "available", label: "Disponible",  color: "text-emerald-400" },
-  { value: "reserved",  label: "Réservé",     color: "text-amber-400" },
-  { value: "sold",      label: "Vendu",       color: "text-red-400" },
+  { value: "published",  label: "Publié",      color: "text-emerald-400" },
+  { value: "draft",      label: "Brouillon",   color: "text-dark-400" },
+  { value: "scheduled",  label: "Programmé",   color: "text-blue-400" },
+  { value: "sold",       label: "Vendu",       color: "text-red-400" },
 ];
 
 interface VehicleForm {
@@ -55,7 +56,7 @@ export default function EditVehiclePage({
     if (!vehicle) return {
       brand: "", model: "", year: "", mileage: "", fuel: "Essence",
       transmission: "Manuelle", power: "", price: "", color: "",
-      doors: "5", description: "", images: [], status: "available", featured: false,
+      doors: "5", description: "", images: [], status: "draft", featured: false,
     };
     return {
       brand:        vehicle.brand,
@@ -70,7 +71,7 @@ export default function EditVehiclePage({
       doors:        vehicle.doors.toString(),
       description:  vehicle.description,
       images:       [...vehicle.images],
-      status:       vehicle.status ?? "available",
+      status:       vehicle.status ?? "draft",
       featured:     vehicle.featured ?? false,
     };
   });
