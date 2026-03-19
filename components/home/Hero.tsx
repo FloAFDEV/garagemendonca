@@ -39,7 +39,7 @@ export default function Hero() {
             <div className="flex items-center gap-3 mb-8 animate-fade-in">
               <div className="w-8 h-px bg-brand-500" aria-hidden="true" />
               <span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
-                Garagiste Drémil-Lafage · Haute-Garonne · Depuis 2001
+                Garage Mendonça – Expert auto depuis 2001
               </span>
             </div>
 
