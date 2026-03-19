@@ -84,7 +84,7 @@ export default function FeaturedVehicles() {
             {/* CTA */}
             <Link
               href="/vehicules"
-              className="btn-primary text-sm py-3 flex-shrink-0 inline-flex items-center gap-2"
+              className="btn-primary text-sm py-3 flex-shrink-0 inline-flex items-center gap-2 group"
               aria-label="Voir tous les véhicules disponibles"
             >
               Voir tous nos véhicules ({vehicles.length})
