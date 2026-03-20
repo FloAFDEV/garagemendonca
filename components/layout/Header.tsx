@@ -30,7 +30,7 @@ export default function Header() {
 				"fixed top-0 left-0 right-0 z-50 transition-all duration-300",
 				scrolled
 					? "bg-white shadow-[0_1px_0_#e2e8f0,0_4px_16px_rgba(0,0,0,0.08)] py-0"
-					: "bg-black/10 backdrop-blur-[2px] py-2", // Léger voile pour la lisibilité du texte blanc en haut
+					: "bg-black/10 backdrop-blur-[2px] py-2",
 			)}
 		>
 			{/* ── Barre info supérieure ── */}
@@ -66,13 +66,10 @@ export default function Header() {
 					</a>
 				</Container>
 			</div>
-
 			{/* ── Nav principale ── */}
 			<Container as="nav" aria-label="Navigation principale">
 				<div className="flex items-center h-16 md:h-[72px]">
-					{" "}
-					{/* Retrait de justify-between ici */}
-					{/* 1. Logo (reste à gauche par défaut) */}
+					{/* 1. Logo */}
 					<Link
 						href="/"
 						className="flex items-center group flex-shrink-0"
@@ -87,7 +84,8 @@ export default function Header() {
 							/>
 						</div>
 					</Link>
-					{/* 2. Liens desktop - AJOUT DE ml-auto POUR POUSSER À DROITE */}
+
+					{/* 2. Liens desktop */}
 					<ul
 						className="hidden md:flex items-center gap-1 ml-auto mr-8"
 						role="list"
@@ -97,7 +95,7 @@ export default function Header() {
 								<Link
 									href={link.href}
 									className={clsx(
-										"font-medium px-4 py-3 rounded-lg transition-all duration-300 text-base",
+										"font-medium px-4 py-3 rounded-lg transition-all duration-300 text-sm",
 										scrolled
 											? "text-slate-600 hover:text-brand-600 hover:bg-slate-50"
 											: "text-white hover:text-white hover:bg-white/10",
@@ -108,6 +106,7 @@ export default function Header() {
 							</li>
 						))}
 					</ul>
+
 					{/* 3. CTA & Burger */}
 					<div className="flex items-center gap-4 ml-auto md:ml-0">
 						<div className="hidden md:block">
@@ -124,21 +123,59 @@ export default function Header() {
 							</a>
 						</div>
 
-						{/* Burger mobile (gardera sa place à droite grâce au ml-auto du parent sur mobile) */}
+						{/* Burger mobile - COULEUR CORRIGÉE ICI */}
 						<button
 							onClick={() => setIsOpen(!isOpen)}
 							className={clsx(
-								"md:hidden p-2 rounded-lg transition-colors",
+								"md:hidden p-2 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-brand-400",
 								scrolled
-									? "text-slate-900 hover:bg-slate-100"
+									? "text-[#0f172a] hover:bg-slate-100"
 									: "text-white hover:bg-white/10",
 							)}
+							aria-label={
+								isOpen ? "Fermer le menu" : "Ouvrir le menu"
+							}
+							aria-expanded={isOpen}
 						>
-							{isOpen ? <X size={24} /> : <Menu size={24} />}
+							{isOpen ? <X size={22} /> : <Menu size={22} />}
 						</button>
 					</div>
 				</div>
-			</Container>
+
+				{/* Menu mobile */}
+				<div
+					id="mobile-menu"
+					className={clsx(
+						"md:hidden overflow-hidden transition-all duration-300 ease-in-out",
+						isOpen
+							? "max-h-[380px] pb-4 opacity-100"
+							: "max-h-0 opacity-0",
+					)}
+				>
+					<div className="bg-white rounded-2xl p-3 flex flex-col gap-0.5 border border-slate-200 shadow-md">
+						{navLinks.map((link) => (
+							<Link
+								key={link.href}
+								href={link.href}
+								onClick={() => setIsOpen(false)}
+								className="text-[#475569] hover:text-[#0f172a] font-medium px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-sm"
+							>
+								{link.label}
+							</Link>
+						))}
+						<div className="border-t border-slate-100 mt-2 pt-3">
+							<a
+								href="tel:0532002038"
+								className="btn-primary w-full justify-center text-sm"
+							>
+								<Phone size={15} />
+								05 32 00 20 38
+							</a>
+						</div>
+					</div>
+				</div>
+			</Container>{" "}
+			{/* <-- FERMETURE DU CONTAINER AJOUTÉE */}
 			<style jsx>{`
 				@keyframes slide-down {
 					0% {
