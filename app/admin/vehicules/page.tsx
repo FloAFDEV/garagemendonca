@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
+import { updateVehicleStatus } from "./actions";
 
 const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
   Essence: "orange",
@@ -128,6 +129,7 @@ export default function AdminVehiclesPage() {
           : v
       )
     );
+    updateVehicleStatus(id, status);
   };
 
   return (

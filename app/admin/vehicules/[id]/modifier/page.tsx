@@ -4,7 +4,8 @@ import { useState, use } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { vehicles } from "@/lib/data";
-import { VehicleStatus } from "@/types";
+import { Vehicle, VehicleStatus } from "@/types";
+import { saveVehicle } from "../../actions";
 import {
 	ImagePlus,
 	X,
@@ -158,8 +159,22 @@ export default function EditVehiclePage({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setSaveStatus("saving");
-		/* TODO Supabase: await updateVehicle(id, { ...form, year: +form.year, … }) */
-		await new Promise((r) => setTimeout(r, 1200));
+		await saveVehicle(id, {
+			brand: form.brand,
+			model: form.model,
+			year: +form.year,
+			mileage: +form.mileage,
+			fuel: form.fuel as Vehicle["fuel"],
+			transmission: form.transmission as Vehicle["transmission"],
+			power: +form.power,
+			price: +form.price,
+			color: form.color,
+			doors: +form.doors,
+			description: form.description,
+			images: form.images,
+			status: form.status,
+			featured: form.featured,
+		});
 		setSaveStatus("saved");
 		setTimeout(() => router.push("/admin/vehicules"), 1500);
 	};
