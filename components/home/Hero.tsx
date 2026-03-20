@@ -46,10 +46,10 @@ export default function Hero() {
 
 			{/* Contenu */}
 			<div className="relative flex-1 flex items-center">
-				<Container className="pt-40 pb-20">
+				<Container className="pt-20 sm:pt-32 md:pt-40 pb-20 mb-6">
 					<div className="max-w-2xl xl:max-w-3xl">
 						{/* Eyebrow */}
-						<div className="flex items-center gap-3 mb-8 animate-fade-in">
+						<div className="flex items-center gap-3 mb-8 pt-10 animate-fade-in">
 							<div
 								className="w-8 h-px bg-brand-500"
 								aria-hidden="true"
