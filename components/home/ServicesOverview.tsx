@@ -79,64 +79,67 @@ export default function ServicesOverview() {
 				</AnimateOnScroll>
 
 				{/* ── Grille cartes — 1 col mobile / 2 tablette / 4 desktop ── */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+				<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
 					{services.map(
 						({ id, num, Icon, title, description, items }, i) => (
 							<AnimateOnScroll key={id} delay={i * 90}>
 								<Link
 									href={`/services#${id}`}
-									className="group relative bg-white rounded-2xl border border-slate-200 p-6 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.10)] hover:-translate-y-1 overflow-hidden flex flex-col h-full"
+									className="group relative bg-white rounded-xl border border-slate-200 p-5 transition-all duration-300 hover:shadow-[0_6px_24px_rgba(0,0,0,0.08)] hover:-translate-y-1 overflow-hidden flex flex-col h-full"
 								>
-									{/* Trait accent haut */}
-									<div
-										className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-brand-500 to-brand-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-2xl"
-										aria-hidden="true"
-									/>
-
-									{/* Numéro filigrane */}
+									{/* Filigrane - Placé en premier pour être en fond */}
 									<span
-										className="absolute top-4 right-5 font-heading font-black text-6xl text-slate-100 select-none group-hover:text-brand-50 transition-colors"
+										className="absolute top-2 right-4 font-heading font-black text-6xl text-slate-50 select-none z-0 group-hover:text-brand-50 transition-colors pointer-events-none"
 										aria-hidden="true"
 									>
 										{num}
 									</span>
 
-									{/* Icône */}
-									<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center mb-5 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-all duration-250 flex-shrink-0 group-hover:scale-110 group-hover:ring-brand-200">
-										<Icon
-											size={19}
-											className="text-brand-500 transition-transform duration-250 group-hover:scale-110"
-											strokeWidth={1.75}
+									{/* Contenu - On utilise z-10 pour passer devant le numéro */}
+									<div className="relative z-10 flex flex-col h-full">
+										{/* Icône */}
+										<div className="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center mb-3 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-all duration-200 flex-shrink-0">
+											<Icon
+												size={17}
+												className="text-brand-500"
+												strokeWidth={1.75}
+											/>
+										</div>
+
+										{/* Trait séparateur */}
+										<div
+											className="w-10 h-[2px] bg-brand-500 mb-3"
+											aria-hidden="true"
 										/>
-									</div>
 
-									<h3 className="font-heading font-bold text-[#0f172a] text-base mb-2 leading-snug">
-										{title}
-									</h3>
+										{/* Titre - Ajout de pr-8 pour éviter la collision visuelle avec le numéro */}
+										<h3 className="font-heading font-bold text-[#0f172a] text-sm mb-2 leading-snug pr-8">
+											{title}
+										</h3>
 
-									<p className="text-[#475569] text-xs leading-[1.7] mb-5">
-										{description}
-									</p>
+										{/* Description */}
+										<p className="text-[#475569] text-[11px] leading-[1.6] mb-4">
+											{description}
+										</p>
 
-									{/* Prestations */}
-									<ul className="space-y-2 mb-5 flex-1">
-										{items.map((item) => (
-											<li
-												key={item}
-												className="flex items-center gap-2.5 text-xs text-[#475569]"
-											>
-												<span
-													className="w-1.5 h-1.5 bg-brand-500 rounded-full flex-shrink-0"
-													aria-hidden="true"
-												/>
-												{item}
-											</li>
-										))}
-									</ul>
+										{/* Liste des items */}
+										<ul className="space-y-1.5 mb-6 flex-1">
+											{items.map((item) => (
+												<li
+													key={item}
+													className="flex items-center gap-2 text-[11px] text-[#475569]"
+												>
+													<span className="w-1 h-1 bg-brand-500 rounded-full flex-shrink-0" />
+													{item}
+												</li>
+											))}
+										</ul>
 
-									<div className="flex items-center gap-2 text-xs font-semibold text-slate-400 group-hover:text-brand-500 transition-all duration-200 group-hover:gap-3 mt-auto">
-										En savoir plus
-										<ArrowRight size={12} />
+										{/* CTA */}
+										<div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 group-hover:text-brand-500 transition-all duration-200 group-hover:gap-2">
+											En savoir plus
+											<ArrowRight size={11} />
+										</div>
 									</div>
 								</Link>
 							</AnimateOnScroll>

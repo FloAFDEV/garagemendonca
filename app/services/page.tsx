@@ -4,237 +4,227 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import { services } from "@/lib/data";
 import {
-  Wrench,
-  Settings,
-  Paintbrush,
-  CircuitBoard,
-  CircleCheck,
-  Phone,
-  ArrowRight,
-  ClipboardCheck,
-  Car,
-  Shield,
-  Award,
+	Wrench,
+	Settings,
+	Paintbrush,
+	CircuitBoard,
+	CircleCheck,
+	Phone,
+	ArrowRight,
+	ClipboardCheck,
+	Car,
+	Shield,
+	Award,
 } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Nos Services",
-  description:
-    "Mécanique, carrosserie, diagnostic et entretien à Drémil-Lafage (31). Spécialiste japonaises et boîte automatique depuis 2001. Jeunes conducteurs, seniors, PMR bienvenus. Diagnostic OBD en 10 min, devis gratuit.",
+	title: "Nos Services",
+	description:
+		"Mécanique, carrosserie, diagnostic et entretien à Drémil-Lafage (31). Spécialiste japonaises et boîte automatique depuis 2001. Jeunes conducteurs, seniors, PMR bienvenus. Diagnostic OBD en 10 min, devis gratuit.",
 };
 
 const iconMap: Record<string, React.ReactNode> = {
-  wrench:     <Wrench        className="h-6 w-6 text-brand-500" aria-hidden="true" />,
-  settings:   <Settings      className="h-6 w-6 text-brand-500" aria-hidden="true" />,
-  cpu:        <CircuitBoard  className="h-6 w-6 text-brand-500" aria-hidden="true" />,
-  paintbrush: <Paintbrush    className="h-6 w-6 text-brand-500" aria-hidden="true" />,
+	wrench: <Wrench className="h-6 w-6 text-brand-500" aria-hidden="true" />,
+	settings: (
+		<Settings className="h-6 w-6 text-brand-500" aria-hidden="true" />
+	),
+	cpu: <CircuitBoard className="h-6 w-6 text-brand-500" aria-hidden="true" />,
+	paintbrush: (
+		<Paintbrush className="h-6 w-6 text-brand-500" aria-hidden="true" />
+	),
 };
 
 const trustCards = [
-  { Icon: ClipboardCheck, title: "Devis gratuit",  sub: "Pièce & main-d'œuvre avant intervention" },
-  { Icon: Car,            title: "Spécialiste japonaises", sub: "Jeunes conducteurs · Seniors · PMR" },
-  { Icon: Shield,         title: "Garantie",       sub: "6 à 12 mois km illimités (VO)" },
-  { Icon: Award,          title: "160 points",     sub: "De contrôle sur chaque véhicule" },
+	{
+		Icon: ClipboardCheck,
+		title: "Devis gratuit",
+		sub: "Pièce & main-d'œuvre avant intervention",
+	},
+	{
+		Icon: Car,
+		title: "Spécialiste japonaises",
+		sub: "Jeunes conducteurs · Seniors · Équipementier PMR",
+	},
+	{
+		Icon: Shield,
+		title: "Garantie",
+		sub: "6 à 12 mois km illimités (Occasions)",
+	},
+	{
+		Icon: Award,
+		title: "160 points",
+		sub: "De contrôle sur chaque véhicule",
+	},
 ];
 
 export default function ServicesPage() {
-  return (
-    <MainLayout>
+	return (
+		<MainLayout>
+			{/* ── Hero ── */}
+			<section className="relative bg-dark-900 overflow-hidden pt-36 pb-20">
+				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[180px] pointer-events-none" />
+				<Container className="relative">
+					<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-5">
+						<span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+						<span className="text-brand-500 text-xs font-medium tracking-wide uppercase">
+							Nos expertises
+						</span>
+					</div>
+					<h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-5">
+						Mécanique, carrosserie &amp; vente
+						<br />
+						<span className="text-brand-400">
+							depuis 2001 à Drémil-Lafage
+						</span>
+					</h1>
+					<p className="text-dark-300 text-base sm:text-lg leading-relaxed max-w-2xl">
+						Mécaniciens qualifiés et continuellement formés,
+						équipements dernière génération. Diagnostic en 10
+						minutes, devis avant toute intervention.
+					</p>
+				</Container>
+			</section>
 
-      {/* ── Hero — fond sombre ── */}
-      <section className="relative bg-dark-900 overflow-hidden pt-36 pb-20">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/3 rounded-full blur-[180px] pointer-events-none" aria-hidden="true" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-brand-500/2 rounded-full blur-[150px] pointer-events-none" aria-hidden="true" />
+			{/* ── Services ── */}
+			<section className="py-20 bg-slate-50">
+				<Container>
+					<div className="space-y-12">
+						{services.map((service, index) => {
+							// Si index est impair (1, 3...), on met l'image à droite sur desktop
+							const isImageRight = index % 2 !== 0;
 
-        <Container className="relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-500" aria-hidden="true" />
-            <span className="text-brand-500 text-xs font-medium tracking-wide uppercase">Nos expertises</span>
-          </div>
-          <h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-5">
-            Mécanique, carrosserie &amp; vente<br />
-            <span className="text-brand-400">depuis 2001 à Drémil-Lafage</span>
-          </h1>
-          <p className="text-dark-300 text-base sm:text-lg leading-relaxed max-w-2xl">
-            Mécaniciens qualifiés et continuellement formés, équipements dernière génération.
-            Diagnostic en 10 minutes, devis pièce et main-d&apos;œuvre avant toute intervention
-            — sans mauvaise surprise. Toutes marques acceptées.
-          </p>
-        </Container>
-      </section>
+							return (
+								<div
+									key={service.id}
+									id={service.id}
+									className="group relative bg-white rounded-2xl border border-slate-200 overflow-hidden hover:border-brand-500/30 hover:shadow-2xl transition-all duration-500 scroll-mt-24"
+								>
+									{/* CHANGEMENT ICI : grid-cols-3 au lieu de grid-cols-2 */}
+									<div className="grid grid-cols-1 lg:grid-cols-3">
+										{/* Image Panel : Prend 1 col sur 3 (col-span-1) */}
+										<div
+											className={`relative min-h-[280px] lg:min-h-0 overflow-hidden lg:col-span-1 ${isImageRight ? "lg:order-last" : ""}`}
+										>
+											<Image
+												src={service.image}
+												alt={service.title}
+												fill
+												className="object-cover transition-transform duration-700 group-hover:scale-105"
+												sizes="(max-width: 1024px) 100vw, 33vw" // Mise à jour de sizes pour l'optimisation
+											/>
+											<div className="absolute inset-0 bg-dark-900/10 group-hover:bg-transparent transition-colors duration-500" />
+										</div>
 
-      {/* ── Services — fond clair ── */}
-      <section className="py-20 bg-slate-50">
-        <Container>
-          <div className="space-y-10">
-            {services.map((service, index) => {
-              const isOdd = index % 2 === 0; // impair = image gauche
+										{/* Content Panel : Prend 2 cols sur 3 (lg:col-span-2) */}
+										<div className="flex flex-col justify-center p-8 sm:p-12 lg:p-16 relative lg:col-span-2">
+											{/* Icône */}
+											<div className="h-14 w-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+												{iconMap[service.icon]}
+											</div>
 
-              /* Bloc info : icon + titre + bouton */
-              const infoContent = (
-                <>
-                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-brand-500/15 to-brand-500/5 border border-brand-500/10 flex items-center justify-center mb-5 group-hover:shadow-lg group-hover:shadow-brand-500/10 transition-shadow duration-500">
-                    {iconMap[service.icon]}
-                  </div>
-                  <h2 className="font-heading font-bold text-2xl sm:text-3xl text-slate-900 mb-4 leading-tight">
-                    {service.title}
-                  </h2>
-                  <a
-                    href="tel:0532002038"
-                    className="inline-flex items-center gap-2 w-fit px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 text-white text-sm font-bold hover:shadow-lg hover:shadow-brand-500/25 transition-all duration-300"
-                    aria-label={`Demander un devis pour ${service.title}`}
-                  >
-                    <Phone className="h-4 w-4" aria-hidden="true" />
-                    Demander un devis
-                  </a>
-                </>
-              );
+											{/* Titre */}
+											<h2 className="font-heading font-bold text-2xl sm:text-3xl text-slate-900 mb-4 leading-tight">
+												{service.title}
+											</h2>
 
-              /* Bloc contenu : description + features */
-              const contentContent = (
-                <>
-                  <p className="text-slate-500 leading-relaxed mb-6 text-sm sm:text-base max-w-prose">
-                    {service.description}
-                  </p>
-                  <h3 className="font-heading font-semibold text-sm text-slate-800 mb-4 tracking-wide">
-                    Nos prestations incluent&nbsp;:
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                    {service.features.map((feature) => (
-                      <div key={feature} className="flex items-start gap-2.5">
-                        <CircleCheck className="h-4 w-4 text-brand-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                        <span className="text-sm text-slate-600 leading-snug">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              );
+											{/* Description */}
+											<p className="text-slate-500 leading-relaxed mb-8 text-sm sm:text-base">
+												{service.description}
+											</p>
 
-              /* Image full-height */
-              const imagePanel = (
-                <div className="relative min-h-[220px] lg:min-h-0 h-full overflow-hidden">
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 35vw"
-                  />
-                </div>
-              );
+											{/* Features */}
+											<div className="space-y-4 mb-10">
+												<h3 className="font-heading font-semibold text-xs text-brand-600 uppercase tracking-widest">
+													Prestations incluses
+												</h3>
+												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+													{service.features.map(
+														(feature) => (
+															<div
+																key={feature}
+																className="flex items-start gap-3"
+															>
+																<CircleCheck className="h-5 w-5 text-brand-500 flex-shrink-0" />
+																<span className="text-sm text-slate-700 leading-snug">
+																	{feature}
+																</span>
+															</div>
+														),
+													)}
+												</div>
+											</div>
 
-              return (
-                <div
-                  key={service.id}
-                  id={service.id}
-                  className="group relative rounded-2xl border border-slate-200 overflow-hidden hover:border-brand-500/30 hover:shadow-xl transition-all duration-500 scroll-mt-24"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-brand-500/3 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden="true" />
+											{/* CTA */}
+											<a
+												href="tel:0532002038"
+												className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-brand-500 text-white text-sm font-bold hover:bg-brand-600 shadow-lg shadow-brand-500/20 transition-all duration-300 w-fit"
+											>
+												<Phone className="h-4 w-4" />
+												Demander un devis
+											</a>
+										</div>
+									</div>
+								</div>
+							);
+						})}
+					</div>
+				</Container>
+			</section>
 
-                  {isOdd ? (
-                    /* ── Impair : image gauche | colonne droite (info ↑ + contenu ↓) ── */
-                    <div className="relative grid grid-cols-1 lg:grid-cols-[2fr_3fr]">
-                      {/* Image gauche */}
-                      <div className="border-b lg:border-b-0 lg:border-r border-slate-200 h-full">
-                        {imagePanel}
-                      </div>
-                      {/* Colonne droite : empilée */}
-                      <div className="flex flex-col">
-                        <div className="p-8 sm:p-10 flex flex-col border-b border-slate-200 bg-white">
-                          {infoContent}
-                        </div>
-                        <div className="p-8 sm:p-10 flex-1 bg-white">
-                          {contentContent}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    /* ── Pair : contenu gauche | info centre | image droite ── */
-                    <div className="relative grid grid-cols-1 lg:grid-cols-[3fr_2fr_3fr]">
-                      {/* Contenu gauche */}
-                      <div className="p-8 sm:p-10 bg-white border-b lg:border-b-0 lg:border-r border-slate-200">
-                        {contentContent}
-                      </div>
-                      {/* Info centre */}
-                      <div className="p-8 sm:p-10 bg-slate-50 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-slate-200">
-                        {infoContent}
-                      </div>
-                      {/* Image droite */}
-                      <div className="border-t lg:border-t-0 h-full">
-                        {imagePanel}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </Container>
-      </section>
+			{/* ── Trust Cards ── */}
+			<section className="py-20 bg-dark-900">
+				<Container>
+					<div className="text-center mb-12">
+						<h2 className="font-heading font-bold text-2xl sm:text-3xl text-white">
+							Pourquoi nous faire confiance&nbsp;?
+						</h2>
+					</div>
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+						{trustCards.map(({ Icon, title, sub }) => (
+							<div
+								key={title}
+								className="rounded-2xl border border-dark-700 bg-dark-800 p-8 hover:border-brand-500/50 transition-colors"
+							>
+								<Icon className="h-8 w-8 text-brand-500 mb-4" />
+								<h3 className="font-heading font-bold text-white mb-2">
+									{title}
+								</h3>
+								<p className="text-sm text-dark-400 leading-relaxed">
+									{sub}
+								</p>
+							</div>
+						))}
+					</div>
+				</Container>
+			</section>
 
-      {/* ── Pourquoi nous faire confiance — fond sombre ── */}
-      <section className="py-20 bg-dark-900">
-        <Container>
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-500" aria-hidden="true" />
-              <span className="text-brand-500 text-xs font-medium tracking-wide uppercase">Nos garanties</span>
-            </div>
-            <h2 className="font-heading font-bold text-2xl sm:text-3xl text-white">
-              Pourquoi nous faire confiance&nbsp;?
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {trustCards.map(({ Icon, title, sub }) => (
-              <div
-                key={title}
-                className="group relative rounded-2xl border border-dark-700 bg-dark-800 p-7 text-center hover:border-brand-500/30 transition-all duration-500"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" aria-hidden="true" />
-                <div className="relative">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-brand-500/15 to-brand-500/5 border border-brand-500/10 flex items-center justify-center mx-auto mb-4 group-hover:shadow-lg group-hover:shadow-brand-500/10 transition-shadow duration-500">
-                    <Icon className="h-5 w-5 text-brand-500" aria-hidden="true" />
-                  </div>
-                  <h3 className="font-heading font-bold text-lg text-white mb-1">{title}</h3>
-                  <p className="text-sm text-dark-300">{sub}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* ── CTA ── */}
-      <section className="py-16 bg-dark-900 relative border-t border-dark-700">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-500/40 to-transparent" aria-hidden="true" />
-        <Container className="text-center">
-          <h2 className="font-heading font-bold text-white text-3xl md:text-4xl mb-4">
-            Besoin d&apos;un devis ou d&apos;un rendez-vous&nbsp;?
-          </h2>
-          <p className="text-dark-300 text-lg mb-8 max-w-2xl mx-auto">
-            Contactez-nous dès maintenant. Réponse en moins de 24h. Accueil avec ou sans rendez-vous.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="tel:0532002038"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-brand-500 to-brand-400 text-white text-base font-bold hover:shadow-lg hover:shadow-brand-500/25 transition-all duration-300"
-            >
-              <Phone className="h-5 w-5" aria-hidden="true" />
-              05 32 00 20 38
-            </a>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl border border-dark-600 text-white text-base font-semibold hover:border-brand-500/40 hover:bg-brand-500/5 transition-all duration-300"
-            >
-              Formulaire de contact
-              <ArrowRight className="h-5 w-5" aria-hidden="true" />
-            </Link>
-          </div>
-        </Container>
-      </section>
-
-    </MainLayout>
-  );
+			{/* ── Final CTA ── */}
+			<section className="py-20 bg-brand-500">
+				<Container className="text-center text-white">
+					<h2 className="font-heading font-bold text-3xl md:text-4xl mb-6">
+						Un problème mécanique ou de carrosserie ?
+					</h2>
+					<p className="text-brand-50 text-lg mb-10 max-w-2xl mx-auto">
+						Nos experts sont à votre disposition pour un diagnostic
+						rapide à Drémil-Lafage.
+					</p>
+					<div className="flex flex-wrap justify-center gap-4">
+						<a
+							href="tel:0532002038"
+							className="px-8 py-4 bg-white text-brand-600 rounded-xl font-bold hover:bg-slate-50 transition-colors"
+						>
+							Appeler le 05 32 00 20 38
+						</a>
+						<Link
+							href="/contact"
+							className="px-8 py-4 border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/10 transition-colors"
+						>
+							Nous contacter par email
+						</Link>
+					</div>
+				</Container>
+			</section>
+		</MainLayout>
+	);
 }

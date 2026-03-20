@@ -1,13 +1,5 @@
 import Link from "next/link";
-import {
-	Phone,
-	Mail,
-	MapPin,
-	Clock,
-	Facebook,
-	Youtube,
-	ExternalLink,
-} from "lucide-react";
+import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 import Container from "@/components/ui/Container";
 
 const footerLinks = {
@@ -15,7 +7,6 @@ const footerLinks = {
 		{ href: "/services#entretien", label: "Entretien & Révision" },
 		{ href: "/services#mecanique", label: "Réparation Mécanique" },
 		{ href: "/services#carrosserie", label: "Carrosserie & Peinture" },
-		{ href: "/services#diagnostic", label: "Diagnostic & Pannes" },
 	],
 	navigation: [
 		{ href: "/", label: "Accueil" },
@@ -90,27 +81,6 @@ export default function Footer() {
 							mobilité réduite. Nous parlons portugais et
 							francais.
 						</p>
-
-						<div className="flex items-center gap-3">
-							<a
-								href="https://facebook.com"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="w-9 h-9 bg-slate-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
-								aria-label="Facebook"
-							>
-								<Facebook size={16} />
-							</a>
-							<a
-								href="https://youtube.com"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="w-9 h-9 bg-slate-800 hover:bg-brand-500 rounded-lg flex items-center justify-center transition-colors duration-200"
-								aria-label="YouTube"
-							>
-								<Youtube size={16} />
-							</a>
-						</div>
 					</div>
 
 					{/* Colonne 2 — Services + Nav */}

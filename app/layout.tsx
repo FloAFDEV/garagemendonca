@@ -99,16 +99,8 @@ const jsonLd = {
 					name: "Carrosserie & Peinture",
 				},
 			},
-			{
-				"@type": "Offer",
-				itemOffered: {
-					"@type": "Service",
-					name: "Diagnostic & Pannes",
-				},
-			},
 		],
 	},
-	sameAs: ["https://www.facebook.com/"],
 };
 
 export default function RootLayout({

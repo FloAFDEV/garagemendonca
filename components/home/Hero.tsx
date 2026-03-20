@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
 	Phone,
 	ArrowRight,
@@ -23,48 +24,50 @@ export default function Hero() {
 	return (
 		<section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
 			{/* Fond photo — atelier du garage */}
-			<div
-				className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-				style={{
-					backgroundImage: "url('/images/garage-hero.webp')",
-				}}
-				role="img"
-				aria-label="Atelier du Garage Auto Mendonça à Drémil-Lafage"
-			/>
+			<div className="absolute inset-0 z-0">
+				<Image
+					src="/images/garage-hero.webp"
+					alt="Atelier du Garage Auto Mendonça"
+					fill
+					priority
+					className="object-cover object-[50%_50%] lg:object-[5%_50%]"
+					sizes="100vw"
+				/>
+			</div>
 
-			{/* Overlays — contraste renforcé */}
+			{/* Overlays — On renforce le noir à gauche pour que le texte "pop" */}
 			<div
-				className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/70"
+				className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-1"
 				aria-hidden="true"
 			/>
 			<div
-				className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"
+				className="absolute inset-0 bg-black/30 z-1"
 				aria-hidden="true"
 			/>
 
 			{/* Trait accent gauche */}
-
 			{/* Contenu */}
 			<div className="relative flex-1 flex items-center">
-				<Container className="pt-16 sm:pt-24 md:pt-36 pb-20 mb-6">
+				{/* On augmente le padding-top sur mobile (pt-28 au lieu de pt-16) */}
+				<Container className="pt-28 sm:pt-24 md:pt-36 pb-20 mb-6">
 					<div className="max-w-2xl xl:max-w-3xl">
-						{/* Eyebrow */}
-						<div className="flex items-center gap-3 mb-6 animate-fade-in">
+						{/* Eyebrow - ESPACE AJOUTÉ ICI DANS LES CLASSES */}
+						<div className="flex items-center gap-3 mb-8 animate-fade-in">
 							<div
-								className="w-8 h-px bg-brand-500"
+								className="w-8 h-px bg-brand-500 flex-shrink-0"
 								aria-hidden="true"
 							/>
-							<span className="text-brand-400 pt-8 font-semibold text-xs uppercase tracking-[0.18em]">
+							<span className="text-brand-400 font-semibold text-[10px] sm:text-xs uppercase tracking-[0.18em] leading-tight">
 								Garage Mendonça – Expert auto depuis 2001
 							</span>
 						</div>
 
-						{/* H1 */}
-						<h1 className="font-heading font-black text-white text-5xl md:text-6xl xl:text-7xl leading-[1.03] mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
+						{/* H1 - On réduit un peu la taille sur mobile (text-4xl) pour éviter qu'il ne prenne trop de place */}
+						<h1 className="font-heading font-black text-white text-4xl md:text-6xl xl:text-7xl leading-[1.1] mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
 							Votre garage
 							<br />
 							de confiance à{" "}
-							<span className="relative">
+							<span className="relative inline-block">
 								<span className="text-brand-500">
 									Drémil-Lafage
 								</span>

@@ -308,7 +308,7 @@ export const services: Service[] = [
 		id: "mecanique",
 		title: "Réparation Mécanique & Électronique",
 		description:
-			"À la fois généraliste et expert, le Garage Mendonça intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé, en restant dans le réseau professionnel.",
+			"À la fois généraliste et expert, le Garage Mendonça intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé.",
 		icon: "settings",
 		image: "/images/mecanique.webp",
 		features: [
@@ -322,24 +322,7 @@ export const services: Service[] = [
 			"Véhicule de prêt disponible",
 		],
 	},
-	{
-		id: "diagnostic",
-		title: "Diagnostic & Motoriste",
-		description:
-			"Votre Garage Mendonça, atelier conseil easydiag depuis 2001, est spécialiste de la combustion, de la tribologie et des encrassements moteurs. Diagnostic électronique en 10 minutes sur tous constructeurs, avec une expertise particulière sur les moteurs japonais. Consultez-nous pour le nettoyage et la régénération de votre filtre à particules, toute perte de puissance moteur, un témoin OBD allumé, ou un turbo et une vanne EGR défaillants.",
-		icon: "cpu",
-		image: "/images/diagnostic.webp",
-		features: [
-			"Diagnostic OBD / OBD2 en 10 minutes, toutes marques",
-			"Nettoyage admission diesel",
-			"Régénération & nettoyage DPF (filtre à particules)",
-			"Réparation turbo & vanne EGR",
-			"Gestion pertes de puissance moteur",
-			"Lecture & effacement codes défaut",
-			"Reprogrammation calculateurs",
-			"Réparation boîte automatique & servomoteur",
-		],
-	},
+
 	{
 		id: "carrosserie",
 		title: "Carrosserie, Vitrage & Services",
