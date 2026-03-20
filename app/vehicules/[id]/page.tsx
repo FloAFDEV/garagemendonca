@@ -197,7 +197,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</h1>
 							</div>
 						</div>
-						<div className="hidden sm:block text-right">
+						<div className="hidden text-right">
 							<div className="font-heading font-black text-4xl text-[#0f172a] tracking-tight">
 								{vehicle.price.toLocaleString("fr-FR")} €
 							</div>
@@ -361,11 +361,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						</div>
 
 						{/* ════ Colonne droite STICKY ════ */}
-						<aside className="space-y-6">
-							{/* Carte Prix & CTA — sticky individuellement */}
-							<div className="lg:sticky lg:top-[88px]">
+						<aside className="lg:sticky lg:top-[120px] space-y-6 self-start h-fit">
+							{/* Carte Prix & CTA */}
 							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
-								<div className="sm:hidden mb-6 pb-6 border-b border-slate-100">
+								<div className="mb-6 pb-6 border-b border-slate-100">
 									<div className="font-heading font-black text-4xl text-[#0f172a]">
 										{vehicle.price.toLocaleString("fr-FR")}{" "}
 										€
@@ -412,7 +411,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</ul>
 							</div>
 
-							</div>{/* /sticky */}
 
 							{/* Adresse Garage */}
 							<div className="bg-[#0f172a] rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative group">
