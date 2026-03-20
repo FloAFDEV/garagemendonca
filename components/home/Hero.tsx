@@ -46,15 +46,15 @@ export default function Hero() {
 
 			{/* Contenu */}
 			<div className="relative flex-1 flex items-center">
-				<Container className="pt-20 sm:pt-32 md:pt-40 pb-20 mb-6">
+				<Container className="pt-16 sm:pt-24 md:pt-36 pb-20 mb-6">
 					<div className="max-w-2xl xl:max-w-3xl">
 						{/* Eyebrow */}
-						<div className="flex items-center gap-3 mb-8 pt-10 animate-fade-in">
+						<div className="flex items-center gap-3 mb-6 animate-fade-in">
 							<div
 								className="w-8 h-px bg-brand-500"
 								aria-hidden="true"
 							/>
-							<span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
+							<span className="text-brand-400 pt-8 font-semibold text-xs uppercase tracking-[0.18em]">
 								Garage Mendonça – Expert auto depuis 2001
 							</span>
 						</div>
@@ -85,18 +85,29 @@ export default function Hero() {
 							bienvenus.
 						</p>
 
+						{/* H3 */}
+						<h3 className="font-heading font-black text-white text-2xl md:text-3xl xl:text-4xl leading-[1.03] mt-6 mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
+							Spécialiste
+							<br />
+							<span className="relative">
+								<span className="text-brand-500">
+									japonaises et coréennes
+								</span>
+							</span>
+						</h3>
+
 						{/* CTA */}
 						<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs mx-auto sm:max-w-full sm:mx-0 mb-14 animate-slide-up">
 							<a
 								href="tel:0532002038"
-								className="btn-primary w-full sm:w-auto text-base sm:text-lg py-3 px-6 sm:py-4 sm:px-8 flex justify-center items-center gap-2 shadow-brand-lg"
+								className="btn-primary w-full sm:w-auto text-base sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2 shadow-brand-lg"
 							>
 								<Phone size={18} aria-hidden="true" />
 								Appeler le 05 32 00 20 38
 							</a>
 							<Link
 								href="/contact"
-								className="btn-outline w-full sm:w-auto text-base sm:text-lg py-3 px-6 sm:py-4 sm:px-8 flex justify-center items-center gap-2"
+								className="btn-outline w-full sm:w-auto text-base sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2"
 							>
 								Demander un devis gratuit
 								<ArrowRight size={17} aria-hidden="true" />

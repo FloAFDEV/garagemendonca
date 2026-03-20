@@ -120,5 +120,5 @@ create policy "vehicles_write_own_garage"
 -- ── Données de démo ─────────────────────────────────────────────
 insert into garages (id, name, slug, address, phone, email, plan) values
   ('00000000-0000-0000-0000-000000000001', 'Garage Auto Mendonça',
-   'garage-mendonca', '6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage',
-   '05 32 00 20 38', 'contact@garagemendonca.com', 'isolated');
+   'garage-mendonça', '6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage',
+   '05 32 00 20 38', 'contact@garagemendonça.com', 'isolated');

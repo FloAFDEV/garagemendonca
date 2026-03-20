@@ -111,7 +111,7 @@ export default function AdminLayout({
 									txt,
 								)}
 							>
-								Garage Mendonca
+								Garage Mendonça
 							</div>
 							<div className={clsx("text-xs mt-0.5", txtSubtle)}>
 								Administration
@@ -208,7 +208,7 @@ export default function AdminLayout({
 							<div
 								className={clsx("text-xs truncate", txtSubtle)}
 							>
-								admin@garagemendonca.com
+								admin@garagemendonça.com
 							</div>
 						</div>
 						<Link
