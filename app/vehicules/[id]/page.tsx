@@ -186,7 +186,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			/>
 
 			<div className="bg-[#f8fafc] min-h-screen">
-				<Container className="pt-28 pb-28 sm:pb-12">
+				<Container className="pt-28 pb-28 sm:pb-12 mt-8">
 					{/* ── Navigation ── */}
 					<nav aria-label="Fil d'Ariane" className="mb-3">
 						<ol className="flex items-center gap-2 text-xs text-[#64748b]">
@@ -219,7 +219,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-6 text-sm font-medium"
 					>
 						<ArrowLeft size={15} aria-hidden="true" />
-						Retour aux véhicules
+						Retour aux annonces
 					</Link>
 
 					{/* ── En-tête ── */}

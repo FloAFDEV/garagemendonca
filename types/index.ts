@@ -56,16 +56,15 @@ export interface GarageUser {
 //  Un index signature permet des clés libres supplémentaires.
 // ─────────────────────────────────────────────
 export interface VehicleFeatures {
-	finition?: string; // ex: "Acenta", "GLX Pack"
-	motorisation?: string; // ex: "1.4 88 ch", "1.2i 94 ch"
-	provenance?: string; // ex: "Francaise", "Importée"
-	nbProprietaires?: string; // ex: "1", "2"
-	carnetEntretien?: string; // ex: "À jour", "Partiel"
-	controleTechnique?: string; // ex: "À jour", "À faire"
-	garantie?: string; // ex: "6 à 12 mois km illimités"
-	options?: string; // ex: "Toit ouvrant, clim auto"
-	// Clés libres pour des spécificités métier supplémentaires
-	[key: string]: string | undefined;
+	finition?: string;
+	motorisation?: string;
+	provenance?: string;
+	nbProprietaires?: string;
+	carnetEntretien?: string;
+	controleTechnique?: string;
+	garantie?: string;
+	options?: string[]; // ← tableau au lieu de string
+	[key: string]: string | string[] | undefined; // index signature mise à jour pour accepter string[]
 }
 
 // ─────────────────────────────────────────────

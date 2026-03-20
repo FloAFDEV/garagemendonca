@@ -96,32 +96,87 @@ export const vehicles: Vehicle[] = [
 		brand: "Suzuki",
 		model: "Swift",
 		year: 2018,
-		mileage: 52000,
+		mileage: 68500,
 		fuel: "Essence",
 		price: 11200,
 		transmission: "Automatique",
-		power: 94,
-		color: "Rouge",
+		power: 110,
+		color: "Speedy Blue (ZWG)",
 		doors: 5,
 		featured: true,
 		critAir: "2",
 		status: "published",
-		createdAt: "2026-01-20",
-		updatedAt: "2026-01-20T00:00:00Z",
-		description:
-			"Suzuki Swift 1.2i 94 ch GLX Pack, boîte automatique et toit ouvrant panoramique. Très bien équipée : climatisation automatique, bluetooth, régulateur de vitesse. 250 à 500 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités, vérification 160 points.",
+		createdAt: "2018-03-27",
+		updatedAt: "2026-03-20T00:00:00Z",
+		description: `
+Suzuki Swift 2018 avec 68 500 km. Finition Comfort+ et couleur Speedy Blue (ZWG). Moteur 110 ch (6cv) avec boîte automatique.
+
+Garantie : 6 mois complète couvrant l'ensemble des composants mécaniques et électroniques.
+
+Mécanique : Carnet d'entretien tamponné SUZUKI
+- 16/08/2019 : 14 631 km
+- 24/08/2020 : 25 037 km
+- 27/09/2021 : 31 366 km
+- 19/10/2022 : 38 602 km
+- 21/11/2023 : 48 478 km
+- Entretien réalisé pour la vente à 68 250 km
+
+Carrosserie : Très bon état général. Photos supplémentaires et vidéo en cours de préparation.
+
+Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeunes permis en boîte automatique.
+  `,
 		features: {
-			Finition: "GLX Pack",
-			Motorisation: "1.2i 94 ch",
-			Options: "Toit ouvrant, clim auto, bluetooth",
+			Finition: "Comfort+",
+			Motorisation: "1.0i 110 ch BoosterJet",
+			Options: [
+				"Régulateur de vitesse adaptatif (ACC)",
+				"Freinage actif d'urgence (DSBS)",
+				"Alerte de franchissement de ligne",
+				"Gestion automatique des feux de route : Passage code/phare automatique",
+				'Écran tactile 7" couleur',
+				"Caméra de recul",
+				"Accès et démarrage sans clé (Keyless)",
+				"Climatisation automatique",
+				"Sièges avant chauffants",
+				"Volant cuir multifonctions réglable",
+				"Projecteurs LED",
+				'Jantes alliage 16" polies / bi-ton',
+				"Vitres arrière et lunette surteintées",
+				"Feux de jour à LED",
+				"Roue de secours galette",
+				"Feux de jour",
+				"Anti-brouillard avant",
+				"4 vitres électriques",
+				"Réglage des rétroviseurs électriques",
+				"Commande au volant",
+				"Régulateur de vitesse",
+				"Climatisation automatique",
+				"Détecteur de luminosité",
+				"Sièges chauffants",
+				"Ouverture / fermeture sans clé",
+				"Démarrage sans clé",
+				"Radio CD",
+				"Prise USB",
+				"Prise 12V",
+				"Rétroviseurs dégivrants",
+				"Sièges rabattables 1/3 2/3",
+				"Sièges Isofix",
+				"Tapis de sol",
+			],
 			Provenance: "Francaise",
 			"Carnet d'entretien": "À jour",
 			"Contrôle technique": "À jour",
-			Garantie: "6 à 12 mois km illimités",
+			Garantie: "6 mois complète",
 		},
 		images: [
-			"https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
-			"https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80",
+			"https://www.garagemendonca.com/public/img/big/20260313134541Copierjpg_69b7b050aaa46.jpg",
+			"https://www.garagemendonca.com/public/img/big/20260313135600Copierjpg_69b7b0500daac.jpg",
+			"https://www.garagemendonca.com/public/img/big/20260313134700Copierjpg_69b7b05054e68.jpg",
+			"https://www.garagemendonca.com/public/img/big/20260313134736Copierjpg_69b7b05039a17.jpg",
+			"https://www.garagemendonca.com/public/img/big/20260313135309Copierjpg_69b7b05080440.jpg",
+			"https://www.garagemendonca.com/public/img/big/20260313134926Copierjpg_69b7b04fe5e1c.jpg",
+			"https://www.garagemendonca.com/public/img/big/20260313134443Copierjpg_69b7b04fc7a77.jpg",
+			"https://www.garagemendonca.com/public/img/big/20260313135536Copierjpg_69b7b050d5569.jpg",
 		],
 	},
 	{
