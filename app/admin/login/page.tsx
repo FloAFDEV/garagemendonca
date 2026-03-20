@@ -19,7 +19,7 @@ export default function AdminLoginPage() {
 
 		// Demo credentials
 		if (
-			form.email === "admin@garagemendonça.com" &&
+			form.email === "admin@garagemendonca.com" &&
 			form.password === "admin123"
 		) {
 			router.push("/admin/dashboard");
@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
 
 					{/* Demo hint */}
 					<div className="bg-brand-500/10 border border-brand-500/20 rounded-xl p-3 mb-6 text-xs text-brand-400">
-						<strong>Demo :</strong> admin@garagemendonça.com /
+						<strong>Demo :</strong> admin@garagemendonca.com /
 						admin123
 					</div>
 
@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
 									id="email"
 									type="email"
 									required
-									placeholder="admin@garagemendonça.com"
+									placeholder="admin@garagemendonca.com"
 									value={form.email}
 									onChange={(e) =>
 										setForm((p) => ({
