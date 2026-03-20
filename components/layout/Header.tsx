@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, Phone } from "lucide-react";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 import Container from "@/components/ui/Container";
 
 const navLinks = [
@@ -17,6 +18,18 @@ const navLinks = [
 export default function Header() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
+	const pathname = usePathname();
+
+	/* Pages avec fond clair qui nécessitent un header opaque dès le départ */
+	const isLightPage =
+		/^\/vehicules\/.+/.test(pathname) ||
+		pathname === "/contact" ||
+		pathname === "/cgu" ||
+		pathname === "/mentions-legales" ||
+		pathname === "/politique-confidentialite";
+
+	/* Opaque si scrollé OU si page à fond clair */
+	const isOpaque = scrolled || isLightPage;
 
 	useEffect(() => {
 		const handleScroll = () => setScrolled(window.scrollY > 30);
@@ -28,7 +41,7 @@ export default function Header() {
 		<header
 			className={clsx(
 				"fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-				scrolled
+				isOpaque
 					? "bg-white shadow-[0_1px_0_#e2e8f0,0_4px_16px_rgba(0,0,0,0.08)] py-0"
 					: "bg-black/10 backdrop-blur-[2px] py-2",
 			)}
@@ -37,7 +50,7 @@ export default function Header() {
 			<div
 				className={clsx(
 					"bg-[#0f172a] text-slate-400 text-xs py-2 hidden md:block transition-all duration-300",
-					scrolled && "h-0 py-0 overflow-hidden opacity-0",
+					isOpaque && "h-0 py-0 overflow-hidden opacity-0",
 				)}
 			>
 				<Container className="flex items-center justify-between">
@@ -96,7 +109,7 @@ export default function Header() {
 									href={link.href}
 									className={clsx(
 										"font-medium px-4 py-3 rounded-lg transition-all duration-300 text-sm",
-										scrolled
+										isOpaque
 											? "text-slate-600 hover:text-brand-600 hover:bg-slate-50"
 											: "text-white hover:text-white hover:bg-white/10",
 									)}
@@ -114,7 +127,7 @@ export default function Header() {
 								href="tel:0532002038"
 								className={clsx(
 									"btn-primary text-xs py-2.5 px-5 transition-all duration-300",
-									!scrolled &&
+									!isOpaque &&
 										"shadow-none border border-white/20 hover:bg-white/10 bg-transparent text-white",
 								)}
 							>
@@ -128,7 +141,7 @@ export default function Header() {
 							onClick={() => setIsOpen(!isOpen)}
 							className={clsx(
 								"md:hidden p-2 rounded-lg transition-colors focus-visible:ring-2 focus-visible:ring-brand-400",
-								scrolled
+								isOpaque
 									? "text-[#0f172a] hover:bg-slate-100"
 									: "text-white hover:bg-white/10",
 							)}

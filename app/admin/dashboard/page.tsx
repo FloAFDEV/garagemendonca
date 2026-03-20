@@ -3,11 +3,16 @@ import { vehicles } from "@/lib/data";
 import { Car, Eye, TrendingUp, Phone, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+/* Stats dynamiques depuis les vraies données */
+const stockCount = vehicles.filter((v) => v.status !== "sold").length;
+const soldCount = vehicles.filter((v) => v.status === "sold").length;
+const publishedCount = vehicles.filter((v) => v.status === "published").length;
+
 const stats = [
 	{
 		label: "Véhicules en stock",
-		value: "6",
-		change: "+2 ce mois",
+		value: stockCount.toString(),
+		change: `${publishedCount} publiés`,
 		icon: Car,
 		color: "text-brand-500",
 		bg: "bg-brand-500/10",
@@ -30,8 +35,8 @@ const stats = [
 	},
 	{
 		label: "Véhicules vendus",
-		value: "47",
-		change: "cette année",
+		value: soldCount.toString(),
+		change: "au total",
 		icon: TrendingUp,
 		color: "text-violet-500",
 		bg: "bg-violet-500/10",

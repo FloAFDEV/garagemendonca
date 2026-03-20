@@ -361,7 +361,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						</div>
 
 						{/* ════ Colonne droite STICKY ════ */}
-						<aside className="lg:sticky lg:top-[120px] space-y-6 self-start h-fit">
+						<aside className="lg:sticky lg:top-[88px] space-y-6 self-start">
 							{/* Carte Prix & CTA */}
 							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
 								<div className="sm:hidden mb-6 pb-6 border-b border-slate-100">
