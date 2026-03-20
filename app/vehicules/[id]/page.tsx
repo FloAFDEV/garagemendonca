@@ -301,81 +301,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								images={vehicle.images}
 								vehicleName={vehicleName}
 							/>
-							{/* Caractéristiques techniques */}
-							{vehicle.features &&
-								Object.keys(vehicle.features).length > 0 && (
-									<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
-										<h2 className="font-heading font-bold text-[#0f172a] text-xl mb-5">
-											Caractéristiques techniques
-										</h2>
-										<div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
-											{[
-												{
-													label: "Marque",
-													value: vehicle.brand,
-												},
-												{
-													label: "Modèle",
-													value: vehicle.model,
-												},
-												{
-													label: "Année",
-													value: vehicle.year.toString(),
-												},
-												{
-													label: "Kilométrage",
-													value: `${vehicle.mileage.toLocaleString("fr-FR")} km`,
-												},
-												{
-													label: "Carburant",
-													value: vehicle.fuel,
-												},
-												{
-													label: "Boîte",
-													value: vehicle.transmission,
-												},
-												{
-													label: "Puissance",
-													value: `${vehicle.power} ch`,
-												},
-												{
-													label: "Couleur",
-													value: vehicle.color,
-												},
-												{
-													label: "Portes",
-													value: `${vehicle.doors} portes`,
-												},
-												...(vehicle.critAir
-													? [
-															{
-																label: "Crit'Air",
-																value: `Vignette ${vehicle.critAir}`,
-															},
-														]
-													: []),
-												...Object.entries(
-													vehicle.features,
-												).map(([label, value]) => ({
-													label,
-													value,
-												})),
-											].map(({ label, value }) => (
-												<div
-													key={label}
-													className="flex justify-between items-center py-2.5 border-b border-slate-100 last:border-0"
-												>
-													<span className="text-sm text-[#64748b]">
-														{label}
-													</span>
-													<span className="text-sm font-semibold text-[#0f172a] text-right ml-4">
-														{value}
-													</span>
-												</div>
-											))}
-										</div>
-									</div>
-								)}
 
 							{/* Description */}
 							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
@@ -408,6 +333,138 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									))}
 								</ul>
 							</div>
+
+							{/* Caractéristiques techniques */}
+							{vehicle.features &&
+								Object.keys(vehicle.features).length > 0 && (
+									<div className="space-y-12">
+										{/* 1. SECTION TECHNIQUE (Données fixes) */}
+										<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-10">
+											<div className="flex items-center gap-4 mb-10">
+												<h2 className="font-heading font-black text-[#0f172a] text-2xl tracking-tight">
+													Fiche Technique
+												</h2>
+												<div className="h-px flex-1 bg-slate-100" />
+											</div>
+
+											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-8">
+												{[
+													{
+														label: "Marque",
+														value: vehicle.brand,
+													},
+													{
+														label: "Modèle",
+														value: vehicle.model,
+													},
+													{
+														label: "Année",
+														value: vehicle.year,
+													},
+													{
+														label: "Kilométrage",
+														value: `${vehicle.mileage.toLocaleString("fr-FR")} km`,
+													},
+													{
+														label: "Énergie",
+														value: vehicle.fuel,
+													},
+													{
+														label: "Transmission",
+														value: vehicle.transmission,
+													},
+													{
+														label: "Puissance",
+														value: `${vehicle.power} ch`,
+													},
+													{
+														label: "Teinte",
+														value: vehicle.color,
+													},
+													{
+														label: "Configuration",
+														value: `${vehicle.doors} portes`,
+													},
+													...(vehicle.critAir
+														? [
+																{
+																	label: "Crit'Air",
+																	value: `Classe ${vehicle.critAir}`,
+																},
+															]
+														: []),
+												].map(({ label, value }) => (
+													<div
+														key={label}
+														className="group"
+													>
+														<p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1.5">
+															{label}
+														</p>
+														<p className="text-base font-bold text-[#0f172a]">
+															{value}
+														</p>
+														<div className="mt-2 h-0.5 w-6 bg-brand-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
+													</div>
+												))}
+											</div>
+										</div>
+
+										{/* 2. SECTION ÉQUIPEMENTS (Gestion dynamique du tableau d'options) */}
+										<div className="px-2">
+											<div className="flex items-center gap-4 mb-8">
+												<h3 className="font-heading font-bold text-[#0f172a] text-xl shrink-0">
+													Équipements & Options
+												</h3>
+												<div className="h-px w-full bg-slate-100" />
+											</div>
+
+											<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-6 gap-x-10">
+												{Object.entries(
+													vehicle.features,
+												).map(([key, value]) => {
+													// CAS SPÉCIAL SWIFT : Si la valeur est un tableau d'options
+													if (Array.isArray(value)) {
+														return value.map(
+															(option, index) => (
+																<div
+																	key={`${key}-${index}`}
+																	className="relative pl-5 py-1 border-l border-slate-200 hover:border-brand-500 transition-colors group"
+																>
+																	<span className="block text-[14px] font-semibold text-slate-700 leading-snug group-hover:text-[#0f172a] transition-colors">
+																		{option}
+																	</span>
+																</div>
+															),
+														);
+													}
+
+													// CAS CLASSIQUE : Clé/Valeur (Finition, Garantie, etc.)
+													if (
+														key === "Options" ||
+														!value ||
+														value === "Non"
+													)
+														return null;
+
+													return (
+														<div
+															key={key}
+															className="relative pl-5 py-1 border-l border-slate-200 hover:border-brand-500 transition-colors group"
+														>
+															<span className="block text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">
+																{key}
+															</span>
+															<span className="block text-[14px] font-bold text-[#0f172a] leading-tight capitalize">
+																{String(value)}
+															</span>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+									</div>
+								)}
 
 							{/* Section confiance */}
 							<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

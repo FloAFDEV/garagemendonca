@@ -23,7 +23,7 @@ export const garages: Garage[] = [
 // ─────────────────────────────────────────────
 export const vehicles: Vehicle[] = [
 	{
-		id: "1",
+		id: "3",
 		garageId: "garage-mendonça",
 		brand: "Toyota",
 		model: "AYGO",
@@ -91,7 +91,7 @@ export const vehicles: Vehicle[] = [
 		],
 	},
 	{
-		id: "3",
+		id: "1",
 		garageId: "garage-mendonça",
 		brand: "Suzuki",
 		model: "Swift",
