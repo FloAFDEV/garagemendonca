@@ -62,10 +62,10 @@ export default function ServicesPage() {
 	return (
 		<MainLayout>
 			{/* ── Hero ── */}
-			<section className="relative bg-dark-900 overflow-hidden pt-36 pb-20">
+			<section className="relative bg-dark-900 overflow-hidden pt-36 pb-20 ">
 				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[180px] pointer-events-none" />
 				<Container className="relative">
-					<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-5">
+					<div className="inline-flex items-center gap-2 mt-8 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-5">
 						<span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
 						<span className="text-brand-500 text-xs font-medium tracking-wide uppercase">
 							Nos expertises
