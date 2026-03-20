@@ -440,7 +440,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						</div>
 
 						{/* ════ Colonne droite sticky ──── */}
-						<aside className="space-y-4 lg:sticky self-start">
+						<aside className="space-y-4 lg:sticky lg:top-24 self-start">
+							{" "}
 							{/* Carte prix + CTA */}
 							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
 								{/* Prix (mobile uniquement — desktop affiché dans l'en-tête) */}
@@ -529,7 +530,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									))}
 								</ul>
 							</div>
-
 							{/* Adresse garage */}
 							<div className="bg-[#0f172a] rounded-2xl p-5 text-white">
 								<div className="text-xs text-brand-400 font-semibold uppercase tracking-widest mb-2">

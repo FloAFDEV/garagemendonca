@@ -261,7 +261,7 @@ export const vehicles: Vehicle[] = [
 		model: "C1",
 		year: 2020,
 		mileage: 22000,
-		fuel: "Essence",
+		fuel: "Hybride",
 		price: 10900,
 		transmission: "Automatique",
 		power: 72,
@@ -269,7 +269,7 @@ export const vehicles: Vehicle[] = [
 		doors: 5,
 		featured: false,
 		critAir: "2",
-		status: "draft",
+		status: "published",
 		createdAt: "2026-03-18",
 		updatedAt: "2026-03-18T00:00:00Z",
 		description:

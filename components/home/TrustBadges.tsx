@@ -9,7 +9,7 @@ const badges = [
 		label: "D'expérience",
 		pill: "Depuis 2001",
 		description:
-			"M. Vitor Mendonça et son équipe mettent leur savoir-faire à votre service pour des prestations de qualité.",
+			"M. Vitor Mendonça et son équipe mettent leur savoir-faire à votre service pour des prestations fiables et durables.",
 		iconBg: "bg-gradient-to-br from-red-50 to-red-100",
 		iconRing: "ring-1 ring-red-200",
 		iconColor: "text-red-600",
@@ -18,11 +18,11 @@ const badges = [
 	},
 	{
 		Icon: ShieldCheck,
-		value: "Véhicules",
-		label: "Expertisés & garantis",
-		pill: "Garantie incluse",
+		value: "Spécialiste",
+		label: "Japonaises & coréennes",
+		pill: "Expert reconnu",
 		description:
-			"Garantie 6 à 12 mois km illimités. Vérification en 160 points et 250–500 km parcourus avant mise en vente.",
+			"Une expertise dédiée aux véhicules japonais et coréens, avec contrôle rigoureux et garantie 6 à 12 mois.",
 		iconBg: "bg-gradient-to-br from-slate-100 to-slate-200",
 		iconRing: "ring-1 ring-slate-300",
 		iconColor: "text-slate-700",
@@ -35,7 +35,7 @@ const badges = [
 		label: "Dans la préparation",
 		pill: "Certifié pro",
 		description:
-			"Préconisations constructeur toujours respectées. Devis pièce & main-d'œuvre établi avant toute intervention.",
+			"Préconisations constructeur respectées et devis clair avant toute intervention.",
 		iconBg: "bg-gradient-to-br from-amber-50 to-amber-100",
 		iconRing: "ring-1 ring-amber-200",
 		iconColor: "text-amber-600",
@@ -48,7 +48,7 @@ const badges = [
 		label: "Notre priorité",
 		pill: "98 % satisfaits",
 		description:
-			"Accueil avec ou sans rendez-vous, du lundi au vendredi. La satisfaction client est au cœur de chaque intervention.",
+			"Accueil avec ou sans rendez-vous, avec un service fiable et transparent.",
 		iconBg: "bg-gradient-to-br from-red-50 to-red-100",
 		iconRing: "ring-1 ring-red-200",
 		iconColor: "text-red-600",
