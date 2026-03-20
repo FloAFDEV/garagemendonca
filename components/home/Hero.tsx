@@ -86,17 +86,17 @@ export default function Hero() {
 						</p>
 
 						{/* CTA */}
-						<div className="flex flex-col sm:flex-row gap-4 mb-14 animate-slide-up">
+						<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs mx-auto sm:max-w-full sm:mx-0 mb-14 animate-slide-up">
 							<a
 								href="tel:0532002038"
-								className="btn-primary text-base py-4 px-8 shadow-brand-lg"
+								className="btn-primary w-full sm:w-auto text-base sm:text-lg py-3 px-6 sm:py-4 sm:px-8 flex justify-center items-center gap-2 shadow-brand-lg"
 							>
 								<Phone size={18} aria-hidden="true" />
 								Appeler le 05 32 00 20 38
 							</a>
 							<Link
 								href="/contact"
-								className="btn-outline text-base py-4 px-8"
+								className="btn-outline w-full sm:w-auto text-base sm:text-lg py-3 px-6 sm:py-4 sm:px-8 flex justify-center items-center gap-2"
 							>
 								Demander un devis gratuit
 								<ArrowRight size={17} aria-hidden="true" />
