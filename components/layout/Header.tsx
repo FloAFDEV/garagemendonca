@@ -22,6 +22,7 @@ export default function Header() {
 
 	/* Pages avec fond clair qui nécessitent un header opaque dès le départ */
 	const isLightPage =
+		pathname === "/vehicules" ||
 		/^\/vehicules\/.+/.test(pathname) ||
 		pathname === "/contact" ||
 		pathname === "/cgu" ||
