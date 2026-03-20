@@ -82,49 +82,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
 	const contactHref = `/contact?vehicule=${encodeURIComponent(vehicleName)}`;
 
-	/* Infos clés */
-	const specs = [
-		{ Icon: Calendar, label: "Année", value: vehicle.year.toString() },
-		{
-			Icon: Gauge,
-			label: "Kilométrage",
-			value: `${vehicle.mileage.toLocaleString("fr-FR")} km`,
-		},
-		{ Icon: Fuel, label: "Carburant", value: vehicle.fuel },
-		{ Icon: Settings2, label: "Boîte", value: vehicle.transmission },
-		{ Icon: Zap, label: "Puissance", value: `${vehicle.power} ch` },
-		{ Icon: DoorOpen, label: "Portes", value: `${vehicle.doors} portes` },
-		{ Icon: Palette, label: "Couleur", value: vehicle.color },
-		...(vehicle.critAir
-			? [
-					{
-						Icon: Wind,
-						label: "Crit'Air",
-						value: `Vignette ${vehicle.critAir}`,
-					},
-				]
-			: []),
-	];
-
-	/* Section confiance */
-	const trustPoints = [
-		{
-			Icon: ShieldCheck,
-			title: "Révisé & garanti",
-			desc: "Contrôle en 160 points. Garantie 6 à 12 mois kilométrage illimité.",
-		},
-		{
-			Icon: RefreshCw,
-			title: "Reprise possible",
-			desc: "Votre véhicule repris et estimé directement dans notre garage.",
-		},
-		{
-			Icon: CreditCard,
-			title: "Financement étudié",
-			desc: "Solutions de financement adaptées, étudiées ensemble lors de votre visite.",
-		},
-	];
-
 	/* JSON-LD */
 	const jsonLdCar = {
 		"@context": "https://schema.org",
@@ -152,37 +109,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 		},
 	};
 
-	const jsonLdBreadcrumb = {
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		itemListElement: [
-			{
-				"@type": "ListItem",
-				position: 1,
-				name: "Accueil",
-				item: "https://garagemendonça.vercel.app/",
-			},
-			{
-				"@type": "ListItem",
-				position: 2,
-				name: "Occasions",
-				item: "https://garagemendonça.vercel.app/vehicules",
-			},
-			{ "@type": "ListItem", position: 3, name: vehicleName },
-		],
-	};
-
 	return (
 		<MainLayout>
 			<script
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdCar) }}
-			/>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(jsonLdBreadcrumb),
-				}}
 			/>
 
 			<div className="bg-[#f8fafc] min-h-screen">
@@ -225,7 +156,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					{/* ── En-tête ── */}
 					<div className="flex flex-wrap items-start justify-between gap-4 mb-8">
 						<div className="flex items-start gap-4">
-							{/* Logo marque */}
 							{BRAND_LOGO_MAP[vehicle.brand] && (
 								<div className="w-16 h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-2 flex items-center justify-center">
 									<Image
@@ -233,31 +163,26 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										alt={vehicle.brand}
 										width={48}
 										height={48}
-										className="object-contain w-full h-full"
+										className="object-contain"
 									/>
 								</div>
 							)}
 							<div>
-								<div className="flex items-center gap-2 mb-2 flex-wrap">
+								<div className="flex items-center gap-2 mb-2">
 									{vehicle.featured && (
-										<span className="inline-flex items-center gap-1.5 bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+										<span className="inline-flex items-center gap-1 bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full">
 											<Star
 												size={11}
-												aria-hidden="true"
-											/>
+												fill="currentColor"
+											/>{" "}
 											À la une
 										</span>
 									)}
 									<span
-										className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${
-											isAvailable
-												? "bg-emerald-100 text-emerald-700"
-												: "bg-slate-200 text-slate-500"
-										}`}
+										className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}
 									>
 										<span
 											className={`w-1.5 h-1.5 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-slate-400"}`}
-											aria-hidden="true"
 										/>
 										{isAvailable ? "Disponible" : "Vendu"}
 									</span>
@@ -265,334 +190,239 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								<h1 className="font-heading font-black text-[#0f172a] text-3xl md:text-4xl leading-tight">
 									{vehicle.brand} {vehicle.model}
 									{vehicle.features?.["Finition"] && (
-										<span className="text-[#64748b] font-medium text-xl ml-2">
+										<span className="text-slate-400 font-medium text-xl ml-2">
 											{vehicle.features["Finition"]}
 										</span>
 									)}
 								</h1>
-								<p className="text-[#64748b] mt-1.5 text-sm">
-									{vehicle.year} ·{" "}
-									{vehicle.mileage.toLocaleString("fr-FR")} km
-									· {vehicle.fuel} · {vehicle.transmission} ·{" "}
-									{vehicle.power} ch
-								</p>
 							</div>
 						</div>
-						{/* Prix desktop */}
 						<div className="hidden sm:block text-right">
-							<div
-								className="font-heading font-black text-4xl text-[#0f172a]"
-								aria-label={`${vehicle.price.toLocaleString("fr-FR")} euros TTC`}
-							>
-								{vehicle.price.toLocaleString("fr-FR")}&nbsp;€
+							<div className="font-heading font-black text-4xl text-[#0f172a] tracking-tight">
+								{vehicle.price.toLocaleString("fr-FR")} €
 							</div>
-							<p className="text-[#64748b] text-sm mt-0.5">
-								Prix TTC · Financement disponible
+							<p className="text-slate-400 text-sm mt-0.5 font-medium">
+								Prix TTC · Révisé & Garanti
 							</p>
 						</div>
 					</div>
 
 					{/* ── Layout principal ── */}
-					<div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
+					<div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10 items-start relative">
 						{/* ════ Colonne gauche ════ */}
-						<div className="space-y-6 min-w-0">
-							{/* Galerie interactive */}
+						<div className="space-y-10 min-w-0">
 							<VehicleGallery
 								images={vehicle.images}
 								vehicleName={vehicleName}
 							/>
 
-							{/* Description */}
-							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
-								<h2 className="font-heading font-bold text-[#0f172a] text-xl mb-4">
-									Description
+							{/* Description & Confiance */}
+							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-8 md:p-10">
+								<h2 className="font-heading font-bold text-[#0f172a] text-xl mb-6">
+									Description du véhicule
 								</h2>
-								<p className="text-[#475569] leading-relaxed text-[15px] max-w-2xl">
+								<p className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line">
 									{vehicle.description}
 								</p>
-								<ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+								<div className="mt-8 pt-8 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
 									{[
 										"Contrôle technique à jour",
-										"Carnet d'entretien vérifié",
 										"Révision effectuée",
-										"Garantie 6 à 12 mois km illimités",
 										"Vérification 160 points",
-										"250 à 500 km parcourus avant vente",
+										"Garantie 6 à 12 mois",
 									].map((item) => (
-										<li
+										<div
 											key={item}
-											className="flex items-center gap-2.5 text-sm text-[#334155]"
+											className="flex items-center gap-3 text-sm font-medium text-slate-700"
 										>
 											<CheckCircle2
-												size={15}
-												className="text-emerald-500 flex-shrink-0"
-												aria-hidden="true"
-											/>
+												size={16}
+												className="text-emerald-500"
+											/>{" "}
 											{item}
-										</li>
+										</div>
 									))}
-								</ul>
+								</div>
 							</div>
 
-							{/* Caractéristiques techniques */}
-							{vehicle.features &&
-								Object.keys(vehicle.features).length > 0 && (
-									<div className="space-y-12">
-										{/* 1. SECTION TECHNIQUE (Données fixes) */}
-										<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-10">
-											<div className="flex items-center gap-4 mb-10">
-												<h2 className="font-heading font-black text-[#0f172a] text-2xl tracking-tight">
-													Fiche Technique
-												</h2>
-												<div className="h-px flex-1 bg-slate-100" />
-											</div>
-
-											<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-8">
-												{[
-													{
-														label: "Marque",
-														value: vehicle.brand,
-													},
-													{
-														label: "Modèle",
-														value: vehicle.model,
-													},
-													{
-														label: "Année",
-														value: vehicle.year,
-													},
-													{
-														label: "Kilométrage",
-														value: `${vehicle.mileage.toLocaleString("fr-FR")} km`,
-													},
-													{
-														label: "Énergie",
-														value: vehicle.fuel,
-													},
-													{
-														label: "Transmission",
-														value: vehicle.transmission,
-													},
-													{
-														label: "Puissance",
-														value: `${vehicle.power} ch`,
-													},
-													{
-														label: "Teinte",
-														value: vehicle.color,
-													},
-													{
-														label: "Configuration",
-														value: `${vehicle.doors} portes`,
-													},
-													...(vehicle.critAir
-														? [
-																{
-																	label: "Crit'Air",
-																	value: `Classe ${vehicle.critAir}`,
-																},
-															]
-														: []),
-												].map(({ label, value }) => (
-													<div
-														key={label}
-														className="group"
-													>
-														<p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1.5">
-															{label}
-														</p>
-														<p className="text-base font-bold text-[#0f172a]">
-															{value}
-														</p>
-														<div className="mt-2 h-0.5 w-6 bg-brand-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-													</div>
-												))}
-											</div>
+							{/* SECTION TECHNIQUE & OPTIONS */}
+							{vehicle.features && (
+								<div className="space-y-12">
+									{/* Fiche Technique */}
+									<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-10">
+										<h2 className="font-heading font-black text-[#0f172a] text-2xl tracking-tight mb-10 flex items-center gap-4 text-center sm:text-left">
+											Fiche Technique{" "}
+											<div className="h-px flex-1 bg-slate-100" />
+										</h2>
+										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-8">
+											{[
+												{
+													label: "Année",
+													value: vehicle.year,
+												},
+												{
+													label: "Kilométrage",
+													value: `${vehicle.mileage.toLocaleString("fr-FR")} km`,
+												},
+												{
+													label: "Énergie",
+													value: vehicle.fuel,
+												},
+												{
+													label: "Transmission",
+													value: vehicle.transmission,
+												},
+												{
+													label: "Puissance",
+													value: `${vehicle.power} ch`,
+												},
+												{
+													label: "Teinte",
+													value: vehicle.color,
+												},
+												{
+													label: "Portes",
+													value: `${vehicle.doors} portes`,
+												},
+												...(vehicle.critAir
+													? [
+															{
+																label: "Crit'Air",
+																value: `Classe ${vehicle.critAir}`,
+															},
+														]
+													: []),
+											].map(({ label, value }) => (
+												<div
+													key={label}
+													className="group"
+												>
+													<p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1.5">
+														{label}
+													</p>
+													<p className="text-base font-bold text-[#0f172a]">
+														{value}
+													</p>
+													<div className="mt-2 h-0.5 w-6 bg-brand-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+												</div>
+											))}
 										</div>
+									</div>
 
-										{/* 2. SECTION ÉQUIPEMENTS (Gestion dynamique du tableau d'options) */}
-										<div className="px-2">
-											<div className="flex items-center gap-4 mb-8">
-												<h3 className="font-heading font-bold text-[#0f172a] text-xl shrink-0">
-													Équipements & Options
-												</h3>
-												<div className="h-px w-full bg-slate-100" />
-											</div>
-
-											<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-6 gap-x-10">
-												{Object.entries(
-													vehicle.features,
-												).map(([key, value]) => {
-													// CAS SPÉCIAL SWIFT : Si la valeur est un tableau d'options
-													if (Array.isArray(value)) {
-														return value.map(
-															(option, index) => (
-																<div
-																	key={`${key}-${index}`}
-																	className="relative pl-5 py-1 border-l border-slate-200 hover:border-brand-500 transition-colors group"
-																>
-																	<span className="block text-[14px] font-semibold text-slate-700 leading-snug group-hover:text-[#0f172a] transition-colors">
-																		{option}
-																	</span>
-																</div>
-															),
-														);
-													}
-
-													// CAS CLASSIQUE : Clé/Valeur (Finition, Garantie, etc.)
-													if (
-														key === "Options" ||
-														!value ||
-														value === "Non"
-													)
-														return null;
-
-													return (
-														<div
-															key={key}
-															className="relative pl-5 py-1 border-l border-slate-200 hover:border-brand-500 transition-colors group"
-														>
-															<span className="block text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">
-																{key}
-															</span>
-															<span className="block text-[14px] font-bold text-[#0f172a] leading-tight capitalize">
-																{String(value)}
-															</span>
-														</div>
+									{/* Équipements & Options Dynamiques */}
+									<div className="px-2">
+										<h3 className="font-heading font-bold text-[#0f172a] text-xl mb-8 flex items-center gap-4">
+											Équipements & Confort{" "}
+											<div className="h-px flex-1 bg-slate-100" />
+										</h3>
+										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-y-6 gap-x-8">
+											{Object.entries(
+												vehicle.features,
+											).map(([key, value]) => {
+												if (Array.isArray(value)) {
+													return value.map(
+														(option, idx) => (
+															<div
+																key={`${key}-${idx}`}
+																className="pl-4 border-l-2 border-slate-100 hover:border-brand-500 transition-colors py-1 group"
+															>
+																<span className="text-sm font-semibold text-slate-700 group-hover:text-brand-600 transition-colors leading-tight block">
+																	{option}
+																</span>
+															</div>
+														),
 													);
-												})}
-											</div>
+												}
+												if (
+													key === "Options" ||
+													!value ||
+													value === "Non" ||
+													key === "Finition"
+												)
+													return null;
+												return (
+													<div
+														key={key}
+														className="pl-4 border-l-2 border-slate-100 hover:border-brand-500 py-1 group"
+													>
+														<span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5">
+															{key}
+														</span>
+														<span className="text-sm font-bold text-[#0f172a] group-hover:text-brand-600 transition-colors leading-tight block">
+															{String(value)}
+														</span>
+													</div>
+												);
+											})}
 										</div>
 									</div>
-								)}
-
-							{/* Section confiance */}
-							<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-								{trustPoints.map(({ Icon, title, desc }) => (
-									<div
-										key={title}
-										className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col gap-3"
-									>
-										<div
-											className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
-											aria-hidden="true"
-										>
-											<Icon
-												size={18}
-												className="text-brand-600"
-												aria-hidden="true"
-											/>
-										</div>
-										<div>
-											<h3 className="font-semibold text-[#0f172a] text-sm mb-1">
-												{title}
-											</h3>
-											<p className="text-[#64748b] text-xs leading-relaxed">
-												{desc}
-											</p>
-										</div>
-									</div>
-								))}
-							</div>
+								</div>
+							)}
 						</div>
 
-						{/* ════ Colonne droite sticky ──── */}
-						<aside className="space-y-4 lg:sticky lg:top-24 self-start">
-							{" "}
-							{/* Carte prix + CTA */}
-							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-								{/* Prix (mobile uniquement — desktop affiché dans l'en-tête) */}
-								<div className="sm:hidden mb-5 pb-5 border-b border-slate-100">
-									<div
-										className="font-heading font-black text-4xl text-[#0f172a]"
-										aria-label={`${vehicle.price.toLocaleString("fr-FR")} euros TTC`}
-									>
+						{/* ════ Colonne droite STICKY ════ */}
+						<aside className="lg:sticky lg:top-[120px] space-y-6 self-start h-fit">
+							{/* Carte Prix & CTA */}
+							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
+								<div className="sm:hidden mb-6 pb-6 border-b border-slate-100">
+									<div className="font-heading font-black text-4xl text-[#0f172a]">
 										{vehicle.price.toLocaleString("fr-FR")}{" "}
 										€
 									</div>
-									<p className="text-[#64748b] text-sm mt-0.5">
-										Prix TTC · Financement disponible
+									<p className="text-slate-400 text-sm mt-1 font-medium italic">
+										Prix TTC
 									</p>
 								</div>
 
-								{/* Résumé rapide */}
-								<div className="grid grid-cols-3 gap-2 mb-5">
-									{[
-										{ label: "Année", value: vehicle.year },
-										{
-											label: "Km",
-											value: `${Math.round(vehicle.mileage / 1000)}k`,
-										},
-										{
-											label: "Énergie",
-											value: vehicle.fuel,
-										},
-									].map(({ label, value }) => (
-										<div
-											key={label}
-											className="text-center bg-[#f8fafc] rounded-xl py-3"
-										>
-											<div className="font-bold text-[#0f172a] text-sm leading-none mb-1">
-												{value}
-											</div>
-											<div className="text-xs text-[#64748b]">
-												{label}
-											</div>
-										</div>
-									))}
-								</div>
-
-								{/* CTAs */}
-								<div className="space-y-2.5">
+								<div className="space-y-4">
 									<a
 										href="tel:0532002038"
-										className="btn-primary w-full justify-center text-base py-3.5"
-										aria-label="Appeler le garage pour ce véhicule"
+										className="btn-primary w-full justify-center py-4 text-base shadow-lg shadow-brand-500/20"
 									>
-										<Phone size={17} aria-hidden="true" />
-										05 32 00 20 38
+										<Phone size={18} /> 05 32 00 20 38
 									</a>
 									<Link
 										href={contactHref}
-										className="btn-secondary w-full justify-center text-sm"
-										aria-label={`Envoyer un message à propos du ${vehicleName}`}
+										className="btn-secondary w-full justify-center py-4 text-sm font-bold border-2"
 									>
-										<MessageSquare
-											size={16}
-											aria-hidden="true"
-										/>
-										Demander un renseignement
+										<MessageSquare size={17} /> Envoyer un
+										message
 									</Link>
 								</div>
 
-								{/* Réassurances */}
-								<ul className="mt-5 pt-5 border-t border-slate-100 space-y-2.5">
+								<ul className="mt-8 space-y-4">
 									{[
-										"Essai possible sur rendez-vous",
-										"Financement étudié ensemble",
+										"Essai possible sur RDV",
 										"Reprise de votre véhicule",
-										"Accueil avec ou sans rendez-vous",
+										"Financement personnalisé",
+										"Spécialiste boîte auto",
 									].map((item) => (
 										<li
 											key={item}
-											className="flex items-center gap-2 text-sm text-[#475569]"
+											className="flex items-center gap-3 text-sm font-semibold text-slate-600"
 										>
-											<CheckCircle2
-												size={14}
-												className="text-brand-500 flex-shrink-0"
-												aria-hidden="true"
-											/>
+											<ShieldCheck
+												size={18}
+												className="text-brand-500"
+											/>{" "}
 											{item}
 										</li>
 									))}
 								</ul>
 							</div>
-							{/* Adresse garage */}
-							<div className="bg-[#0f172a] rounded-2xl p-5 text-white">
-								<div className="text-xs text-brand-400 font-semibold uppercase tracking-widest mb-2">
-									Garage Auto Mendonça
+
+							{/* Adresse Garage */}
+							<div className="bg-[#0f172a] rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative group">
+								<div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform">
+									<ArrowLeft
+										size={80}
+										className="rotate-135"
+									/>
 								</div>
-								<p className="text-sm text-slate-300 leading-relaxed mb-4">
+								<div className="text-xs text-brand-400 font-black uppercase tracking-[0.2em] mb-4">
+									Garage Mendonça
+								</div>
+								<p className="text-slate-300 text-sm leading-relaxed mb-6 font-medium">
 									6 Avenue de la Mouyssaguese
 									<br />
 									31280 Drémil-Lafage
@@ -600,39 +430,35 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									Lun–Jeu 8h–19h · Ven 8h–18h
 								</p>
 								<a
-									href="https://maps.google.com/maps?q=6+Avenue+de+la+Mouyssaguese,+31280+Drémil-Lafage"
+									href="https://maps.google.com"
 									target="_blank"
-									rel="noopener noreferrer"
-									className="text-brand-400 hover:text-brand-300 text-xs font-medium transition-colors"
-									aria-label="Voir le garage sur Google Maps (nouvel onglet)"
+									className="inline-flex items-center gap-2 text-brand-400 hover:text-white text-xs font-bold transition-colors uppercase tracking-widest"
 								>
-									Voir sur Google Maps →
+									Itinéraire Maps{" "}
+									<ArrowLeft
+										size={12}
+										className="rotate-180"
+									/>
 								</a>
 							</div>
 						</aside>
 					</div>
 
-					{/* ── Véhicules similaires ── */}
+					{/* Véhicules similaires */}
 					{related.length > 0 && (
-						<section
-							className="mt-16"
-							aria-labelledby="similaires-title"
-						>
-							<div className="flex items-center justify-between mb-6">
-								<h2
-									id="similaires-title"
-									className="font-heading font-bold text-[#0f172a] text-2xl"
-								>
-									Vous pourriez aussi aimer
+						<section className="mt-24 border-t border-slate-100 pt-16">
+							<div className="flex items-center justify-between mb-10">
+								<h2 className="font-heading font-black text-[#0f172a] text-3xl tracking-tight">
+									Suggestions
 								</h2>
 								<Link
 									href="/vehicules"
-									className="text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+									className="text-sm font-bold text-brand-600 hover:text-brand-700 underline underline-offset-4"
 								>
-									Voir tout le stock →
+									Voir tout le stock
 								</Link>
 							</div>
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 								{related.map((v) => (
 									<VehicleCard key={v.id} vehicle={v} />
 								))}
@@ -642,38 +468,21 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 				</Container>
 			</div>
 
-			{/* ── CTA sticky mobile ── */}
-			<div
-				className="fixed bottom-0 left-0 right-0 z-40 sm:hidden bg-white border-t border-slate-200 px-4 py-3 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.12)]"
-				role="region"
-				aria-label="Actions rapides"
-			>
-				<div className="flex-1 min-w-0">
-					<p className="text-[10px] text-[#64748b] leading-none mb-0.5">
-						Prix TTC
-					</p>
-					<p
-						className="font-heading font-black text-xl text-[#0f172a] leading-none"
-						aria-label={`${vehicle.price.toLocaleString("fr-FR")} euros`}
-					>
+			{/* CTA Mobile Sticky */}
+			<div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-200 px-6 py-4 flex items-center gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
+				<div className="flex-1">
+					<p className="font-heading font-black text-2xl text-[#0f172a] leading-none">
 						{vehicle.price.toLocaleString("fr-FR")} €
 					</p>
 				</div>
 				<a
 					href="tel:0532002038"
-					className="btn-primary text-sm py-3 px-5 flex-shrink-0"
-					aria-label="Appeler le garage"
+					className="btn-primary py-3.5 px-6 shadow-md shadow-brand-500/20"
 				>
-					<Phone size={15} aria-hidden="true" />
-					Appeler
+					<Phone size={18} />
 				</a>
-				<Link
-					href={contactHref}
-					className="btn-secondary text-sm py-3 px-4 flex-shrink-0"
-					aria-label="Envoyer un message"
-				>
-					<MessageSquare size={15} aria-hidden="true" />
-					Message
+				<Link href={contactHref} className="btn-secondary py-3.5 px-4">
+					<MessageSquare size={18} />
 				</Link>
 			</div>
 		</MainLayout>
