@@ -36,6 +36,8 @@ interface VehicleFiltersProps {
 	availableFuels: string[];
 	totalCount: number;
 	filteredCount: number;
+	hideSold?: boolean;
+	onToggleHideSold?: () => void;
 }
 
 /* Options statiques */
@@ -146,6 +148,8 @@ export default function VehicleFilters({
 	availableFuels,
 	totalCount,
 	filteredCount,
+	hideSold = false,
+	onToggleHideSold,
 }: VehicleFiltersProps) {
 	const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -299,6 +303,20 @@ export default function VehicleFilters({
 							))}
 						</select>
 					</div>
+
+					{/* Toggle vendus */}
+					{onToggleHideSold && (
+						<button
+							onClick={onToggleHideSold}
+							className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-black uppercase tracking-wider transition-all ${
+								hideSold
+									? "bg-slate-800 text-white border-slate-800"
+									: "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
+							}`}
+						>
+							{hideSold ? "Afficher vendus" : "Masquer vendus"}
+						</button>
+					)}
 
 					{isFiltered && (
 						<button

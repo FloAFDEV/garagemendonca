@@ -37,7 +37,7 @@ function CatalogueContent() {
 		...INITIAL_FILTERS,
 		brands: brandParam ? [brandParam] : [],
 	});
-	const [hideSold, setHideSold] = useState(false);
+	const [hideSold, setHideSold] = useState(true);
 
 	const filtered = useMemo(() => {
 		let list = [...vehicles];
@@ -85,6 +85,8 @@ function CatalogueContent() {
 						availableFuels={ALL_FUELS}
 						totalCount={vehicles.length}
 						filteredCount={filtered.length}
+						hideSold={hideSold}
+						onToggleHideSold={() => setHideSold((v) => !v)}
 					/>
 				</div>
 			</div>
