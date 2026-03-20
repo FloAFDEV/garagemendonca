@@ -44,7 +44,7 @@ export default function VehicleGallery({
 					src={images[active]}
 					alt={`${vehicleName} — photo ${active + 1} sur ${images.length}`}
 					fill
-					className="object-cover transition-opacity duration-300"
+					className="object-cover object-top transition-opacity duration-300"
 					sizes="(max-width: 1024px) 100vw, 66vw"
 					priority={active === 0}
 				/>

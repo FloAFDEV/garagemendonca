@@ -262,7 +262,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 		doors: 5,
 		featured: false,
 		critAir: "2",
-		status: "published",
+		status: "sold",
 		createdAt: "2026-03-10",
 		updatedAt: "2026-03-10T00:00:00Z",
 		description:
@@ -284,29 +284,60 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 		garageId: "garage-mendonça",
 		brand: "Peugeot",
 		model: "107",
-		year: 2015,
-		mileage: 88000,
+		year: 2007,
+		mileage: 76500,
 		fuel: "Essence",
 		price: 6500,
 		transmission: "Automatique",
 		power: 68,
-		color: "Rouge",
+		color: "Gris Gallium (KTB)",
 		doors: 5,
-		featured: false,
+		featured: true,
 		critAir: "2",
-		status: "sold",
+		status: "published",
 		sold_at: "2026-03-01T00:00:00Z",
-		createdAt: "2026-01-10",
+		createdAt: "2007-06-07",
 		updatedAt: "2026-03-01T00:00:00Z",
-		description:
-			"Peugeot 107 boîte automatique. Vendu récemment. Citadine parfaite, très économique.",
+		description: `
+Peugeot 107 1.0i 68 ch finition Trendy, boîte automatique à 5 rapports, mise en circulation le 07/06/2007 avec 76 500 km. Couleur Gris Gallium (KTB).
+
+Garantie : 6 mois complète couvrant l’ensemble des composants mécaniques et électroniques.
+
+Mécanique : Entretien réalisé pour la vente
+- Révision complète (huile, filtres, bougies)
+- Révision de la boîte automatique
+- Remplacement de 2 pneus avant
+- Disques et plaquettes de frein avant
+
+Carrosserie : Bon état général. Photos supplémentaires et vidéo disponibles prochainement.
+
+Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune permis en boîte automatique.
+`,
 		features: {
-			Motorisation: "1.0i 68 ch",
-			Provenance: "Francaise",
-			Garantie: "6 à 12 mois km illimités",
+			finition: "Trendy",
+			motorisation: "1.0i 68 ch (4cv)",
+			provenance: "Française",
+			carnetEntretien: "Entretien à jour",
+			controleTechnique: "À jour",
+			garantie: "6 mois complète",
+			Options: [
+				"Roue de secours",
+				"Vitres électriques",
+				"Radio CD MP3",
+				"Prise auxiliaire",
+				"Prise 12V",
+				"Boîte de vitesse automatique",
+				"Sièges arrière rabattables (1/3 2/3)",
+				"Sans climatisation",
+			],
 		},
 		images: [
-			"https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80",
+			"https://www.garagemendonca.com/public/img/big/20251119144533Copierjpg_691ee9050666b.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251119144426Copierjpg_691ee904ca3a1.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251119144630Copierjpg_691ee90535b65.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251119144718Copierjpg_691ee9047e6b4.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251119144802Copierjpg_691ee905772c2.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251119144650Copierjpg_691ee904a2301.jpg",
 		],
 	},
 	{
