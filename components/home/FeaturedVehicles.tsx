@@ -15,11 +15,11 @@ const guarantees = [
 export default function FeaturedVehicles() {
 	/* 4 derniers arrivages triés par createdAt décroissant */
 	const latest = [...vehicles]
-		.sort((a, b) => {
-			const da = a.createdAt ?? "0000-00-00";
-			const db = b.createdAt ?? "0000-00-00";
-			return db.localeCompare(da);
-		})
+		.sort((a, b) =>
+			(b.createdAt || "1900-01-01").localeCompare(
+				a.createdAt || "1900-01-01",
+			),
+		)
 		.slice(0, 8);
 
 	return (
@@ -45,7 +45,7 @@ export default function FeaturedVehicles() {
 
 				{/* ── Grid ── */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
-					{latest.slice(0, 6).map((vehicle, i) => (
+					{latest.slice(0, 8).map((vehicle, i) => (
 						<AnimateOnScroll key={vehicle.id} delay={i * 80}>
 							<VehicleCard vehicle={vehicle} priority={i === 0} />
 						</AnimateOnScroll>

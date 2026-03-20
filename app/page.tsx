@@ -13,8 +13,8 @@ export default function HomePage() {
 		<MainLayout>
 			<Hero />
 			<TrustBadges />
-			<ServicesOverview />
 			<FeaturedVehicles />
+			<ServicesOverview />
 			<GalleryAtelier />
 			<Testimonials />
 			<CallToAction />
