@@ -62,7 +62,7 @@ CREATE TABLE garage_users (
 --  {
 --    "finition"           : "Acenta",
 --    "motorisation"       : "1.4 88 ch",
---    "provenance"         : "Française",
+--    "provenance"         : "Francaise",
 --    "nbProprietaires"    : "1",
 --    "carnetEntretien"    : "À jour",
 --    "controleTechnique"  : "À jour",
@@ -309,11 +309,11 @@ WHERE gv.is_visible = true
 INSERT INTO garages (name, slug, address, city, postal_code, phone, email)
 VALUES (
   'Garage Auto Mendonça',
-  'mendonca-dremil-lafage',
+  'mendonça-dremil-lafage',
   '6 Avenue de la Mouyssaguese',
   'Drémil-Lafage', '31280',
   '0532002038',
-  'contact@garagemendonca.com'
+  'contact@garagemendonça.com'
 );
 
 -- ────────────────────────────────────────────────────────────

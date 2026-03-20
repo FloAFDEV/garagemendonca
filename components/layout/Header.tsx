@@ -57,10 +57,10 @@ export default function Header() {
 						</span>
 					</span>
 					<a
-						href="mailto:contact@garagemendonca.com"
+						href="mailto:contact@garagemendonça.com"
 						className="hover:text-white transition-colors"
 					>
-						contact@garagemendonca.com
+						contact@garagemendonça.com
 					</a>
 				</Container>
 			</div>
