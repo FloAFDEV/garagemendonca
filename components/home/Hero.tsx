@@ -23,22 +23,65 @@ const trustBadges = [
 export default function Hero() {
 	return (
 		<section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
-			{/* Fond photo */}
+			{/*
+			  ─── STRATÉGIE IMAGE ───────────────────────────────────────────────
+			  Règle : sur mobile le texte couvre toute la largeur → on décale
+			  l'image vers la droite pour révéler l'enseigne SANS que le
+			  décalage soit trop fort sur les grands écrans où l'enseigne
+			  se retrouverait derrière le bloc texte.
+
+			  Valeurs calibrées :
+			    < sm  (mobile)          : 72 % → enseigne visible à droite ✓
+			    sm    (tablette 768 px) : 60 % → décalage modéré
+			    md    (≥ 1024 px)       : 20 % → léger décalage, texte protégé
+			    lg+   (desktop)         : 5  % → quasi identique à l'original
+			                                     (prouvé fonctionnel)
+
+			  Solution B – double image (recommandée à terme) :
+			    Quand une version portrait de l'image sera disponible, remplacer
+			    le bloc ci-dessous par :
+
+			    <Image
+			      src="/images/garage-hero-mobile.webp"   ← portrait, enseigne centrée
+			      alt="Atelier du Garage Auto Mendonça"
+			      fill priority
+			      className="sm:hidden object-cover object-center"
+			      sizes="100vw"
+			    />
+			    <Image
+			      src="/images/garage-hero.webp"
+			      alt="Atelier du Garage Auto Mendonça"
+			      fill priority
+			      className="hidden sm:block object-cover object-[20%_center] lg:object-[5%_50%]"
+			      sizes="100vw"
+			    />
+			  ────────────────────────────────────────────────────────────────── */}
 			<div className="absolute inset-0 z-0">
 				<Image
 					src="/images/garage-hero.webp"
 					alt="Atelier du Garage Auto Mendonça"
 					fill
 					priority
-					className="object-cover object-[50%_50%] lg:object-[5%_50%]"
+					className="object-cover object-[72%_center] sm:object-[60%_center] md:object-[20%_center] lg:object-[5%_50%]"
 					sizes="100vw"
 				/>
 			</div>
 
+			{/*
+			  Overlay gradient L → R :
+			  Le "from" très sombre couvre la colonne texte (côté gauche).
+			  Le "to-transparent" laisse l'image s'exprimer sur la droite.
+			  Valeurs identiques à la version originale validée.
+			*/}
 			<div
-				className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/38 to-transparent z-1"
+				className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/40 to-transparent z-1"
 				aria-hidden="true"
 			/>
+			{/*
+			  Couche plate de sécurité : assombrit uniformément l'ensemble,
+			  critique pour la lisibilité du texte sur mobile (plein écran)
+			  et pour éviter que l'enseigne lumineuse ne "transperce" le gradient.
+			*/}
 			<div
 				className="absolute inset-0 bg-black/28 z-1"
 				aria-hidden="true"
