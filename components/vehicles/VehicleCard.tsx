@@ -2,8 +2,44 @@ import Link from "next/link";
 import Image from "next/image";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
+import type { VehicleOptions } from "@/types";
 import Badge from "@/components/ui/Badge";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+
+/* ── Options highlights ──────────────────────────────────────────────────────
+ * Options les plus "vendantes" à afficher sur la carte, par ordre de priorité.
+ * Max 4 affichées + badge "+N" si davantage. */
+const HIGHLIGHT_KEYS: (keyof VehicleOptions)[] = [
+	"climatisation_automatique",
+	"toit_panoramique",
+	"toit_ouvrant",
+	"camera_recul",
+	"regulateur_adaptatif",
+	"jantes_alliage",
+	"climatisation",
+	"sieges_chauffants",
+	"regulateur_vitesse",
+	"demarrage_sans_cle",
+	"ecran_tactile",
+	"gps",
+	"bluetooth",
+];
+
+const HIGHLIGHT_LABELS: Partial<Record<keyof VehicleOptions, string>> = {
+	climatisation_automatique: "Clim auto",
+	toit_panoramique:          "Toit pano",
+	toit_ouvrant:              "Toit ouvrant",
+	camera_recul:              "Caméra recul",
+	regulateur_adaptatif:      "Régulateur ACC",
+	jantes_alliage:            "Jantes alliage",
+	climatisation:             "Climatisation",
+	sieges_chauffants:         "Sièges chauf.",
+	regulateur_vitesse:        "Régulateur",
+	demarrage_sans_cle:        "Keyless",
+	ecran_tactile:             "Écran tactile",
+	gps:                       "GPS",
+	bluetooth:                 "Bluetooth",
+};
 
 interface VehicleCardProps {
 	vehicle: Vehicle;
@@ -143,7 +179,34 @@ export default function VehicleCard({
 					<Badge variant="gray">{vehicle.power} ch</Badge>
 				</div>
 
-				{/* Prix + CTA */}
+				{/* Options highlights */}
+			{vehicle.options && (() => {
+				const hits = HIGHLIGHT_KEYS.filter(
+					(k) => vehicle.options![k] === true,
+				);
+				if (hits.length === 0) return null;
+				const shown = hits.slice(0, 4);
+				const rest  = hits.length - shown.length;
+				return (
+					<div className="flex flex-wrap gap-1 mb-3" aria-label="Équipements principaux">
+						{shown.map((k) => (
+							<span
+								key={k}
+								className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5"
+							>
+								{HIGHLIGHT_LABELS[k]}
+							</span>
+						))}
+						{rest > 0 && (
+							<span className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+								+{rest}
+							</span>
+						)}
+					</div>
+				);
+			})()}
+
+			{/* Prix + CTA */}
 				<div className="pt-3 border-t border-slate-100 space-y-2.5">
 					<span
 						className="block ty-value font-heading text-lg"

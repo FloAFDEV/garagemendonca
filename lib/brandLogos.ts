@@ -43,7 +43,6 @@ export const BRAND_LOGO_FILENAMES: Partial<Record<string, string>> = {
   Toyota:        "toyota.svg",
 
   // ── Coréennes ──────────────────────────────────────────────────
-  Genesis:       "genesis.svg",
   Hyundai:       "hyundai.svg",
   Kia:           "kia.svg",
   KGM:           "kgm.svg",

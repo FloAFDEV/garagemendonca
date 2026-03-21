@@ -276,7 +276,6 @@ export const BRANDS_MODELS: Record<string, string[]> = {
   ],
 
   // ── CORÉENNES ──────────────────────────────────────────────────────────────
-  Genesis: ["G70", "G80", "G90", "GV60", "GV70", "GV80"],
   Hyundai: [
     "i10",
     "i20",

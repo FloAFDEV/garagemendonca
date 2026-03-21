@@ -32,13 +32,6 @@ const STATS: StatDef[] = [
 		thousands: false,
 		label: "Clients satisfaits",
 	},
-	{
-		prefix: "",
-		target: 9,
-		suffix: "",
-		thousands: false,
-		label: "Véhicules de prêt",
-	},
 ];
 
 function CountUp({

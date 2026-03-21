@@ -150,6 +150,25 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 			Garantie: "6 à 12 mois km illimités",
 			"Nb propriétaires": "1",
 		},
+		options: {
+			// Sécurité
+			abs: true,
+			esp: true,
+			airbags: true,
+			airbags_lateraux: true,
+			isofix: true,
+			// Intérieur & Confort
+			climatisation: true,
+			vitres_electriques_avant: true,
+			fermeture_centralisee: true,
+			sieges_rabattables: true,
+			// Multimédia
+			bluetooth: true,
+			usb: true,
+			// Motorisation
+			boite_automatique: true,
+			start_stop: true,
+		},
 		images: [
 			"https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&q=80",
 			"https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&q=80",
@@ -184,6 +203,39 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 			Garantie: "6 à 12 mois km illimités",
 			"Nb propriétaires": "1",
 		},
+		options: {
+			// Sécurité
+			abs: true,
+			esp: true,
+			airbags: true,
+			airbags_lateraux: true,
+			detection_pression_pneus: true,
+			isofix: true,
+			// Aides à la conduite
+			regulateur_vitesse: true,
+			limiteur_vitesse: true,
+			camera_recul: true,
+			radar_arriere: true,
+			// Extérieur
+			jantes_alliage: true,
+			taille_jantes: 16,
+			feux_led: true,
+			retroviseurs_electriques: true,
+			// Intérieur & Confort
+			climatisation_automatique: true,
+			vitres_electriques_avant: true,
+			vitres_electriques_arriere: true,
+			fermeture_centralisee: true,
+			commande_au_volant: true,
+			sieges_rabattables: true,
+			// Multimédia
+			ecran_tactile: true,
+			bluetooth: true,
+			usb: true,
+			// Motorisation
+			boite_automatique: true,
+			start_stop: true,
+		},
 		images: [
 			"https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800&q=80",
 			"https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?w=800&q=80",
@@ -217,6 +269,20 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 			"Carnet d'entretien": "À jour",
 			"Contrôle technique": "À jour",
 			Garantie: "6 à 12 mois km illimités",
+		},
+		options: {
+			// Sécurité
+			abs: true,
+			esp: true,
+			airbags: true,
+			// Intérieur & Confort
+			climatisation: true,
+			vitres_electriques_avant: true,
+			fermeture_centralisee: true,
+			sieges_rabattables: true,
+			// Motorisation
+			boite_automatique: true,
+			start_stop: true,
 		},
 		images: [
 			"https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800&q=80",
@@ -327,6 +393,26 @@ Autres notes : Véhicule en cours de roulage, idéal pour la ville et jeunes per
 			"Contrôle technique": "À jour",
 			Garantie: "6 à 12 mois km illimités",
 		},
+		options: {
+			// Sécurité
+			abs: true,
+			esp: true,
+			airbags: true,
+			airbags_lateraux: true,
+			isofix: true,
+			// Intérieur & Confort
+			climatisation_automatique: true,
+			vitres_electriques_avant: true,
+			fermeture_centralisee: true,
+			commande_au_volant: true,
+			sieges_rabattables: true,
+			// Multimédia
+			bluetooth: true,
+			usb: true,
+			// Motorisation
+			boite_automatique: true,
+			start_stop: true,
+		},
 		images: [
 			"https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80",
 			"https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=800&q=80",
@@ -373,16 +459,19 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 			carnetEntretien: "Entretien à jour",
 			controleTechnique: "À jour",
 			garantie: "6 mois complète",
-			Options: [
-				"Roue de secours",
-				"Vitres électriques",
-				"Radio CD MP3",
-				"Prise auxiliaire",
-				"Prise 12V",
-				"Boîte de vitesse automatique",
-				"Sièges arrière rabattables (1/3 2/3)",
-				"Sans climatisation",
-			],
+		},
+		options: {
+			// Sécurité
+			abs: true,
+			airbags: true,
+			// Intérieur & Confort
+			vitres_electriques_avant: true,
+			fermeture_centralisee: true,
+			sieges_rabattables: true,
+			// Multimédia
+			prise_12v: true,
+			// Motorisation
+			boite_automatique: true,
 		},
 		images: [
 			"https://www.garagemendonca.com/public/img/big/20251119144533Copierjpg_691ee9050666b.jpg",
@@ -417,6 +506,24 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 			Motorisation: "1.2i 72 ch",
 			Provenance: "Francaise",
 			Garantie: "6 à 12 mois km illimités",
+		},
+		options: {
+			// Sécurité
+			abs: true,
+			esp: true,
+			airbags: true,
+			isofix: true,
+			// Intérieur & Confort
+			climatisation: true,
+			vitres_electriques_avant: true,
+			fermeture_centralisee: true,
+			commande_au_volant: true,
+			// Multimédia
+			bluetooth: true,
+			usb: true,
+			// Motorisation
+			boite_automatique: true,
+			start_stop: true,
 		},
 		images: [
 			"https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&q=80",
