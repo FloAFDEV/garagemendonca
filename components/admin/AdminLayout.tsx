@@ -16,10 +16,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { useAdminTheme } from "@/hooks/useAdminTheme";
-import {
-	AdminThemeProvider,
-	buildTokens,
-} from "@/contexts/AdminThemeContext";
+import { AdminThemeProvider, buildTokens } from "@/contexts/AdminThemeContext";
 
 const navItems = [
 	{
@@ -49,10 +46,10 @@ export default function AdminLayout({
 	const t = buildTokens(isDark);
 
 	/* ── Tokens de thème ─────────────────────────────────────── */
-	const bg       = isDark ? "bg-dark-950"    : "bg-slate-100";
-	const surface  = isDark ? "bg-dark-900"    : "bg-white";
-	const surface2 = isDark ? "bg-dark-800"    : "bg-slate-50";
-	const border   = isDark ? "border-dark-800": "border-slate-200";
+	const bg = isDark ? "bg-dark-950" : "bg-slate-100";
+	const surface = isDark ? "bg-dark-900" : "bg-white";
+	const surface2 = isDark ? "bg-dark-800" : "bg-slate-50";
+	const border = isDark ? "border-dark-800" : "border-slate-200";
 
 	return (
 		<AdminThemeProvider value={t}>
@@ -115,7 +112,12 @@ export default function AdminLayout({
 								>
 									Garage Mendonça
 								</div>
-								<div className={clsx("text-xs mt-0.5", t.txtSubtle)}>
+								<div
+									className={clsx(
+										"text-xs mt-0.5",
+										t.txtSubtle,
+									)}
+								>
 									Administration
 								</div>
 							</div>
@@ -137,24 +139,29 @@ export default function AdminLayout({
 								const isActive =
 									pathname === href ||
 									(href === "/admin/vehicules" &&
-										pathname.startsWith("/admin/vehicules/") &&
-										pathname !== "/admin/vehicules/nouveau");
+										pathname.startsWith(
+											"/admin/vehicules/",
+										) &&
+										pathname !==
+											"/admin/vehicules/nouveau");
 
 								return (
 									<li key={href}>
 										<Link
 											href={href}
-											onClick={() => setSidebarOpen(false)}
+											onClick={() =>
+												setSidebarOpen(false)
+											}
 											className={clsx(
 												"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
 												isActive
-													/* Actif : bg brand + texte blanc — lisible dans les deux thèmes */
-													? "bg-brand-600 text-white shadow-lg"
-													/* Inactif : texte muted thème-aware, hover brand */
-													: clsx(
-														t.txtMuted,
-														"hover:bg-brand-600 hover:text-white",
-													),
+													? /* Actif : bg brand + texte blanc — lisible dans les deux thèmes */
+														"bg-brand-600 text-white shadow-lg"
+													: /* Inactif : texte muted thème-aware, hover brand */
+														clsx(
+															t.txtMuted,
+															"hover:bg-brand-600 hover:text-white",
+														),
 											)}
 										>
 											<Icon size={17} />
@@ -211,7 +218,12 @@ export default function AdminLayout({
 								>
 									Administrateur
 								</div>
-								<div className={clsx("text-xs truncate", t.txtSubtle)}>
+								<div
+									className={clsx(
+										"text-xs truncate",
+										t.txtSubtle,
+									)}
+								>
 									admin@garagemendonça.com
 								</div>
 							</div>
@@ -254,13 +266,21 @@ export default function AdminLayout({
 						</button>
 
 						<div className="hidden lg:block">
-							<h1 className={clsx("font-normal text-lg tracking-wide", t.txt)}>
+							<h1
+								className={clsx(
+									"font-normal text-lg tracking-wide",
+									t.txt,
+								)}
+							>
 								{navItems.find(
 									(n) =>
 										pathname === n.href ||
 										(n.href === "/admin/vehicules" &&
-											pathname.startsWith("/admin/vehicules/") &&
-											pathname !== "/admin/vehicules/nouveau"),
+											pathname.startsWith(
+												"/admin/vehicules/",
+											) &&
+											pathname !==
+												"/admin/vehicules/nouveau"),
 								)?.label ?? "Admin"}
 							</h1>
 						</div>
@@ -273,12 +293,22 @@ export default function AdminLayout({
 									"p-2 rounded-xl transition-all duration-200",
 									t.txtMuted,
 									t.hoverBg,
-									isDark ? "hover:text-amber-400" : "hover:text-amber-600",
+									isDark
+										? "hover:text-amber-400"
+										: "hover:text-amber-600",
 								)}
-								aria-label={isDark ? "Passer au thème clair" : "Passer au thème sombre"}
+								aria-label={
+									isDark
+										? "Passer au thème clair"
+										: "Passer au thème sombre"
+								}
 								title={isDark ? "Thème clair" : "Thème sombre"}
 							>
-								{isDark ? <Sun size={18} /> : <Moon size={18} />}
+								{isDark ? (
+									<Sun size={18} />
+								) : (
+									<Moon size={18} />
+								)}
 							</button>
 
 							<button

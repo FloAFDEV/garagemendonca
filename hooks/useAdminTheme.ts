@@ -7,24 +7,27 @@ export type AdminTheme = "dark" | "light";
 const STORAGE_KEY = "admin-theme";
 
 export function useAdminTheme() {
-  const [theme, setTheme] = useState<AdminTheme>("dark");
-  const [mounted, setMounted] = useState(false);
+	const [theme, setTheme] = useState<AdminTheme>("dark");
+	const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as AdminTheme | null;
-    if (stored === "light" || stored === "dark") {
-      setTheme(stored);
-    }
-    setMounted(true);
-  }, []);
+	useEffect(() => {
+		const stored = localStorage.getItem(STORAGE_KEY) as AdminTheme | null;
+		if (stored === "light" || stored === "dark") {
+			setTheme(stored);
+		} else {
+			setTheme("dark"); // 🔥 force défaut
+		}
+		setMounted(true);
+	}, []);
 
-  const toggleTheme = () => {
-    setTheme((prev) => {
-      const next: AdminTheme = prev === "dark" ? "light" : "dark";
-      localStorage.setItem(STORAGE_KEY, next);
-      return next;
-    });
-  };
+	useEffect(() => {
+		document.documentElement.classList.toggle("dark", theme === "dark");
+		localStorage.setItem(STORAGE_KEY, theme);
+	}, [theme]);
 
-  return { theme, toggleTheme, mounted };
+	const toggleTheme = () => {
+		setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+	};
+
+	return { theme, toggleTheme, mounted };
 }

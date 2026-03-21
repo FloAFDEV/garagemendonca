@@ -438,8 +438,6 @@ export default function EditVehiclePage({
 
 	const inputClass = [
 		"w-full",
-		"bg-white", // 🔥 force fond
-		"text-gray-900",
 		t.inputBg,
 		"border",
 		t.inputBorder,
@@ -448,7 +446,19 @@ export default function EditVehiclePage({
 		t.inputText,
 		t.inputPlaceholder,
 		"outline-none transition-all text-sm",
-		"appearance-none",
+	].join(" ");
+
+	/** Selects : même base + couleur des <option> forcée pour iOS/dark */
+	const selectClass = [
+		"w-full",
+		t.inputBg,
+		"border",
+		t.inputBorder,
+		"focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
+		"rounded-xl px-4 py-3",
+		t.inputText,
+		"outline-none transition-all text-sm cursor-pointer",
+		"[&>option]:bg-white [&>option]:text-black",
 	].join(" ");
 
 	const labelClass = `block text-sm font-medium ${t.txtMuted} mb-2`;
@@ -496,7 +506,7 @@ export default function EditVehiclePage({
 									name="status"
 									value={form.status}
 									onChange={handleChange}
-									className={inputClass}
+									className={selectClass}
 								>
 									{statusOptions.map(({ value, label }) => (
 										<option key={value} value={value}>
@@ -693,7 +703,7 @@ export default function EditVehiclePage({
 									name="doors"
 									value={form.doors}
 									onChange={handleChange}
-									className={inputClass}
+									className={selectClass}
 								>
 									{["2", "3", "4", "5"].map((d) => (
 										<option key={d} value={d}>
@@ -722,7 +732,7 @@ export default function EditVehiclePage({
 									name="fuel"
 									value={form.fuel}
 									onChange={handleChange}
-									className={inputClass}
+									className={selectClass}
 								>
 									{fuelOptions.map((f) => (
 										<option key={f} value={f}>
@@ -740,7 +750,7 @@ export default function EditVehiclePage({
 									name="transmission"
 									value={form.transmission}
 									onChange={handleChange}
-									className={inputClass}
+									className={selectClass}
 								>
 									{transmissionOptions.map((t_) => (
 										<option key={t_} value={t_}>
