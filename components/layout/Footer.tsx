@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, ExternalLink, Lock } from "lucide-react";
 import Container from "@/components/ui/Container";
 
 const footerLinks = {
@@ -259,6 +259,37 @@ export default function Footer() {
 							Confidentialité
 						</Link>
 						<span className="text-slate-800">NAF 4520A</span>
+
+						{/* ── Lien admin discret — démo ─────────────────
+						    Quasi-invisible au repos (text-slate-700).
+						    Glow argent + icône révélés au hover/focus.
+						────────────────────────────────────────────── */}
+						<span className="text-slate-800 select-none" aria-hidden="true">·</span>
+						<Link
+							href="/admin/vehicules"
+							className={[
+								"group inline-flex items-center gap-1 rounded px-0.5",
+								// Repos : discret mais lisible (contraste WCAG AA large)
+								"text-slate-700",
+								// Hover : éclaircit + glow silver subtil
+								"hover:text-slate-400",
+								"hover:drop-shadow-[0_0_8px_rgba(148,163,184,0.22)]",
+								// Focus clavier : ring visible
+								"focus-visible:outline-none",
+								"focus-visible:ring-1 focus-visible:ring-slate-500/60",
+								"focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
+								"focus-visible:text-slate-400",
+								"transition-all duration-300",
+							].join(" ")}
+							aria-label="Accès à l'espace d'administration — mode démo"
+						>
+							<Lock
+								size={9}
+								className="opacity-40 group-hover:opacity-80 group-focus-visible:opacity-80 transition-opacity duration-300 flex-shrink-0"
+								aria-hidden="true"
+							/>
+							<span>Démo Admin</span>
+						</Link>
 					</div>
 				</Container>
 			</div>

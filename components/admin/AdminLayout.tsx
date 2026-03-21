@@ -107,7 +107,7 @@ export default function AdminLayout({
 						<div>
 							<div
 								className={clsx(
-									"font-heading font-bold text-sm leading-none",
+									"font-heading font-medium text-sm leading-none tracking-wide",
 									txt,
 								)}
 							>
@@ -124,7 +124,7 @@ export default function AdminLayout({
 				<nav className="flex-1 p-4">
 					<p
 						className={clsx(
-							"text-xs font-semibold uppercase tracking-widest mb-3 px-3",
+							"text-xs font-normal uppercase tracking-widest mb-3 px-3",
 							txtSubtle,
 						)}
 					>
@@ -162,7 +162,7 @@ export default function AdminLayout({
 					<div className={clsx("mt-6 pt-6 border-t", border)}>
 						<p
 							className={clsx(
-								"text-xs font-semibold uppercase tracking-widest mb-3 px-3",
+								"text-xs font-normal uppercase tracking-widest mb-3 px-3",
 								txtSubtle,
 							)}
 						>
@@ -192,14 +192,14 @@ export default function AdminLayout({
 						)}
 					>
 						<div className="w-9 h-9 bg-brand-600/20 rounded-xl flex items-center justify-center flex-shrink-0">
-							<span className="text-brand-400 font-bold text-sm">
+							<span className="text-brand-400 font-medium text-sm">
 								A
 							</span>
 						</div>
 						<div className="flex-1 min-w-0">
 							<div
 								className={clsx(
-									"text-sm font-semibold truncate",
+									"text-sm font-normal truncate",
 									txt,
 								)}
 							>
@@ -249,7 +249,7 @@ export default function AdminLayout({
 					</button>
 
 					<div className="hidden lg:block">
-						<h1 className={clsx("font-semibold text-lg", txt)}>
+						<h1 className={clsx("font-normal text-lg tracking-wide", txt)}>
 							{navItems.find(
 								(n) =>
 									pathname === n.href ||

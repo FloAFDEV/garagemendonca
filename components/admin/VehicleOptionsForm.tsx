@@ -29,16 +29,16 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
       {/* Compteur d'options actives */}
       {activeCount > 0 && (
         <div className="flex items-center gap-3 p-3 bg-brand-500/10 border border-brand-500/20 rounded-xl">
-          <span className="text-brand-400 font-bold text-sm">
+          <span className="text-brand-400 font-medium text-sm">
             {activeCount} option{activeCount > 1 ? "s" : ""} sélectionnée{activeCount > 1 ? "s" : ""}
           </span>
           {activeCount > 25 && (
-            <span className="text-xs bg-amber-500 text-white px-2 py-0.5 rounded-full font-bold">
+            <span className="text-xs bg-amber-500 text-white px-2 py-0.5 rounded-full font-medium">
               Full options
             </span>
           )}
           {activeCount > 15 && activeCount <= 25 && (
-            <span className="text-xs bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">
+            <span className="text-xs bg-emerald-500 text-white px-2 py-0.5 rounded-full font-medium">
               Très bien équipé
             </span>
           )}
@@ -55,7 +55,7 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
               <div className="w-7 h-7 bg-dark-700 rounded-lg flex items-center justify-center flex-shrink-0">
                 <Icon size={14} className="text-brand-400" />
               </div>
-              <h4 className="font-heading font-semibold text-white text-sm tracking-wide">
+              <h4 className="font-heading font-normal text-white text-sm tracking-widest">
                 {category.label}
               </h4>
               <div className="flex-1 h-px bg-dark-700" />
@@ -147,9 +147,9 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
       <div className="space-y-4">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 bg-dark-700 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-brand-400 text-sm font-bold">+</span>
+            <span className="text-brand-400 text-sm font-medium">+</span>
           </div>
-          <h4 className="font-heading font-semibold text-white text-sm tracking-wide">
+          <h4 className="font-heading font-normal text-white text-sm tracking-widest">
             Options non répertoriées
           </h4>
           <div className="flex-1 h-px bg-dark-700" />

@@ -24,12 +24,9 @@ interface VehicleGalleryProps {
 export default function VehicleGallery({ images, vehicleName }: VehicleGalleryProps) {
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
-	const [mounted, setMounted] = useState(false);
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const thumbsRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => { setMounted(true); }, []);
 
 	/* ── Sync activeIdx from scroll position ────────────────── */
 	useEffect(() => {
@@ -313,7 +310,7 @@ export default function VehicleGallery({ images, vehicleName }: VehicleGalleryPr
 			</div>
 
 			{/* ── Lightbox via portal ─────────────────────────── */}
-			{mounted && lightboxOpen && (
+			{lightboxOpen && (
 				<Lightbox
 					images={images}
 					initialIndex={activeIdx}

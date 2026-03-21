@@ -65,8 +65,8 @@ export default function DashboardPage() {
 				{/* Welcome */}
 				<div className="flex items-center justify-between">
 					<div>
-						<h2 className="font-heading font-bold text-white text-2xl">
-							Bonjour 👋
+						<h2 className="font-heading font-medium text-white text-2xl">
+							Bonjour
 						</h2>
 						<p className="text-dark-400 mt-1 text-sm">
 							Voici un apercu de votre activité aujourd&apos;hui.
@@ -74,7 +74,7 @@ export default function DashboardPage() {
 					</div>
 					<Link
 						href="/admin/vehicules/nouveau"
-						className="btn-primary text-sm"
+						className="btn-secondary text-sm text-gray-500 hover:text-gray-700"
 					>
 						<Plus size={16} />
 						Ajouter un véhicule
@@ -96,7 +96,7 @@ export default function DashboardPage() {
 										<Icon size={20} className={color} />
 									</div>
 								</div>
-								<div className="font-heading font-black text-white text-3xl mb-1">
+								<div className="font-heading font-light text-white text-3xl mb-1 tracking-tight">
 									{value}
 								</div>
 								<div className="text-dark-400 text-sm">
@@ -114,15 +114,20 @@ export default function DashboardPage() {
 					{/* Recent vehicles */}
 					<div className="xl:col-span-2 bg-dark-900 rounded-2xl border border-dark-800 p-6">
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="font-heading font-semibold text-white">
+							<h3 className="font-heading font-normal text-white tracking-wide">
 								Véhicules en stock
 							</h3>
 							<Link
 								href="/admin/vehicules"
-								className="text-brand-400 text-sm font-medium flex items-center gap-1 hover:text-brand-300 transition-colors"
+								className="text-brand-400 text-sm font-medium flex items-center gap-1 group"
 							>
-								Gérer
-								<ArrowRight size={14} />
+								<span className="transition-colors group-hover:text-brand-300">
+									Gérer
+								</span>
+								<ArrowRight
+									size={14}
+									className="transition-transform duration-200 group-hover:scale-110"
+								/>
 							</Link>
 						</div>
 						<div className="space-y-3">
@@ -142,7 +147,7 @@ export default function DashboardPage() {
 										</div>
 									</div>
 									<div className="flex items-center gap-4">
-										<span className="font-heading font-bold text-brand-400">
+										<span className="font-heading font-medium text-brand-400">
 											{v.price.toLocaleString("fr-FR")} €
 										</span>
 										<Link
@@ -159,7 +164,7 @@ export default function DashboardPage() {
 
 					{/* Recent messages */}
 					<div className="bg-dark-900 rounded-2xl border border-dark-800 p-6">
-						<h3 className="font-heading font-semibold text-white mb-6">
+						<h3 className="font-heading font-normal text-white tracking-wide mb-6">
 							Derniers messages
 						</h3>
 						<div className="space-y-4">
@@ -169,7 +174,7 @@ export default function DashboardPage() {
 									className="flex items-start gap-3 py-3 border-b border-dark-800 last:border-0"
 								>
 									<div className="w-8 h-8 bg-dark-700 rounded-full flex items-center justify-center flex-shrink-0">
-										<span className="text-dark-300 text-xs font-bold">
+										<span className="text-dark-300 text-xs font-medium">
 											{name[0]}
 										</span>
 									</div>

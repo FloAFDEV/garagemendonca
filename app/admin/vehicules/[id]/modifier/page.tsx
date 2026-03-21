@@ -1,609 +1,630 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useRef, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
-import { vehicles } from "@/lib/data";
-import { Vehicle, VehicleStatus } from "@/types";
-import { saveVehicle } from "../../actions";
+import { useDemoStore } from "@/lib/demoStore";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
 import type { VehicleOptions } from "@/types";
+import type { Vehicle } from "@/types";
 import {
-	ImagePlus,
-	X,
-	Save,
-	ArrowLeft,
-	CheckCircle2,
-	Loader2,
-	AlertCircle,
+  Camera,
+  Images,
+  X,
+  Save,
+  ArrowLeft,
+  CheckCircle2,
+  Loader2,
+  AlertCircle,
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 
-const fuelOptions = [
-	"Essence",
-	"Diesel",
-	"Hybride",
-	"Électrique",
-	"GPL",
-] as const;
+// ── Static data (same as nouveau) ─────────────────────────────────
+
+const BRANDS_MODELS: Record<string, string[]> = {
+  Peugeot: ["108", "208", "308", "408", "508", "2008", "3008", "5008", "Rifter", "Partner"],
+  Renault: ["Twingo", "Clio", "Mégane", "Captur", "Kadjar", "Scénic", "Talisman", "Zoé", "Kangoo"],
+  Citroën: ["C1", "C3", "C4", "C5 X", "Berlingo", "C3 Aircross", "C5 Aircross"],
+  Volkswagen: ["Polo", "Golf", "ID.3", "T-Cross", "T-Roc", "Tiguan", "Passat"],
+  Toyota: ["Aygo X", "Yaris", "Yaris Cross", "Corolla", "C-HR", "RAV4"],
+  BMW: ["Série 1", "Série 2", "Série 3", "Série 4", "Série 5", "X1", "X2", "X3", "X5"],
+  Mercedes: ["Classe A", "Classe B", "Classe C", "Classe E", "GLA", "GLB", "GLC"],
+  Audi: ["A1", "A3", "A4", "A5", "A6", "Q2", "Q3", "Q5", "Q7"],
+  Ford: ["Fiesta", "Focus", "Puma", "Kuga", "Mustang Mach-E"],
+  Opel: ["Corsa", "Astra", "Crossland", "Grandland", "Mokka"],
+  Dacia: ["Sandero", "Duster", "Logan", "Spring", "Jogger"],
+  Nissan: ["Micra", "Juke", "Qashqai", "X-Trail", "Leaf"],
+  Hyundai: ["i10", "i20", "i30", "Tucson", "Kona"],
+  Kia: ["Picanto", "Ceed", "Stonic", "Sportage", "EV6"],
+  Seat: ["Ibiza", "Leon", "Arona", "Ateca", "Tarraco"],
+  Skoda: ["Fabia", "Octavia", "Karoq", "Kodiaq", "Superb"],
+  Fiat: ["500", "Panda", "Tipo", "500X"],
+  Volvo: ["V60", "V90", "XC40", "XC60", "XC90"],
+  Tesla: ["Model 3", "Model S", "Model X", "Model Y"],
+  Suzuki: ["Swift", "Vitara", "SX4 S-Cross", "Jimny"],
+  Mini: ["Mini One", "Mini Cooper", "Countryman", "Clubman"],
+  Autre: [],
+};
+
+const ALL_BRANDS = Object.keys(BRANDS_MODELS).sort();
+
+const COLORS = [
+  "Blanc", "Noir", "Gris", "Gris Anthracite", "Argent", "Rouge", "Bleu",
+  "Bleu Marine", "Vert", "Bordeaux", "Beige", "Marron", "Orange", "Jaune",
+];
+
+const fuelOptions = ["Essence", "Diesel", "Hybride", "Électrique", "GPL"] as const;
 const transmissionOptions = ["Manuelle", "Automatique"] as const;
-const statusOptions: { value: VehicleStatus; label: string; color: string }[] =
-	[
-		{ value: "published", label: "Publié", color: "text-emerald-400" },
-		{ value: "draft", label: "Brouillon", color: "text-dark-400" },
-		{ value: "scheduled", label: "Programmé", color: "text-blue-400" },
-		{ value: "sold", label: "Vendu", color: "text-red-400" },
-	];
+const statusOptions = [
+  { value: "published", label: "Publié",     color: "text-emerald-400" },
+  { value: "draft",     label: "Brouillon",  color: "text-dark-400" },
+  { value: "scheduled", label: "Programmé",  color: "text-blue-400" },
+  { value: "sold",      label: "Vendu",      color: "text-red-400" },
+] as const;
+
+// ── Form types ─────────────────────────────────────────────────────
 
 interface VehicleForm {
-	brand: string;
-	model: string;
-	year: string;
-	mileage: string;
-	fuel: string;
-	transmission: string;
-	power: string;
-	price: string;
-	color: string;
-	doors: string;
-	description: string;
-	images: string[];
-	status: VehicleStatus;
-	featured: boolean;
-	options: VehicleOptions;
+  brand: string;
+  model: string;
+  year: string;
+  mileage: string;
+  fuel: string;
+  transmission: string;
+  power: string;
+  price: string;
+  color: string;
+  doors: string;
+  description: string;
+  status: string;
+  published_at: string;
+  featured: boolean;
+  options: VehicleOptions;
 }
 
-export default function EditVehiclePage({
-	params,
+interface FormErrors {
+  brand?: string;
+  model?: string;
+  year?: string;
+  mileage?: string;
+  power?: string;
+  price?: string;
+  color?: string;
+}
+
+// ── Combobox ───────────────────────────────────────────────────────
+
+function Combobox({
+  value,
+  onChange,
+  suggestions,
+  placeholder,
+  inputClass,
+  error,
+  required,
+  id,
 }: {
-	params: Promise<{ id: string }>;
+  value: string;
+  onChange: (v: string) => void;
+  suggestions: string[];
+  placeholder?: string;
+  inputClass: string;
+  error?: string;
+  required?: boolean;
+  id?: string;
 }) {
-	const { id } = use(params);
-	const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const filtered = value
+    ? suggestions.filter((s) => s.toLowerCase().includes(value.toLowerCase()))
+    : suggestions;
 
-	const vehicle = vehicles.find((v) => v.id === id);
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        value={value}
+        onChange={(e) => { onChange(e.target.value); setOpen(true); }}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setTimeout(() => setOpen(false), 160)}
+        placeholder={placeholder}
+        required={required}
+        autoComplete="off"
+        className={inputClass + (error ? " border-red-500 focus:border-red-500" : "")}
+      />
+      {open && filtered.length > 0 && (
+        <div className="absolute left-0 top-full mt-1 w-full z-50 bg-dark-800 border border-dark-600 rounded-xl shadow-2xl overflow-hidden max-h-52 overflow-y-auto">
+          {filtered.slice(0, 10).map((s) => (
+            <button
+              key={s}
+              type="button"
+              onMouseDown={() => { onChange(s); setOpen(false); }}
+              className={`w-full text-left px-3 py-2.5 text-sm transition-colors hover:bg-dark-700 ${
+                s === value ? "text-white bg-brand-500/10 font-medium" : "text-dark-200"
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+      {error && (
+        <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400">
+          <AlertCircle size={11} />{error}
+        </p>
+      )}
+    </div>
+  );
+}
 
-	const [form, setForm] = useState<VehicleForm>(() => {
-		if (!vehicle)
-			return {
-				brand: "",
-				model: "",
-				year: "",
-				mileage: "",
-				fuel: "Essence",
-				transmission: "Manuelle",
-				power: "",
-				price: "",
-				color: "",
-				doors: "5",
-				description: "",
-				images: [],
-				status: "draft",
-				featured: false,
-				options: {},
-			};
-		return {
-			brand: vehicle.brand,
-			model: vehicle.model,
-			year: vehicle.year.toString(),
-			mileage: vehicle.mileage.toString(),
-			fuel: vehicle.fuel,
-			transmission: vehicle.transmission,
-			power: vehicle.power.toString(),
-			price: vehicle.price.toString(),
-			color: vehicle.color,
-			doors: vehicle.doors.toString(),
-			description: vehicle.description,
-			images: [...vehicle.images],
-			status: vehicle.status ?? "draft",
-			featured: vehicle.featured ?? false,
-			options: vehicle.options ?? {},
-		};
-	});
+// ── Page ───────────────────────────────────────────────────────────
 
-	const [imageUrl, setImageUrl] = useState("");
-	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
-		"idle",
-	);
+export default function EditVehiclePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const router = useRouter();
+  const { getVehicle, updateVehicle } = useDemoStore();
 
-	if (!vehicle) {
-		return (
-			<AdminLayout>
-				<div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-					<AlertCircle size={48} className="text-red-400" />
-					<h2 className="font-heading font-bold text-white text-xl">
-						Véhicule introuvable
-					</h2>
-					<p className="text-dark-400 text-sm">
-						L&apos;identifiant{" "}
-						<code className="text-brand-400">#{id}</code> ne
-						correspond à aucun véhicule.
-					</p>
-					<Link
-						href="/admin/vehicules"
-						className="btn-primary text-sm"
-					>
-						<ArrowLeft size={15} />
-						Retour aux annonces
-					</Link>
-				</div>
-			</AdminLayout>
-		);
-	}
+  const vehicle = getVehicle(id);
 
-	const handleChange = (
-		e: React.ChangeEvent<
-			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-		>,
-	) => {
-		const { name, value, type } = e.target;
-		const checked = (e.target as HTMLInputElement).checked;
-		setForm((prev) => ({
-			...prev,
-			[name]: type === "checkbox" ? checked : value,
-		}));
-	};
+  const [form, setForm] = useState<VehicleForm>(() => {
+    if (!vehicle) return {
+      brand: "", model: "", year: "", mileage: "", fuel: "Essence",
+      transmission: "Manuelle", power: "", price: "", color: "",
+      doors: "5", description: "", status: "draft",
+      published_at: "", featured: false, options: {},
+    };
+    return {
+      brand: vehicle.brand,
+      model: vehicle.model,
+      year: vehicle.year.toString(),
+      mileage: vehicle.mileage.toString(),
+      fuel: vehicle.fuel,
+      transmission: vehicle.transmission,
+      power: vehicle.power.toString(),
+      price: vehicle.price.toString(),
+      color: vehicle.color,
+      doors: vehicle.doors.toString(),
+      description: vehicle.description,
+      status: vehicle.status ?? "draft",
+      published_at: vehicle.published_at ?? "",
+      featured: vehicle.featured ?? false,
+      options: vehicle.options ?? {},
+    };
+  });
 
-	const addImage = () => {
-		if (imageUrl.trim()) {
-			setForm((prev) => ({
-				...prev,
-				images: [...prev.images, imageUrl.trim()],
-			}));
-			setImageUrl("");
-		}
-	};
+  const [images, setImages] = useState<string[]>(vehicle?.images ?? []);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
 
-	const removeImage = (idx: number) => {
-		setForm((prev) => ({
-			...prev,
-			images: prev.images.filter((_, i) => i !== idx),
-		}));
-	};
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
-	const setMainImage = (idx: number) => {
-		if (idx === 0) return;
-		setForm((prev) => {
-			const imgs = [...prev.images];
-			const [chosen] = imgs.splice(idx, 1);
-			return { ...prev, images: [chosen, ...imgs] };
-		});
-	};
+  // ── Not found ────────────────────────────────────────────────────
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setSaveStatus("saving");
-		await saveVehicle(id, {
-			brand: form.brand,
-			model: form.model,
-			year: +form.year,
-			mileage: +form.mileage,
-			fuel: form.fuel as Vehicle["fuel"],
-			transmission: form.transmission as Vehicle["transmission"],
-			power: +form.power,
-			price: +form.price,
-			color: form.color,
-			doors: +form.doors,
-			description: form.description,
-			images: form.images,
-			status: form.status,
-			featured: form.featured,
-			options: form.options,
-		});
-		setSaveStatus("saved");
-		setTimeout(() => router.push("/admin/vehicules"), 1500);
-	};
+  if (!vehicle) {
+    return (
+      <AdminLayout>
+        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+          <AlertCircle size={48} className="text-red-400" />
+          <h2 className="font-heading font-medium text-white text-xl">
+            Véhicule introuvable
+          </h2>
+          <p className="text-dark-400 text-sm text-center">
+            L&apos;identifiant <code className="text-brand-400">#{id}</code> ne
+            correspond à aucun véhicule.
+          </p>
+          <Link href="/admin/vehicules" className="btn-primary text-sm">
+            <ArrowLeft size={15} />
+            Retour aux annonces
+          </Link>
+        </div>
+      </AdminLayout>
+    );
+  }
 
-	const inputClass =
-		"w-full bg-dark-800 border border-dark-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl px-4 py-3 text-white placeholder-dark-500 outline-none transition-all text-sm";
-	const labelClass = "block text-sm font-medium text-dark-300 mb-2";
-	const sectionClass = "bg-dark-900 rounded-2xl border border-dark-800 p-6";
+  // ── Helpers ──────────────────────────────────────────────────────
 
-	return (
-		<AdminLayout>
-			<div className="max-w-4xl mx-auto space-y-6">
-				{/* Header */}
-				<div className="flex items-center gap-4">
-					<Link
-						href="/admin/vehicules"
-						className="text-dark-400 hover:text-white transition-colors p-2 rounded-xl hover:bg-dark-800"
-					>
-						<ArrowLeft size={20} />
-					</Link>
-					<div>
-						<h2 className="font-heading font-bold text-white text-2xl">
-							Modifier le véhicule
-						</h2>
-						<p className="text-dark-400 text-sm mt-1">
-							{vehicle.brand} {vehicle.model} · {vehicle.year} · #
-							{vehicle.id}
-						</p>
-					</div>
-				</div>
+  const set = (name: keyof VehicleForm, value: unknown) =>
+    setForm((p) => ({ ...p, [name]: value }));
 
-				<form onSubmit={handleSubmit} className="space-y-6">
-					{/* ── Statut + mise en avant ── */}
-					<div className={sectionClass}>
-						<h3 className="font-heading font-semibold text-white mb-6">
-							Statut
-						</h3>
-						<div className="flex flex-col sm:flex-row gap-5">
-							<div className="flex-1">
-								<label className={labelClass}>
-									Disponibilité
-								</label>
-								<select
-									name="status"
-									value={form.status}
-									onChange={handleChange}
-									className={inputClass}
-								>
-									{statusOptions.map(({ value, label }) => (
-										<option key={value} value={value}>
-											{label}
-										</option>
-									))}
-								</select>
-								<p
-									className={`text-xs mt-1.5 ${statusOptions.find((s) => s.value === form.status)?.color}`}
-								>
-									{
-										statusOptions.find(
-											(s) => s.value === form.status,
-										)?.label
-									}
-								</p>
-							</div>
-							<div className="flex items-center gap-3 pt-8">
-								<input
-									id="featured"
-									name="featured"
-									type="checkbox"
-									checked={form.featured}
-									onChange={handleChange}
-									className="w-4 h-4 accent-brand-500 cursor-pointer"
-								/>
-								<label
-									htmlFor="featured"
-									className="text-sm text-dark-300 cursor-pointer select-none"
-								>
-									Mettre en avant sur la page d&apos;accueil
-								</label>
-							</div>
-						</div>
-					</div>
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    set(name as keyof VehicleForm, type === "checkbox" ? checked : value);
+    if (errors[name as keyof FormErrors]) {
+      setErrors((p) => ({ ...p, [name]: undefined }));
+    }
+  };
 
-					{/* ── Informations générales ── */}
-					<div className={sectionClass}>
-						<h3 className="font-heading font-semibold text-white mb-6">
-							Informations générales
-						</h3>
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-							<div>
-								<label className={labelClass}>
-									Marque{" "}
-									<span className="text-brand-500">*</span>
-								</label>
-								<input
-									name="brand"
-									required
-									placeholder="Peugeot, Renault…"
-									value={form.brand}
-									onChange={handleChange}
-									className={inputClass}
-								/>
-							</div>
-							<div>
-								<label className={labelClass}>
-									Modèle{" "}
-									<span className="text-brand-500">*</span>
-								</label>
-								<input
-									name="model"
-									required
-									placeholder="308, Clio…"
-									value={form.model}
-									onChange={handleChange}
-									className={inputClass}
-								/>
-							</div>
-							<div>
-								<label className={labelClass}>
-									Année{" "}
-									<span className="text-brand-500">*</span>
-								</label>
-								<input
-									name="year"
-									type="number"
-									required
-									min="1990"
-									max={new Date().getFullYear()}
-									value={form.year}
-									onChange={handleChange}
-									className={inputClass}
-								/>
-							</div>
-							<div>
-								<label className={labelClass}>
-									Kilométrage (km){" "}
-									<span className="text-brand-500">*</span>
-								</label>
-								<input
-									name="mileage"
-									type="number"
-									required
-									min="0"
-									placeholder="45000"
-									value={form.mileage}
-									onChange={handleChange}
-									className={inputClass}
-								/>
-							</div>
-							<div>
-								<label className={labelClass}>
-									Couleur{" "}
-									<span className="text-brand-500">*</span>
-								</label>
-								<input
-									name="color"
-									required
-									placeholder="Gris Platinium"
-									value={form.color}
-									onChange={handleChange}
-									className={inputClass}
-								/>
-							</div>
-							<div>
-								<label className={labelClass}>
-									Nombre de portes
-								</label>
-								<select
-									name="doors"
-									value={form.doors}
-									onChange={handleChange}
-									className={inputClass}
-								>
-									{["2", "3", "4", "5"].map((d) => (
-										<option key={d} value={d}>
-											{d} portes
-										</option>
-									))}
-								</select>
-							</div>
-						</div>
-					</div>
+  // ── Image upload ─────────────────────────────────────────────────
 
-					{/* ── Motorisation ── */}
-					<div className={sectionClass}>
-						<h3 className="font-heading font-semibold text-white mb-6">
-							Motorisation
-						</h3>
-						<div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-							<div>
-								<label className={labelClass}>
-									Carburant{" "}
-									<span className="text-brand-500">*</span>
-								</label>
-								<select
-									name="fuel"
-									value={form.fuel}
-									onChange={handleChange}
-									className={inputClass}
-								>
-									{fuelOptions.map((f) => (
-										<option key={f} value={f}>
-											{f}
-										</option>
-									))}
-								</select>
-							</div>
-							<div>
-								<label className={labelClass}>
-									Transmission{" "}
-									<span className="text-brand-500">*</span>
-								</label>
-								<select
-									name="transmission"
-									value={form.transmission}
-									onChange={handleChange}
-									className={inputClass}
-								>
-									{transmissionOptions.map((t) => (
-										<option key={t} value={t}>
-											{t}
-										</option>
-									))}
-								</select>
-							</div>
-							<div>
-								<label className={labelClass}>
-									Puissance (ch)
-								</label>
-								<input
-									name="power"
-									type="number"
-									min="0"
-									placeholder="130"
-									value={form.power}
-									onChange={handleChange}
-									className={inputClass}
-								/>
-							</div>
-						</div>
-					</div>
+  const handleFiles = useCallback((files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    Array.from(files).forEach((file) => {
+      const url = URL.createObjectURL(file);
+      setImages((p) => [...p, url]);
+    });
+  }, []);
 
-					{/* ── Prix ── */}
-					<div className={sectionClass}>
-						<h3 className="font-heading font-semibold text-white mb-6">
-							Prix de vente
-						</h3>
-						<div className="max-w-xs">
-							<label className={labelClass}>
-								Prix (€){" "}
-								<span className="text-brand-500">*</span>
-							</label>
-							<div className="relative">
-								<input
-									name="price"
-									type="number"
-									required
-									min="0"
-									placeholder="18900"
-									value={form.price}
-									onChange={handleChange}
-									className={inputClass + " pr-10"}
-								/>
-								<span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 font-semibold">
-									€
-								</span>
-							</div>
-						</div>
-					</div>
+  const removeImage = (idx: number) => {
+    setImages((p) => {
+      const next = [...p];
+      const removed = next.splice(idx, 1)[0];
+      if (removed.startsWith("blob:")) URL.revokeObjectURL(removed);
+      return next;
+    });
+  };
 
-					{/* ── Description ── */}
-					<div className={sectionClass}>
-						<h3 className="font-heading font-semibold text-white mb-6">
-							Description
-						</h3>
-						<textarea
-							name="description"
-							rows={5}
-							placeholder="Décrivez le véhicule : état, équipements, historique…"
-							value={form.description}
-							onChange={handleChange}
-							className={inputClass + " resize-none"}
-						/>
-					</div>
+  const setMainImage = (idx: number) => {
+    if (idx === 0) return;
+    setImages((p) => {
+      const next = [...p];
+      const [chosen] = next.splice(idx, 1);
+      return [chosen, ...next];
+    });
+  };
 
-					{/* ── Photos ── */}
-					<div className={sectionClass}>
-						<h3 className="font-heading font-semibold text-white mb-6">
-							Photos
-						</h3>
-						<div className="flex gap-3 mb-5">
-							<input
-								type="url"
-								placeholder="URL de l'image (https://…)"
-								value={imageUrl}
-								onChange={(e) => setImageUrl(e.target.value)}
-								onKeyDown={(e) =>
-									e.key === "Enter" &&
-									(e.preventDefault(), addImage())
-								}
-								className={inputClass + " flex-1"}
-							/>
-							<button
-								type="button"
-								onClick={addImage}
-								className="flex items-center gap-2 bg-dark-700 hover:bg-dark-600 text-white px-4 py-3 rounded-xl transition-colors text-sm font-medium flex-shrink-0"
-							>
-								<ImagePlus size={16} />
-								Ajouter
-							</button>
-						</div>
+  // ── Validation ───────────────────────────────────────────────────
 
-						{form.images.length > 0 ? (
-							<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-								{form.images.map((img, idx) => (
-									<div
-										key={idx}
-										className={`relative aspect-video bg-dark-800 rounded-xl overflow-hidden group ${idx === 0 ? "ring-2 ring-brand-500" : ""}`}
-									>
-										{/* eslint-disable-next-line @next/next/no-img-element */}
-										<img
-											src={img}
-											alt={`Photo ${idx + 1}`}
-											className="w-full h-full object-cover"
-										/>
-										{/* Supprimer */}
-										<button
-											type="button"
-											onClick={() => removeImage(idx)}
-											className="absolute top-2 right-2 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
-											title="Supprimer cette photo"
-										>
-											<X size={12} className="text-white" />
-										</button>
-										{/* Badge principale */}
-										{idx === 0 ? (
-											<div className="absolute bottom-2 left-2 bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-												★ Principale
-											</div>
-										) : (
-											<button
-												type="button"
-												onClick={() => setMainImage(idx)}
-												className="absolute bottom-2 left-2 bg-dark-900/80 hover:bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-all"
-												title="Définir comme photo principale"
-											>
-												Définir en principale
-											</button>
-										)}
-									</div>
-								))}
-							</div>
-						) : (
-							<div className="border-2 border-dashed border-dark-700 rounded-xl py-12 text-center">
-								<ImagePlus
-									size={32}
-									className="text-dark-600 mx-auto mb-3"
-								/>
-								<p className="text-dark-500 text-sm">
-									Aucune photo — ajoutez une URL
-								</p>
-							</div>
-						)}
-					</div>
+  function validate(): FormErrors {
+    const e: FormErrors = {};
+    if (!form.brand.trim()) e.brand = "La marque est requise";
+    if (!form.model.trim()) e.model = "Le modèle est requis";
+    const yr = parseInt(form.year);
+    if (!yr || yr < 1980 || yr > new Date().getFullYear() + 1)
+      e.year = `Année invalide (1980–${new Date().getFullYear()})`;
+    if (form.mileage === "" || parseInt(form.mileage) < 0)
+      e.mileage = "Kilométrage invalide";
+    if (!form.power || parseInt(form.power) <= 0)
+      e.power = "Puissance requise";
+    if (!form.price || parseInt(form.price) <= 0)
+      e.price = "Prix requis et supérieur à 0";
+    if (!form.color.trim()) e.color = "La couleur est requise";
+    return e;
+  }
 
-					{/* ── Options & Équipements ── */}
-				<div className={sectionClass}>
-					<h3 className="font-heading font-semibold text-white mb-6">
-						Options &amp; Équipements
-					</h3>
-					<VehicleOptionsForm
-						value={form.options}
-						onChange={(opts) =>
-							setForm((prev) => ({ ...prev, options: opts }))
-						}
-					/>
-				</div>
+  // ── Submit ───────────────────────────────────────────────────────
 
-				{/* ── Submit ── */}
-					<div className="flex items-center justify-between pt-2">
-						<Link
-							href="/admin/vehicules"
-							className="btn-secondary text-sm"
-						>
-							Annuler
-						</Link>
-						<button
-							type="submit"
-							disabled={saveStatus !== "idle"}
-							className="btn-primary text-sm py-3 px-8"
-						>
-							{saveStatus === "saving" ? (
-								<>
-									<Loader2
-										size={16}
-										className="animate-spin"
-									/>
-									Enregistrement…
-								</>
-							) : saveStatus === "saved" ? (
-								<>
-									<CheckCircle2 size={16} />
-									Enregistré !
-								</>
-							) : (
-								<>
-									<Save size={16} />
-									Enregistrer les modifications
-								</>
-							)}
-						</button>
-					</div>
-				</form>
-			</div>
-		</AdminLayout>
-	);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+    setSaveStatus("saving");
+    await new Promise((r) => setTimeout(r, 900));
+    updateVehicle(id, {
+      brand: form.brand,
+      model: form.model,
+      year: +form.year,
+      mileage: +form.mileage,
+      fuel: form.fuel as Vehicle["fuel"],
+      transmission: form.transmission as Vehicle["transmission"],
+      power: +form.power,
+      price: +form.price,
+      color: form.color,
+      doors: +form.doors,
+      description: form.description,
+      images,
+      status: form.status as Vehicle["status"],
+      published_at: form.published_at || undefined,
+      featured: form.featured,
+      options: form.options,
+    });
+    setSaveStatus("saved");
+    setTimeout(() => router.push("/admin/vehicules"), 1200);
+  };
+
+  // ── Styles ───────────────────────────────────────────────────────
+
+  const inputClass =
+    "w-full bg-dark-800 border border-dark-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl px-4 py-3 text-white placeholder-dark-500 outline-none transition-all text-sm";
+  const labelClass = "block text-sm font-medium text-dark-300 mb-2";
+  const sectionClass = "bg-dark-900 rounded-2xl border border-dark-800 p-5 sm:p-6";
+  const modelSuggestions = BRANDS_MODELS[form.brand] ?? [];
+
+  return (
+    <AdminLayout>
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <Link
+            href="/admin/vehicules"
+            className="text-dark-400 hover:text-white transition-colors p-2 rounded-xl hover:bg-dark-800"
+          >
+            <ArrowLeft size={20} />
+          </Link>
+          <div className="min-w-0 flex-1">
+            <h2 className="font-heading font-medium text-white text-2xl">
+              Modifier le véhicule
+            </h2>
+            <p className="text-dark-400 text-sm mt-1 truncate">
+              {vehicle.brand} {vehicle.model} · {vehicle.year} · #{vehicle.id}
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} noValidate className="space-y-6">
+
+          {/* ── Statut + mise en avant ─────────────────────────── */}
+          <div className={sectionClass}>
+            <h3 className="font-heading font-normal text-white mb-6 tracking-widest">
+              Statut &amp; publication
+            </h3>
+            <div className="flex flex-col sm:flex-row gap-5">
+              <div className="flex-1">
+                <label className={labelClass}>Disponibilité</label>
+                <select name="status" value={form.status} onChange={handleChange} className={inputClass}>
+                  {statusOptions.map(({ value, label }) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </select>
+                <p className={`text-xs mt-1.5 ${statusOptions.find((s) => s.value === form.status)?.color}`}>
+                  {statusOptions.find((s) => s.value === form.status)?.label}
+                </p>
+              </div>
+              {form.status === "scheduled" && (
+                <div className="flex-1">
+                  <label className={labelClass}>Date de publication <span className="text-brand-500">*</span></label>
+                  <input
+                    name="published_at"
+                    type="datetime-local"
+                    value={form.published_at}
+                    onChange={handleChange}
+                    required
+                    className={inputClass}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3 mt-5 pt-5 border-t border-dark-800">
+              <input
+                id="featured-edit"
+                name="featured"
+                type="checkbox"
+                checked={form.featured}
+                onChange={handleChange}
+                className="w-4 h-4 accent-brand-500 cursor-pointer"
+              />
+              <label htmlFor="featured-edit" className="text-sm text-dark-300 cursor-pointer select-none flex items-center gap-1.5">
+                <Star size={13} className="text-amber-400" />
+                Mettre en avant sur la page d&apos;accueil
+              </label>
+            </div>
+          </div>
+
+          {/* ── Informations générales ─────────────────────────── */}
+          <div className={sectionClass}>
+            <h3 className="font-heading font-normal text-white mb-6 tracking-widest">
+              Informations générales
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className={labelClass}>Marque <span className="text-brand-500">*</span></label>
+                <Combobox
+                  value={form.brand}
+                  onChange={(v) => { set("brand", v); set("model", ""); setErrors((p) => ({ ...p, brand: undefined })); }}
+                  suggestions={ALL_BRANDS}
+                  placeholder="Peugeot, Renault…"
+                  inputClass={inputClass}
+                  error={errors.brand}
+                  required
+                  id="brand-edit"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Modèle <span className="text-brand-500">*</span></label>
+                <Combobox
+                  value={form.model}
+                  onChange={(v) => { set("model", v); setErrors((p) => ({ ...p, model: undefined })); }}
+                  suggestions={modelSuggestions}
+                  placeholder={form.brand ? "Choisir un modèle…" : "Sélectionnez d'abord une marque"}
+                  inputClass={inputClass}
+                  error={errors.model}
+                  required
+                  id="model-edit"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Année <span className="text-brand-500">*</span></label>
+                <input
+                  name="year"
+                  type="number"
+                  required
+                  min="1980"
+                  max={new Date().getFullYear() + 1}
+                  value={form.year}
+                  onChange={handleChange}
+                  className={inputClass + (errors.year ? " border-red-500" : "")}
+                />
+                {errors.year && <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400"><AlertCircle size={11} />{errors.year}</p>}
+              </div>
+              <div>
+                <label className={labelClass}>Kilométrage <span className="text-brand-500">*</span></label>
+                <input
+                  name="mileage"
+                  type="number"
+                  required
+                  min="0"
+                  placeholder="45000"
+                  value={form.mileage}
+                  onChange={handleChange}
+                  className={inputClass + (errors.mileage ? " border-red-500" : "")}
+                />
+                {errors.mileage && <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400"><AlertCircle size={11} />{errors.mileage}</p>}
+              </div>
+              <div>
+                <label className={labelClass}>Couleur <span className="text-brand-500">*</span></label>
+                <Combobox
+                  value={form.color}
+                  onChange={(v) => { set("color", v); setErrors((p) => ({ ...p, color: undefined })); }}
+                  suggestions={COLORS}
+                  placeholder="Blanc, Gris Anthracite…"
+                  inputClass={inputClass}
+                  error={errors.color}
+                  required
+                  id="color-edit"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Nombre de portes</label>
+                <select name="doors" value={form.doors} onChange={handleChange} className={inputClass}>
+                  {["2", "3", "4", "5"].map((d) => <option key={d} value={d}>{d} portes</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Motorisation ───────────────────────────────────── */}
+          <div className={sectionClass}>
+            <h3 className="font-heading font-normal text-white mb-6 tracking-widest">Motorisation</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label className={labelClass}>Carburant <span className="text-brand-500">*</span></label>
+                <select name="fuel" value={form.fuel} onChange={handleChange} className={inputClass}>
+                  {fuelOptions.map((f) => <option key={f} value={f}>{f}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Transmission <span className="text-brand-500">*</span></label>
+                <select name="transmission" value={form.transmission} onChange={handleChange} className={inputClass}>
+                  {transmissionOptions.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Puissance (ch) <span className="text-brand-500">*</span></label>
+                <input
+                  name="power"
+                  type="number"
+                  min="0"
+                  placeholder="130"
+                  value={form.power}
+                  onChange={handleChange}
+                  className={inputClass + (errors.power ? " border-red-500" : "")}
+                />
+                {errors.power && <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400"><AlertCircle size={11} />{errors.power}</p>}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Prix ───────────────────────────────────────────── */}
+          <div className={sectionClass}>
+            <h3 className="font-heading font-normal text-white mb-6 tracking-widest">Prix de vente</h3>
+            <div className="max-w-xs">
+              <label className={labelClass}>Prix (€) <span className="text-brand-500">*</span></label>
+              <div className="relative">
+                <input
+                  name="price"
+                  type="number"
+                  required
+                  min="1"
+                  placeholder="18900"
+                  value={form.price}
+                  onChange={handleChange}
+                  className={inputClass + " pr-10" + (errors.price ? " border-red-500" : "")}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400">€</span>
+              </div>
+              {errors.price && <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400"><AlertCircle size={11} />{errors.price}</p>}
+            </div>
+          </div>
+
+          {/* ── Description ────────────────────────────────────── */}
+          <div className={sectionClass}>
+            <h3 className="font-heading font-normal text-white mb-6 tracking-widest">Description</h3>
+            <textarea
+              name="description"
+              rows={5}
+              placeholder="Décrivez le véhicule : état, équipements, historique…"
+              value={form.description}
+              onChange={handleChange}
+              className={inputClass + " resize-none"}
+            />
+          </div>
+
+          {/* ── Photos ─────────────────────────────────────────── */}
+          <div className={sectionClass}>
+            <h3 className="font-heading font-normal text-white mb-2 tracking-widest">Photos</h3>
+            <p className="text-dark-500 text-xs mb-5">
+              La première photo est l&apos;image principale. Cliquez pour définir une autre photo comme principale.
+            </p>
+            <div className="flex flex-wrap gap-3 mb-5">
+              <button
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+                className="flex items-center gap-2 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-medium"
+              >
+                <Camera size={16} />
+                Prendre une photo
+              </button>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 bg-dark-700 hover:bg-dark-600 active:scale-95 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-medium"
+              >
+                <Images size={16} />
+                Choisir depuis la galerie
+              </button>
+              <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+              <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+            </div>
+            {images.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {images.map((img, idx) => (
+                  <div key={idx} className={`relative aspect-video bg-dark-800 rounded-xl overflow-hidden group ${idx === 0 ? "ring-2 ring-brand-500" : ""}`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt={`Photo ${idx + 1}`} className="w-full h-full object-cover" loading={idx === 0 ? "eager" : "lazy"} />
+                    <button type="button" onClick={() => removeImage(idx)} className="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-10">
+                      <X size={12} className="text-white" />
+                    </button>
+                    {idx === 0 ? (
+                      <div className="absolute bottom-2 left-2 bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium">★ Principale</div>
+                    ) : (
+                      <button type="button" onClick={() => setMainImage(idx)} className="absolute bottom-2 left-2 bg-dark-900/80 hover:bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-all">
+                        Définir principale
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <button type="button" onClick={() => fileInputRef.current?.click()} className="w-full border-2 border-dashed border-dark-700 hover:border-brand-500/50 rounded-xl py-12 text-center transition-colors group">
+                <Images size={32} className="text-dark-600 group-hover:text-brand-500/50 mx-auto mb-3 transition-colors" />
+                <p className="text-dark-500 text-sm">Cliquez pour ajouter des photos</p>
+              </button>
+            )}
+          </div>
+
+          {/* ── Options & Équipements ───────────────────────────── */}
+          <div className={sectionClass}>
+            <h3 className="font-heading font-normal text-white mb-6 tracking-widest">Options &amp; Équipements</h3>
+            <VehicleOptionsForm value={form.options} onChange={(opts) => set("options", opts)} />
+          </div>
+
+          {/* ── Submit ─────────────────────────────────────────── */}
+          <div className="flex items-center justify-between gap-4 pt-2 pb-8">
+            <Link href="/admin/vehicules" className="btn-secondary text-sm">
+              Annuler
+            </Link>
+            <button type="submit" disabled={saveStatus !== "idle"} className="btn-primary text-sm py-3 px-6 sm:px-8">
+              {saveStatus === "saving" ? (
+                <><Loader2 size={16} className="animate-spin" />Enregistrement…</>
+              ) : saveStatus === "saved" ? (
+                <><CheckCircle2 size={16} />Enregistré !</>
+              ) : (
+                <><Save size={16} />Enregistrer les modifications</>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </AdminLayout>
+  );
 }

@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
 							<circle cx="20" cy="21" r="1" />
 						</svg>
 					</div>
-					<h1 className="font-heading font-black text-white text-2xl">
+					<h1 className="font-heading font-light text-white text-2xl tracking-tight">
 						Garage Mendonça
 					</h1>
 					<p className="text-dark-400 text-sm mt-1">
@@ -67,7 +67,7 @@ export default function AdminLoginPage() {
 
 				{/* Card */}
 				<div className="bg-dark-900 rounded-2xl border border-dark-700 shadow-2xl p-8">
-					<h2 className="font-heading font-bold text-white text-xl mb-6">
+					<h2 className="font-heading font-medium text-white text-xl mb-6">
 						Se connecter
 					</h2>
 
@@ -157,7 +157,7 @@ export default function AdminLoginPage() {
 						<button
 							type="submit"
 							disabled={loading}
-							className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-2 shadow-lg shadow-brand-600/20"
+							className="w-full bg-brand-600 hover:bg-brand-700 text-white font-normal py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 mt-2 shadow-lg shadow-brand-600/20"
 						>
 							{loading ? (
 								<>
