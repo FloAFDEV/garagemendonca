@@ -48,8 +48,8 @@ export default function VehicleCard({
 						className="absolute inset-0 bg-[#0f172a]/55 flex items-center justify-center"
 						aria-hidden="true"
 					>
-						<span className="bg-slate-700 text-white font-heading font-normal text-base px-5 py-2 rounded-xl tracking-widest rotate-[-8deg] shadow-lg select-none uppercase">
-							Vendu
+						<span className="bg-red-700 text-white font-heading font-normal text-base px-5 py-2 rounded-xl tracking-widest rotate-[-8deg] shadow-lg select-none uppercase">
+							Vendue
 						</span>
 					</div>
 				)}
@@ -153,14 +153,14 @@ export default function VehicleCard({
 					</span>
 					{vehicle.status === "sold" ? (
 						<div className="w-full bg-slate-200 text-slate-500 font-normal text-sm py-3 rounded-lg flex items-center justify-center gap-2 cursor-default">
-							Vendu
+							Vendue
 						</div>
 					) : (
-						<div className="w-full bg-brand-500 group-hover:bg-brand-600 text-white font-normal text-sm py-3 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
+						<div className="w-full bg-brand-500/90 group-hover:bg-brand-600/95 text-white font-semibold text-sm py-3 rounded-lg flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-0.5 hover:scale-105">
 							Voir le véhicule
 							<ArrowRight
 								size={14}
-								className="group-hover:translate-x-0.5 transition-transform"
+								className="group-hover:translate-x-1 transition-transform duration-300"
 							/>
 						</div>
 					)}

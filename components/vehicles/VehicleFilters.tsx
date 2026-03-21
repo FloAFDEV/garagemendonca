@@ -314,7 +314,7 @@ export default function VehicleFilters({
 									: "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
 							}`}
 						>
-							{hideSold ? "Afficher vendus" : "Masquer vendus"}
+							{hideSold ? "Afficher vendues" : "Masquer vendues"}
 						</button>
 					)}
 

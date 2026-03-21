@@ -188,7 +188,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										<span
 											className={`w-1.5 h-1.5 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-slate-400"}`}
 										/>
-										{isAvailable ? "Disponible" : "Vendu"}
+										{isAvailable ? "Disponible" : "Vendue"}
 									</span>
 								</div>
 								<h1 className="ty-heading text-[#0f172a] text-3xl md:text-4xl leading-tight">
@@ -250,9 +250,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							</div>
 
 							{/* Options équipement */}
-							{vehicle.options && Object.keys(vehicle.options).length > 0 && (
-								<VehicleOptionsDisplay options={vehicle.options} />
-							)}
+							{vehicle.options &&
+								Object.keys(vehicle.options).length > 0 && (
+									<VehicleOptionsDisplay
+										options={vehicle.options}
+									/>
+								)}
 
 							{/* SECTION TECHNIQUE & OPTIONS */}
 							{vehicle.features && (
@@ -419,7 +422,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									))}
 								</ul>
 							</div>
-
 
 							{/* Adresse Garage */}
 							<div className="bg-[#0f172a] rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative group">

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
+import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 
 // ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
 
@@ -57,7 +58,7 @@ const statusOptions = [
 		label: "Programmé",
 		desc: "Visible à la date choisie",
 	},
-	{ value: "sold", label: "Vendu", desc: "Visible avec badge « Vendu »" },
+	{ value: "sold", label: "Vendue", desc: "Visible avec badge « Vendue »" },
 ] as const;
 
 // ── Form types ─────────────────────────────────────────────────────
@@ -120,6 +121,7 @@ function Combobox({
 	error,
 	required,
 	id,
+	logoMap,
 }: {
 	value: string;
 	onChange: (v: string) => void;
@@ -129,6 +131,8 @@ function Combobox({
 	error?: string;
 	required?: boolean;
 	id?: string;
+	/** Si fourni, affiche le logo de marque dans la liste et dans l'input */
+	logoMap?: Record<string, string>;
 }) {
 	const t = useAdminTokens();
 	const [open, setOpen] = useState(false);
@@ -138,8 +142,22 @@ function Combobox({
 			)
 		: suggestions;
 
+	const hasLogo = logoMap && !!logoMap[value];
+
 	return (
 		<div className="relative">
+			{/* Logo de la marque sélectionnée — affiché dans l'input */}
+			{hasLogo && (
+				<span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none z-10 flex items-center justify-center">
+					{/* eslint-disable-next-line @next/next/no-img-element */}
+					<img
+						src={logoMap![value]}
+						alt=""
+						aria-hidden
+						className="max-w-full max-h-full object-contain"
+					/>
+				</span>
+			)}
 			<input
 				id={id}
 				value={value}
@@ -154,14 +172,15 @@ function Combobox({
 				autoComplete="off"
 				className={
 					inputClass +
+					(hasLogo ? " pl-10" : "") +
 					(error ? " border-red-500 focus:border-red-500" : "")
 				}
 			/>
 			{open && filtered.length > 0 && (
 				<div
-					className={`absolute left-0 top-full mt-1 w-full z-50 ${t.dropdownBg} border ${t.dropdownBorder} rounded-xl shadow-2xl overflow-hidden max-h-52 overflow-y-auto`}
+					className={`absolute left-0 top-full mt-1 w-full z-50 ${t.dropdownBg} border ${t.dropdownBorder} rounded-xl shadow-2xl overflow-hidden max-h-60 overflow-y-auto`}
 				>
-					{filtered.slice(0, 10).map((s) => (
+					{filtered.slice(0, 14).map((s) => (
 						<button
 							key={s}
 							type="button"
@@ -169,12 +188,26 @@ function Combobox({
 								onChange(s);
 								setOpen(false);
 							}}
-							className={`w-full text-left px-3 py-2.5 text-sm transition-colors ${t.dropdownItemHover} ${
+							className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${t.dropdownItemHover} ${
 								s === value
 									? `${t.txt} bg-brand-500/10 font-medium`
 									: t.dropdownItemTxt
 							}`}
 						>
+							{logoMap && logoMap[s] ? (
+								<span className="w-6 h-5 flex-shrink-0 flex items-center justify-center">
+									{/* eslint-disable-next-line @next/next/no-img-element */}
+									<img
+										src={logoMap[s]}
+										alt=""
+										aria-hidden
+										className="max-w-full max-h-full object-contain"
+									/>
+								</span>
+							) : logoMap ? (
+								/* placeholder pour aligner le texte quand certaines marques n'ont pas de logo */
+								<span className="w-6 flex-shrink-0" />
+							) : null}
 							{s}
 						</button>
 					))}
@@ -397,6 +430,7 @@ export default function NewVehiclePage() {
 									error={errors.brand}
 									required
 									id="brand"
+									logoMap={BRAND_LOGO_MAP}
 								/>
 							</div>
 							<div data-error={errors.model}>

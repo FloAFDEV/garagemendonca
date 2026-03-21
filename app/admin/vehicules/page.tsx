@@ -50,7 +50,7 @@ function getStatusConfig(
 			className: "bg-blue-500/15 text-blue-400 border border-blue-500/30",
 		},
 		sold: {
-			label: "Vendu",
+			label: "Vendue",
 			className: "bg-red-500/15 text-red-400 border border-red-500/30",
 		},
 	};
@@ -433,7 +433,7 @@ export default function AdminVehiclesPage() {
 																t.txtSubtle,
 															)}
 														>
-															Vendu le{" "}
+															Vendue le{" "}
 															{new Date(
 																vehicle.sold_at,
 															).toLocaleDateString(

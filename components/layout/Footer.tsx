@@ -86,7 +86,7 @@ export default function Footer() {
 
 					{/* Colonne 2 — Services + Nav */}
 					<div>
-						<h4 className="ty-label text-slate-400 mb-5">
+						<h4 className="ty-label text-slate-200 mb-5">
 							Nos Services
 						</h4>
 						<ul className="space-y-3 mb-8">
@@ -106,7 +106,7 @@ export default function Footer() {
 							))}
 						</ul>
 
-						<h4 className="ty-label text-slate-400 mb-5">
+						<h4 className="ty-label text-slate-200 mb-5">
 							Navigation
 						</h4>
 						<ul className="space-y-3">
@@ -129,7 +129,7 @@ export default function Footer() {
 
 					{/* Colonne 3 — Contact */}
 					<div>
-						<h4 className="ty-label text-slate-400 mb-5">
+						<h4 className="ty-label text-slate-200 mb-5">
 							Contact
 						</h4>
 						<ul className="space-y-4">
@@ -191,7 +191,7 @@ export default function Footer() {
 
 					{/* Colonne 4 — Horaires */}
 					<div>
-						<h4 className="ty-label text-slate-400 mb-5">
+						<h4 className="ty-label text-slate-200 mb-5">
 							Horaires d&apos;ouverture
 						</h4>
 						<div className="flex items-center gap-2 mb-4">
@@ -239,7 +239,7 @@ export default function Footer() {
 
 			{/* Barre légale */}
 			<div className="border-t border-slate-800">
-				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-700">
+				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-400">
 					<p>
 						© {new Date().getFullYear()} Garage Auto Mendonça · SARL
 						· SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700

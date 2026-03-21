@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
+import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 
 // ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
 
@@ -53,7 +54,7 @@ const statusOptions = [
 	{ value: "published", label: "Publié", color: "text-emerald-400" },
 	{ value: "draft", label: "Brouillon", color: "text-slate-400" },
 	{ value: "scheduled", label: "Programmé", color: "text-blue-400" },
-	{ value: "sold", label: "Vendu", color: "text-red-400" },
+	{ value: "sold", label: "Vendue", color: "text-red-400" },
 ] as const;
 
 // ── Form types ─────────────────────────────────────────────────────
@@ -97,6 +98,7 @@ function Combobox({
 	error,
 	required,
 	id,
+	logoMap,
 }: {
 	value: string;
 	onChange: (v: string) => void;
@@ -106,6 +108,8 @@ function Combobox({
 	error?: string;
 	required?: boolean;
 	id?: string;
+	/** Si fourni, affiche le logo de marque dans la liste et dans l'input */
+	logoMap?: Record<string, string>;
 }) {
 	const t = useAdminTokens();
 	const [open, setOpen] = useState(false);
@@ -512,6 +516,7 @@ export default function EditVehiclePage({
 									error={errors.brand}
 									required
 									id="brand-edit"
+									logoMap={BRAND_LOGO_MAP}
 								/>
 							</div>
 							<div>
