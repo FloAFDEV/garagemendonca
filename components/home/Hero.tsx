@@ -23,7 +23,7 @@ const trustBadges = [
 export default function Hero() {
 	return (
 		<section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
-			{/* Fond photo — atelier du garage */}
+			{/* Fond photo */}
 			<div className="absolute inset-0 z-0">
 				<Image
 					src="/images/garage-hero.webp"
@@ -35,35 +35,33 @@ export default function Hero() {
 				/>
 			</div>
 
-			{/* Overlays — On renforce le noir à gauche pour que le texte "pop" */}
 			<div
-				className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-1"
+				className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/38 to-transparent z-1"
 				aria-hidden="true"
 			/>
 			<div
-				className="absolute inset-0 bg-black/30 z-1"
+				className="absolute inset-0 bg-black/28 z-1"
 				aria-hidden="true"
 			/>
 
-			{/* Trait accent gauche */}
 			{/* Contenu */}
 			<div className="relative flex-1 flex items-center">
-				{/* On augmente le padding-top sur mobile (pt-28 au lieu de pt-16) */}
 				<Container className="pt-28 sm:pt-24 md:pt-36 pb-20 mb-6">
 					<div className="max-w-2xl xl:max-w-3xl">
-						{/* Eyebrow - ESPACE AJOUTÉ ICI DANS LES CLASSES */}
+
+						{/* Eyebrow */}
 						<div className="flex items-center gap-3 mb-8 animate-fade-in">
 							<div
 								className="w-8 h-px bg-brand-500 flex-shrink-0"
 								aria-hidden="true"
 							/>
-							<span className="text-brand-400 font-semibold text-[10px] sm:text-xs uppercase tracking-[0.18em] leading-tight">
+							<span className="text-brand-400 font-normal text-[10px] uppercase tracking-caps leading-tight">
 								Garage Mendonça – Expert auto depuis 2001
 							</span>
 						</div>
 
-						{/* H1 - On réduit un peu la taille sur mobile (text-4xl) pour éviter qu'il ne prenne trop de place */}
-						<h1 className="font-heading font-black text-white text-4xl md:text-6xl xl:text-7xl leading-[1.1] mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
+						{/* H1 */}
+						<h1 className="ty-display text-white text-4xl md:text-6xl xl:text-7xl mb-6 animate-slide-up [text-shadow:0_2px_16px_rgba(0,0,0,0.6)]">
 							Votre garage
 							<br />
 							de confiance à{" "}
@@ -72,14 +70,14 @@ export default function Hero() {
 									Drémil-Lafage
 								</span>
 								<span
-									className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-500/50"
+									className="absolute -bottom-1 left-0 right-0 h-px bg-brand-500/40"
 									aria-hidden="true"
 								/>
 							</span>
 						</h1>
 
-						{/* Sous-titre (p, pas h2) */}
-						<p className="text-slate-100 text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
+						{/* Sous-titre */}
+						<p className="text-slate-200 font-light text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
 							Mécaniciens qualifiés, équipement dernière
 							génération, devis transparent avant toute
 							intervention. <br className="hidden lg:block" />
@@ -89,13 +87,11 @@ export default function Hero() {
 						</p>
 
 						{/* H3 */}
-						<h3 className="font-heading font-black text-white text-2xl md:text-3xl xl:text-4xl leading-[1.03] mt-6 mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
+						<h3 className="ty-display text-white text-2xl md:text-3xl xl:text-4xl mt-6 mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.5)]">
 							Spécialiste
 							<br />
-							<span className="relative">
-								<span className="text-brand-500">
-									japonaises et coréennes
-								</span>
+							<span className="text-brand-500">
+								japonaises et coréennes
 							</span>
 						</h3>
 
@@ -117,38 +113,37 @@ export default function Hero() {
 							</Link>
 						</div>
 
-						{/* Stats — animation compteur */}
 						<StatsCounter />
 					</div>
 				</Container>
 			</div>
 
-			{/* Badges flottants — desktop */}
+			{/* Badges flottants desktop */}
 			<div className="absolute bottom-14 right-8 hidden xl:flex flex-col gap-3 animate-fade-in">
 				{trustBadges.map(({ Icon, text }) => (
 					<div
 						key={text}
-						className="bg-white/12 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-lg"
+						className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-lg"
 					>
 						<Icon
-							size={17}
+							size={15}
 							className="text-brand-400 flex-shrink-0"
 							aria-hidden="true"
 						/>
-						<span className="font-medium">{text}</span>
+						<span className="font-light text-sm text-white/90">{text}</span>
 					</div>
 				))}
 			</div>
 
 			{/* Scroll indicator */}
 			<div
-				className="relative pb-10 flex flex-col items-center gap-1 text-white/50"
+				className="relative pb-10 flex flex-col items-center gap-1 text-white/40"
 				aria-hidden="true"
 			>
-				<span className="text-[10px] uppercase tracking-widest">
+				<span className="text-[9px] font-light uppercase tracking-caps">
 					Découvrir
 				</span>
-				<ChevronDown size={18} className="motion-safe:animate-bounce" />
+				<ChevronDown size={16} className="motion-safe:animate-bounce" />
 			</div>
 		</section>
 	);

@@ -71,7 +71,7 @@ export default function ServicesPage() {
 							Nos expertises
 						</span>
 					</div>
-					<h1 className="font-heading font-bold text-3xl sm:text-4xl lg:text-5xl text-white leading-tight mb-5">
+					<h1 className="ty-heading text-3xl sm:text-4xl lg:text-5xl text-white mb-5">
 						Mécanique, carrosserie &amp; vente
 						<br />
 						<span className="text-brand-400">
@@ -124,7 +124,7 @@ export default function ServicesPage() {
 											</div>
 
 											{/* Titre */}
-											<h2 className="font-heading font-bold text-2xl sm:text-3xl text-slate-900 mb-4 leading-tight">
+											<h2 className="ty-heading text-2xl sm:text-3xl text-slate-900 mb-4">
 												{service.title}
 											</h2>
 
@@ -135,7 +135,7 @@ export default function ServicesPage() {
 
 											{/* Features */}
 											<div className="space-y-4 mb-10">
-												<h3 className="font-heading font-semibold text-xs text-brand-600 uppercase tracking-widest">
+												<h3 className="ty-label text-brand-600">
 													Prestations incluses
 												</h3>
 												<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -158,7 +158,7 @@ export default function ServicesPage() {
 											{/* CTA */}
 											<a
 												href="tel:0532002038"
-												className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-brand-500 text-white text-sm font-bold hover:bg-brand-600 shadow-lg shadow-brand-500/20 transition-all duration-300 w-fit"
+												className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-brand-500 text-white text-sm font-normal hover:bg-brand-600 shadow-lg shadow-brand-500/20 transition-all duration-300 w-fit"
 											>
 												<Phone className="h-4 w-4" />
 												Demander un devis
@@ -176,7 +176,7 @@ export default function ServicesPage() {
 			<section className="py-20 bg-dark-900">
 				<Container>
 					<div className="text-center mb-12">
-						<h2 className="font-heading font-bold text-2xl sm:text-3xl text-white">
+						<h2 className="ty-heading text-2xl sm:text-3xl text-white">
 							Pourquoi nous faire confiance&nbsp;?
 						</h2>
 					</div>
@@ -187,7 +187,7 @@ export default function ServicesPage() {
 								className="rounded-2xl border border-dark-700 bg-dark-800 p-8 hover:border-brand-500/50 transition-colors"
 							>
 								<Icon className="h-8 w-8 text-brand-500 mb-4" />
-								<h3 className="font-heading font-bold text-white mb-2">
+								<h3 className="ty-subheading text-white mb-2">
 									{title}
 								</h3>
 								<p className="text-sm text-dark-400 leading-relaxed">
@@ -202,7 +202,7 @@ export default function ServicesPage() {
 			{/* ── Final CTA ── */}
 			<section className="py-20 bg-brand-500">
 				<Container className="text-center text-white">
-					<h2 className="font-heading font-bold text-3xl md:text-4xl mb-6">
+					<h2 className="ty-heading text-3xl md:text-4xl mb-6 text-white">
 						Un problème mécanique ou de carrosserie ?
 					</h2>
 					<p className="text-brand-50 text-lg mb-10 max-w-2xl mx-auto">
@@ -212,13 +212,13 @@ export default function ServicesPage() {
 					<div className="flex flex-wrap justify-center gap-4">
 						<a
 							href="tel:0532002038"
-							className="px-8 py-4 bg-white text-brand-600 rounded-xl font-bold hover:bg-slate-50 transition-colors"
+							className="px-8 py-4 bg-white text-brand-600 rounded-xl font-normal hover:bg-slate-50 transition-colors"
 						>
 							Appeler le 05 32 00 20 38
 						</a>
 						<Link
 							href="/contact"
-							className="px-8 py-4 border-2 border-white/30 text-white rounded-xl font-bold hover:bg-white/10 transition-colors"
+							className="px-8 py-4 border-2 border-white/30 text-white rounded-xl font-normal hover:bg-white/10 transition-colors"
 						>
 							Nous contacter par email
 						</Link>

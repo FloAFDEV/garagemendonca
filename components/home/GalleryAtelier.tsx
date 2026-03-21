@@ -50,7 +50,7 @@ export default function GalleryAtelier() {
                 Un équipement<br />professionnel
               </h2>
             </div>
-            <p className="text-slate-400 text-sm leading-relaxed max-w-sm mt-4 lg:mt-0">
+            <p className="font-light text-slate-500 text-sm leading-relaxed max-w-sm mt-4 lg:mt-0">
               Des outils de dernière génération, un atelier organisé avec soin.
               La précision de notre travail se voit dès le premier regard.
             </p>
@@ -65,7 +65,6 @@ export default function GalleryAtelier() {
                 key={src}
                 className={`relative overflow-hidden rounded-xl bg-dark-800 group min-h-[180px] ${span}`}
               >
-                {/* Photo */}
                 <Image
                   src={src}
                   alt={alt}
@@ -75,15 +74,14 @@ export default function GalleryAtelier() {
                   loading="lazy"
                 />
 
-                {/* Overlay gradient dégradé bas */}
                 <div
-                  className="absolute inset-0 bg-gradient-to-t from-dark-950/70 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-400"
+                  className="absolute inset-0 bg-gradient-to-t from-dark-950/65 via-transparent to-transparent opacity-50 group-hover:opacity-80 transition-opacity duration-400"
                   aria-hidden="true"
                 />
 
                 {/* Caption */}
                 <div className="absolute bottom-3 left-4 right-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  <span className="text-white text-xs font-semibold">{caption}</span>
+                  <span className="font-light text-white/90 text-xs tracking-wide">{caption}</span>
                 </div>
               </div>
             ))}

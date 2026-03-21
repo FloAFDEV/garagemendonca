@@ -20,7 +20,6 @@ export default function Header() {
 	const [scrolled, setScrolled] = useState(false);
 	const pathname = usePathname();
 
-	/* Pages avec fond clair qui nécessitent un header opaque dès le départ */
 	const isLightPage =
 		pathname === "/vehicules" ||
 		/^\/vehicules\/.+/.test(pathname) ||
@@ -29,7 +28,6 @@ export default function Header() {
 		pathname === "/mentions-legales" ||
 		pathname === "/politique-confidentialite";
 
-	/* Opaque si scrollé OU si page à fond clair */
 	const isOpaque = scrolled || isLightPage;
 
 	useEffect(() => {
@@ -43,47 +41,48 @@ export default function Header() {
 			className={clsx(
 				"fixed top-0 left-0 right-0 z-50 transition-all duration-300",
 				isOpaque
-					? "bg-white shadow-[0_1px_0_#e2e8f0,0_4px_16px_rgba(0,0,0,0.08)] py-0"
+					? "bg-white shadow-[0_1px_0_#e2e8f0,0_4px_16px_rgba(0,0,0,0.06)] py-0"
 					: "bg-black/10 backdrop-blur-[2px] py-2",
 			)}
 		>
-			{/* ── Barre info supérieure ── */}
+			{/* Barre info supérieure */}
 			<div
 				className={clsx(
-					"bg-[#0f172a] text-slate-400 text-xs py-2 hidden md:block transition-all duration-300",
+					"bg-[#0f172a] text-slate-500 text-[11px] py-2 hidden md:block transition-all duration-300",
 					isOpaque && "h-0 py-0 overflow-hidden opacity-0",
 				)}
 			>
 				<Container className="flex items-center justify-between">
 					<span className="flex items-center gap-2">
 						<Phone
-							size={12}
+							size={11}
 							className="text-brand-400"
 							aria-hidden="true"
 						/>
 						<a
 							href="tel:0532002038"
-							className="hover:text-white transition-colors font-medium"
+							className="hover:text-slate-300 transition-colors font-normal"
 						>
 							05 32 00 20 38
 						</a>
-						<span className="mx-3 opacity-30" aria-hidden="true">
+						<span className="mx-3 opacity-20" aria-hidden="true">
 							|
 						</span>
-						<span>Lun–Ven : 08h–12h / 14h–19h</span>
+						<span className="font-light">Lun–Ven : 08h–12h / 14h–19h</span>
 					</span>
 					<a
 						href="mailto:contact@garagemendonça.com"
-						className="hover:text-white transition-colors"
+						className="font-light hover:text-slate-300 transition-colors"
 					>
 						contact@garagemendonça.com
 					</a>
 				</Container>
 			</div>
-			{/* ── Nav principale ── */}
+
+			{/* Nav principale */}
 			<Container as="nav" aria-label="Navigation principale">
 				<div className="flex items-center h-16 md:h-[72px]">
-					{/* 1. Logo */}
+					{/* Logo */}
 					<Link
 						href="/"
 						className="flex items-center group flex-shrink-0"
@@ -99,7 +98,7 @@ export default function Header() {
 						</div>
 					</Link>
 
-					{/* 2. Liens desktop */}
+					{/* Liens desktop */}
 					<ul
 						className="hidden md:flex items-center gap-1 ml-auto mr-8"
 						role="list"
@@ -109,10 +108,10 @@ export default function Header() {
 								<Link
 									href={link.href}
 									className={clsx(
-										"font-medium px-4 py-3 rounded-lg transition-all duration-300 text-sm",
+										"font-normal px-4 py-3 rounded-lg transition-all duration-200 text-sm tracking-wide",
 										isOpaque
-											? "text-slate-600 hover:text-brand-600 hover:bg-slate-50"
-											: "text-white hover:text-white hover:bg-white/10",
+											? "text-[#475569] hover:text-[#0f172a] hover:bg-slate-50"
+											: "text-white/80 hover:text-white hover:bg-white/8",
 									)}
 								>
 									{link.label}
@@ -121,7 +120,7 @@ export default function Header() {
 						))}
 					</ul>
 
-					{/* 3. CTA & Burger */}
+					{/* CTA & Burger */}
 					<div className="flex items-center gap-4 ml-auto md:ml-0">
 						<div className="hidden md:block">
 							<a
@@ -132,12 +131,12 @@ export default function Header() {
 										"shadow-none border border-white/20 hover:bg-white/10 bg-transparent text-white",
 								)}
 							>
-								<Phone size={14} />
+								<Phone size={13} />
 								Prendre RDV
 							</a>
 						</div>
 
-						{/* Burger mobile - COULEUR CORRIGÉE ICI */}
+						{/* Burger mobile */}
 						<button
 							onClick={() => setIsOpen(!isOpen)}
 							className={clsx(
@@ -151,7 +150,7 @@ export default function Header() {
 							}
 							aria-expanded={isOpen}
 						>
-							{isOpen ? <X size={22} /> : <Menu size={22} />}
+							{isOpen ? <X size={20} /> : <Menu size={20} />}
 						</button>
 					</div>
 				</div>
@@ -172,7 +171,7 @@ export default function Header() {
 								key={link.href}
 								href={link.href}
 								onClick={() => setIsOpen(false)}
-								className="text-[#475569] hover:text-[#0f172a] font-medium px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-sm"
+								className="font-normal text-[#475569] hover:text-[#0f172a] px-4 py-3 rounded-xl hover:bg-slate-50 transition-colors text-sm"
 							>
 								{link.label}
 							</Link>
@@ -182,28 +181,20 @@ export default function Header() {
 								href="tel:0532002038"
 								className="btn-primary w-full justify-center text-sm"
 							>
-								<Phone size={15} />
+								<Phone size={14} />
 								05 32 00 20 38
 							</a>
 						</div>
 					</div>
 				</div>
-			</Container>{" "}
-			{/* <-- FERMETURE DU CONTAINER AJOUTÉE */}
+			</Container>
 			<style jsx>{`
 				@keyframes slide-down {
-					0% {
-						opacity: 0;
-						transform: translateY(-10px);
-					}
-					100% {
-						opacity: 1;
-						transform: translateY(0);
-					}
+					0% { opacity: 0; transform: translateY(-10px); }
+					100% { opacity: 1; transform: translateY(0); }
 				}
 				.animate-slide-down {
-					animation: slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1)
-						forwards;
+					animation: slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 				}
 			`}</style>
 		</header>

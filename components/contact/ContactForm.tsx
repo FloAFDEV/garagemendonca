@@ -42,7 +42,7 @@ export default function ContactForm({ vehicule }: { vehicule?: string }) {
         <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5" aria-hidden="true">
           <CheckCircle2 size={32} className="text-emerald-600" aria-hidden="true" />
         </div>
-        <h3 className="font-heading font-bold text-[#0f172a] text-2xl mb-3">Message envoyé !</h3>
+        <h3 className="ty-subheading text-[#0f172a] text-2xl mb-3">Message envoyé !</h3>
         <p className="text-[#475569] max-w-md mx-auto">
           Merci pour votre message. Notre équipe vous recontactera dans les plus
           brefs délais, généralement sous 24 heures ouvrables.
@@ -52,7 +52,7 @@ export default function ContactForm({ vehicule }: { vehicule?: string }) {
             setStatus("idle");
             setForm({ name: "", email: "", phone: "", subject: "", message: "" });
           }}
-          className="mt-6 text-brand-600 font-semibold hover:text-brand-700 transition-colors text-sm"
+          className="mt-6 text-brand-600 font-normal hover:text-brand-700 transition-colors text-sm"
         >
           Envoyer un autre message
         </button>

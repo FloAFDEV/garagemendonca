@@ -13,7 +13,6 @@ const guarantees = [
 ];
 
 export default function FeaturedVehicles() {
-	/* 4 derniers arrivages triés par createdAt décroissant */
 	const latest = [...vehicles]
 		.sort((a, b) =>
 			(b.createdAt || "1900-01-01").localeCompare(
@@ -56,14 +55,13 @@ export default function FeaturedVehicles() {
 				<AnimateOnScroll delay={150}>
 					<div className="bg-[#f8fafc] rounded-2xl border border-slate-200 p-4 sm:p-6">
 						<div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
-							{/* Texte */}
 							<div className="flex items-start gap-2 sm:gap-3">
 								<ShieldCheck
-									size={20}
+									size={18}
 									className="text-brand-500 mt-0.5 flex-shrink-0"
 								/>
 								<div>
-									<p className="text-[#0f172a] font-semibold text-sm sm:text-base mb-1">
+									<p className="text-[#0f172a] font-normal text-sm sm:text-base mb-1">
 										Tous nos véhicules sont contrôlés,
 										révisés et garantis
 									</p>
@@ -71,10 +69,10 @@ export default function FeaturedVehicles() {
 										{guarantees.map((g) => (
 											<span
 												key={g}
-												className="text-[#475569] text-xs sm:text-sm flex items-center gap-1"
+												className="font-light text-[#64748b] text-xs sm:text-sm flex items-center gap-1"
 											>
 												<span
-													className="w-1 h-1 bg-brand-500 rounded-full"
+													className="w-1 h-1 bg-brand-500/70 rounded-full"
 													aria-hidden="true"
 												/>
 												{g}
@@ -84,7 +82,6 @@ export default function FeaturedVehicles() {
 								</div>
 							</div>
 
-							{/* CTA */}
 							<Link
 								href="/vehicules"
 								className="btn-primary text-sm sm:text-base py-2.5 sm:py-3 flex-shrink-0 inline-flex items-center gap-2 group"
@@ -92,7 +89,7 @@ export default function FeaturedVehicles() {
 							>
 								Voir tous nos véhicules ({vehicles.length})
 								<ArrowRight
-									size={15}
+									size={14}
 									className="transition-transform group-hover:translate-x-1"
 								/>
 							</Link>

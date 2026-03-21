@@ -24,16 +24,17 @@ const hours = [
 
 export default function Footer() {
 	return (
-		<footer className="bg-slate-900 text-slate-400">
-			{/* ── Bande accent top ── */}
+		<footer className="bg-slate-900 text-slate-500">
+			{/* Bande accent top */}
 			<div
-				className="h-1 bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600"
+				className="h-px bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600"
 				aria-hidden="true"
 			/>
 
-			{/* ── Corps principal ── */}
+			{/* Corps principal */}
 			<Container className="py-16">
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
 					{/* Colonne 1 — Marque */}
 					<div className="lg:col-span-1">
 						<Link
@@ -42,39 +43,34 @@ export default function Footer() {
 						>
 							<div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center shadow-brand flex-shrink-0">
 								<svg
-									width="22"
-									height="22"
+									width="20"
+									height="20"
 									viewBox="0 0 24 24"
 									fill="none"
 									stroke="white"
-									strokeWidth="2.5"
+									strokeWidth="2"
 									strokeLinecap="round"
 									strokeLinejoin="round"
 									aria-hidden="true"
 								>
 									<path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3" />
-									<rect
-										x="9"
-										y="11"
-										width="14"
-										height="10"
-										rx="2"
-									/>
+									<rect x="9" y="11" width="14" height="10" rx="2" />
 									<circle cx="12" cy="21" r="1" />
 									<circle cx="20" cy="21" r="1" />
 								</svg>
 							</div>
 							<div>
-								<div className="font-heading font-bold text-white text-lg leading-tight">
+								{/* Nom garage — normal, pas bold */}
+								<div className="ty-subheading text-white text-base leading-tight">
 									Garage Mendonça
 								</div>
-								<div className="text-xs text-slate-500 mt-0.5">
+								<div className="font-light text-xs text-slate-600 mt-0.5">
 									Depuis 2001 · Drémil-Lafage
 								</div>
 							</div>
 						</Link>
 
-						<p className="text-sm leading-relaxed text-slate-500 mb-5">
+						<p className="font-light text-sm leading-relaxed text-slate-500 mb-5">
 							Spécialiste des voitures japonaises et boîtes
 							automatiques depuis 2001, le Garage Mendonça
 							accueille jeunes conducteurs, seniors et personnes à
@@ -85,7 +81,7 @@ export default function Footer() {
 
 					{/* Colonne 2 — Services + Nav */}
 					<div>
-						<h4 className="font-heading font-semibold text-white mb-5 text-sm">
+						<h4 className="ty-label text-slate-400 mb-5">
 							Nos Services
 						</h4>
 						<ul className="space-y-3 mb-8">
@@ -93,10 +89,10 @@ export default function Footer() {
 								<li key={link.href}>
 									<Link
 										href={link.href}
-										className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
+										className="font-light text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
 									>
 										<span
-											className="w-1 h-1 bg-slate-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
+											className="w-1 h-1 bg-slate-700 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
 											aria-hidden="true"
 										/>
 										{link.label}
@@ -105,7 +101,7 @@ export default function Footer() {
 							))}
 						</ul>
 
-						<h4 className="font-heading font-semibold text-white mb-5 text-sm">
+						<h4 className="ty-label text-slate-400 mb-5">
 							Navigation
 						</h4>
 						<ul className="space-y-3">
@@ -113,10 +109,10 @@ export default function Footer() {
 								<li key={link.href}>
 									<Link
 										href={link.href}
-										className="text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
+										className="font-light text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
 									>
 										<span
-											className="w-1 h-1 bg-slate-600 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
+											className="w-1 h-1 bg-slate-700 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
 											aria-hidden="true"
 										/>
 										{link.label}
@@ -128,13 +124,13 @@ export default function Footer() {
 
 					{/* Colonne 3 — Contact */}
 					<div>
-						<h4 className="font-heading font-semibold text-white mb-5 text-sm">
+						<h4 className="ty-label text-slate-400 mb-5">
 							Contact
 						</h4>
 						<ul className="space-y-4">
-							<li className="flex items-start gap-3 text-sm">
+							<li className="flex items-start gap-3 font-light text-sm">
 								<MapPin
-									size={16}
+									size={15}
 									className="text-brand-500 mt-0.5 flex-shrink-0"
 									aria-hidden="true"
 								/>
@@ -152,7 +148,7 @@ export default function Footer() {
 									>
 										Ouvrir dans Google Maps
 										<ExternalLink
-											size={11}
+											size={10}
 											aria-hidden="true"
 										/>
 									</a>
@@ -160,26 +156,27 @@ export default function Footer() {
 							</li>
 							<li className="flex items-center gap-3 text-sm">
 								<Phone
-									size={16}
+									size={15}
 									className="text-brand-500 flex-shrink-0"
 									aria-hidden="true"
 								/>
+								{/* Numéro = valeur → font-medium */}
 								<a
 									href="tel:0532002038"
-									className="hover:text-brand-400 transition-colors font-medium"
+									className="font-medium text-slate-300 hover:text-brand-400 transition-colors"
 								>
 									05 32 00 20 38
 								</a>
 							</li>
 							<li className="flex items-center gap-3 text-sm">
 								<Mail
-									size={16}
+									size={15}
 									className="text-brand-500 flex-shrink-0"
 									aria-hidden="true"
 								/>
 								<a
 									href="mailto:contact@garagemendonça.com"
-									className="hover:text-brand-400 transition-colors break-all"
+									className="font-light hover:text-brand-400 transition-colors break-all"
 								>
 									contact@garagemendonça.com
 								</a>
@@ -189,16 +186,16 @@ export default function Footer() {
 
 					{/* Colonne 4 — Horaires */}
 					<div>
-						<h4 className="font-heading font-semibold text-white mb-5 text-sm">
+						<h4 className="ty-label text-slate-400 mb-5">
 							Horaires d&apos;ouverture
 						</h4>
 						<div className="flex items-center gap-2 mb-4">
 							<Clock
-								size={15}
+								size={13}
 								className="text-brand-500"
 								aria-hidden="true"
 							/>
-							<span className="text-xs text-slate-500">
+							<span className="font-light text-xs text-slate-600">
 								Avec ou sans rendez-vous
 							</span>
 						</div>
@@ -208,14 +205,14 @@ export default function Footer() {
 									key={day}
 									className="flex items-center justify-between text-sm py-2 border-b border-slate-800 last:border-0"
 								>
-									<span className="text-slate-400">
+									<span className="font-light text-slate-500">
 										{day}
 									</span>
 									<span
-										className={`font-semibold text-xs ${
+										className={`font-medium text-xs ${
 											time === "Fermé"
-												? "text-slate-600"
-												: "text-white"
+												? "text-slate-700"
+												: "text-slate-300"
 										}`}
 									>
 										{time}
@@ -228,41 +225,40 @@ export default function Footer() {
 							href="tel:0532002038"
 							className="inline-flex items-center gap-2 btn-primary text-sm py-3 w-full justify-center"
 						>
-							<Phone size={15} />
+							<Phone size={14} />
 							Appeler le garage
 						</a>
 					</div>
 				</div>
 			</Container>
 
-			{/* ── Barre légale ── */}
+			{/* Barre légale */}
 			<div className="border-t border-slate-800">
-				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-700">
 					<p>
 						© {new Date().getFullYear()} Garage Auto Mendonça · SARL
-						· SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700
-						€
+						· SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700 €
 					</p>
 					<div className="flex items-center gap-5">
 						<Link
 							href="/mentions-legales"
-							className="hover:text-slate-400 transition-colors"
+							className="hover:text-slate-500 transition-colors"
 						>
 							Mentions légales
 						</Link>
 						<Link
 							href="/cgu"
-							className="hover:text-slate-400 transition-colors"
+							className="hover:text-slate-500 transition-colors"
 						>
 							CGU
 						</Link>
 						<Link
 							href="/politique-confidentialite"
-							className="hover:text-slate-400 transition-colors"
+							className="hover:text-slate-500 transition-colors"
 						>
 							Confidentialité
 						</Link>
-						<span className="text-slate-700">NAF 4520A</span>
+						<span className="text-slate-800">NAF 4520A</span>
 					</div>
 				</Container>
 			</div>

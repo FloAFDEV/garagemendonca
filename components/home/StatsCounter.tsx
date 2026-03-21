@@ -65,7 +65,6 @@ function CountUp({
 					const step = (now: number) => {
 						const elapsed = now - startTime;
 						const progress = Math.min(elapsed / duration, 1);
-						/* easeOutCubic — démarre vite, ralentit à l'arrivée */
 						const eased = 1 - Math.pow(1 - progress, 3);
 						setCount(Math.round(eased * target));
 						if (progress < 1) requestAnimationFrame(step);
@@ -88,7 +87,7 @@ function CountUp({
 	return (
 		<div
 			ref={containerRef}
-			className="font-heading font-black text-3xl md:text-4xl text-white leading-none mb-1"
+			className="ty-stat text-3xl md:text-4xl leading-none mb-1"
 			aria-live="polite"
 		>
 			{prefix}
@@ -100,7 +99,7 @@ function CountUp({
 
 export default function StatsCounter() {
 	return (
-		<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/15 animate-fade-in">
+		<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/12 animate-fade-in">
 			{STATS.map(({ prefix, target, suffix, thousands, label }) => (
 				<div key={label} className="text-center sm:text-left">
 					<CountUp
@@ -109,7 +108,7 @@ export default function StatsCounter() {
 						suffix={suffix}
 						thousands={thousands}
 					/>
-					<div className="text-slate-300 text-xs leading-snug">
+					<div className="text-slate-400 font-light text-xs leading-snug mt-0.5">
 						{label}
 					</div>
 				</div>

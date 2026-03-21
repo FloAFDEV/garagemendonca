@@ -72,7 +72,7 @@ function BrandLogo({ brand }: { brand: string }) {
 
 	if (!logoPath) {
 		return (
-			<span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-400 flex-shrink-0 border border-slate-50 uppercase">
+			<span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-medium text-slate-400 flex-shrink-0 border border-slate-50 uppercase">
 				{brand.slice(0, 2)}
 			</span>
 		);
@@ -114,7 +114,7 @@ function Dropdown({
 			<button
 				type="button"
 				onClick={() => setOpen((o) => !o)}
-				className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-bold transition-all ${
+				className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-normal transition-all ${
 					active
 						? "bg-brand-500 text-white border-brand-500 shadow-md"
 						: "bg-white text-slate-700 border-slate-200 hover:border-brand-300"
@@ -122,7 +122,7 @@ function Dropdown({
 			>
 				{label}
 				{badge ? (
-					<span className="w-5 h-5 rounded-full bg-white text-brand-600 text-[10px] flex items-center justify-center font-black">
+					<span className="w-5 h-5 rounded-full bg-white text-brand-600 text-[10px] flex items-center justify-center font-medium">
 						{badge}
 					</span>
 				) : null}
@@ -184,7 +184,7 @@ export default function VehicleFilters({
 		<div className="mb-8 space-y-4">
 			<div className="flex flex-col gap-4">
 				<div className="flex items-center justify-between">
-					<p className="text-sm font-bold text-slate-800 uppercase tracking-tight">
+					<p className="text-sm font-normal text-slate-800 uppercase tracking-wide">
 						<span className="text-brand-600 text-lg">
 							{filteredCount}
 						</span>{" "}
@@ -192,7 +192,7 @@ export default function VehicleFilters({
 					</p>
 					<button
 						onClick={() => setMobileOpen(!mobileOpen)}
-						className="sm:hidden flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl font-bold text-sm"
+						className="sm:hidden flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl font-normal text-sm"
 					>
 						<SlidersHorizontal size={16} /> Filtres{" "}
 						{activeCount > 0 && `(${activeCount})`}
@@ -217,7 +217,7 @@ export default function VehicleFilters({
 									>
 										<BrandLogo brand={brand} />
 										<span
-											className={`flex-1 text-sm font-semibold ${filters.brands.includes(brand) ? "text-brand-600" : "text-slate-700"}`}
+											className={`flex-1 text-sm font-normal ${filters.brands.includes(brand) ? "text-brand-600" : "text-slate-700"}`}
 										>
 											{brand}
 										</span>
@@ -244,7 +244,7 @@ export default function VehicleFilters({
 										onClick={() =>
 											set("priceMax", opt.value)
 										}
-										className="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 rounded-lg"
+										className="w-full text-left px-4 py-2.5 text-sm font-normal hover:bg-slate-50 rounded-lg"
 									>
 										{opt.label}
 									</button>
@@ -262,7 +262,7 @@ export default function VehicleFilters({
 								<li key={opt.label}>
 									<button
 										onClick={() => set("kmMax", opt.value)}
-										className="w-full text-left px-4 py-2.5 text-sm font-semibold hover:bg-slate-50 rounded-lg"
+										className="w-full text-left px-4 py-2.5 text-sm font-normal hover:bg-slate-50 rounded-lg"
 									>
 										{opt.label}
 									</button>
@@ -277,7 +277,7 @@ export default function VehicleFilters({
 							<button
 								key={fuel}
 								onClick={() => toggleFuel(fuel)}
-								className={`px-4 py-2.5 rounded-xl border text-xs font-black uppercase tracking-wider transition-all ${
+								className={`px-4 py-2.5 rounded-xl border text-xs font-medium uppercase tracking-wider transition-all ${
 									filters.fuels.includes(fuel)
 										? "bg-slate-800 text-white border-slate-800"
 										: "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
@@ -294,7 +294,7 @@ export default function VehicleFilters({
 							onChange={(e) =>
 								set("sortBy", e.target.value as SortOption)
 							}
-							className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 focus:ring-2 ring-brand-500/20 outline-none appearance-none"
+							className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-normal text-slate-700 focus:ring-2 ring-brand-500/20 outline-none appearance-none"
 						>
 							{SORT_OPTIONS.map((opt) => (
 								<option key={opt.value} value={opt.value}>
@@ -308,7 +308,7 @@ export default function VehicleFilters({
 					{onToggleHideSold && (
 						<button
 							onClick={onToggleHideSold}
-							className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-black uppercase tracking-wider transition-all ${
+							className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-medium uppercase tracking-wider transition-all ${
 								hideSold
 									? "bg-slate-800 text-white border-slate-800"
 									: "bg-white text-slate-500 border-slate-200 hover:border-slate-400"

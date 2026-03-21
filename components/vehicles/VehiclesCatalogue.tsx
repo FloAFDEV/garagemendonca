@@ -94,7 +94,7 @@ function CatalogueContent({ vehicles, allBrands, allFuels }: Props) {
             className="text-slate-300 mx-auto mb-4"
             aria-hidden="true"
           />
-          <h2 className="font-heading font-bold text-[#0f172a] text-xl mb-2">
+          <h2 className="ty-subheading text-[#0f172a] text-xl mb-2">
             Aucun véhicule pour ces critères
           </h2>
           <p className="text-[#475569] text-sm mb-6 max-w-xs mx-auto">

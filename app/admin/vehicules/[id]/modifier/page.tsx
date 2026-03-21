@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { vehicles } from "@/lib/data";
 import { Vehicle, VehicleStatus } from "@/types";
 import { saveVehicle } from "../../actions";
+import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
+import type { VehicleOptions } from "@/types";
 import {
 	ImagePlus,
 	X,
@@ -48,6 +50,7 @@ interface VehicleForm {
 	images: string[];
 	status: VehicleStatus;
 	featured: boolean;
+	options: VehicleOptions;
 }
 
 export default function EditVehiclePage({
@@ -77,6 +80,7 @@ export default function EditVehiclePage({
 				images: [],
 				status: "draft",
 				featured: false,
+				options: {},
 			};
 		return {
 			brand: vehicle.brand,
@@ -93,6 +97,7 @@ export default function EditVehiclePage({
 			images: [...vehicle.images],
 			status: vehicle.status ?? "draft",
 			featured: vehicle.featured ?? false,
+			options: vehicle.options ?? {},
 		};
 	});
 
@@ -156,6 +161,15 @@ export default function EditVehiclePage({
 		}));
 	};
 
+	const setMainImage = (idx: number) => {
+		if (idx === 0) return;
+		setForm((prev) => {
+			const imgs = [...prev.images];
+			const [chosen] = imgs.splice(idx, 1);
+			return { ...prev, images: [chosen, ...imgs] };
+		});
+	};
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setSaveStatus("saving");
@@ -174,6 +188,7 @@ export default function EditVehiclePage({
 			images: form.images,
 			status: form.status,
 			featured: form.featured,
+			options: form.options,
 		});
 		setSaveStatus("saved");
 		setTimeout(() => router.push("/admin/vehicules"), 1500);
@@ -492,7 +507,7 @@ export default function EditVehiclePage({
 								{form.images.map((img, idx) => (
 									<div
 										key={idx}
-										className="relative aspect-video bg-dark-800 rounded-xl overflow-hidden group"
+										className={`relative aspect-video bg-dark-800 rounded-xl overflow-hidden group ${idx === 0 ? "ring-2 ring-brand-500" : ""}`}
 									>
 										{/* eslint-disable-next-line @next/next/no-img-element */}
 										<img
@@ -500,20 +515,29 @@ export default function EditVehiclePage({
 											alt={`Photo ${idx + 1}`}
 											className="w-full h-full object-cover"
 										/>
+										{/* Supprimer */}
 										<button
 											type="button"
 											onClick={() => removeImage(idx)}
-											className="absolute top-2 right-2 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+											className="absolute top-2 right-2 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+											title="Supprimer cette photo"
 										>
-											<X
-												size={12}
-												className="text-white"
-											/>
+											<X size={12} className="text-white" />
 										</button>
-										{idx === 0 && (
-											<div className="absolute bottom-2 left-2 bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-												Principale
+										{/* Badge principale */}
+										{idx === 0 ? (
+											<div className="absolute bottom-2 left-2 bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+												★ Principale
 											</div>
+										) : (
+											<button
+												type="button"
+												onClick={() => setMainImage(idx)}
+												className="absolute bottom-2 left-2 bg-dark-900/80 hover:bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-all"
+												title="Définir comme photo principale"
+											>
+												Définir en principale
+											</button>
 										)}
 									</div>
 								))}
@@ -531,7 +555,20 @@ export default function EditVehiclePage({
 						)}
 					</div>
 
-					{/* ── Submit ── */}
+					{/* ── Options & Équipements ── */}
+				<div className={sectionClass}>
+					<h3 className="font-heading font-semibold text-white mb-6">
+						Options &amp; Équipements
+					</h3>
+					<VehicleOptionsForm
+						value={form.options}
+						onChange={(opts) =>
+							setForm((prev) => ({ ...prev, options: opts }))
+						}
+					/>
+				</div>
+
+				{/* ── Submit ── */}
 					<div className="flex items-center justify-between pt-2">
 						<Link
 							href="/admin/vehicules"

@@ -5,7 +5,7 @@ import Container from "@/components/ui/Container";
 const badges = [
 	{
 		Icon: Calendar,
-		value: "+30 ANS",
+		value: "+30 ans",
 		label: "D'expérience",
 		pill: "Depuis 2001",
 		description:
@@ -60,7 +60,7 @@ const badges = [
 export default function TrustBadges() {
 	return (
 		<section
-			className="bg-[#f8fafc] py-6 shadow-[0_8px_32px_rgba(0,0,0,0.07)]"
+			className="bg-[#f8fafc] py-6 shadow-[0_8px_32px_rgba(0,0,0,0.05)]"
 			aria-label="Nos engagements"
 		>
 			<Container>
@@ -83,9 +83,9 @@ export default function TrustBadges() {
 						) => (
 							<AnimateOnScroll key={label} delay={i * 80}>
 								<div className="group relative bg-white rounded-xl border border-slate-100 px-5 py-6 overflow-hidden transition-all duration-250 hover:shadow-md hover:-translate-y-0.5">
-									{/* Barre accent couleur haut */}
+									{/* Barre accent */}
 									<div
-										className={`absolute top-0 left-0 right-0 h-[3px] ${bar} opacity-60 group-hover:opacity-100 transition-opacity duration-250`}
+										className={`absolute top-0 left-0 right-0 h-[2px] ${bar} opacity-50 group-hover:opacity-80 transition-opacity duration-250`}
 										aria-hidden="true"
 									/>
 
@@ -96,32 +96,33 @@ export default function TrustBadges() {
 											aria-hidden="true"
 										>
 											<Icon
-												size={17}
+												size={16}
 												className={iconColor}
 												aria-hidden="true"
 											/>
 										</div>
-										<span className="font-heading font-black text-base text-[#0f172a] leading-tight">
+										{/* Valeur principale — font-medium car c'est un chiffre clé */}
+										<span className="ty-heading text-base text-[#0f172a]">
 											{value}
 										</span>
 									</div>
 
 									{/* Label */}
-									<p className="font-semibold text-[#0f172a] text-sm mb-2 leading-snug">
+									<p className="font-normal text-[#0f172a] text-sm mb-2 leading-snug">
 										{label}
 									</p>
 
 									{/* Description */}
-									<p className="text-[#64748b] text-xs leading-relaxed mb-3">
+									<p className="font-light text-[#64748b] text-xs leading-relaxed mb-4">
 										{description}
 									</p>
 
-									{/* Pill badge coloré */}
+									{/* Pill badge */}
 									<span
-										className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-full ${pillCls}`}
+										className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-1 rounded-full tracking-wide ${pillCls}`}
 									>
 										<span
-											className="w-1 h-1 rounded-full bg-current opacity-70"
+											className="w-1 h-1 rounded-full bg-current opacity-60"
 											aria-hidden="true"
 										/>
 										{pill}

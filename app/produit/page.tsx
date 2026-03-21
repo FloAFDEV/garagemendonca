@@ -63,11 +63,11 @@ export default function ProduitPage() {
 								className="w-8 h-px bg-brand-500"
 								aria-hidden="true"
 							/>
-							<span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
+							<span className="text-brand-400 font-normal text-xs uppercase tracking-caps">
 								Nos véhicules d'occasion
 							</span>
 						</div>
-						<h1 className="font-heading font-black text-white text-5xl md:text-6xl mb-6 leading-[1.06]">
+						<h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
 							Occasion de qualité,{" "}
 							<span className="text-brand-500">
 								garantie incluse
@@ -113,7 +113,7 @@ export default function ProduitPage() {
 										strokeWidth={1.75}
 									/>
 								</div>
-								<h3 className="font-heading font-bold text-[#0f172a] text-sm mb-1">
+								<h3 className="ty-subheading text-[#0f172a] text-sm mb-1">
 									{title}
 								</h3>
 								<p className="text-[#475569] text-xs leading-relaxed">
@@ -144,7 +144,7 @@ export default function ProduitPage() {
 							</div>
 							<Link
 								href="/vehicules"
-								className="hidden sm:inline-flex items-center gap-2 text-brand-600 hover:text-brand-700 font-semibold text-sm transition-colors group"
+								className="hidden sm:inline-flex items-center gap-2 text-brand-600 hover:text-brand-700 font-normal text-sm transition-colors group"
 							>
 								Tout voir
 								<ArrowRight
@@ -216,7 +216,7 @@ export default function ProduitPage() {
 							{ value: "9", label: "Véhicules de prêt" },
 						].map(({ value, label }) => (
 							<div key={label}>
-								<div className="font-heading font-black text-4xl text-brand-500 mb-1">
+								<div className="ty-display font-heading text-4xl text-brand-500 mb-1">
 									{value}
 								</div>
 								<div className="text-[#475569] text-sm">
@@ -273,7 +273,7 @@ export default function ProduitPage() {
 								<p className="text-[#475569] text-sm leading-relaxed mb-4">
 									"{note}"
 								</p>
-								<p className="font-heading font-bold text-[#0f172a] text-sm">
+								<p className="ty-subheading text-[#0f172a] text-sm">
 									{name}
 								</p>
 							</div>
@@ -289,7 +289,7 @@ export default function ProduitPage() {
 					aria-hidden="true"
 				/>
 				<Container className="text-center">
-					<h2 className="font-heading font-black text-white text-3xl md:text-4xl mb-4">
+					<h2 className="ty-display text-white text-3xl md:text-4xl mb-4">
 						Un véhicule vous intéresse ?
 					</h2>
 					<p className="text-slate-300 text-lg mb-8 max-w-xl mx-auto">

@@ -87,16 +87,16 @@ export default function ProcessSteps() {
 											</div>
 										</div>
 										{/* Numéro — mobile */}
-										<span className="lg:hidden font-heading font-black text-slate-300 text-2xl leading-none">
+										<span className="lg:hidden font-heading font-light text-slate-300 text-2xl leading-none">
 											{num}
 										</span>
 									</div>
 
-									<span className="hidden lg:block font-heading font-black text-slate-300 text-xs mb-2 tracking-wider">
+									<span className="hidden lg:block font-heading font-light text-slate-300 text-xs mb-2 tracking-wider">
 										{num}
 									</span>
 
-									<h3 className="font-heading font-bold text-[#0f172a] text-base mb-2 leading-snug">
+									<h3 className="ty-subheading text-[#0f172a] text-base mb-2 leading-snug">
 										{title}
 									</h3>
 									<p className="text-[#475569] text-sm leading-[1.65]">

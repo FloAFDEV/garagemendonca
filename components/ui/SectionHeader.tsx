@@ -18,7 +18,7 @@ export default function SectionHeader({
   return (
     <div className={clsx("mb-12", centered && "text-center")}>
       {eyebrow && (
-        <span className="inline-block text-brand-600 font-semibold text-sm uppercase tracking-widest mb-3">
+        <span className="inline-block text-brand-600 font-normal text-sm uppercase tracking-caps mb-3">
           {eyebrow}
         </span>
       )}

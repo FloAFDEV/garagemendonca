@@ -12,6 +12,7 @@ import {
 } from "@/lib/vehicles";
 import Image from "next/image";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
 import {
 	ArrowLeft,
 	Phone,
@@ -170,7 +171,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							<div>
 								<div className="flex items-center gap-2 mb-2">
 									{vehicle.featured && (
-										<span className="inline-flex items-center gap-1 bg-brand-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+										<span className="inline-flex items-center gap-1 bg-brand-500 text-white text-xs font-medium px-3 py-1 rounded-full">
 											<Star
 												size={11}
 												fill="currentColor"
@@ -179,7 +180,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										</span>
 									)}
 									<span
-										className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full ${isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}
+										className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full ${isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}
 									>
 										<span
 											className={`w-1.5 h-1.5 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-slate-400"}`}
@@ -187,7 +188,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										{isAvailable ? "Disponible" : "Vendu"}
 									</span>
 								</div>
-								<h1 className="font-heading font-black text-[#0f172a] text-3xl md:text-4xl leading-tight">
+								<h1 className="ty-heading text-[#0f172a] text-3xl md:text-4xl leading-tight">
 									{vehicle.brand} {vehicle.model}
 									{vehicle.features?.["Finition"] && (
 										<span className="text-slate-400 font-medium text-xl ml-2">
@@ -198,7 +199,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							</div>
 						</div>
 						<div className="hidden text-right">
-							<div className="font-heading font-black text-4xl text-[#0f172a] tracking-tight">
+							<div className="ty-value font-heading text-4xl">
 								{vehicle.price.toLocaleString("fr-FR")} €
 							</div>
 							<p className="text-slate-400 text-sm mt-0.5 font-medium">
@@ -218,7 +219,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 							{/* Description & Confiance */}
 							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-8 md:p-10">
-								<h2 className="font-heading font-bold text-[#0f172a] text-xl mb-6">
+								<h2 className="ty-subheading text-[#0f172a] text-xl mb-6">
 									Description du véhicule
 								</h2>
 								<p className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line">
@@ -233,7 +234,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									].map((item) => (
 										<div
 											key={item}
-											className="flex items-center gap-3 text-sm font-medium text-slate-700"
+											className="flex items-center gap-3 text-sm font-normal text-slate-700"
 										>
 											<CheckCircle2
 												size={16}
@@ -245,12 +246,17 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</div>
 							</div>
 
+							{/* Options équipement */}
+							{vehicle.options && Object.keys(vehicle.options).length > 0 && (
+								<VehicleOptionsDisplay options={vehicle.options} />
+							)}
+
 							{/* SECTION TECHNIQUE & OPTIONS */}
 							{vehicle.features && (
 								<div className="space-y-12">
 									{/* Fiche Technique */}
 									<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-10">
-										<h2 className="font-heading font-black text-[#0f172a] text-2xl tracking-tight mb-10 flex items-center gap-4 text-center sm:text-left">
+										<h2 className="ty-heading text-[#0f172a] text-2xl mb-10 flex items-center gap-4 text-center sm:text-left">
 											Fiche Technique{" "}
 											<div className="h-px flex-1 bg-slate-100" />
 										</h2>
@@ -297,10 +303,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 													key={label}
 													className="group"
 												>
-													<p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-bold mb-1.5">
+													<p className="ty-label mb-1.5">
 														{label}
 													</p>
-													<p className="text-base font-bold text-[#0f172a]">
+													<p className="text-base ty-value">
 														{value}
 													</p>
 													<div className="mt-2 h-0.5 w-6 bg-brand-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
@@ -311,7 +317,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 									{/* Équipements & Options Dynamiques */}
 									<div className="px-2">
-										<h3 className="font-heading font-bold text-[#0f172a] text-xl mb-8 flex items-center gap-4">
+										<h3 className="ty-subheading text-[#0f172a] text-xl mb-8 flex items-center gap-4">
 											Équipements & Confort{" "}
 											<div className="h-px flex-1 bg-slate-100" />
 										</h3>
@@ -326,7 +332,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 																key={`${key}-${idx}`}
 																className="pl-4 border-l-2 border-slate-100 hover:border-brand-500 transition-colors py-1 group"
 															>
-																<span className="text-sm font-semibold text-slate-700 group-hover:text-brand-600 transition-colors leading-tight block">
+																<span className="text-sm font-normal text-slate-700 group-hover:text-brand-600 transition-colors leading-tight block">
 																	{option}
 																</span>
 															</div>
@@ -345,10 +351,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 														key={key}
 														className="pl-4 border-l-2 border-slate-100 hover:border-brand-500 py-1 group"
 													>
-														<span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-0.5">
+														<span className="ty-label block mb-0.5">
 															{key}
 														</span>
-														<span className="text-sm font-bold text-[#0f172a] group-hover:text-brand-600 transition-colors leading-tight block">
+														<span className="text-sm font-normal text-[#0f172a] group-hover:text-brand-600 transition-colors leading-tight block">
 															{String(value)}
 														</span>
 													</div>
@@ -365,7 +371,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							{/* Carte Prix & CTA */}
 							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
 								<div className="mb-6 pb-6 border-b border-slate-100">
-									<div className="font-heading font-black text-4xl text-[#0f172a]">
+									<div className="ty-value font-heading text-4xl">
 										{vehicle.price.toLocaleString("fr-FR")}{" "}
 										€
 									</div>
@@ -383,7 +389,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									</a>
 									<Link
 										href={contactHref}
-										className="btn-secondary w-full justify-center py-4 text-sm font-bold border-2"
+										className="btn-secondary w-full justify-center py-4 text-sm border-2"
 									>
 										<MessageSquare size={17} /> Envoyer un
 										message
@@ -399,7 +405,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									].map((item) => (
 										<li
 											key={item}
-											className="flex items-center gap-3 text-sm font-semibold text-slate-600"
+											className="flex items-center gap-3 text-sm font-light text-slate-600"
 										>
 											<ShieldCheck
 												size={18}
@@ -420,10 +426,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										className="rotate-135"
 									/>
 								</div>
-								<div className="text-xs text-brand-400 font-black uppercase tracking-[0.2em] mb-4">
+								<div className="ty-label text-brand-400 mb-4">
 									Garage Mendonça
 								</div>
-								<p className="text-slate-300 text-sm leading-relaxed mb-6 font-medium">
+								<p className="text-slate-300 text-sm leading-relaxed mb-6 font-light">
 									6 Avenue de la Mouyssaguese
 									<br />
 									31280 Drémil-Lafage
@@ -433,7 +439,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								<a
 									href="https://maps.google.com"
 									target="_blank"
-									className="inline-flex items-center gap-2 text-brand-400 hover:text-white text-xs font-bold transition-colors uppercase tracking-widest"
+									className="inline-flex items-center gap-2 text-brand-400 hover:text-white text-xs font-medium transition-colors uppercase tracking-widest"
 								>
 									Itinéraire Maps{" "}
 									<ArrowLeft
@@ -449,12 +455,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					{related.length > 0 && (
 						<section className="mt-24 border-t border-slate-100 pt-16">
 							<div className="flex items-center justify-between mb-10">
-								<h2 className="font-heading font-black text-[#0f172a] text-3xl tracking-tight">
+								<h2 className="ty-heading text-[#0f172a] text-3xl">
 									Suggestions
 								</h2>
 								<Link
 									href="/vehicules"
-									className="text-sm font-bold text-brand-600 hover:text-brand-700 underline underline-offset-4"
+									className="text-sm font-normal text-brand-600 hover:text-brand-700 underline underline-offset-4"
 								>
 									Voir tout le stock
 								</Link>
@@ -472,7 +478,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			{/* CTA Mobile Sticky */}
 			<div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-200 px-6 py-4 flex items-center gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
 				<div className="flex-1">
-					<p className="font-heading font-black text-2xl text-[#0f172a] leading-none">
+					<p className="ty-value font-heading text-2xl leading-none">
 						{vehicle.price.toLocaleString("fr-FR")} €
 					</p>
 				</div>

@@ -42,6 +42,33 @@ const config: Config = {
 				sans: ["Inter", "system-ui", "sans-serif"],
 				heading: ["Manrope", "system-ui", "sans-serif"],
 			},
+			/**
+			 * Échelle typographique — Garage Mendonça
+			 *
+			 * Règle d'or :
+			 *   80% → normal (400) | 15% → light (300) | 5% → medium (500)
+			 *   font-semibold/bold/black → supprimé du code public
+			 *
+			 * Classes sémantiques (globals.css) :
+			 *   .ty-display    h1 hero     font-light  tracking-tight
+			 *   .ty-heading    h2 section  font-normal tracking-tight
+			 *   .ty-subheading h3 carte    font-normal tracking-tight
+			 *   .ty-body       paragraphe  font-normal text-slate-600
+			 *   .ty-caption    secondaire  font-light  text-slate-500
+			 *   .ty-label      metadata    font-light  tracking-caps
+			 *   .ty-value      prix/chiffre font-medium text-[#0f172a]
+			 *   .ty-stat       compteur    font-normal tracking-tight
+			 */
+			letterSpacing: {
+				tightest: "-0.04em",
+				tighter: "-0.02em",
+				tight: "-0.01em",
+				normal: "0em",
+				wide: "0.04em",
+				wider: "0.08em",
+				widest: "0.16em",
+				caps: "0.22em",
+			},
 			backgroundImage: {
 				"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
 				"hero-pattern":

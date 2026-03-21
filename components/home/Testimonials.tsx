@@ -44,7 +44,7 @@ function Stars({ count }: { count: number }) {
 			{Array.from({ length: 5 }).map((_, i) => (
 				<Star
 					key={i}
-					size={15}
+					size={13}
 					className={
 						i < count
 							? "text-amber-400 fill-amber-400"
@@ -84,15 +84,16 @@ export default function Testimonials() {
 							{Array.from({ length: 5 }).map((_, i) => (
 								<Star
 									key={i}
-									size={20}
+									size={18}
 									className="text-amber-400 fill-amber-400"
 								/>
 							))}
 						</div>
-						<span className="font-heading font-black text-[#0f172a] text-2xl">
+						{/* Valeur clé = font-medium */}
+						<span className="ty-value font-heading text-[#0f172a] text-2xl">
 							5.0
 						</span>
-						<span className="text-[#475569] text-sm">
+						<span className="font-light text-[#64748b] text-sm">
 							· Satisfaction clients, notre priorité
 						</span>
 					</div>
@@ -114,37 +115,37 @@ export default function Testimonials() {
 							i,
 						) => (
 							<AnimateOnScroll key={name} delay={i * 100}>
-								<div className="relative bg-white rounded-2xl border border-slate-200 p-7 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 h-full">
+								<div className="relative bg-white rounded-2xl border border-slate-200 p-7 hover:shadow-[0_8px_32px_rgba(0,0,0,0.07)] hover:-translate-y-1 transition-all duration-300 h-full">
 									<Quote
-										size={28}
+										size={24}
 										className="text-brand-100 fill-current absolute top-5 right-6"
 										aria-hidden="true"
 									/>
 
 									<Stars count={rating} />
 
-									<p className="text-[#475569] text-sm leading-[1.75] mt-4 mb-7">
+									<p className="font-light text-[#475569] text-sm leading-[1.8] mt-4 mb-7">
 										&ldquo;{comment}&rdquo;
 									</p>
 
 									<div className="flex items-center gap-3 pt-5 border-t border-slate-100">
 										<div
-											className={`w-10 h-10 ${color} rounded-full flex items-center justify-center flex-shrink-0 shadow-sm`}
+											className={`w-9 h-9 ${color} rounded-full flex items-center justify-center flex-shrink-0 shadow-sm`}
 											aria-hidden="true"
 										>
-											<span className="text-white font-heading font-bold text-xs">
+											<span className="text-white font-medium text-[10px] tracking-wide">
 												{initials}
 											</span>
 										</div>
 										<div className="flex-1 min-w-0">
-											<div className="font-heading font-bold text-[#0f172a] text-sm truncate">
+											<div className="ty-subheading text-[#0f172a] text-sm truncate">
 												{name}
 											</div>
-											<div className="text-[#475569] text-xs mt-0.5">
+											<div className="font-light text-[#64748b] text-xs mt-0.5">
 												{location}
 											</div>
 										</div>
-										<div className="text-slate-400 text-xs flex-shrink-0">
+										<div className="font-light text-slate-400 text-xs flex-shrink-0">
 											{date}
 										</div>
 									</div>

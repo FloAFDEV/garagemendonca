@@ -146,7 +146,7 @@ export default function PolitiqueConfidentialitePage() {
 							</svg>
 						</div>
 						<div>
-							<p className="font-semibold text-[#0f172a] text-sm mb-1">
+							<p className="font-normal text-[#0f172a] text-sm mb-1">
 								Engagement RGPD
 							</p>
 							<p className="text-[#475569] text-sm leading-relaxed">
@@ -166,7 +166,7 @@ export default function PolitiqueConfidentialitePage() {
 					<div className="max-w-3xl space-y-10">
 						{sections.map(({ title, content }) => (
 							<div key={title}>
-								<h2 className="font-heading font-bold text-[#0f172a] text-lg mb-4 pb-3 border-b border-slate-100">
+								<h2 className="ty-subheading text-[#0f172a] text-lg mb-4 pb-3 border-b border-slate-100">
 									{title}
 								</h2>
 								<div className="text-[#475569] text-sm leading-[1.85] space-y-2">

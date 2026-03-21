@@ -48,7 +48,7 @@ export default function VehicleCard({
 						className="absolute inset-0 bg-[#0f172a]/55 flex items-center justify-center"
 						aria-hidden="true"
 					>
-						<span className="bg-slate-700 text-white font-heading font-black text-lg px-5 py-2 rounded-xl tracking-wide rotate-[-8deg] shadow-lg select-none">
+						<span className="bg-slate-700 text-white font-heading font-normal text-base px-5 py-2 rounded-xl tracking-widest rotate-[-8deg] shadow-lg select-none uppercase">
 							Vendu
 						</span>
 					</div>
@@ -56,7 +56,7 @@ export default function VehicleCard({
 
 				{/* Prix overlay */}
 				<div
-					className="absolute top-2.5 right-2.5 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-bold text-base px-2.5 py-1 rounded-lg"
+					className="absolute top-2.5 right-2.5 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-medium text-sm px-2.5 py-1 rounded-lg"
 					aria-hidden="true"
 				>
 					{vehicle.price.toLocaleString("fr-FR")} €
@@ -91,7 +91,7 @@ export default function VehicleCard({
 						</div>
 					)}
 					<div className="min-w-0">
-						<h3 className="font-heading font-semibold text-[#0f172a] text-base leading-tight">
+						<h3 className="ty-subheading text-[#0f172a] text-base leading-tight">
 							{vehicle.brand} {vehicle.model}
 						</h3>
 						<p className="text-[#64748b] text-xs mt-0.5">
@@ -108,7 +108,7 @@ export default function VehicleCard({
 							className="text-brand-500 mb-0.5"
 							aria-hidden="true"
 						/>
-						<span className="text-xs font-semibold text-[#334155]">
+						<span className="text-xs font-normal text-[#334155]">
 							{vehicle.year}
 						</span>
 					</div>
@@ -118,7 +118,7 @@ export default function VehicleCard({
 							className="text-brand-500 mb-0.5"
 							aria-hidden="true"
 						/>
-						<span className="text-xs font-semibold text-[#334155] truncate w-full text-center">
+						<span className="text-xs font-normal text-[#334155] truncate w-full text-center">
 							{vehicle.mileage.toLocaleString("fr-FR")} km
 						</span>
 					</div>
@@ -128,7 +128,7 @@ export default function VehicleCard({
 							className="text-brand-500 mb-0.5"
 							aria-hidden="true"
 						/>
-						<span className="text-xs font-semibold text-[#334155] truncate w-full text-center">
+						<span className="text-xs font-normal text-[#334155] truncate w-full text-center">
 							{vehicle.fuel}
 						</span>
 					</div>
@@ -146,17 +146,17 @@ export default function VehicleCard({
 				{/* Prix + CTA */}
 				<div className="pt-3 border-t border-slate-100 space-y-2.5">
 					<span
-						className="block font-heading font-bold text-lg text-[#0f172a]"
+						className="block ty-value font-heading text-lg"
 						aria-label={priceLabel}
 					>
 						{vehicle.price.toLocaleString("fr-FR")} €
 					</span>
 					{vehicle.status === "sold" ? (
-						<div className="w-full bg-slate-200 text-slate-500 font-semibold text-sm py-3 rounded-lg flex items-center justify-center gap-2 cursor-default">
+						<div className="w-full bg-slate-200 text-slate-500 font-normal text-sm py-3 rounded-lg flex items-center justify-center gap-2 cursor-default">
 							Vendu
 						</div>
 					) : (
-						<div className="w-full bg-brand-500 group-hover:bg-brand-600 text-white font-semibold text-sm py-3 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
+						<div className="w-full bg-brand-500 group-hover:bg-brand-600 text-white font-normal text-sm py-3 rounded-lg flex items-center justify-center gap-2 transition-colors duration-200">
 							Voir le véhicule
 							<ArrowRight
 								size={14}

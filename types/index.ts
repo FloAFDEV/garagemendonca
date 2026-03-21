@@ -1,4 +1,109 @@
 // ─────────────────────────────────────────────
+//  Options véhicule — stockées en JSONB Supabase (champ `options`)
+//  Toutes les clés sont optionnelles pour permettre une migration progressive.
+// ─────────────────────────────────────────────
+export interface VehicleOptions {
+  // ── EXTÉRIEUR ──────────────────────────────
+  jantes_alliage?: boolean;
+  taille_jantes?: number;           // pouces — présent uniquement si jantes_alliage = true
+  jantes_tole?: boolean;
+  toit_ouvrant?: boolean;
+  toit_panoramique?: boolean;
+  barres_toit?: boolean;
+  vitres_teintees?: boolean;
+  vitres_surteintees?: boolean;
+  retroviseurs_electriques?: boolean;
+  retroviseurs_rabattables?: boolean;
+  retroviseurs_degivrants?: boolean;
+  feux_led?: boolean;
+  feux_xenon?: boolean;
+  feux_matrix_led?: boolean;
+  feux_automatiques?: boolean;
+  essuie_glaces_automatiques?: boolean;
+  attelage?: boolean;
+  hayon_electrique?: boolean;
+  portes_coulissantes?: boolean;
+  fermeture_soft_close?: boolean;
+
+  // ── INTÉRIEUR & CONFORT ─────────────────────
+  climatisation?: boolean;
+  climatisation_automatique?: boolean;
+  climatisation_bizone?: boolean;
+  climatisation_trizone?: boolean;
+  sieges_chauffants?: boolean;
+  sieges_ventiles?: boolean;
+  sieges_massants?: boolean;
+  sieges_electriques?: boolean;
+  sieges_memoire?: boolean;
+  sellerie_cuir?: boolean;
+  sellerie_alcantara?: boolean;
+  sellerie_tissu?: boolean;
+  volant_cuir?: boolean;
+  volant_chauffant?: boolean;
+  volant_reglable?: boolean;
+  accoudoir_central?: boolean;
+  vitres_electriques_avant?: boolean;
+  vitres_electriques_arriere?: boolean;
+  fermeture_centralisee?: boolean;
+  demarrage_sans_cle?: boolean;
+  coffre_electrique?: boolean;
+  ouverture_sans_cle?: boolean;
+
+  // ── MULTIMÉDIA & TECHNOLOGIE ────────────────
+  ecran_tactile?: boolean;
+  gps?: boolean;
+  bluetooth?: boolean;
+  usb?: boolean;
+  usb_c?: boolean;
+  chargeur_induction?: boolean;
+  systeme_audio?: boolean;
+  commande_vocale?: boolean;
+  tableau_bord_numerique?: boolean;
+  affichage_tete_haute?: boolean;
+  prise_12v?: boolean;
+
+  // ── SÉCURITÉ ───────────────────────────────
+  abs?: boolean;
+  esp?: boolean;
+  airbags?: boolean;
+  airbags_lateraux?: boolean;
+  airbags_rideaux?: boolean;
+  aide_freinage_urgence?: boolean;
+  detection_pression_pneus?: boolean;
+  isofix?: boolean;
+  alarme?: boolean;
+  antidemarrage?: boolean;
+
+  // ── AIDES À LA CONDUITE ────────────────────
+  regulateur_vitesse?: boolean;
+  regulateur_adaptatif?: boolean;
+  limiteur_vitesse?: boolean;
+  aide_maintien_voie?: boolean;
+  alerte_franchissement_ligne?: boolean;
+  detection_angle_mort?: boolean;
+  freinage_automatique?: boolean;
+  detection_pietons?: boolean;
+  reconnaissance_panneaux?: boolean;
+  radar_avant?: boolean;
+  radar_arriere?: boolean;
+  camera_recul?: boolean;
+  camera_360?: boolean;
+  stationnement_automatique?: boolean;
+
+  // ── MOTORISATION & CONDUITE ────────────────
+  boite_automatique?: boolean;
+  boite_manuelle?: boolean;
+  palettes_volant?: boolean;
+  mode_sport?: boolean;
+  suspension_adaptative?: boolean;
+  transmission_integrale?: boolean;
+  start_stop?: boolean;
+
+  // ── OPTIONS PERSONNALISÉES ─────────────────
+  autres_options?: string;
+}
+
+// ─────────────────────────────────────────────
 //  Statut métier d'un véhicule
 //  Mirrors: CREATE TYPE vehicle_status AS ENUM (...)
 // ─────────────────────────────────────────────
@@ -100,8 +205,10 @@ export interface Vehicle {
 	// Timestamps — format ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)
 	createdAt?: string;
 	updatedAt?: string;
-	// Caractéristiques structurées
+	// Caractéristiques structurées (ancien système — maintenu pour compatibilité)
 	features?: VehicleFeatures;
+	// Options équipement (nouveau système structuré — JSONB Supabase)
+	options?: VehicleOptions;
 }
 
 // ─────────────────────────────────────────────

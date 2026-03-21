@@ -51,11 +51,11 @@ export default async function ContactPage({ searchParams }: PageProps) {
 								className="w-8 h-px bg-brand-500"
 								aria-hidden="true"
 							/>
-							<span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
+							<span className="text-brand-400 font-normal text-xs uppercase tracking-caps">
 								Disponibles du lundi au vendredi
 							</span>
 						</div>
-						<h1 className="font-heading font-black text-white text-5xl md:text-6xl mb-6 leading-tight">
+						<h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
 							Contactez-nous —{" "}
 							<span className="text-brand-500">
 								devis gratuit sous 24h
@@ -76,7 +76,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 					<div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
 						{/* Sidebar coordonnées — en premier sur mobile */}
 						<div className="lg:col-span-2 lg:order-2 space-y-5">
-							<h2 className="font-heading font-bold text-[#0f172a] text-2xl mb-6">
+							<h2 className="ty-subheading text-[#0f172a] text-2xl mb-6">
 								Nos coordonnées
 							</h2>
 
@@ -99,7 +99,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 										</p>
 										<a
 											href="tel:0532002038"
-											className="font-heading font-bold text-[#0f172a] text-xl hover:text-brand-600 transition-colors"
+											className="ty-value font-heading text-xl hover:text-brand-600 transition-colors"
 										>
 											05 32 00 20 38
 										</a>
@@ -133,7 +133,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 										</p>
 										<a
 											href="mailto:contact@garagemendonça.com"
-											className="font-semibold text-[#0f172a] hover:text-brand-600 transition-colors text-sm break-all"
+											className="font-normal text-[#0f172a] hover:text-brand-600 transition-colors text-sm break-all"
 										>
 											contact@garagemendonça.com
 										</a>
@@ -158,7 +158,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 										<p className="text-xs text-[#475569] font-medium mb-1">
 											Adresse
 										</p>
-										<address className="not-italic font-semibold text-[#0f172a] text-sm leading-relaxed">
+										<address className="not-italic font-normal text-[#0f172a] text-sm leading-relaxed">
 											6 Avenue de la Mouyssaguese
 											<br />
 											31280 Drémil-Lafage
@@ -193,7 +193,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 											aria-hidden="true"
 										/>
 									</div>
-									<h3 className="font-semibold text-[#0f172a]">
+									<h3 className="ty-subheading text-[#0f172a]">
 										Horaires d'ouverture
 									</h3>
 								</div>
@@ -222,7 +222,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							id="contact-form"
 							className="lg:col-span-3 lg:order-1"
 						>
-							<h2 className="font-heading font-bold text-[#0f172a] text-2xl mb-6">
+							<h2 className="ty-subheading text-[#0f172a] text-2xl mb-6">
 								Envoyez-nous un message
 							</h2>
 							<Suspense

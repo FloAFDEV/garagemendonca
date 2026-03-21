@@ -44,11 +44,11 @@ export default async function VehiculesPage() {
                 className="w-8 h-px bg-brand-500"
                 aria-hidden="true"
               />
-              <span className="text-brand-400 font-semibold text-xs uppercase tracking-[0.18em]">
+              <span className="text-brand-400 font-normal text-xs uppercase tracking-caps">
                 Notre stock
               </span>
             </div>
-            <h1 className="font-heading font-black text-white text-5xl md:text-6xl mb-6 leading-tight">
+            <h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
               Véhicules d&apos;occasion{" "}
               <span className="text-brand-500">
                 révisés &amp; garantis
@@ -96,7 +96,7 @@ export default async function VehiculesPage() {
                     aria-hidden="true"
                   />
                 </div>
-                <span className="font-semibold text-[#0f172a] text-sm">
+                <span className="font-normal text-[#0f172a] text-sm">
                   {label}
                 </span>
               </div>

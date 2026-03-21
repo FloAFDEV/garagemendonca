@@ -19,7 +19,7 @@ export default function NotFound() {
           transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <span
-            className="font-heading font-black leading-none text-[clamp(100px,20vw,180px)] text-brand-500 select-none"
+            className="font-heading font-light leading-none text-[clamp(100px,20vw,180px)] text-brand-500 select-none"
             aria-hidden="true"
           >
             404
@@ -46,7 +46,7 @@ export default function NotFound() {
           transition={{ delay: 0.2, duration: 0.45 }}
           className="max-w-md"
         >
-          <h1 className="font-heading font-black text-[#0f172a] text-3xl md:text-4xl mb-3">
+          <h1 className="ty-heading text-[#0f172a] text-3xl md:text-4xl mb-3">
             Page introuvable
           </h1>
           <p className="text-[#475569] text-base leading-relaxed mb-8">

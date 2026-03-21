@@ -44,7 +44,7 @@ const STATUS_CONFIG: Record<
   },
   sold: {
     label: "Vendu",
-    className: "bg-slate-700/50 text-slate-400 border border-slate-600",
+    className: "bg-red-500/15 text-red-400 border border-red-500/30",
   },
 };
 

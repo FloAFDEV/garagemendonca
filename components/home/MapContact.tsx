@@ -34,20 +34,20 @@ export default function MapContact() {
 						delay={80}
 						className="lg:col-span-2 flex flex-col gap-5"
 					>
-						{/* Address */}
+						{/* Adresse */}
 						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow duration-300">
 							<div className="flex items-start gap-4">
-								<div className="w-11 h-11 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
+								<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
 									<MapPin
-										size={20}
+										size={18}
 										className="text-brand-500"
 									/>
 								</div>
 								<div>
-									<h3 className="font-semibold text-[#0f172a] mb-1">
+									<h3 className="ty-subheading text-[#0f172a] text-sm mb-1">
 										Adresse
 									</h3>
-									<p className="text-[#475569] text-sm leading-relaxed">
+									<p className="font-light text-[#475569] text-sm leading-relaxed">
 										6 Avenue de la Mouyssaguese
 										<br />
 										31280 Drémil-Lafage, France
@@ -56,51 +56,52 @@ export default function MapContact() {
 										href="https://maps.google.com/?q=Garage+Mendonça+Drémil-Lafage"
 										target="_blank"
 										rel="noopener noreferrer"
-										className="inline-flex items-center gap-1.5 text-brand-600 text-sm font-medium mt-3 hover:text-brand-700 transition-colors rounded"
+										className="inline-flex items-center gap-1.5 text-brand-600 text-xs font-normal mt-3 hover:text-brand-700 transition-colors rounded"
 									>
 										Ouvrir dans Google Maps
-										<ExternalLink size={13} />
+										<ExternalLink size={11} />
 									</a>
 								</div>
 							</div>
 						</div>
 
-						{/* Phone & Email */}
+						{/* Téléphone & Email */}
 						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow duration-300">
 							<div className="space-y-4">
 								<div className="flex items-center gap-4">
-									<div className="w-11 h-11 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
+									<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
 										<Phone
-											size={20}
+											size={18}
 											className="text-brand-500"
 										/>
 									</div>
 									<div>
-										<p className="text-xs text-[#475569] font-medium mb-0.5">
+										<p className="ty-label mb-1">
 											Téléphone
 										</p>
+										{/* Numéro = valeur clé → font-medium */}
 										<a
 											href="tel:0532002038"
-											className="text-[#0f172a] font-semibold hover:text-brand-600 transition-colors"
+											className="ty-value text-sm hover:text-brand-600 transition-colors"
 										>
 											05 32 00 20 38
 										</a>
 									</div>
 								</div>
 								<div className="flex items-center gap-4">
-									<div className="w-11 h-11 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
+									<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
 										<Mail
-											size={20}
+											size={18}
 											className="text-brand-500"
 										/>
 									</div>
 									<div>
-										<p className="text-xs text-[#475569] font-medium mb-0.5">
+										<p className="ty-label mb-1">
 											Email
 										</p>
 										<a
 											href="mailto:contact@garagemendonça.com"
-											className="text-[#0f172a] font-semibold hover:text-brand-600 transition-colors text-sm"
+											className="font-normal text-[#0f172a] hover:text-brand-600 transition-colors text-sm"
 										>
 											contact@garagemendonça.com
 										</a>
@@ -109,16 +110,16 @@ export default function MapContact() {
 							</div>
 						</div>
 
-						{/* Hours */}
+						{/* Horaires */}
 						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow duration-300">
 							<div className="flex items-center gap-3 mb-4">
-								<div className="w-11 h-11 bg-brand-50 rounded-xl flex items-center justify-center">
+								<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center">
 									<Clock
-										size={20}
+										size={18}
 										className="text-brand-500"
 									/>
 								</div>
-								<h3 className="font-semibold text-[#0f172a]">
+								<h3 className="ty-subheading text-[#0f172a] text-sm">
 									Horaires d&apos;ouverture
 								</h3>
 							</div>
@@ -128,11 +129,11 @@ export default function MapContact() {
 										key={day}
 										className="flex items-center justify-between text-sm py-2 border-b border-slate-100 last:border-0"
 									>
-										<span className="text-[#475569]">
+										<span className="font-light text-[#475569]">
 											{day}
 										</span>
 										<span
-											className={`font-medium ${
+											className={`text-xs font-medium ${
 												time === "Fermé"
 													? "text-red-500"
 													: "text-[#0f172a]"
@@ -146,7 +147,7 @@ export default function MapContact() {
 						</div>
 					</AnimateOnScroll>
 
-					{/* Map */}
+					{/* Carte */}
 					<AnimateOnScroll delay={160} className="lg:col-span-3">
 						<div className="rounded-2xl overflow-hidden border border-slate-200 shadow-card h-full min-h-[400px]">
 							<iframe
