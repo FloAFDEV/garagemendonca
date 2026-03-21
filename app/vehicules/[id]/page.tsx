@@ -1,3 +1,6 @@
+// Toujours rendu dynamiquement → voit les modifications admin en temps réel
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";

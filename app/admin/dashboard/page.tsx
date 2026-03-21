@@ -1,7 +1,11 @@
+"use client";
+
 import AdminLayout from "@/components/admin/AdminLayout";
+import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { vehicles } from "@/lib/data";
-import { Car, Eye, TrendingUp, Phone, Plus, ArrowRight } from "lucide-react";
+import { Car, TrendingUp, Mail, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import clsx from "clsx";
 
 /* Stats dynamiques depuis les vraies données */
 const stockCount = vehicles.filter((v) => v.status !== "sold").length;
@@ -18,18 +22,10 @@ const stats = [
 		bg: "bg-brand-500/10",
 	},
 	{
-		label: "Vues ce mois",
-		value: "1 284",
-		change: "+18%",
-		icon: Eye,
-		color: "text-blue-500",
-		bg: "bg-blue-500/10",
-	},
-	{
-		label: "Demandes recues",
+		label: "Demandes reçues",
 		value: "23",
 		change: "+5 cette semaine",
-		icon: Phone,
+		icon: Mail,
 		color: "text-emerald-500",
 		bg: "bg-emerald-500/10",
 	},
@@ -59,22 +55,33 @@ const recentMessages = [
 ];
 
 export default function DashboardPage() {
+	const t = useAdminTokens();
+
 	return (
 		<AdminLayout>
 			<div className="space-y-6">
 				{/* Welcome */}
 				<div className="flex items-center justify-between">
 					<div>
-						<h2 className="font-heading font-medium text-white text-2xl">
+						<h2
+							className={clsx(
+								"font-heading font-medium text-2xl",
+								t.txt,
+							)}
+						>
 							Bonjour
 						</h2>
-						<p className="text-dark-400 mt-1 text-sm">
-							Voici un apercu de votre activité aujourd&apos;hui.
+						<p className={clsx("mt-1 text-sm", t.txtMuted)}>
+							Gestion des annonces
 						</p>
 					</div>
 					<Link
 						href="/admin/vehicules/nouveau"
-						className="btn-secondary text-sm text-gray-500 hover:text-gray-700"
+						className={clsx(
+							"btn-secondary text-sm",
+							t.txtMuted,
+							"hover:text-brand-500",
+						)}
 					>
 						<Plus size={16} />
 						Ajouter un véhicule
@@ -87,22 +94,39 @@ export default function DashboardPage() {
 						({ label, value, change, icon: Icon, color, bg }) => (
 							<div
 								key={label}
-								className="bg-dark-900 rounded-2xl border border-dark-800 p-6"
+								className={clsx(
+									"rounded-2xl border p-6",
+									t.surface,
+									t.border,
+								)}
 							>
 								<div className="flex items-center justify-between mb-4">
 									<div
-										className={`w-10 h-10 ${bg} rounded-xl flex items-center justify-center`}
+										className={clsx(
+											"w-10 h-10 rounded-xl flex items-center justify-center",
+											bg,
+										)}
 									>
 										<Icon size={20} className={color} />
 									</div>
 								</div>
-								<div className="font-heading font-light text-white text-3xl mb-1 tracking-tight">
+								<div
+									className={clsx(
+										"font-heading font-light text-3xl mb-1 tracking-tight",
+										t.txt,
+									)}
+								>
 									{value}
 								</div>
-								<div className="text-dark-400 text-sm">
+								<div className={clsx("text-sm", t.txtMuted)}>
 									{label}
 								</div>
-								<div className="text-dark-500 text-xs mt-1">
+								<div
+									className={clsx(
+										"text-xs mt-1",
+										t.txtSubtle,
+									)}
+								>
 									{change}
 								</div>
 							</div>
@@ -112,9 +136,20 @@ export default function DashboardPage() {
 
 				<div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 					{/* Recent vehicles */}
-					<div className="xl:col-span-2 bg-dark-900 rounded-2xl border border-dark-800 p-6">
+					<div
+						className={clsx(
+							"xl:col-span-2 rounded-2xl border p-6",
+							t.surface,
+							t.border,
+						)}
+					>
 						<div className="flex items-center justify-between mb-6">
-							<h3 className="font-heading font-normal text-white tracking-wide">
+							<h3
+								className={clsx(
+									"font-heading font-normal tracking-wide",
+									t.txt,
+								)}
+							>
 								Véhicules en stock
 							</h3>
 							<Link
@@ -134,13 +169,26 @@ export default function DashboardPage() {
 							{vehicles.slice(0, 5).map((v) => (
 								<div
 									key={v.id}
-									className="flex items-center justify-between py-3 border-b border-dark-800 last:border-0"
+									className={clsx(
+										"flex items-center justify-between py-3 border-b last:border-0",
+										t.border,
+									)}
 								>
 									<div>
-										<div className="text-white font-medium text-sm">
+										<div
+											className={clsx(
+												"font-medium text-sm",
+												t.txt,
+											)}
+										>
 											{v.brand} {v.model}
 										</div>
-										<div className="text-dark-500 text-xs mt-0.5">
+										<div
+											className={clsx(
+												"text-xs mt-0.5",
+												t.txtSubtle,
+											)}
+										>
 											{v.year} ·{" "}
 											{v.mileage.toLocaleString("fr-FR")}{" "}
 											km · {v.fuel}
@@ -151,8 +199,12 @@ export default function DashboardPage() {
 											{v.price.toLocaleString("fr-FR")} €
 										</span>
 										<Link
-											href={`/admin/vehicules`}
-											className="text-dark-500 hover:text-white transition-colors"
+											href="/admin/vehicules"
+											className={clsx(
+												"transition-colors",
+												t.txtSubtle,
+												t.hoverTxt,
+											)}
 										>
 											<ArrowRight size={14} />
 										</Link>
@@ -163,29 +215,68 @@ export default function DashboardPage() {
 					</div>
 
 					{/* Recent messages */}
-					<div className="bg-dark-900 rounded-2xl border border-dark-800 p-6">
-						<h3 className="font-heading font-normal text-white tracking-wide mb-6">
+					<div
+						className={clsx(
+							"rounded-2xl border p-6",
+							t.surface,
+							t.border,
+						)}
+					>
+						<h3
+							className={clsx(
+								"font-heading font-normal tracking-wide mb-6",
+								t.txt,
+							)}
+						>
 							Derniers messages
 						</h3>
 						<div className="space-y-4">
 							{recentMessages.map(({ name, subject, time }) => (
 								<div
 									key={name}
-									className="flex items-start gap-3 py-3 border-b border-dark-800 last:border-0"
+									className={clsx(
+										"flex items-start gap-3 py-3 border-b last:border-0",
+										t.border,
+									)}
 								>
-									<div className="w-8 h-8 bg-dark-700 rounded-full flex items-center justify-center flex-shrink-0">
-										<span className="text-dark-300 text-xs font-medium">
+									<div
+										className={clsx(
+											"w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
+											t.surface3,
+										)}
+									>
+										<span
+											className={clsx(
+												"text-xs font-medium",
+												t.txtMuted,
+											)}
+										>
 											{name[0]}
 										</span>
 									</div>
 									<div className="flex-1 min-w-0">
-										<div className="text-white text-sm font-medium truncate">
+										<div
+											className={clsx(
+												"text-sm font-medium truncate",
+												t.txt,
+											)}
+										>
 											{name}
 										</div>
-										<div className="text-dark-500 text-xs mt-0.5 truncate">
+										<div
+											className={clsx(
+												"text-xs mt-0.5 truncate",
+												t.txtSubtle,
+											)}
+										>
 											{subject}
 										</div>
-										<div className="text-dark-600 text-xs mt-1">
+										<div
+											className={clsx(
+												"text-xs mt-1",
+												t.txtFaint,
+											)}
+										>
 											{time}
 										</div>
 									</div>

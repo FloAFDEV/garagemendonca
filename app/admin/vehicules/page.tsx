@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useDemoStore } from "@/lib/demoStore";
 import { Vehicle, VehicleStatus } from "@/types";
 import {
@@ -17,7 +18,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
+import clsx from "clsx";
 
+/* ── Fuel badge variants ─────────────────────────────────────── */
 const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
 	Essence: "orange",
 	Diesel: "gray",
@@ -26,29 +29,32 @@ const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
 	GPL: "blue",
 };
 
-/* ─── Status config ─────────────────────────────────────────────── */
-const STATUS_CONFIG: Record<
-	VehicleStatus,
-	{ label: string; className: string }
-> = {
-	published: {
-		label: "Publié",
-		className:
-			"bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
-	},
-	draft: {
-		label: "Brouillon",
-		className: "bg-dark-700 text-dark-400 border border-dark-600",
-	},
-	scheduled: {
-		label: "Programmé",
-		className: "bg-blue-500/15 text-blue-400 border border-blue-500/30",
-	},
-	sold: {
-		label: "Vendu",
-		className: "bg-red-500/15 text-red-400 border border-red-500/30",
-	},
-};
+/* ── Status config (thème-aware pour "draft") ────────────────── */
+function getStatusConfig(
+	isDark: boolean,
+): Record<VehicleStatus, { label: string; className: string }> {
+	return {
+		published: {
+			label: "Publié",
+			className:
+				"bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
+		},
+		draft: {
+			label: "Brouillon",
+			className: isDark
+				? "bg-dark-700 text-dark-400 border border-dark-600"
+				: "bg-slate-100 text-slate-500 border border-slate-300",
+		},
+		scheduled: {
+			label: "Programmé",
+			className: "bg-blue-500/15 text-blue-400 border border-blue-500/30",
+		},
+		sold: {
+			label: "Vendu",
+			className: "bg-red-500/15 text-red-400 border border-red-500/30",
+		},
+	};
+}
 
 const STATUS_ORDER: VehicleStatus[] = [
 	"published",
@@ -57,6 +63,7 @@ const STATUS_ORDER: VehicleStatus[] = [
 	"sold",
 ];
 
+/* ── StatusSelect ────────────────────────────────────────────── */
 function StatusSelect({
 	vehicleId,
 	current,
@@ -67,7 +74,8 @@ function StatusSelect({
 	onChange: (id: string, status: VehicleStatus) => void;
 }) {
 	const [open, setOpen] = useState(false);
-	const cfg = STATUS_CONFIG[current];
+	const t = useAdminTokens();
+	const cfg = getStatusConfig(t.isDark)[current];
 
 	return (
 		<div className="relative">
@@ -84,7 +92,13 @@ function StatusSelect({
 						className="fixed inset-0 z-10"
 						onClick={() => setOpen(false)}
 					/>
-					<div className="absolute left-0 top-full mt-1 z-20 bg-dark-800 border border-dark-700 rounded-xl shadow-xl overflow-hidden min-w-[130px]">
+					<div
+						className={clsx(
+							"absolute left-0 top-full mt-1 z-20 rounded-xl shadow-xl overflow-hidden min-w-[130px] border",
+							t.dropdownBg,
+							t.dropdownBorder,
+						)}
+					>
 						{STATUS_ORDER.map((s) => (
 							<button
 								key={s}
@@ -92,13 +106,15 @@ function StatusSelect({
 									onChange(vehicleId, s);
 									setOpen(false);
 								}}
-								className={`w-full text-left px-3 py-2 text-xs transition-colors hover:bg-dark-700 ${
+								className={clsx(
+									"w-full text-left px-3 py-2 text-xs transition-colors",
+									t.dropdownItemHover,
 									s === current
-										? "text-white font-medium"
-										: "text-dark-300"
-								}`}
+										? `${t.txt} font-medium`
+										: t.dropdownItemTxt,
+								)}
 							>
-								{STATUS_CONFIG[s].label}
+								{getStatusConfig(t.isDark)[s].label}
 								{s === current && " ✓"}
 							</button>
 						))}
@@ -109,10 +125,12 @@ function StatusSelect({
 	);
 }
 
+/* ── Page ────────────────────────────────────────────────────── */
 export default function AdminVehiclesPage() {
 	const { vehicles, updateVehicle, deleteVehicle } = useDemoStore();
 	const [search, setSearch] = useState("");
 	const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+	const t = useAdminTokens();
 
 	const filtered = vehicles.filter((v) =>
 		`${v.brand} ${v.model} ${v.year}`
@@ -132,36 +150,28 @@ export default function AdminVehiclesPage() {
 		});
 	};
 
+	/* ── Shared style helpers ─────────────────────────── */
+	const actionBtn = clsx(
+		"flex-1 flex items-center justify-center gap-1.5 p-2 rounded-lg transition-colors text-xs",
+		t.txtMuted,
+		t.hoverBgStrong,
+	);
+
 	return (
 		<AdminLayout>
 			<div className="space-y-6">
-				{/* ── Demo banner ────────────────────────────────────── */}
-				<div className="flex items-center gap-3 bg-amber-500/10 border border-amber-500/25 rounded-2xl px-4 py-3">
-					<FlaskConical
-						size={16}
-						className="text-amber-800 flex-shrink-0"
-					/>
-					<p className="text-amber-800 text-xs flex-1">
-						<span className="font-medium">Mode démo</span> — toutes
-						les modifications sont stockées localement et
-						réinitialisées à l'actualisation.
-					</p>
-					<button
-						onClick={() => window.location.reload()}
-						className="text-amber-500 hover:text-amber-200 transition-colors flex-shrink-0"
-						title="Réinitialiser les données"
-					>
-						<RefreshCw size={14} />
-					</button>
-				</div>
-
-				{/* ── Header ─────────────────────────────────────────── */}
+				{/* ── Header ───────────────────────────────────────── */}
 				<div className="flex items-center justify-between">
 					<div>
-						<h2 className="font-heading font-medium text-white text-2xl">
+						<h2
+							className={clsx(
+								"font-heading font-medium text-2xl",
+								t.txt,
+							)}
+						>
 							Véhicules
 						</h2>
-						<p className="text-dark-400 text-sm mt-1">
+						<p className={clsx("text-sm mt-1", t.txtMuted)}>
 							{vehicles.length} véhicule
 							{vehicles.length > 1 ? "s" : ""} au total
 						</p>
@@ -171,34 +181,43 @@ export default function AdminVehiclesPage() {
 						className="btn-primary text-sm !text-slate-50"
 					>
 						<Plus size={16} />
-						<span className="hidden sm:inline ">Ajouter</span>
+						<span className="hidden sm:inline">Ajouter</span>
 					</Link>
 				</div>
 
-				{/* ── Search ─────────────────────────────────────────── */}
+				{/* ── Search ───────────────────────────────────────── */}
 				<div className="relative">
 					<Search
 						size={16}
-						className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-500"
+						className={clsx(
+							"absolute left-4 top-1/2 -translate-y-1/2",
+							t.txtSubtle,
+						)}
 					/>
 					<input
 						type="text"
 						placeholder="Rechercher un véhicule…"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						className="w-full bg-dark-900 border border-dark-700 focus:border-brand-500 rounded-xl pl-11 pr-4 py-3 text-white placeholder-dark-500 outline-none transition-all text-sm"
+						className={clsx(
+							"w-full border focus:border-brand-500 rounded-xl pl-11 pr-4 py-3 outline-none transition-all text-sm",
+							t.inputBg,
+							t.inputBorder,
+							t.inputText,
+							t.inputPlaceholder,
+						)}
 					/>
 				</div>
 
-				{/* ── Mobile cards (< md) ────────────────────────────── */}
+				{/* ── Mobile cards (< md) ──────────────────────────── */}
 				<div className="md:hidden space-y-3">
 					{filtered.length === 0 ? (
 						<div className="text-center py-16">
 							<Car
 								size={40}
-								className="text-dark-700 mx-auto mb-3"
+								className={clsx("mx-auto mb-3", t.txtFaint)}
 							/>
-							<p className="text-dark-500 text-sm">
+							<p className={clsx("text-sm", t.txtSubtle)}>
 								Aucun véhicule trouvé
 							</p>
 						</div>
@@ -206,15 +225,29 @@ export default function AdminVehiclesPage() {
 						filtered.map((vehicle) => (
 							<div
 								key={vehicle.id}
-								className="bg-dark-900 rounded-2xl border border-dark-800 p-4 space-y-3"
+								className={clsx(
+									"rounded-2xl border p-4 space-y-3",
+									t.surface,
+									t.border,
+								)}
 							>
 								{/* Top row */}
 								<div className="flex items-start justify-between gap-3">
 									<div className="flex-1 min-w-0">
-										<p className="text-white font-normal text-sm truncate">
+										<p
+											className={clsx(
+												"font-normal text-sm truncate",
+												t.txt,
+											)}
+										>
 											{vehicle.brand} {vehicle.model}
 										</p>
-										<p className="text-dark-500 text-xs mt-0.5">
+										<p
+											className={clsx(
+												"text-xs mt-0.5",
+												t.txtSubtle,
+											)}
+										>
 											{vehicle.year} · {vehicle.color} ·{" "}
 											{vehicle.transmission}
 										</p>
@@ -234,7 +267,9 @@ export default function AdminVehiclesPage() {
 									>
 										{vehicle.fuel}
 									</Badge>
-									<span className="text-dark-400 text-xs">
+									<span
+										className={clsx("text-xs", t.txtMuted)}
+									>
 										{vehicle.mileage.toLocaleString(
 											"fr-FR",
 										)}{" "}
@@ -248,18 +283,26 @@ export default function AdminVehiclesPage() {
 								</div>
 
 								{/* Actions */}
-								<div className="flex items-center gap-2 pt-1 border-t border-dark-800">
+								<div
+									className={clsx(
+										"flex items-center gap-2 pt-1 border-t",
+										t.border,
+									)}
+								>
 									<Link
 										href={`/vehicules/${vehicle.id}`}
 										target="_blank"
-										className="flex-1 flex items-center justify-center gap-1.5 p-2 text-dark-400 hover:text-white hover:bg-dark-700 rounded-lg transition-colors text-xs"
+										className={clsx(actionBtn, t.hoverTxt)}
 									>
 										<Eye size={13} />
 										Voir
 									</Link>
 									<Link
 										href={`/admin/vehicules/${vehicle.id}/modifier`}
-										className="flex-1 flex items-center justify-center gap-1.5 p-2 text-dark-400 hover:text-blue-400 hover:bg-dark-700 rounded-lg transition-colors text-xs"
+										className={clsx(
+											actionBtn,
+											"hover:text-blue-500",
+										)}
 									>
 										<Pencil size={13} />
 										Modifier
@@ -278,7 +321,11 @@ export default function AdminVehiclesPage() {
 												onClick={() =>
 													setDeleteConfirm(null)
 												}
-												className="px-2 py-1.5 text-xs text-dark-500 hover:text-white rounded-lg transition-colors"
+												className={clsx(
+													"px-2 py-1.5 text-xs rounded-lg transition-colors",
+													t.txtSubtle,
+													t.hoverTxt,
+												)}
 											>
 												✕
 											</button>
@@ -288,7 +335,10 @@ export default function AdminVehiclesPage() {
 											onClick={() =>
 												setDeleteConfirm(vehicle.id)
 											}
-											className="flex-1 flex items-center justify-center gap-1.5 p-2 text-dark-400 hover:text-red-400 hover:bg-dark-700 rounded-lg transition-colors text-xs"
+											className={clsx(
+												actionBtn,
+												"hover:text-red-500",
+											)}
 										>
 											<Trash2 size={13} />
 											Supprimer
@@ -300,12 +350,18 @@ export default function AdminVehiclesPage() {
 					)}
 				</div>
 
-				{/* ── Desktop table (≥ md) ───────────────────────────── */}
-				<div className="hidden md:block bg-dark-900 rounded-2xl border border-dark-800 overflow-hidden">
+				{/* ── Desktop table (≥ md) ─────────────────────────── */}
+				<div
+					className={clsx(
+						"hidden md:block rounded-2xl border overflow-hidden",
+						t.surface,
+						t.border,
+					)}
+				>
 					<div className="overflow-x-auto">
 						<table className="w-full">
 							<thead>
-								<tr className="border-b border-dark-800">
+								<tr className={clsx("border-b", t.border)}>
 									{[
 										"Véhicule",
 										"Année",
@@ -317,7 +373,10 @@ export default function AdminVehiclesPage() {
 									].map((th) => (
 										<th
 											key={th}
-											className="text-left px-5 py-4 text-xs font-normal text-dark-400 uppercase tracking-widest"
+											className={clsx(
+												"text-left px-5 py-4 text-xs font-normal uppercase tracking-widest",
+												t.txtMuted,
+											)}
 										>
 											{th}
 										</th>
@@ -328,15 +387,29 @@ export default function AdminVehiclesPage() {
 								{filtered.map((vehicle) => (
 									<tr
 										key={vehicle.id}
-										className="border-b border-dark-800 last:border-0 hover:bg-dark-800/50 transition-colors"
+										className={clsx(
+											"border-b last:border-0 transition-colors",
+											t.border,
+											t.tableRowHover,
+										)}
 									>
 										<td className="px-5 py-4">
 											<div>
-												<div className="text-white font-normal text-sm">
+												<div
+													className={clsx(
+														"font-normal text-sm",
+														t.txt,
+													)}
+												>
 													{vehicle.brand}{" "}
 													{vehicle.model}
 												</div>
-												<div className="text-dark-500 text-xs mt-0.5">
+												<div
+													className={clsx(
+														"text-xs mt-0.5",
+														t.txtSubtle,
+													)}
+												>
 													{vehicle.color} ·{" "}
 													{vehicle.transmission}
 												</div>
@@ -354,7 +427,12 @@ export default function AdminVehiclesPage() {
 													)}
 												{vehicle.status === "sold" &&
 													vehicle.sold_at && (
-														<div className="text-dark-500 text-xs mt-1">
+														<div
+															className={clsx(
+																"text-xs mt-1",
+																t.txtSubtle,
+															)}
+														>
 															Vendu le{" "}
 															{new Date(
 																vehicle.sold_at,
@@ -365,10 +443,20 @@ export default function AdminVehiclesPage() {
 													)}
 											</div>
 										</td>
-										<td className="px-5 py-4 text-dark-300 text-sm">
+										<td
+											className={clsx(
+												"px-5 py-4 text-sm",
+												t.txtMuted,
+											)}
+										>
 											{vehicle.year}
 										</td>
-										<td className="px-5 py-4 text-dark-300 text-sm">
+										<td
+											className={clsx(
+												"px-5 py-4 text-sm",
+												t.txtMuted,
+											)}
+										>
 											{vehicle.mileage.toLocaleString(
 												"fr-FR",
 											)}{" "}
@@ -407,14 +495,24 @@ export default function AdminVehiclesPage() {
 												<Link
 													href={`/vehicules/${vehicle.id}`}
 													target="_blank"
-													className="p-2 text-dark-400 hover:text-white hover:bg-dark-700 rounded-lg transition-colors"
+													className={clsx(
+														"p-2 rounded-lg transition-colors",
+														t.txtMuted,
+														t.hoverBgStrong,
+														t.hoverTxt,
+													)}
 													title="Voir la fiche"
 												>
 													<Eye size={15} />
 												</Link>
 												<Link
 													href={`/admin/vehicules/${vehicle.id}/modifier`}
-													className="p-2 text-dark-400 hover:text-blue-400 hover:bg-dark-700 rounded-lg transition-colors"
+													className={clsx(
+														"p-2 rounded-lg transition-colors",
+														t.txtMuted,
+														t.hoverBgStrong,
+														"hover:text-blue-500",
+													)}
 													title="Modifier"
 												>
 													<Pencil size={15} />
@@ -438,7 +536,11 @@ export default function AdminVehiclesPage() {
 																	null,
 																)
 															}
-															className="px-2 py-1 text-xs text-dark-500 hover:text-white rounded-lg transition-colors"
+															className={clsx(
+																"px-2 py-1 text-xs rounded-lg transition-colors",
+																t.txtSubtle,
+																t.hoverTxt,
+															)}
 														>
 															Annuler
 														</button>
@@ -450,7 +552,12 @@ export default function AdminVehiclesPage() {
 																vehicle.id,
 															)
 														}
-														className="p-2 text-dark-400 hover:text-red-400 hover:bg-dark-700 rounded-lg transition-colors"
+														className={clsx(
+															"p-2 rounded-lg transition-colors",
+															t.txtMuted,
+															t.hoverBgStrong,
+															"hover:text-red-500",
+														)}
 														title="Supprimer"
 													>
 														<Trash2 size={15} />
@@ -460,7 +567,6 @@ export default function AdminVehiclesPage() {
 										</td>
 									</tr>
 								))}
-
 								{filtered.length === 0 && (
 									<tr>
 										<td
@@ -469,9 +575,17 @@ export default function AdminVehiclesPage() {
 										>
 											<Car
 												size={40}
-												className="text-dark-700 mx-auto mb-3"
+												className={clsx(
+													"mx-auto mb-3",
+													t.txtFaint,
+												)}
 											/>
-											<p className="text-dark-500 text-sm">
+											<p
+												className={clsx(
+													"text-sm",
+													t.txtSubtle,
+												)}
+											>
 												Aucun véhicule trouvé
 											</p>
 										</td>

@@ -123,7 +123,7 @@ export async function getVehicleStaticParams(): Promise<{ id: string }[]> {
    CREATE
 ────────────────────────────────────────── */
 
-export async function createVehicle(input: VehicleCreateInput): Promise<Vehicle> {
+export async function createVehicle(input: VehicleCreateInput & { id?: string }): Promise<Vehicle> {
   // Future Supabase:
   // const { data, error } = await supabase
   //   .from("vehicles")
@@ -135,7 +135,7 @@ export async function createVehicle(input: VehicleCreateInput): Promise<Vehicle>
 
   const vehicle: Vehicle = {
     ...input,
-    id: Date.now().toString(),
+    id: input.id ?? Date.now().toString(),
     createdAt: now(),
     updatedAt: now(),
   };

@@ -51,6 +51,8 @@ export interface AdminTokens {
 	checkboxUncheckedTxt: string;
 	checkboxUncheckedHover: string;
 	checkboxBoxBorder: string;
+	/* Divider */
+	dividerBg: string;
 }
 
 /* ─── Token factory ──────────────────────────────────────────── */
@@ -94,6 +96,8 @@ export function buildTokens(isDark: boolean): AdminTokens {
 			? "hover:border-dark-500 hover:text-dark-100"
 			: "hover:border-slate-400 hover:text-slate-800",
 		checkboxBoxBorder:      isDark ? "border-dark-500"        : "border-slate-400",
+		/* Divider */
+		dividerBg:              isDark ? "bg-dark-700"             : "bg-slate-200",
 	};
 }
 

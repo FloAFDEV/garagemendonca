@@ -1,3 +1,6 @@
+// Toujours rendu dynamiquement → voit immédiatement les véhicules ajoutés en admin
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";

@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { OPTION_CATEGORIES, countActiveOptions } from "@/lib/vehicleOptions";
 import type { VehicleOptions } from "@/types";
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function VehicleOptionsForm({ value, onChange }: Props) {
+  const t = useAdminTokens();
   const activeCount = countActiveOptions(value);
 
   function toggle(key: keyof VehicleOptions, checked: boolean) {
@@ -23,6 +25,17 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
   function setAutresOptions(text: string) {
     onChange({ ...value, autres_options: text || undefined });
   }
+
+  const extraInputClass = [
+    "w-20",
+    t.inputBg,
+    "border",
+    t.dropdownBorder,
+    "focus:border-brand-500",
+    "rounded-lg px-2.5 py-1.5",
+    t.inputText,
+    "text-xs outline-none transition-colors",
+  ].join(" ");
 
   return (
     <div className="space-y-8">
@@ -52,13 +65,13 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
           <div key={category.id} className="space-y-4">
             {/* Titre catégorie */}
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 bg-dark-700 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className={`w-7 h-7 ${t.surface3} rounded-lg flex items-center justify-center flex-shrink-0`}>
                 <Icon size={14} className="text-brand-400" />
               </div>
-              <h4 className="font-heading font-normal text-white text-sm tracking-widest">
+              <h4 className={`font-heading font-normal ${t.txt} text-sm tracking-widest`}>
                 {category.label}
               </h4>
-              <div className="flex-1 h-px bg-dark-700" />
+              <div className={`flex-1 h-px ${t.dividerBg}`} />
             </div>
 
             {/* Grille d'options */}
@@ -69,11 +82,12 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
                   <div key={opt.key} className="space-y-2">
                     {/* Checkbox ligne */}
                     <label
-                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all select-none ${
+                      className={[
+                        "flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all select-none",
                         isChecked
-                          ? "bg-brand-500/10 border-brand-500/30 text-white"
-                          : "bg-dark-800 border-dark-700 text-dark-300 hover:border-dark-600 hover:text-dark-200"
-                      }`}
+                          ? `bg-brand-500/10 border-brand-500/30 ${t.txt}`
+                          : `${t.checkboxUncheckedBg} ${t.checkboxUncheckedBorder} ${t.checkboxUncheckedTxt} ${t.checkboxUncheckedHover}`,
+                      ].join(" ")}
                     >
                       <input
                         type="checkbox"
@@ -83,11 +97,12 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
                       />
                       {/* Custom checkbox */}
                       <span
-                        className={`w-4 h-4 flex-shrink-0 rounded border-2 flex items-center justify-center transition-colors ${
+                        className={[
+                          "w-4 h-4 flex-shrink-0 rounded border-2 flex items-center justify-center transition-colors",
                           isChecked
                             ? "bg-brand-500 border-brand-500"
-                            : "border-dark-500"
-                        }`}
+                            : t.checkboxBoxBorder,
+                        ].join(" ")}
                         aria-hidden="true"
                       >
                         {isChecked && (
@@ -110,7 +125,7 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
                     {/* Champ extra (ex: taille jantes) */}
                     {isChecked && opt.extraField && (
                       <div className="ml-3 flex items-center gap-2">
-                        <label className="text-xs text-dark-400 font-medium whitespace-nowrap">
+                        <label className={`text-xs ${t.txtMuted} font-medium whitespace-nowrap`}>
                           {opt.extraField.label} :
                         </label>
                         <div className="flex items-center gap-1.5">
@@ -124,11 +139,11 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
                             onChange={(e) =>
                               setExtra(opt.extraField!.key, e.target.value)
                             }
-                            className="w-20 bg-dark-800 border border-dark-600 focus:border-brand-500 rounded-lg px-2.5 py-1.5 text-white text-xs outline-none transition-colors"
+                            className={extraInputClass}
                             placeholder={opt.extraField.min?.toString()}
                           />
                           {opt.extraField.unit && (
-                            <span className="text-xs text-dark-500 font-medium">
+                            <span className={`text-xs ${t.txtSubtle} font-medium`}>
                               {opt.extraField.unit}
                             </span>
                           )}
@@ -146,22 +161,32 @@ export default function VehicleOptionsForm({ value, onChange }: Props) {
       {/* Options libres */}
       <div className="space-y-4">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-dark-700 rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className={`w-7 h-7 ${t.surface3} rounded-lg flex items-center justify-center flex-shrink-0`}>
             <span className="text-brand-400 text-sm font-medium">+</span>
           </div>
-          <h4 className="font-heading font-normal text-white text-sm tracking-widest">
+          <h4 className={`font-heading font-normal ${t.txt} text-sm tracking-widest`}>
             Options non répertoriées
           </h4>
-          <div className="flex-1 h-px bg-dark-700" />
+          <div className={`flex-1 h-px ${t.dividerBg}`} />
         </div>
         <textarea
           rows={3}
           placeholder="Ex : Pack hiver, échappement sport, peinture métallisée Midnight Blue…"
           value={value.autres_options ?? ""}
           onChange={(e) => setAutresOptions(e.target.value)}
-          className="w-full bg-dark-800 border border-dark-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl px-4 py-3 text-white placeholder-dark-500 outline-none transition-all text-sm resize-none"
+          className={[
+            "w-full",
+            t.inputBg,
+            "border",
+            t.inputBorder,
+            "focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
+            "rounded-xl px-4 py-3",
+            t.inputText,
+            t.inputPlaceholder,
+            "outline-none transition-all text-sm resize-none",
+          ].join(" ")}
         />
-        <p className="text-dark-500 text-xs">
+        <p className={`${t.txtSubtle} text-xs`}>
           Séparez plusieurs options par une virgule ou un saut de ligne.
         </p>
       </div>

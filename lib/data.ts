@@ -100,6 +100,50 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 			"Contrôle technique": "À jour",
 			Garantie: "6 mois complète",
 		},
+		/* ── Options structurées (nouveau système) ──────────────────────────────
+		 * Mappées depuis features.Options ci-dessus.
+		 * Utilisées par VehicleOptionsDisplay côté public.
+		 * ─────────────────────────────────────────────────────────────────── */
+		options: {
+			// Sécurité
+			abs:                     true,
+			esp:                     true,
+			airbags:                 true,
+			airbags_lateraux:        true,
+			aide_freinage_urgence:   true,  // DSBS
+			isofix:                  true,
+			// Aides à la conduite
+			regulateur_adaptatif:    true,  // ACC
+			regulateur_vitesse:      true,
+			freinage_automatique:    true,  // DSBS
+			alerte_franchissement_ligne: true,
+			feux_automatiques:       true,  // passage code/phare auto + détecteur luminosité
+			camera_recul:            true,
+			// Extérieur
+			jantes_alliage:          true,
+			taille_jantes:           16,
+			vitres_surteintees:      true,
+			feux_led:                true,  // projecteurs LED + feux de jour LED
+			retroviseurs_electriques: true,
+			retroviseurs_degivrants: true,
+			// Intérieur & confort
+			climatisation_automatique: true,
+			sieges_chauffants:       true,
+			volant_cuir:             true,
+			volant_reglable:         true,
+			demarrage_sans_cle:      true,
+			ouverture_sans_cle:      true,
+			vitres_electriques_avant: true,
+			vitres_electriques_arriere: true,
+			// Multimédia
+			ecran_tactile:           true,
+			bluetooth:               true,
+			usb:                     true,
+			prise_12v:               true,
+			// Motorisation
+			boite_automatique:       true,
+			start_stop:              true,
+		},
 		images: [
 			"https://www.garagemendonca.com/public/img/big/20260313134541Copierjpg_69b7b050aaa46.jpg",
 			"https://www.garagemendonca.com/public/img/big/20260313135600Copierjpg_69b7b0500daac.jpg",

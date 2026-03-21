@@ -21,7 +21,10 @@ interface VehicleGalleryProps {
    – Thumbnails : scroll horizontal mobile / grid desktop
    – Lightbox via portal (Lightbox.tsx)
 ───────────────────────────────────────────────────────────── */
-export default function VehicleGallery({ images, vehicleName }: VehicleGalleryProps) {
+export default function VehicleGallery({
+	images,
+	vehicleName,
+}: VehicleGalleryProps) {
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -54,7 +57,11 @@ export default function VehicleGallery({ images, vehicleName }: VehicleGalleryPr
 		const thumbs = thumbsRef.current;
 		if (!thumbs) return;
 		const active = thumbs.children[activeIdx] as HTMLElement | undefined;
-		active?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+		active?.scrollIntoView({
+			behavior: "smooth",
+			block: "nearest",
+			inline: "center",
+		});
 	}, [activeIdx]);
 
 	/* ── Imperative scroll ──────────────────────────────────── */
@@ -84,7 +91,6 @@ export default function VehicleGallery({ images, vehicleName }: VehicleGalleryPr
 	return (
 		<>
 			<div className="space-y-3 -mx-4 sm:mx-0">
-
 				{/* ── SLIDER ─────────────────────────────────────── */}
 				{/*
 				  Outer div : sizing + overflow:hidden (clips rounded corners)
@@ -164,11 +170,9 @@ export default function VehicleGallery({ images, vehicleName }: VehicleGalleryPr
 							className="absolute bottom-3 left-1/2 -translate-x-1/2 sm:hidden pointer-events-none flex items-center gap-1.5 bg-black/45 backdrop-blur-sm rounded-full px-3 py-1"
 							aria-hidden="true"
 						>
-							<ChevronLeft size={11} className="text-white/70" />
 							<span className="text-white/70 text-[10px] font-light tracking-wide">
-								glisser
+								Plein écran
 							</span>
-							<ChevronRight size={11} className="text-white/70" />
 						</div>
 					)}
 
@@ -191,7 +195,10 @@ export default function VehicleGallery({ images, vehicleName }: VehicleGalleryPr
 						<>
 							<button
 								type="button"
-								onClick={(e) => { e.stopPropagation(); prev(); }}
+								onClick={(e) => {
+									e.stopPropagation();
+									prev();
+								}}
 								className={[
 									"absolute left-3 top-1/2 -translate-y-1/2 z-10",
 									"flex items-center justify-center rounded-full transition-all active:scale-95",
@@ -201,11 +208,18 @@ export default function VehicleGallery({ images, vehicleName }: VehicleGalleryPr
 								].join(" ")}
 								aria-label="Photo précédente"
 							>
-								<ChevronLeft size={22} className="text-white sm:text-slate-900" aria-hidden="true" />
+								<ChevronLeft
+									size={22}
+									className="text-white sm:text-slate-900"
+									aria-hidden="true"
+								/>
 							</button>
 							<button
 								type="button"
-								onClick={(e) => { e.stopPropagation(); next(); }}
+								onClick={(e) => {
+									e.stopPropagation();
+									next();
+								}}
 								className={[
 									"absolute right-3 top-1/2 -translate-y-1/2 z-10",
 									"flex items-center justify-center rounded-full transition-all active:scale-95",
@@ -215,7 +229,11 @@ export default function VehicleGallery({ images, vehicleName }: VehicleGalleryPr
 								].join(" ")}
 								aria-label="Photo suivante"
 							>
-								<ChevronRight size={22} className="text-white sm:text-slate-900" aria-hidden="true" />
+								<ChevronRight
+									size={22}
+									className="text-white sm:text-slate-900"
+									aria-hidden="true"
+								/>
 							</button>
 						</>
 					)}
