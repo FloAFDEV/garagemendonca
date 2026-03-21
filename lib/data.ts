@@ -216,35 +216,69 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 	{
 		id: "5",
 		garageId: "garage-mendonça",
-		brand: "Opel",
-		model: "Agila",
-		year: 2016,
-		mileage: 72000,
+		brand: "Mitsubishi",
+		model: "Space Star",
+		year: 2014,
+		mileage: 79900,
 		fuel: "Essence",
-		price: 7200,
+		price: 9990,
 		transmission: "Automatique",
-		power: 85,
-		color: "Bleu",
+		power: 80,
+		color: "Non précisé",
 		doors: 5,
 		featured: false,
 		critAir: "2",
 		status: "published",
 		createdAt: "2026-02-25",
 		updatedAt: "2026-02-25T00:00:00Z",
-		description:
-			"Opel Agila 1.2i 85 ch Edition, boîte automatique, 1ère main. Véhicule bien entretenu, révisé par notre atelier avant mise en vente. Parfaite pour les déplacements quotidiens. Garantie 6 à 12 mois km illimités.",
+		description: `
+Mitsubishi Space Star 1.2i 80 ch TOP / Boîte Automatique & 1ère Main !
+
+Notre enseigne met en vente ce magnifique véhicule qui possède 79 900 kms du 14/10/2014. Il possède la finition TOP. Moteur 80 ch (5cv) associé à une boîte automatique.
+
+Ce véhicule bénéficie d'une garantie de 6 mois complète, couvrant tous les composants mécaniques et électroniques, comme un véhicule neuf.
+
+Carrosserie : Bon état général. Photos supplémentaires et vidéo en cours de préparation.
+
+Autres notes : Véhicule en cours de roulage, idéal pour la ville et jeunes permis en boîte automatique.
+	`,
 		features: {
-			Finition: "Edition",
-			Motorisation: "1.2i 85 ch",
-			Provenance: "Francaise",
-			"Nb propriétaires": "1",
+			Finition: "TOP",
+			Motorisation: "1.2i 80 ch",
+			Options: [
+				"Jantes alu 15P",
+				"Vitres électriques",
+				"Ouverture / fermeture centralisée",
+				"Démarrage sans clé",
+				"Radio CD MP3",
+				"Régulateur de vitesse",
+				"Détecteur de luminosité",
+				"Détecteur de pluie",
+				"Kit main libre Bluetooth",
+				"Sièges chauffants",
+				"Climatisation automatique",
+				"Rétroviseurs électriques",
+				"Commande au volant",
+				"Boîte automatique",
+				"Prise 12V",
+				"Portes gobelets",
+				"Sièges rabattables 1/3 2/3",
+			],
+			Provenance: "Non précisé",
 			"Carnet d'entretien": "À jour",
 			"Contrôle technique": "À jour",
-			Garantie: "6 à 12 mois km illimités",
+			Garantie: "6 mois complète",
 		},
 		images: [
-			"https://images.unsplash.com/photo-1617469767807-42f8d20f0be8?w=800&q=80",
-			"https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80",
+			"https://www.garagemendonca.com/public/img/big/20251031153752Copierjpg_6904f66ac72c3.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031154515Copierjpg_6904f67d5ad63.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031154945Copierjpg_6904f67db91b5.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031154558Copierjpg_6904f67deabc4.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031153950Copierjpg_6904f67d3a012.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031155012Copierjpg_6904f67d7c715.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031153647Copierjpg_6904f66a8b49d.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031154750Copierjpg_6904f66b3be56.jpg",
+			"https://www.garagemendonca.com/public/img/big/20251031154413Copierjpg_6904f66b07179.jpg",
 		],
 	},
 	{
