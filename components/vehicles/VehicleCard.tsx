@@ -63,7 +63,7 @@ export default function VehicleCard({
 				</div>
 				{vehicle.featured && vehicle.status !== "sold" && (
 					<div className="absolute top-2.5 left-2.5">
-						<Badge variant="orange">
+						<Badge variant="gray">
 							<Star
 								size={10}
 								className="fill-current"
