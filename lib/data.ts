@@ -60,41 +60,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 		features: {
 			Finition: "Comfort+",
 			Motorisation: "1.0i 110 ch BoosterJet",
-			Options: [
-				"Régulateur de vitesse adaptatif (ACC)",
-				"Freinage actif d'urgence (DSBS)",
-				"Alerte de franchissement de ligne",
-				"Gestion automatique des feux de route : Passage code/phare automatique",
-				'Écran tactile 7" couleur',
-				"Caméra de recul",
-				"Accès et démarrage sans clé (Keyless)",
-				"Climatisation automatique",
-				"Sièges avant chauffants",
-				"Volant cuir multifonctions réglable",
-				"Projecteurs LED",
-				'Jantes alliage 16" polies / bi-ton',
-				"Vitres arrière et lunette surteintées",
-				"Feux de jour à LED",
-				"Roue de secours galette",
-				"Feux de jour",
-				"Anti-brouillard avant",
-				"4 vitres électriques",
-				"Réglage des rétroviseurs électriques",
-				"Commande au volant",
-				"Régulateur de vitesse",
-				"Climatisation automatique",
-				"Détecteur de luminosité",
-				"Sièges chauffants",
-				"Ouverture / fermeture sans clé",
-				"Démarrage sans clé",
-				"Radio CD",
-				"Prise USB",
-				"Prise 12V",
-				"Rétroviseurs dégivrants",
-				"Sièges rabattables 1/3 2/3",
-				"Sièges Isofix",
-				"Tapis de sol",
-			],
+
 			Provenance: "Francaise",
 			"Carnet d'entretien": "À jour",
 			"Contrôle technique": "À jour",
@@ -106,43 +72,43 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 		 * ─────────────────────────────────────────────────────────────────── */
 		options: {
 			// Sécurité
-			abs:                     true,
-			esp:                     true,
-			airbags:                 true,
-			airbags_lateraux:        true,
-			aide_freinage_urgence:   true,  // DSBS
-			isofix:                  true,
+			abs: true,
+			esp: true,
+			airbags: true,
+			airbags_lateraux: true,
+			aide_freinage_urgence: true, // DSBS
+			isofix: true,
 			// Aides à la conduite
-			regulateur_adaptatif:    true,  // ACC
-			regulateur_vitesse:      true,
-			freinage_automatique:    true,  // DSBS
+			regulateur_adaptatif: true, // ACC
+			regulateur_vitesse: true,
+			freinage_automatique: true, // DSBS
 			alerte_franchissement_ligne: true,
-			feux_automatiques:       true,  // passage code/phare auto + détecteur luminosité
-			camera_recul:            true,
+			feux_automatiques: true, // passage code/phare auto + détecteur luminosité
+			camera_recul: true,
 			// Extérieur
-			jantes_alliage:          true,
-			taille_jantes:           16,
-			vitres_surteintees:      true,
-			feux_led:                true,  // projecteurs LED + feux de jour LED
+			jantes_alliage: true,
+			taille_jantes: 16,
+			vitres_surteintees: true,
+			feux_led: true, // projecteurs LED + feux de jour LED
 			retroviseurs_electriques: true,
 			retroviseurs_degivrants: true,
 			// Intérieur & confort
 			climatisation_automatique: true,
-			sieges_chauffants:       true,
-			volant_cuir:             true,
-			volant_reglable:         true,
-			demarrage_sans_cle:      true,
-			ouverture_sans_cle:      true,
+			sieges_chauffants: true,
+			volant_cuir: true,
+			volant_reglable: true,
+			demarrage_sans_cle: true,
+			ouverture_sans_cle: true,
 			vitres_electriques_avant: true,
 			vitres_electriques_arriere: true,
 			// Multimédia
-			ecran_tactile:           true,
-			bluetooth:               true,
-			usb:                     true,
-			prise_12v:               true,
+			ecran_tactile: true,
+			bluetooth: true,
+			usb: true,
+			prise_12v: true,
 			// Motorisation
-			boite_automatique:       true,
-			start_stop:              true,
+			boite_automatique: true,
+			start_stop: true,
 		},
 		images: [
 			"https://www.garagemendonca.com/public/img/big/20260313134541Copierjpg_69b7b050aaa46.jpg",
@@ -289,29 +255,38 @@ Autres notes : Véhicule en cours de roulage, idéal pour la ville et jeunes per
 		features: {
 			Finition: "TOP",
 			Motorisation: "1.2i 80 ch",
-			Options: [
-				"Jantes alu 15P",
-				"Vitres électriques",
-				"Ouverture / fermeture centralisée",
-				"Démarrage sans clé",
-				"Radio CD MP3",
-				"Régulateur de vitesse",
-				"Détecteur de luminosité",
-				"Détecteur de pluie",
-				"Kit main libre Bluetooth",
-				"Sièges chauffants",
-				"Climatisation automatique",
-				"Rétroviseurs électriques",
-				"Commande au volant",
-				"Boîte automatique",
-				"Prise 12V",
-				"Portes gobelets",
-				"Sièges rabattables 1/3 2/3",
-			],
 			Provenance: "Non précisé",
 			"Carnet d'entretien": "À jour",
 			"Contrôle technique": "À jour",
 			Garantie: "6 mois complète",
+		},
+		/* ── Options structurées (nouveau système) ──────────────────────────────
+		 * Mappées depuis la fiche d'origine (tableau PascalCase converti en snake_case).
+		 * Utilisées par VehicleOptionsDisplay côté public.
+		 * ─────────────────────────────────────────────────────────────────── */
+		options: {
+			// Extérieur
+			jantes_alliage: true,
+			feux_automatiques: true,       // DetecteurDeLuminosite
+			retroviseurs_electriques: true,
+			// Intérieur & Confort
+			vitres_electriques_avant: true,
+			vitres_electriques_arriere: true,
+			fermeture_centralisee: true,
+			ouverture_sans_cle: true,
+			demarrage_sans_cle: true,
+			climatisation_automatique: true,
+			sieges_chauffants: true,
+			commande_au_volant: true,
+			sieges_rabattables: true,
+			essuie_glaces_automatiques: true, // DetecteurDePluie
+			// Multimédia
+			bluetooth: true,               // RadioCDMP3 + KitMainLibreBluetooth
+			prise_12v: true,
+			// Aides à la conduite
+			regulateur_vitesse: true,
+			// Motorisation
+			boite_automatique: true,
 		},
 		images: [
 			"https://www.garagemendonca.com/public/img/big/20251031153752Copierjpg_6904f66ac72c3.jpg",

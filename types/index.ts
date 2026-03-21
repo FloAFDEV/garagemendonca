@@ -48,6 +48,8 @@ export interface VehicleOptions {
   demarrage_sans_cle?: boolean;
   coffre_electrique?: boolean;
   ouverture_sans_cle?: boolean;
+  commande_au_volant?: boolean;
+  sieges_rabattables?: boolean;
 
   // ── MULTIMÉDIA & TECHNOLOGIE ────────────────
   ecran_tactile?: boolean;

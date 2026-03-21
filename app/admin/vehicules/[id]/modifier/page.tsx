@@ -20,90 +20,9 @@ import {
 	Star,
 } from "lucide-react";
 import Link from "next/link";
+import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
 
-// ── Static data (same as nouveau) ─────────────────────────────────
-
-const BRANDS_MODELS: Record<string, string[]> = {
-	Peugeot: [
-		"108",
-		"208",
-		"308",
-		"408",
-		"508",
-		"2008",
-		"3008",
-		"5008",
-		"Rifter",
-		"Partner",
-	],
-	Renault: [
-		"Twingo",
-		"Clio",
-		"Mégane",
-		"Captur",
-		"Kadjar",
-		"Scénic",
-		"Talisman",
-		"Zoé",
-		"Kangoo",
-	],
-	Citroën: [
-		"C1",
-		"C3",
-		"C4",
-		"C5 X",
-		"Berlingo",
-		"C3 Aircross",
-		"C5 Aircross",
-	],
-	Volkswagen: [
-		"Polo",
-		"Golf",
-		"ID.3",
-		"T-Cross",
-		"T-Roc",
-		"Tiguan",
-		"Passat",
-	],
-	Toyota: ["Aygo X", "Yaris", "Yaris Cross", "Corolla", "C-HR", "RAV4"],
-	BMW: [
-		"Série 1",
-		"Série 2",
-		"Série 3",
-		"Série 4",
-		"Série 5",
-		"X1",
-		"X2",
-		"X3",
-		"X5",
-	],
-	Mercedes: [
-		"Classe A",
-		"Classe B",
-		"Classe C",
-		"Classe E",
-		"GLA",
-		"GLB",
-		"GLC",
-	],
-	Audi: ["A1", "A3", "A4", "A5", "A6", "Q2", "Q3", "Q5", "Q7"],
-	Ford: ["Fiesta", "Focus", "Puma", "Kuga", "Mustang Mach-E"],
-	Opel: ["Corsa", "Astra", "Crossland", "Grandland", "Mokka"],
-	Dacia: ["Sandero", "Duster", "Logan", "Spring", "Jogger"],
-	Nissan: ["Micra", "Juke", "Qashqai", "X-Trail", "Leaf"],
-	Hyundai: ["i10", "i20", "i30", "Tucson", "Kona"],
-	Kia: ["Picanto", "Ceed", "Stonic", "Sportage", "EV6"],
-	Seat: ["Ibiza", "Leon", "Arona", "Ateca", "Tarraco"],
-	Skoda: ["Fabia", "Octavia", "Karoq", "Kodiaq", "Superb"],
-	Fiat: ["500", "Panda", "Tipo", "500X"],
-	Volvo: ["V60", "V90", "XC40", "XC60", "XC90"],
-	Tesla: ["Model 3", "Model S", "Model X", "Model Y"],
-	Suzuki: ["Swift", "Vitara", "SX4 S-Cross", "Jimny"],
-	Mini: ["Mini One", "Mini Cooper", "Countryman", "Clubman"],
-	Autre: [],
-};
-
-const ALL_BRANDS = Object.keys(BRANDS_MODELS).sort();
+// ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
 
 const COLORS = [
 	"Blanc",

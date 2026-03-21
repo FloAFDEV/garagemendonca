@@ -159,6 +159,8 @@ export const OPTION_CATEGORIES: OptionCategory[] = [
       { key: "demarrage_sans_cle", label: "Démarrage sans clé (keyless start)" },
       { key: "coffre_electrique", label: "Coffre électrique" },
       { key: "ouverture_sans_cle", label: "Ouverture sans clé (keyless entry)" },
+      { key: "commande_au_volant", label: "Commandes au volant" },
+      { key: "sieges_rabattables", label: "Sièges arrière rabattables (1/3 - 2/3)" },
     ],
   },
 
