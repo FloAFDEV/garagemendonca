@@ -34,7 +34,6 @@ export default function Footer() {
 			{/* Corps principal */}
 			<Container className="py-16">
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-
 					{/* Colonne 1 — Marque */}
 					<div className="lg:col-span-1">
 						<Link
@@ -54,7 +53,13 @@ export default function Footer() {
 									aria-hidden="true"
 								>
 									<path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3" />
-									<rect x="9" y="11" width="14" height="10" rx="2" />
+									<rect
+										x="9"
+										y="11"
+										width="14"
+										height="10"
+										rx="2"
+									/>
 									<circle cx="12" cy="21" r="1" />
 									<circle cx="20" cy="21" r="1" />
 								</svg>
@@ -237,7 +242,8 @@ export default function Footer() {
 				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-700">
 					<p>
 						© {new Date().getFullYear()} Garage Auto Mendonça · SARL
-						· SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700 €
+						· SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700
+						€
 					</p>
 					<div className="flex items-center gap-5">
 						<Link
@@ -264,7 +270,12 @@ export default function Footer() {
 						    Quasi-invisible au repos (text-slate-700).
 						    Glow argent + icône révélés au hover/focus.
 						────────────────────────────────────────────── */}
-						<span className="text-slate-800 select-none" aria-hidden="true">·</span>
+						<span
+							className="text-slate-800 select-none"
+							aria-hidden="true"
+						>
+							·
+						</span>
 						<Link
 							href="/admin/vehicules"
 							className={[
@@ -285,10 +296,10 @@ export default function Footer() {
 						>
 							<Lock
 								size={9}
-								className="opacity-40 group-hover:opacity-80 group-focus-visible:opacity-80 transition-opacity duration-300 flex-shrink-0"
+								className="text-red-500 group-focus-visible:opacity-80 transition-opacity duration-300 flex-shrink-0"
 								aria-hidden="true"
 							/>
-							<span>Démo Admin</span>
+							<span className="text-red-500">Démo Admin</span>
 						</Link>
 					</div>
 				</Container>
