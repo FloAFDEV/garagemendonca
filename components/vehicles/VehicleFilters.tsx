@@ -271,22 +271,28 @@ export default function VehicleFilters({
 						</ul>
 					</Dropdown>
 
-					{/* Carburants disponibles */}
-					<div className="flex items-center gap-2">
+					{/* Sélect motorisation */}
+					<select
+						value={filters.fuels[0] ?? ""}
+						onChange={(e) =>
+							set(
+								"fuels",
+								e.target.value ? [e.target.value] : [],
+							)
+						}
+						className={`bg-white border rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 ring-brand-500/20 outline-none appearance-none transition-all ${
+							filters.fuels.length > 0
+								? "border-brand-500 text-brand-600"
+								: "border-slate-200 text-slate-700"
+						}`}
+					>
+						<option value="">Toutes les motorisations</option>
 						{availableFuels.map((fuel) => (
-							<button
-								key={fuel}
-								onClick={() => toggleFuel(fuel)}
-								className={`px-4 py-2.5 rounded-xl border text-xs font-medium uppercase tracking-wider transition-all ${
-									filters.fuels.includes(fuel)
-										? "bg-slate-800 text-white border-slate-800"
-										: "bg-white text-slate-500 border-slate-200 hover:border-slate-400"
-								}`}
-							>
+							<option key={fuel} value={fuel}>
 								{fuel}
-							</button>
+							</option>
 						))}
-					</div>
+					</select>
 
 					<div className="flex-1 min-w-[140px]">
 						<select
