@@ -5,6 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { useDemoStore } from "@/lib/demoStore";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
+import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import type { VehicleOptions } from "@/types";
 import type { Vehicle } from "@/types";
@@ -297,23 +298,6 @@ export default function EditVehiclePage({
 		});
 	}, []);
 
-	const removeImage = (idx: number) => {
-		setImages((p) => {
-			const next = [...p];
-			const removed = next.splice(idx, 1)[0];
-			if (removed.startsWith("blob:")) URL.revokeObjectURL(removed);
-			return next;
-		});
-	};
-
-	const setMainImage = (idx: number) => {
-		if (idx === 0) return;
-		setImages((p) => {
-			const next = [...p];
-			const [chosen] = next.splice(idx, 1);
-			return [chosen, ...next];
-		});
-	};
 
 	// ── Validation ───────────────────────────────────────────────────
 
@@ -883,49 +867,10 @@ export default function EditVehiclePage({
 							/>
 						</div>
 						{images.length > 0 ? (
-							<div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-								{images.map((img, idx) => (
-									<div
-										key={idx}
-										className={`relative aspect-video ${t.surface2} rounded-xl overflow-hidden group ${idx === 0 ? "ring-2 ring-brand-500" : ""}`}
-									>
-										{/* eslint-disable-next-line @next/next/no-img-element */}
-										<img
-											src={img}
-											alt={`Photo ${idx + 1}`}
-											className="w-full h-full object-cover"
-											loading={
-												idx === 0 ? "eager" : "lazy"
-											}
-										/>
-										<button
-											type="button"
-											onClick={() => removeImage(idx)}
-											className="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-10"
-										>
-											<X
-												size={12}
-												className="text-white"
-											/>
-										</button>
-										{idx === 0 ? (
-											<div className="absolute bottom-2 left-2 bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-												★ Principale
-											</div>
-										) : (
-											<button
-												type="button"
-												onClick={() =>
-													setMainImage(idx)
-												}
-												className="absolute bottom-2 left-2 bg-dark-900/80 hover:bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-all"
-											>
-												Définir principale
-											</button>
-										)}
-									</div>
-								))}
-							</div>
+							<SortablePhotoGrid
+								images={images}
+								onChange={setImages}
+							/>
 						) : (
 							<button
 								type="button"
