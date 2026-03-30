@@ -13,13 +13,16 @@ const guarantees = [
 ];
 
 export default function FeaturedVehicles() {
-	const latest = [...vehicles]
-		.sort((a, b) =>
-			(b.createdAt || "1900-01-01").localeCompare(
-				a.createdAt || "1900-01-01",
-			),
-		)
-		.slice(0, 8);
+	const featured = vehicles.filter((v) => v.featured);
+	const displayed = (
+		featured.length > 0
+			? featured
+			: [...vehicles].sort((a, b) =>
+					(b.createdAt || "1900-01-01").localeCompare(
+						a.createdAt || "1900-01-01",
+					),
+				)
+	).slice(0, 4);
 
 	return (
 		<section className="py-20 sm:py-28 bg-white">
@@ -44,7 +47,7 @@ export default function FeaturedVehicles() {
 
 				{/* ── Grid ── */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
-					{latest.slice(0, 8).map((vehicle, i) => (
+					{displayed.map((vehicle, i) => (
 						<AnimateOnScroll key={vehicle.id} delay={i * 80}>
 							<VehicleCard vehicle={vehicle} priority={i === 0} />
 						</AnimateOnScroll>
