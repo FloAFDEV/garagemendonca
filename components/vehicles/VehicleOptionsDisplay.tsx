@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
 	OPTION_CATEGORIES,
 	countActiveOptions,
@@ -5,45 +8,78 @@ import {
 } from "@/lib/vehicleOptions";
 import type { VehicleOptions } from "@/types";
 import type { LucideIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 interface Props {
 	options: VehicleOptions;
 }
 
-function CategorySection({
+function AccordionItem({
+	id,
 	label,
 	icon: Icon,
 	items,
+	isOpen,
+	onToggle,
 }: {
+	id: string;
 	label: string;
 	icon: LucideIcon;
 	items: string[];
+	isOpen: boolean;
+	onToggle: () => void;
 }) {
-	return (
-		<div className="space-y-3">
-			{/* En-tête catégorie */}
-			<div className="flex items-center gap-2">
-				<div className="w-6 h-6 bg-brand-50 border border-brand-100 rounded-md flex items-center justify-center flex-shrink-0">
-					<Icon
-						size={13}
-						className="text-brand-600"
-						strokeWidth={2}
-					/>
-				</div>
-				<span className="ty-label text-slate-700">{label}</span>
-			</div>
+	const headerId = `accordion-header-${id}`;
+	const panelId = `accordion-panel-${id}`;
 
-			{/* Badges options */}
-			<div className="flex flex-wrap gap-2">
-				{items.map((item) => (
-					<span
-						key={item}
-						className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-lg"
-					>
-						<span className="w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0" />
-						{item}
+	return (
+		<div className="border border-slate-100 rounded-2xl overflow-hidden">
+			<button
+				id={headerId}
+				aria-expanded={isOpen}
+				aria-controls={panelId}
+				onClick={onToggle}
+				className="w-full flex items-center justify-between gap-3 px-5 py-4 bg-white hover:bg-slate-50 transition-colors text-left focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:outline-none"
+			>
+				<div className="flex items-center gap-2">
+					<div className="w-6 h-6 bg-brand-50 border border-brand-100 rounded-md flex items-center justify-center flex-shrink-0">
+						<Icon
+							size={13}
+							className="text-brand-600"
+							strokeWidth={2}
+						/>
+					</div>
+					<span className="ty-label text-slate-700">{label}</span>
+					<span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+						{items.length} option{items.length > 1 ? "s" : ""}
 					</span>
-				))}
+				</div>
+				<ChevronDown
+					size={16}
+					className={`text-slate-400 flex-shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+					strokeWidth={2}
+				/>
+			</button>
+
+			<div
+				id={panelId}
+				role="region"
+				aria-labelledby={headerId}
+				className={`overflow-hidden transition-[max-height] duration-200 ease-out ${isOpen ? "max-h-[600px]" : "max-h-0"}`}
+			>
+				<div className="px-5 pb-5 pt-3 bg-white border-t border-slate-50">
+					<div className="flex flex-wrap gap-2">
+						{items.map((item) => (
+							<span
+								key={item}
+								className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-lg"
+							>
+								<span className="w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0" />
+								{item}
+							</span>
+						))}
+					</div>
+				</div>
 			</div>
 		</div>
 	);
@@ -66,6 +102,22 @@ export default function VehicleOptionsDisplay({ options }: Props) {
 			});
 		return { ...cat, activeItems };
 	}).filter((cat) => cat.activeItems.length > 0);
+
+	const [openIds, setOpenIds] = useState<Set<string>>(
+		() => new Set(activeCategories.length > 0 ? [activeCategories[0].id] : [])
+	);
+
+	const toggle = (id: string) => {
+		setOpenIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) {
+				next.delete(id);
+			} else {
+				next.add(id);
+			}
+			return next;
+		});
+	};
 
 	if (activeCategories.length === 0 && !options.autres_options) return null;
 
@@ -94,14 +146,17 @@ export default function VehicleOptionsDisplay({ options }: Props) {
 				</div>
 			</div>
 
-			{/* Grille par catégories */}
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+			{/* Accordéon par catégories */}
+			<div className="space-y-2">
 				{activeCategories.map((cat) => (
-					<CategorySection
+					<AccordionItem
 						key={cat.id}
+						id={cat.id}
 						label={cat.label}
 						icon={cat.icon}
 						items={cat.activeItems}
+						isOpen={openIds.has(cat.id)}
+						onToggle={() => toggle(cat.id)}
 					/>
 				))}
 			</div>
