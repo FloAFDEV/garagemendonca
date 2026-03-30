@@ -91,7 +91,6 @@ export default function Hero() {
 			<div className="relative flex-1 flex items-center">
 				<Container className="pt-28 sm:pt-24 md:pt-36 pb-20 mb-6">
 					<div className="max-w-2xl xl:max-w-3xl">
-
 						{/* Eyebrow */}
 						<div className="flex items-center gap-3 mb-8 animate-fade-in">
 							<div
@@ -166,21 +165,23 @@ export default function Hero() {
 				{trustBadges.map(({ Icon, text }) => (
 					<div
 						key={text}
-						className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-lg"
+						className="bg-white/05 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-lg"
 					>
 						<Icon
 							size={15}
 							className="text-brand-400 flex-shrink-0"
 							aria-hidden="true"
 						/>
-						<span className="font-light text-sm text-white/90">{text}</span>
+						<span className="font-light text-sm text-white/90">
+							{text}
+						</span>
 					</div>
 				))}
 			</div>
 
 			{/* Scroll indicator */}
 			<div
-				className="relative pb-10 flex flex-col items-center gap-1 text-white/40"
+				className="relative pb-10 flex flex-col items-center gap-1 text-white/60"
 				aria-hidden="true"
 			>
 				<span className="text-[9px] font-light uppercase tracking-caps">

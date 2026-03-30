@@ -309,7 +309,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 													key={label}
 													className="group"
 												>
-													<p className="ty-label mb-1.5">
+													<p className="ty-label mb-1.5 text-slate-600">
 														{label}
 													</p>
 													<p className="text-base ty-value">
@@ -431,7 +431,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										className="rotate-135"
 									/>
 								</div>
-								<div className="ty-label text-brand-400 mb-4">
+								<div className="ty-label text-brand-400 mb-4 text-base">
 									Garage Mendonça
 								</div>
 								<p className="text-slate-300 text-sm leading-relaxed mb-6 font-light">
@@ -444,7 +444,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								<a
 									href="https://maps.google.com"
 									target="_blank"
-									className="inline-flex items-center gap-2 text-brand-400 hover:text-white text-xs font-medium transition-colors uppercase tracking-widest"
+									className="inline-flex items-center gap-2 text-brand-400 hover:text-red-500 text-xs font-medium transition-colors uppercase tracking-widest"
 								>
 									Itinéraire Maps{" "}
 									<ArrowLeft

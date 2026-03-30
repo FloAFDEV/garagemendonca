@@ -101,7 +101,7 @@ export default function StatsCounter() {
 						suffix={suffix}
 						thousands={thousands}
 					/>
-					<div className="text-slate-400 font-light text-xs leading-snug mt-0.5">
+					<div className="text-slate-300 font-light text-xs leading-snug mt-0.5">
 						{label}
 					</div>
 				</div>

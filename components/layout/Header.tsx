@@ -48,7 +48,7 @@ export default function Header() {
 			{/* Barre info supérieure */}
 			<div
 				className={clsx(
-					"bg-[#0f172a] text-slate-500 text-[11px] py-2 hidden md:block transition-all duration-300",
+					"bg-[#0f172a] text-slate-300 text-[11px] py-2 hidden md:block transition-all duration-300",
 					isOpaque && "h-0 py-0 overflow-hidden opacity-0",
 				)}
 			>
@@ -68,7 +68,9 @@ export default function Header() {
 						<span className="mx-3 opacity-20" aria-hidden="true">
 							|
 						</span>
-						<span className="font-light">Lun–Ven : 08h–12h / 14h–19h</span>
+						<span className="font-light">
+							Lun–Ven : 08h–12h / 14h–19h
+						</span>
 					</span>
 					<a
 						href="mailto:contact@garagemendonça.com"
@@ -190,11 +192,18 @@ export default function Header() {
 			</Container>
 			<style jsx>{`
 				@keyframes slide-down {
-					0% { opacity: 0; transform: translateY(-10px); }
-					100% { opacity: 1; transform: translateY(0); }
+					0% {
+						opacity: 0;
+						transform: translateY(-10px);
+					}
+					100% {
+						opacity: 1;
+						transform: translateY(0);
+					}
 				}
 				.animate-slide-down {
-					animation: slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+					animation: slide-down 0.3s cubic-bezier(0.16, 1, 0.3, 1)
+						forwards;
 				}
 			`}</style>
 		</header>
