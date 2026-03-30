@@ -5,8 +5,7 @@ import type { Metadata } from "next";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehiclesCatalogue from "@/components/vehicles/VehiclesCatalogue";
-import { getAllVehicles } from "@/lib/vehicles";
-import { vehicles as allVehiclesRaw } from "@/lib/data";
+import { vehicleRepository } from "@/lib/repositories";
 import {
   ClipboardCheck,
   Wrench,
@@ -27,10 +26,10 @@ export const metadata: Metadata = {
 };
 
 export default async function VehiculesPage() {
-  const vehicles = await getAllVehicles();
+  const vehicles = await vehicleRepository.getAll();
 
-  const allBrands = Array.from(new Set(allVehiclesRaw.map((v) => v.brand))).sort();
-  const allFuels = Array.from(new Set(allVehiclesRaw.map((v) => v.fuel)));
+  const allBrands = Array.from(new Set(vehicles.map((v) => v.brand))).sort();
+  const allFuels = Array.from(new Set(vehicles.map((v) => v.fuel)));
 
   return (
     <MainLayout>

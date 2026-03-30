@@ -8,11 +8,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehicleGallery from "@/components/vehicles/VehicleGallery";
 import VehicleCard from "@/components/vehicles/VehicleCard";
-import {
-	getVehicleById,
-	getRelatedVehicles,
-	getVehicleStaticParams,
-} from "@/lib/vehicles";
+import { vehicleRepository } from "@/lib/repositories";
 import Image from "next/image";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
@@ -152,7 +148,7 @@ export async function generateMetadata({
 	params,
 }: PageProps): Promise<Metadata> {
 	const { id } = await params;
-	const vehicle = await getVehicleById(id);
+	const vehicle = await vehicleRepository.getById(id);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
 	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} €`;
@@ -177,15 +173,15 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-	return getVehicleStaticParams();
+	return vehicleRepository.getStaticParams();
 }
 
 /* ─────────── composant ─────────── */
 export default async function VehicleDetailPage({ params }: PageProps) {
 	const { id } = await params;
 	const [vehicle, related] = await Promise.all([
-		getVehicleById(id),
-		getRelatedVehicles(id, 3),
+		vehicleRepository.getById(id),
+		vehicleRepository.getRelated(id, 3),
 	]);
 	if (!vehicle) notFound();
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
-import { services } from "@/lib/data";
+import { serviceRepository } from "@/lib/repositories";
 import {
 	Wrench,
 	Settings,
@@ -58,7 +58,8 @@ const trustCards = [
 	},
 ];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+	const services = await serviceRepository.getAll();
 	return (
 		<MainLayout>
 			{/* ── Hero ── */}
@@ -214,7 +215,7 @@ export default function ServicesPage() {
 							href="tel:0532002038"
 							className="px-8 py-4 bg-white text-brand-600 rounded-xl font-normal hover:bg-slate-50 transition-colors"
 						>
-							Appeler le 05 32 00 20 38
+							Nous contacter
 						</a>
 						<Link
 							href="/contact"
