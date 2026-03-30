@@ -64,7 +64,7 @@ export default function VehicleCard({
 	return (
 		<Link
 			href={`/vehicules/${vehicle.id}`}
-			className="group block bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400"
+			className="group flex flex-col h-full bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400"
 			aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
 		>
 			{/* Image */}
@@ -112,7 +112,7 @@ export default function VehicleCard({
 			</div>
 
 			{/* Contenu */}
-			<div className="p-4">
+			<div className="p-4 flex flex-col flex-grow">
 				<div className="flex items-start gap-2.5 mb-3">
 					{BRAND_LOGO_MAP[vehicle.brand] && (
 						<div className="w-9 h-9 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
@@ -188,7 +188,7 @@ export default function VehicleCard({
 				const shown = hits.slice(0, 4);
 				const rest  = hits.length - shown.length;
 				return (
-					<div className="flex flex-wrap gap-1 mb-3" aria-label="Équipements principaux">
+					<div className="flex flex-wrap gap-1 flex-grow content-start min-h-[2rem]" aria-label="Équipements principaux">
 						{shown.map((k) => (
 							<span
 								key={k}
@@ -207,7 +207,7 @@ export default function VehicleCard({
 			})()}
 
 			{/* Prix + CTA */}
-				<div className="pt-3 border-t border-slate-100 space-y-2.5">
+				<div className="mt-auto pt-3 border-t border-slate-100 space-y-2.5">
 					<span
 						className="block ty-value font-heading text-lg"
 						aria-label={priceLabel}
