@@ -455,7 +455,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 													key === "Options" ||
 													!value ||
 													value === "Non" ||
-													key === "Finition"
+													key === "Finition" ||
+													key === "Motorisation" ||
+													key === "Carnet d'entretien" ||
+													key === "Contrôle technique"
 												)
 													return null;
 												return (
