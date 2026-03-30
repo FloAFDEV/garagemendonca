@@ -195,6 +195,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									{vehicle.brand} {vehicle.model}
 									{vehicle.features?.["Finition"] && (
 										<span className="text-slate-400 font-medium text-xl ml-2">
+											{" — "}
 											{vehicle.features["Finition"]}
 										</span>
 									)}
