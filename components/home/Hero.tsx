@@ -144,7 +144,7 @@ export default function Hero() {
 								className="btn-primary w-full sm:w-auto text-base sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2 shadow-brand-lg"
 							>
 								<Phone size={18} aria-hidden="true" />
-								Appeler le 05 32 00 20 38
+								Nous contacter
 							</a>
 							<Link
 								href="/contact"

@@ -231,7 +231,7 @@ export default function Footer() {
 							className="inline-flex items-center gap-2 btn-primary text-sm py-3 w-full justify-center"
 						>
 							<Phone size={14} />
-							Appeler le garage
+							Nous contacter
 						</a>
 					</div>
 				</div>

@@ -91,7 +91,7 @@ export default function ProduitPage() {
 								className="btn-outline text-base py-4 px-8"
 							>
 								<Phone size={18} />
-								Appeler le garage
+								Nous contacter
 							</a>
 						</div>
 					</div>
