@@ -534,6 +534,8 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 export const services: Service[] = [
 	{
 		id: "entretien",
+		slug: "entretien",
+		is_active: true,
 		title: "Entretien & Révision",
 		description:
 			"Depuis 2001, le Garage Mendonça assure l'entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Accueil adapté aux jeunes conducteurs, seniors et personnes à mobilité réduite. Les préconisations constructeur sont toujours respectées.",
@@ -552,6 +554,8 @@ export const services: Service[] = [
 	},
 	{
 		id: "mecanique",
+		slug: "mecanique",
+		is_active: true,
 		title: "Réparation Mécanique & Électronique",
 		description:
 			"À la fois généraliste et expert, le Garage Mendonça intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé.",
@@ -571,6 +575,8 @@ export const services: Service[] = [
 
 	{
 		id: "carrosserie",
+		slug: "carrosserie",
+		is_active: true,
 		title: "Carrosserie, Vitrage & Services",
 		description:
 			"Le Garage Mendonça a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",

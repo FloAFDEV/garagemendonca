@@ -1,32 +1,35 @@
 /**
- * Client Supabase — côté navigateur (Client Components).
- *
- * Usage :
- *   import { createClient } from "@/lib/supabase/client";
- *   const supabase = createClient();
- *
- * Installation :
- *   npm install @supabase/supabase-js @supabase/ssr
- *
- * Variables d'environnement requises (.env.local) :
- *   NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
- *   NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-key>
+ * Client Supabase — décommenter quand le projet Supabase est créé.
+ * Voir lib/supabase/README.md pour les étapes complètes.
  */
 
-// import { createBrowserClient } from "@supabase/ssr";
+// import { createBrowserClient as _createBrowserClient } from "@supabase/ssr";
+// import { createServerClient as _createServerClient } from "@supabase/ssr";
+// import { cookies } from "next/headers";
 //
-// export function createClient() {
-//   return createBrowserClient(
+// export function createBrowserClient() {
+//   return _createBrowserClient(
 //     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+//     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//   );
+// }
+//
+// export async function createServerClient() {
+//   const cookieStore = await cookies();
+//   return _createServerClient(
+//     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//     {
+//       cookies: {
+//         getAll() { return cookieStore.getAll(); },
+//         setAll(cookiesToSet) {
+//           cookiesToSet.forEach(({ name, value, options }) =>
+//             cookieStore.set(name, value, options),
+//           );
+//         },
+//       },
+//     },
 //   );
 // }
 
-/** Stub — à décommenter après installation de @supabase/ssr */
-export function createClient() {
-  throw new Error(
-    "Supabase client not configured. " +
-    "Install @supabase/ssr, set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY, " +
-    "then uncomment the implementation in lib/supabase/client.ts"
-  );
-}
+export {}; // placeholder — remove once Supabase is configured

@@ -228,11 +228,37 @@ export type VehicleUpdateInput = Partial<VehicleCreateInput>;
 // ─────────────────────────────────────────────
 export interface Service {
 	id: string;
+	/** Slug URL-safe — ancre publique : #entretien, #mecanique, #carrosserie */
+	slug?: "entretien" | "mecanique" | "carrosserie";
 	title: string;
 	description: string;
 	icon: string;
+	/** URL image publique (identique à photo_url) */
 	image: string;
+	photo_url?: string;
 	features: string[];
+	is_active?: boolean;
+}
+
+// ─────────────────────────────────────────────
+//  Banner promotionnelle
+// ─────────────────────────────────────────────
+export interface Banner {
+	id: string;
+	is_active: boolean;
+	message: string;
+	sub_message?: string;
+	image_url?: string;
+	cta_label?: string;
+	cta_url?: string;
+	/** Couleur de fond hex : ex. "#DC2626" */
+	bg_color: string;
+	/** ISO 8601 — début programmé (optionnel) */
+	scheduled_start?: string;
+	/** ISO 8601 — fin programmée (optionnel) */
+	scheduled_end?: string;
+	display_pages: "all" | "home_only";
+	is_dismissible: boolean;
 }
 
 // ─────────────────────────────────────────────
