@@ -79,6 +79,9 @@ interface VehicleForm {
 	published_at: string;
 	featured: boolean;
 	options: VehicleOptions;
+	finition: string;
+	critAir: string;
+	garantie: string;
 }
 
 interface FormErrors {
@@ -108,6 +111,9 @@ const emptyForm: VehicleForm = {
 	published_at: "",
 	featured: false,
 	options: {},
+	finition: "",
+	critAir: "",
+	garantie: "",
 };
 
 // ── Combobox ───────────────────────────────────────────────────────
@@ -340,6 +346,11 @@ export default function NewVehiclePage() {
 			published_at: form.published_at || undefined,
 			featured: form.featured,
 			options: form.options,
+			critAir: form.critAir || undefined,
+			features: {
+				...(form.finition ? { Finition: form.finition } : {}),
+				...(form.garantie ? { Garantie: form.garantie } : {}),
+			},
 		});
 		setSaveStatus("saved");
 		setTimeout(() => router.push("/admin/vehicules"), 1200);
@@ -459,6 +470,17 @@ export default function NewVehiclePage() {
 									id="model"
 								/>
 							</div>
+							<div>
+								<label className={labelClass}>Finition</label>
+								<input
+									name="finition"
+									type="text"
+									placeholder="Comfort+, Sport, Titanium…"
+									value={form.finition}
+									onChange={handleChange}
+									className={inputClass}
+								/>
+							</div>
 							<div data-error={errors.year}>
 								<label className={labelClass}>
 									Année{" "}
@@ -560,7 +582,7 @@ export default function NewVehiclePage() {
 						>
 							Motorisation
 						</h3>
-						<div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 							<div>
 								<label className={labelClass}>
 									Carburant{" "}
@@ -620,6 +642,20 @@ export default function NewVehiclePage() {
 										{errors.power}
 									</p>
 								)}
+							</div>
+							<div>
+								<label className={labelClass}>Crit’Air</label>
+								<select
+									name="critAir"
+									value={form.critAir}
+									onChange={handleChange}
+									className={selectClass}
+								>
+									<option value="">— Non renseigné</option>
+									{["0", "1", "2", "3", "4", "5"].map((c) => (
+										<option key={c} value={c}>Classe {c}</option>
+									))}
+								</select>
 							</div>
 						</div>
 					</div>
@@ -681,6 +717,11 @@ export default function NewVehiclePage() {
 							onChange={handleChange}
 							className={inputClass + " resize-none"}
 						/>
+						<p className={`${t.txtSubtle} text-xs mt-2`}>
+							Pour le carnet d&apos;entretien, utiliser le format{" "}
+							<code className="bg-slate-700/40 px-1 rounded text-[11px]">JJ/MM/AAAA : XX XXX km</code>{" "}
+							par ligne.
+						</p>
 					</div>
 
 					{/* ── Publication ────────────────────────────────────── */}
@@ -735,6 +776,19 @@ export default function NewVehiclePage() {
 									/>
 								</div>
 							)}
+							<div>
+								<label className={labelClass}>Garantie</label>
+								<select
+									name="garantie"
+									value={form.garantie}
+									onChange={handleChange}
+									className={selectClass}
+								>
+									<option value="">Sans garantie</option>
+									<option value="6 mois">6 mois</option>
+									<option value="12 mois">12 mois</option>
+								</select>
+							</div>
 						</div>
 						<div
 							className={`flex items-center gap-3 mt-5 pt-5 border-t ${t.border}`}

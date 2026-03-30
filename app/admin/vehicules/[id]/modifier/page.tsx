@@ -18,6 +18,7 @@ import {
 	Loader2,
 	AlertCircle,
 	Star,
+	Eye,
 } from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
@@ -62,11 +63,13 @@ const statusOptions = [
 interface VehicleForm {
 	brand: string;
 	model: string;
+	finition: string;
 	year: string;
 	mileage: string;
 	fuel: string;
 	transmission: string;
 	power: string;
+	critAir: string;
 	price: string;
 	color: string;
 	doors: string;
@@ -74,6 +77,7 @@ interface VehicleForm {
 	status: string;
 	published_at: string;
 	featured: boolean;
+	garantie: string;
 	options: VehicleOptions;
 }
 
@@ -190,11 +194,13 @@ export default function EditVehiclePage({
 			return {
 				brand: "",
 				model: "",
+				finition: "",
 				year: "",
 				mileage: "",
 				fuel: "Essence",
 				transmission: "Manuelle",
 				power: "",
+				critAir: "",
 				price: "",
 				color: "",
 				doors: "5",
@@ -202,16 +208,19 @@ export default function EditVehiclePage({
 				status: "draft",
 				published_at: "",
 				featured: false,
+				garantie: "",
 				options: {},
 			};
 		return {
 			brand: vehicle.brand,
 			model: vehicle.model,
+			finition: (Array.isArray(vehicle.features?.["Finition"]) ? vehicle.features!["Finition"][0] : vehicle.features?.["Finition"]) ?? "",
 			year: vehicle.year.toString(),
 			mileage: vehicle.mileage.toString(),
 			fuel: vehicle.fuel,
 			transmission: vehicle.transmission,
 			power: vehicle.power.toString(),
+			critAir: vehicle.critAir ?? "",
 			price: vehicle.price.toString(),
 			color: vehicle.color,
 			doors: vehicle.doors.toString(),
@@ -219,6 +228,7 @@ export default function EditVehiclePage({
 			status: vehicle.status ?? "draft",
 			published_at: vehicle.published_at ?? "",
 			featured: vehicle.featured ?? false,
+			garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? vehicle.features!["Garantie"][0] : vehicle.features?.["Garantie"]) ?? "",
 			options: vehicle.options ?? {},
 		};
 	});
@@ -351,7 +361,13 @@ export default function EditVehiclePage({
 			status: form.status as Vehicle["status"],
 			published_at: form.published_at || undefined,
 			featured: form.featured,
+			critAir: form.critAir || undefined,
 			options: form.options,
+			features: {
+				...(vehicle.features ?? {}),
+				...(form.finition ? { Finition: form.finition } : {}),
+				...(form.garantie ? { Garantie: form.garantie } : {}),
+			},
 		});
 		setSaveStatus("saved");
 		setTimeout(() => router.push("/admin/vehicules"), 1200);
@@ -410,6 +426,14 @@ export default function EditVehiclePage({
 							{vehicle.id}
 						</p>
 					</div>
+					<Link
+						href={`/vehicules/${id}`}
+						target="_blank"
+						className={`ml-auto flex items-center gap-2 text-sm ${t.txtMuted} ${t.hoverTxt} transition-colors px-3 py-2 rounded-xl ${t.hoverBg}`}
+					>
+						<Eye size={16} />
+						<span className="hidden sm:inline">Prévisualiser</span>
+					</Link>
 				</div>
 
 				<form onSubmit={handleSubmit} noValidate className="space-y-6">
@@ -420,8 +444,8 @@ export default function EditVehiclePage({
 						>
 							Statut &amp; publication
 						</h3>
-						<div className="flex flex-col sm:flex-row gap-5">
-							<div className="flex-1">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+							<div>
 								<label className={labelClass}>
 									Disponibilité
 								</label>
@@ -446,6 +470,19 @@ export default function EditVehiclePage({
 										)?.label
 									}
 								</p>
+							</div>
+							<div>
+								<label className={labelClass}>Garantie</label>
+								<select
+									name="garantie"
+									value={form.garantie}
+									onChange={handleChange}
+									className={selectClass}
+								>
+									<option value="">Sans garantie</option>
+									<option value="6 mois">6 mois</option>
+									<option value="12 mois">12 mois</option>
+								</select>
 							</div>
 							{form.status === "scheduled" && (
 								<div className="flex-1">
@@ -543,6 +580,17 @@ export default function EditVehiclePage({
 									error={errors.model}
 									required
 									id="model-edit"
+								/>
+							</div>
+							<div>
+								<label className={labelClass}>Finition</label>
+								<input
+									name="finition"
+									type="text"
+									placeholder="Comfort+, Sport, Titanium…"
+									value={form.finition}
+									onChange={handleChange}
+									className={inputClass}
 								/>
 							</div>
 							<div>
@@ -646,7 +694,7 @@ export default function EditVehiclePage({
 						>
 							Motorisation
 						</h3>
-						<div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 							<div>
 								<label className={labelClass}>
 									Carburant{" "}
@@ -706,6 +754,20 @@ export default function EditVehiclePage({
 										{errors.power}
 									</p>
 								)}
+							</div>
+							<div>
+								<label className={labelClass}>Crit&apos;Air</label>
+								<select
+									name="critAir"
+									value={form.critAir}
+									onChange={handleChange}
+									className={selectClass}
+								>
+									<option value="">— Non renseigné</option>
+									{["0","1","2","3","4","5"].map((c) => (
+										<option key={c} value={c}>Classe {c}</option>
+									))}
+								</select>
 							</div>
 						</div>
 					</div>
@@ -767,6 +829,11 @@ export default function EditVehiclePage({
 							onChange={handleChange}
 							className={inputClass + " resize-none"}
 						/>
+						<p className={`${t.txtSubtle} text-xs mt-2`}>
+							Pour le carnet d&apos;entretien, utiliser le format{" "}
+							<code className="bg-slate-700/40 px-1 rounded text-[11px]">JJ/MM/AAAA : XX XXX km</code>{" "}
+							par ligne.
+						</p>
 					</div>
 
 					{/* ── Photos ─────────────────────────────────────────── */}

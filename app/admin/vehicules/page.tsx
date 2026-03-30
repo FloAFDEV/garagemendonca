@@ -13,8 +13,7 @@ import {
 	Eye,
 	Car,
 	ChevronDown,
-	FlaskConical,
-	RefreshCw,
+	Star,
 } from "lucide-react";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
@@ -226,124 +225,159 @@ export default function AdminVehiclesPage() {
 							<div
 								key={vehicle.id}
 								className={clsx(
-									"rounded-2xl border p-4 space-y-3",
+									"rounded-2xl border overflow-hidden",
 									t.surface,
 									t.border,
 								)}
 							>
-								{/* Top row */}
-								<div className="flex items-start justify-between gap-3">
-									<div className="flex-1 min-w-0">
-										<p
-											className={clsx(
-												"font-normal text-sm truncate",
-												t.txt,
-											)}
-										>
-											{vehicle.brand} {vehicle.model}
-										</p>
-										<p
-											className={clsx(
-												"text-xs mt-0.5",
-												t.txtSubtle,
-											)}
-										>
-											{vehicle.year} · {vehicle.color} ·{" "}
-											{vehicle.transmission}
-										</p>
+								{/* Thumbnail */}
+								{vehicle.images[0] ? (
+									<div className="w-full h-36 overflow-hidden bg-slate-700">
+										{/* eslint-disable-next-line @next/next/no-img-element */}
+										<img
+											src={vehicle.images[0]}
+											alt=""
+											className="w-full h-full object-cover"
+										/>
 									</div>
-									<span className="font-heading font-medium text-brand-400 text-sm flex-shrink-0">
-										{vehicle.price.toLocaleString("fr-FR")}{" "}
-										€
-									</span>
-								</div>
-
-								{/* Tags */}
-								<div className="flex items-center gap-2 flex-wrap">
-									<Badge
-										variant={
-											fuelVariants[vehicle.fuel] ?? "gray"
-										}
-									>
-										{vehicle.fuel}
-									</Badge>
-									<span
-										className={clsx("text-xs", t.txtMuted)}
-									>
-										{vehicle.mileage.toLocaleString(
-											"fr-FR",
-										)}{" "}
-										km
-									</span>
-									<StatusSelect
-										vehicleId={vehicle.id}
-										current={vehicle.status ?? "draft"}
-										onChange={handleStatusChange}
-									/>
-								</div>
-
-								{/* Actions */}
-								<div
-									className={clsx(
-										"flex items-center gap-2 pt-1 border-t",
-										t.border,
-									)}
-								>
-									<Link
-										href={`/vehicules/${vehicle.id}`}
-										target="_blank"
-										className={clsx(actionBtn, t.hoverTxt)}
-									>
-										<Eye size={13} />
-										Voir
-									</Link>
-									<Link
-										href={`/admin/vehicules/${vehicle.id}/modifier`}
+								) : (
+									<div
 										className={clsx(
-											actionBtn,
-											"hover:text-blue-500",
+											"w-full h-36 flex items-center justify-center",
+											t.surface,
 										)}
 									>
-										<Pencil size={13} />
-										Modifier
-									</Link>
-									{deleteConfirm === vehicle.id ? (
-										<div className="flex-1 flex items-center gap-1">
-											<button
-												onClick={() =>
-													handleDelete(vehicle.id)
-												}
-												className="flex-1 px-2 py-1.5 text-xs bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors font-medium"
-											>
-												Confirmer
-											</button>
-											<button
-												onClick={() =>
-													setDeleteConfirm(null)
-												}
+										<Car size={32} className={t.txtFaint} />
+									</div>
+								)}
+
+								<div className="p-4 space-y-3">
+									{/* Top row */}
+									<div className="flex items-start justify-between gap-3">
+										<div className="flex-1 min-w-0">
+											<p
 												className={clsx(
-													"px-2 py-1.5 text-xs rounded-lg transition-colors",
-													t.txtSubtle,
-													t.hoverTxt,
+													"font-normal text-sm truncate flex items-center gap-1.5",
+													t.txt,
 												)}
 											>
-												✕
-											</button>
+												{vehicle.featured && (
+													<Star
+														size={11}
+														className="text-amber-400 flex-shrink-0"
+													/>
+												)}
+												{vehicle.brand} {vehicle.model}
+												{vehicle.features?.["Finition"] && (
+													<span className="text-brand-400 text-xs font-normal ml-1">
+														— {vehicle.features["Finition"]}
+													</span>
+												)}
+											</p>
+											<p
+												className={clsx(
+													"text-xs mt-0.5",
+													t.txtSubtle,
+												)}
+											>
+												{vehicle.year} · {vehicle.color} ·{" "}
+												{vehicle.transmission}
+											</p>
 										</div>
-									) : (
-										<button
-											onClick={() =>
-												setDeleteConfirm(vehicle.id)
+										<span className="font-heading font-medium text-brand-400 text-sm flex-shrink-0">
+											{vehicle.price.toLocaleString("fr-FR")}{" "}
+											€
+										</span>
+									</div>
+
+									{/* Tags */}
+									<div className="flex items-center gap-2 flex-wrap">
+										<Badge
+											variant={
+												fuelVariants[vehicle.fuel] ?? "gray"
 											}
+										>
+											{vehicle.fuel}
+										</Badge>
+										<span
+											className={clsx("text-xs", t.txtMuted)}
+										>
+											{vehicle.mileage.toLocaleString(
+												"fr-FR",
+											)}{" "}
+											km
+										</span>
+										<StatusSelect
+											vehicleId={vehicle.id}
+											current={vehicle.status ?? "draft"}
+											onChange={handleStatusChange}
+										/>
+									</div>
+
+									{/* Actions */}
+									<div
+										className={clsx(
+											"flex items-center gap-2 pt-1 border-t",
+											t.border,
+										)}
+									>
+										<Link
+											href={`/vehicules/${vehicle.id}`}
+											target="_blank"
+											title="Prévisualiser"
+											className={clsx(actionBtn, t.hoverTxt)}
+										>
+											<Eye size={13} />
+											Voir
+										</Link>
+										<Link
+											href={`/admin/vehicules/${vehicle.id}/modifier`}
 											className={clsx(
 												actionBtn,
-												"hover:text-red-500",
+												"hover:text-blue-500",
 											)}
 										>
-											<Trash2 size={13} />
-											Supprimer
-										</button>
-									)}
+											<Pencil size={13} />
+											Modifier
+										</Link>
+										{deleteConfirm === vehicle.id ? (
+											<div className="flex-1 flex items-center gap-1">
+												<button
+													onClick={() =>
+														handleDelete(vehicle.id)
+													}
+													className="flex-1 px-2 py-1.5 text-xs bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors font-medium"
+												>
+													Confirmer
+												</button>
+												<button
+													onClick={() =>
+														setDeleteConfirm(null)
+													}
+													className={clsx(
+														"px-2 py-1.5 text-xs rounded-lg transition-colors",
+														t.txtSubtle,
+														t.hoverTxt,
+													)}
+												>
+													✕
+												</button>
+											</div>
+										) : (
+											<button
+												onClick={() =>
+													setDeleteConfirm(vehicle.id)
+												}
+												className={clsx(
+													actionBtn,
+													"hover:text-red-500",
+												)}
+											>
+												<Trash2 size={13} />
+												Supprimer
+											</button>
+										)}
+									</div>
 								</div>
 							</div>
 						))
@@ -363,18 +397,19 @@ export default function AdminVehiclesPage() {
 							<thead>
 								<tr className={clsx("border-b", t.border)}>
 									{[
+										"Photo",
 										"Véhicule",
-										"Année",
 										"Km",
-										"Carburant",
 										"Prix",
 										"Statut",
+										"Ajouté",
 										"Actions",
 									].map((th) => (
 										<th
 											key={th}
 											className={clsx(
 												"text-left px-5 py-4 text-xs font-normal uppercase tracking-widest",
+												th === "Photo" && "w-16",
 												t.txtMuted,
 											)}
 										>
@@ -393,16 +428,43 @@ export default function AdminVehiclesPage() {
 											t.tableRowHover,
 										)}
 									>
+										{/* Photo */}
+										<td className="px-3 py-3">
+											<div className="w-12 h-10 rounded-lg overflow-hidden bg-slate-700 flex-shrink-0 flex items-center justify-center">
+												{vehicle.images[0] ? (
+													// eslint-disable-next-line @next/next/no-img-element
+													<img
+														src={vehicle.images[0]}
+														alt=""
+														className="w-full h-full object-cover"
+													/>
+												) : (
+													<Car size={14} className={t.txtFaint} />
+												)}
+											</div>
+										</td>
+
+										{/* Véhicule */}
 										<td className="px-5 py-4">
 											<div>
 												<div
 													className={clsx(
-														"font-normal text-sm",
+														"font-normal text-sm flex items-center gap-1.5",
 														t.txt,
 													)}
 												>
-													{vehicle.brand}{" "}
-													{vehicle.model}
+													{vehicle.featured && (
+														<Star
+															size={11}
+															className="text-amber-400 flex-shrink-0"
+														/>
+													)}
+													{vehicle.brand} {vehicle.model}
+													{vehicle.features?.["Finition"] && (
+														<span className="text-brand-400 text-xs font-normal ml-1">
+															— {vehicle.features["Finition"]}
+														</span>
+													)}
 												</div>
 												<div
 													className={clsx(
@@ -411,18 +473,16 @@ export default function AdminVehiclesPage() {
 													)}
 												>
 													{vehicle.color} ·{" "}
-													{vehicle.transmission}
+													{vehicle.transmission} ·{" "}
+													{vehicle.year}
 												</div>
-												{vehicle.status ===
-													"scheduled" &&
+												{vehicle.status === "scheduled" &&
 													vehicle.published_at && (
 														<div className="text-blue-400 text-xs mt-1">
 															📅{" "}
 															{new Date(
 																vehicle.published_at,
-															).toLocaleDateString(
-																"fr-FR",
-															)}
+															).toLocaleDateString("fr-FR")}
 														</div>
 													)}
 												{vehicle.status === "sold" &&
@@ -436,60 +496,59 @@ export default function AdminVehiclesPage() {
 															Vendue le{" "}
 															{new Date(
 																vehicle.sold_at,
-															).toLocaleDateString(
-																"fr-FR",
-															)}
+															).toLocaleDateString("fr-FR")}
 														</div>
 													)}
 											</div>
 										</td>
+
+										{/* Km */}
 										<td
 											className={clsx(
 												"px-5 py-4 text-sm",
 												t.txtMuted,
 											)}
 										>
-											{vehicle.year}
-										</td>
-										<td
-											className={clsx(
-												"px-5 py-4 text-sm",
-												t.txtMuted,
-											)}
-										>
-											{vehicle.mileage.toLocaleString(
-												"fr-FR",
-											)}{" "}
+											{vehicle.mileage.toLocaleString("fr-FR")}{" "}
 											km
 										</td>
-										<td className="px-5 py-4">
-											<Badge
-												variant={
-													fuelVariants[
-														vehicle.fuel
-													] ?? "gray"
-												}
-											>
-												{vehicle.fuel}
-											</Badge>
-										</td>
+
+										{/* Prix */}
 										<td className="px-5 py-4">
 											<span className="font-heading font-medium text-brand-400 text-sm">
-												{vehicle.price.toLocaleString(
-													"fr-FR",
-												)}{" "}
+												{vehicle.price.toLocaleString("fr-FR")}{" "}
 												€
 											</span>
 										</td>
+
+										{/* Statut */}
 										<td className="px-5 py-4">
 											<StatusSelect
 												vehicleId={vehicle.id}
-												current={
-													vehicle.status ?? "draft"
-												}
+												current={vehicle.status ?? "draft"}
 												onChange={handleStatusChange}
 											/>
 										</td>
+
+										{/* Ajouté */}
+										<td
+											className={clsx(
+												"px-5 py-4 text-xs",
+												t.txtSubtle,
+											)}
+										>
+											{vehicle.createdAt
+												? new Date(
+														vehicle.createdAt,
+													).toLocaleDateString("fr-FR", {
+														day: "2-digit",
+														month: "2-digit",
+														year: "2-digit",
+													})
+												: "—"}
+										</td>
+
+										{/* Actions */}
 										<td className="px-5 py-4">
 											<div className="flex items-center gap-1">
 												<Link
@@ -501,7 +560,7 @@ export default function AdminVehiclesPage() {
 														t.hoverBgStrong,
 														t.hoverTxt,
 													)}
-													title="Voir la fiche"
+													title="Prévisualiser"
 												>
 													<Eye size={15} />
 												</Link>
@@ -517,14 +576,11 @@ export default function AdminVehiclesPage() {
 												>
 													<Pencil size={15} />
 												</Link>
-												{deleteConfirm ===
-												vehicle.id ? (
+												{deleteConfirm === vehicle.id ? (
 													<div className="flex items-center gap-1">
 														<button
 															onClick={() =>
-																handleDelete(
-																	vehicle.id,
-																)
+																handleDelete(vehicle.id)
 															}
 															className="px-2 py-1 text-xs bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors font-medium"
 														>
@@ -532,9 +588,7 @@ export default function AdminVehiclesPage() {
 														</button>
 														<button
 															onClick={() =>
-																setDeleteConfirm(
-																	null,
-																)
+																setDeleteConfirm(null)
 															}
 															className={clsx(
 																"px-2 py-1 text-xs rounded-lg transition-colors",
@@ -548,9 +602,7 @@ export default function AdminVehiclesPage() {
 												) : (
 													<button
 														onClick={() =>
-															setDeleteConfirm(
-																vehicle.id,
-															)
+															setDeleteConfirm(vehicle.id)
 														}
 														className={clsx(
 															"p-2 rounded-lg transition-colors",
@@ -570,7 +622,7 @@ export default function AdminVehiclesPage() {
 								{filtered.length === 0 && (
 									<tr>
 										<td
-											colSpan={7}
+											colSpan={8}
 											className="text-center py-16"
 										>
 											<Car
