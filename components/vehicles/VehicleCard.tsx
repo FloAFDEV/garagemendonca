@@ -180,31 +180,33 @@ export default function VehicleCard({
 				</div>
 
 				{/* Options highlights */}
-			{vehicle.options && (() => {
-				const hits = HIGHLIGHT_KEYS.filter(
-					(k) => vehicle.options![k] === true,
-				);
-				if (hits.length === 0) return null;
-				const shown = hits.slice(0, 4);
-				const rest  = hits.length - shown.length;
-				return (
-					<div className="flex flex-wrap gap-1 flex-grow content-start min-h-[2rem]" aria-label="Équipements principaux">
-						{shown.map((k) => (
-							<span
-								key={k}
-								className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5"
-							>
-								{HIGHLIGHT_LABELS[k]}
-							</span>
-						))}
-						{rest > 0 && (
-							<span className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
-								+{rest}
-							</span>
-						)}
-					</div>
-				);
-			})()}
+			<div className="flex flex-wrap gap-1 flex-grow content-start" aria-label="Équipements principaux">
+				{vehicle.options && (() => {
+					const hits = HIGHLIGHT_KEYS.filter(
+						(k) => vehicle.options![k] === true,
+					);
+					if (hits.length === 0) return null;
+					const shown = hits.slice(0, 4);
+					const rest  = hits.length - shown.length;
+					return (
+						<>
+							{shown.map((k) => (
+								<span
+									key={k}
+									className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5"
+								>
+									{HIGHLIGHT_LABELS[k]}
+								</span>
+							))}
+							{rest > 0 && (
+								<span className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+									+{rest}
+								</span>
+							)}
+						</>
+					);
+				})()}
+			</div>
 
 			{/* Prix + CTA */}
 				<div className="mt-auto pt-3 border-t border-slate-100 space-y-2.5">
