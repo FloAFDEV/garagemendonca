@@ -396,10 +396,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									</a>
 									<Link
 										href={contactHref}
-										className="btn-secondary w-full justify-center py-4 text-sm border-2"
+										className="btn-secondary w-full justify-center py-4 text-sm border-2 border-brand-500 text-brand-600 bg-transparent hover:bg-brand-50"
 									>
-										<MessageSquare size={17} /> Envoyer un
-										message
+										<MessageSquare size={17} /> Envoyer un message
 									</Link>
 								</div>
 
