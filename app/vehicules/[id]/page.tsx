@@ -35,6 +35,113 @@ import {
 	Star,
 } from "lucide-react";
 
+/* ─────────── carnet d'entretien parser ─────────── */
+const CARNET_LINE_RE =
+	/^\s*-?\s*(\d{2}\/\d{2}\/\d{4})\s*:\s*([\d\s]+km)\s*$/;
+
+type DescSegment =
+	| { kind: "text"; text: string }
+	| { kind: "carnet"; rows: Array<{ date: string; km: string }> };
+
+function parseDescription(raw: string): DescSegment[] {
+	const lines = raw.split("\n");
+	const segments: DescSegment[] = [];
+	let textLines: string[] = [];
+	let carnetRows: Array<{ date: string; km: string }> = [];
+
+	const flushText = () => {
+		if (textLines.length) {
+			segments.push({ kind: "text", text: textLines.join("\n") });
+			textLines = [];
+		}
+	};
+	const flushCarnet = () => {
+		if (carnetRows.length) {
+			segments.push({ kind: "carnet", rows: carnetRows });
+			carnetRows = [];
+		}
+	};
+
+	for (const line of lines) {
+		const m = line.match(CARNET_LINE_RE);
+		if (m) {
+			flushText();
+			carnetRows.push({ date: m[1], km: m[2].trim() });
+		} else {
+			flushCarnet();
+			textLines.push(line);
+		}
+	}
+	flushCarnet();
+	flushText();
+	return segments;
+}
+
+function DescriptionRenderer({ text }: { text: string }) {
+	const segments = parseDescription(text);
+	const hasCarnet = segments.some((s) => s.kind === "carnet");
+
+	if (!hasCarnet) {
+		return (
+			<p className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line">
+				{text}
+			</p>
+		);
+	}
+
+	return (
+		<div className="space-y-4">
+			{segments.map((seg, i) => {
+				if (seg.kind === "text") {
+					if (!seg.text.trim()) return null;
+					return (
+						<p
+							key={i}
+							className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line"
+						>
+							{seg.text}
+						</p>
+					);
+				}
+				return (
+					<div
+						key={i}
+						className="overflow-x-auto rounded-xl border border-slate-100"
+					>
+						<table className="w-full text-sm">
+							<thead>
+								<tr className="bg-slate-50 border-b border-slate-100">
+									<th className="text-left py-2.5 px-4 text-[10px] uppercase tracking-widest font-medium text-slate-400">
+										Date
+									</th>
+									<th className="text-left py-2.5 px-4 text-[10px] uppercase tracking-widest font-medium text-slate-400">
+										Kilométrage
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{seg.rows.map((row) => (
+									<tr
+										key={row.date}
+										className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
+									>
+										<td className="py-2.5 px-4 text-slate-600">
+											{row.date}
+										</td>
+										<td className="py-2.5 px-4 text-slate-700 font-medium">
+											{row.km}
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				);
+			})}
+		</div>
+	);
+}
+
 /* ─────────── types ─────────── */
 interface PageProps {
 	params: Promise<{ id: string }>;
@@ -226,9 +333,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								<h2 className="ty-subheading text-[#0f172a] text-xl mb-6">
 									Description du véhicule
 								</h2>
-								<p className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line">
-									{vehicle.description}
-								</p>
+								<DescriptionRenderer text={vehicle.description} />
 								<div className="mt-8 pt-8 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
 									{[
 										"Contrôle technique à jour",
