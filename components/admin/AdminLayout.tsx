@@ -10,9 +10,11 @@ import {
 	LogOut,
 	Menu,
 	Bell,
-	Settings,
 	Sun,
 	Moon,
+	Wrench,
+	Megaphone,
+	ExternalLink,
 } from "lucide-react";
 import clsx from "clsx";
 import { useAdminTheme } from "@/hooks/useAdminTheme";
@@ -30,6 +32,8 @@ const navItems = [
 		label: "Ajouter un véhicule",
 		Icon: Plus,
 	},
+	{ href: "/admin/services", label: "Services", Icon: Wrench },
+	{ href: "/admin/banniere", label: "Bannière promo", Icon: Megaphone },
 ];
 
 export default function AdminLayout({
@@ -183,6 +187,8 @@ export default function AdminLayout({
 							</p>
 							<Link
 								href="/"
+								target="_blank"
+								rel="noopener noreferrer"
 								className={clsx(
 									"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
 									t.txtMuted,
@@ -190,7 +196,7 @@ export default function AdminLayout({
 									"hover:text-brand-500",
 								)}
 							>
-								<Settings size={17} />
+								<ExternalLink size={17} />
 								Voir le site
 							</Link>
 						</div>
