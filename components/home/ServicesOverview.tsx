@@ -63,6 +63,9 @@ export default function ServicesOverview() {
 								<br />
 								la carrosserie et la vente
 							</h2>
+							<p className="section-subtitle mt-3 max-w-lg text-sm leading-relaxed">
+								Depuis 2001, Vitor Mendonça et son équipe interviennent sur tous types de véhicules. Devis pièce et main-d&apos;œuvre systématique avant toute intervention, spécialistes des véhicules japonais et boîtes automatiques.
+							</p>
 						</div>
 						<Link
 							href="/services"
