@@ -108,8 +108,8 @@ export default async function ServicesPage() {
 											className={`relative min-h-[280px] lg:min-h-0 overflow-hidden lg:col-span-1 ${isImageRight ? "lg:order-last" : ""}`}
 										>
 											<Image
-												src={service.image}
-												alt={service.title}
+												src={service.images.find((i) => i.is_primary)?.url ?? service.images[0]?.url ?? ""}
+												alt={service.images.find((i) => i.is_primary)?.alt ?? service.title}
 												fill
 												className="object-cover transition-transform duration-700 group-hover:scale-105"
 												sizes="(max-width: 1024px) 100vw, 33vw" // Mise à jour de sizes pour l'optimisation
@@ -131,7 +131,7 @@ export default async function ServicesPage() {
 
 											{/* Description */}
 											<p className="text-slate-500 leading-relaxed mb-8 text-sm sm:text-base">
-												{service.description}
+												{service.long_description}
 											</p>
 
 											{/* Features */}

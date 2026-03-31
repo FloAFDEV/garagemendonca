@@ -224,20 +224,37 @@ export type VehicleCreateInput = Omit<
 export type VehicleUpdateInput = Partial<VehicleCreateInput>;
 
 // ─────────────────────────────────────────────
+//  ServiceImage
+//  snake_case intentionnel — mapping 1:1 avec table Supabase service_images
+// ─────────────────────────────────────────────
+export interface ServiceImage {
+	id: string;
+	service_id: string;
+	garage_id: string;
+	/** Chemin local (/images/…) ou URL Supabase Storage */
+	url: string;
+	alt?: string;
+	order: number;
+	is_primary: boolean;
+}
+
+// ─────────────────────────────────────────────
 //  Service
 // ─────────────────────────────────────────────
 export interface Service {
 	id: string;
-	/** Slug URL-safe — ancre publique : #entretien, #mecanique, #carrosserie */
-	slug?: "entretien" | "mecanique" | "carrosserie";
+	/** string intentionnel — permet l'ajout dynamique de services
+	 *  sans modifier le type (ex: 'pneumatiques', 'location', etc.) */
+	slug: string;
 	title: string;
-	description: string;
 	icon: string;
-	/** URL image publique (identique à photo_url) */
-	image: string;
-	photo_url?: string;
+	/** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
+	short_description: string;
+	/** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
+	long_description: string;
 	features: string[];
-	is_active?: boolean;
+	images: ServiceImage[];
+	is_active: boolean;
 }
 
 // ─────────────────────────────────────────────

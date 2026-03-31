@@ -15,12 +15,14 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
   const router = useRouter();
   const { slug } = use(params);
 
-  const seed = seedServices.find(s => (s.slug ?? s.id) === slug);
+  const seed = seedServices.find(s => s.slug === slug);
 
   const [title, setTitle] = useState(seed?.title ?? "");
-  const [description, setDescription] = useState(seed?.description ?? "");
+  const [shortDesc, setShortDesc] = useState(seed?.short_description ?? "");
+  const [longDesc, setLongDesc] = useState(seed?.long_description ?? "");
   const [features, setFeatures] = useState<string[]>(seed?.features ?? []);
-  const [photoUrl, setPhotoUrl] = useState(seed?.image ?? "");
+  const primaryImage = seed?.images.find((i) => i.is_primary) ?? seed?.images[0];
+  const [photoUrl, setPhotoUrl] = useState(primaryImage?.url ?? "");
   const [isActive, setIsActive] = useState(seed?.is_active ?? true);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -57,13 +59,16 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveStatus("saving");
+    const primaryImg = seed.images.find((i) => i.is_primary) ?? seed.images[0];
     const result = await updateServiceAction(slug, {
       title,
-      description,
+      short_description: shortDesc,
+      long_description: longDesc,
       features: features.filter(f => f.trim()),
-      photo_url: photoUrl,
-      image: photoUrl,
       is_active: isActive,
+      images: primaryImg
+        ? [{ ...primaryImg, url: photoUrl }]
+        : [],
     });
     if (result.ok) {
       setSaveStatus("saved");
@@ -126,7 +131,11 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
               </div>
               <div>
                 <label className={labelClass}>Description courte <span className="text-brand-500">*</span></label>
-                <textarea required rows={3} value={description} onChange={e => setDescription(e.target.value)} className={inputClass + " resize-none"} placeholder="Description affichée sur la page services…" />
+                <textarea required rows={3} value={shortDesc} onChange={e => setShortDesc(e.target.value)} className={inputClass + " resize-none"} placeholder="Résumé affiché dans les cartes et listes…" />
+              </div>
+              <div>
+                <label className={labelClass}>Description longue <span className="text-brand-500">*</span></label>
+                <textarea required rows={6} value={longDesc} onChange={e => setLongDesc(e.target.value)} className={inputClass + " resize-none"} placeholder="Description complète affichée sur la page /services…" />
               </div>
             </div>
           </div>

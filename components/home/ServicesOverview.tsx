@@ -2,51 +2,19 @@ import Link from "next/link";
 import { Wrench, Settings, Paintbrush, ArrowRight } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
+import { serviceRepository } from "@/lib/repositories";
 
-const services = [
-	{
-		id: "entretien",
-		num: "01",
-		Icon: Wrench,
-		title: "Entretien & Révision",
-		description:
-			"Service de proximité pour tous véhicules toutes marques. Préconisations constructeur toujours respectées.",
-		items: [
-			"Révision garantie constructeur",
-			"Pneus, clim & amortisseurs",
-			"Contrôle technique",
-			"Courroie de distribution",
-		],
-	},
-	{
-		id: "mecanique",
-		num: "02",
-		Icon: Settings,
-		title: "Mécanique & Électronique",
-		description:
-			"Spécialiste véhicules japonais et boîtes automatiques. Réparation électronique à coût maîtrisé, devis avant intervention.",
-		items: [
-			"Spécialiste japonaises",
-			"Moteur, embrayage, boîte auto",
-			"Réparation pièces électro.",
-			"Devis pièce & main-d'œuvre",
-		],
-	},
-	{
-		id: "carrosserie",
-		num: "04",
-		Icon: Paintbrush,
-		title: "Carrosserie & Vitrage",
-		description:
-			"Nouvelle cabine de peinture. Tôlerie, collision, pare-brise toutes marques. Véhicule de courtoisie inclus.",
-		items: [
-			"Nouvelle cabine de peinture",
-			"Pare-brise & lunette arrière",
-			"Véhicule de courtoisie",
-			"Dossier assurance inclus",
-		],
-	},
-];
+const iconMap: Record<string, React.ElementType> = {
+	wrench: Wrench,
+	settings: Settings,
+	paintbrush: Paintbrush,
+};
+
+const numMap: Record<string, string> = {
+	entretien: "01",
+	mecanique: "02",
+	carrosserie: "03",
+};
 
 const reassuranceItems = [
 	{
@@ -137,7 +105,8 @@ const reassuranceItems = [
 	},
 ];
 
-export default function ServicesOverview() {
+export default async function ServicesOverview() {
+	const services = await serviceRepository.getAll();
 	return (
 		<section className="py-28 bg-[#f8fafc]">
 			<Container>
@@ -171,11 +140,13 @@ export default function ServicesOverview() {
 
 				{/* ── Grille cartes ── */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-					{services.map(
-						({ id, num, Icon, title, description, items }, i) => (
-							<AnimateOnScroll key={id} delay={i * 90}>
+					{services.filter((s) => s.is_active).map((service, i) => {
+						const Icon = iconMap[service.icon] ?? Wrench;
+						const num = numMap[service.slug] ?? String(i + 1).padStart(2, "0");
+						return (
+							<AnimateOnScroll key={service.id} delay={i * 90}>
 								<Link
-									href={`/services#${id}`}
+									href={`/services#${service.id}`}
 									className="group relative bg-white rounded-xl border border-slate-200 p-6 transition-all duration-300 hover:shadow-[0_6px_24px_rgba(0,0,0,0.07)] hover:-translate-y-1 overflow-hidden flex flex-col h-full"
 								>
 									{/* Filigrane numéro — décoratif */}
@@ -204,17 +175,17 @@ export default function ServicesOverview() {
 
 										{/* Titre */}
 										<h3 className="ty-subheading text-[#0f172a] text-sm mb-2 leading-snug pr-8">
-											{title}
+											{service.title}
 										</h3>
 
 										{/* Description */}
 										<p className="font-light text-[#64748b] text-[11px] leading-[1.65] mb-5">
-											{description}
+											{service.short_description}
 										</p>
 
 										{/* Liste */}
 										<ul className="space-y-1.5 mb-6 flex-1">
-											{items.map((item) => (
+											{service.features.slice(0, 4).map((item) => (
 												<li
 													key={item}
 													className="flex items-center gap-2 text-[11px] font-light text-[#64748b]"
@@ -233,8 +204,8 @@ export default function ServicesOverview() {
 									</div>
 								</Link>
 							</AnimateOnScroll>
-						),
-					)}
+						);
+					})}
 				</div>
 
 				{/* ── Bande de réassurance ── */}

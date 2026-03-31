@@ -22,7 +22,7 @@ export default function AdminServicesPage() {
   const [loading, setLoading] = useState<string | null>(null);
 
   const toggleActive = async (service: Service) => {
-    const slug = service.slug ?? service.id;
+    const slug = service.slug;
     setLoading(slug);
     const newActive = !service.is_active;
     // Optimistic update
@@ -43,7 +43,7 @@ export default function AdminServicesPage() {
         {/* Service cards */}
         <div className="space-y-4">
           {services.map((service) => {
-            const slug = service.slug ?? service.id;
+            const slug = service.slug;
             const isLoading = loading === slug;
             return (
               <div key={service.id} className={clsx("rounded-2xl border p-5 flex items-start gap-5", t.surface, t.border)}>
@@ -57,7 +57,7 @@ export default function AdminServicesPage() {
                   <div className="flex items-start justify-between gap-3 flex-wrap">
                     <div>
                       <h3 className={clsx("font-medium text-base", t.txt)}>{service.title}</h3>
-                      <p className={clsx("text-xs mt-1 line-clamp-2", t.txtMuted)}>{service.description}</p>
+                      <p className={clsx("text-xs mt-1 line-clamp-2", t.txtMuted)}>{service.short_description}</p>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {/* Toggle active */}

@@ -531,16 +531,20 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 	},
 ];
 
+/** Identifiant du garage actif — même valeur que ACTIVE_GARAGE_ID dans lib/config/garage.ts */
+const GARAGE_ID = "garage-mendonça";
+
 export const services: Service[] = [
 	{
 		id: "entretien",
 		slug: "entretien",
 		is_active: true,
 		title: "Entretien & Révision",
-		description:
-			"Depuis 2001, le Garage Mendonça assure l'entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Accueil adapté aux jeunes conducteurs, seniors et personnes à mobilité réduite. Les préconisations constructeur sont toujours respectées.",
 		icon: "wrench",
-		image: "/images/entretien.webp",
+		short_description:
+			"Service de proximité pour tous véhicules toutes marques. Préconisations constructeur toujours respectées.",
+		long_description:
+			"Depuis 2001, le Garage Mendonça assure l'entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Accueil adapté aux jeunes conducteurs, seniors et personnes à mobilité réduite. Les préconisations constructeur sont toujours respectées.",
 		features: [
 			"Vidange huile moteur & remplacement filtres",
 			"Révision garantie constructeur",
@@ -551,16 +555,28 @@ export const services: Service[] = [
 			"Changement d'amortisseurs toutes marques",
 			"Remplacement disques, plaquettes de freins & batterie",
 		],
+		images: [
+			{
+				id: "img-entretien-1",
+				service_id: "entretien",
+				garage_id: GARAGE_ID,
+				url: "/images/entretien.webp",
+				alt: "Entretien véhicule au Garage Mendonça",
+				order: 1,
+				is_primary: true,
+			},
+		],
 	},
 	{
 		id: "mecanique",
 		slug: "mecanique",
 		is_active: true,
 		title: "Réparation Mécanique & Électronique",
-		description:
-			"À la fois généraliste et expert, le Garage Mendonça intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé.",
 		icon: "settings",
-		image: "/images/mecanique.webp",
+		short_description:
+			"Spécialiste véhicules japonais et boîtes automatiques. Réparation électronique à coût maîtrisé, devis avant intervention.",
+		long_description:
+			"À la fois généraliste et expert, le Garage Mendonça intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé.",
 		features: [
 			"Réparation moteur, embrayage & boîte de vitesses",
 			"Suspensions, direction et amortisseurs",
@@ -571,17 +587,28 @@ export const services: Service[] = [
 			"Devis pièce & main-d'œuvre avant toute intervention",
 			"Véhicule de prêt disponible",
 		],
+		images: [
+			{
+				id: "img-mecanique-1",
+				service_id: "mecanique",
+				garage_id: GARAGE_ID,
+				url: "/images/mecanique.webp",
+				alt: "Réparation mécanique au Garage Mendonça",
+				order: 1,
+				is_primary: true,
+			},
+		],
 	},
-
 	{
 		id: "carrosserie",
 		slug: "carrosserie",
 		is_active: true,
 		title: "Carrosserie, Vitrage & Services",
-		description:
-			"Le Garage Mendonça a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",
 		icon: "paintbrush",
-		image: "/images/carrosserie.webp",
+		short_description:
+			"Nouvelle cabine de peinture. Tôlerie, collision, pare-brise toutes marques. Véhicule de courtoisie inclus.",
+		long_description:
+			"Le Garage Mendonça a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",
 		features: [
 			"Tôlerie, peinture, réparation plastiques — cabine neuve",
 			"Pare-brise & lunette arrière (particuliers et utilitaires)",
@@ -591,6 +618,17 @@ export const services: Service[] = [
 			"Véhicule de courtoisie (gratuit ou 16 € HT/j)",
 			"Location de véhicules (déménagements, déplacements pro)",
 			"Nettoyage intérieur & extérieur inclus après carrosserie",
+		],
+		images: [
+			{
+				id: "img-carrosserie-1",
+				service_id: "carrosserie",
+				garage_id: GARAGE_ID,
+				url: "/images/carrosserie.webp",
+				alt: "Carrosserie et peinture au Garage Mendonça",
+				order: 1,
+				is_primary: true,
+			},
 		],
 	},
 ];
