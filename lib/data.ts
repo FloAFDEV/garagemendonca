@@ -1,4 +1,12 @@
-import { Vehicle, Service, Garage } from "@/types";
+import {
+	Vehicle,
+	Service,
+	Garage,
+	ServiceStep,
+	ServicePricing,
+	ServiceFAQItem,
+	ServiceTestimonial,
+} from "@/types";
 
 // ─────────────────────────────────────────────
 //  Garage(s) fictifs — données de démonstration
@@ -534,10 +542,245 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 /** Identifiant du garage actif — même valeur que ACTIVE_GARAGE_ID dans lib/config/garage.ts */
 const GARAGE_ID = "garage-mendonça";
 
+// ── Steps, pricing, faq, testimonials partagés ────────────────────────────
+const stepsEntretien: ServiceStep[] = [
+	{
+		order: 1,
+		title: "Dépôt du véhicule",
+		description: "Sans rendez-vous ou sur rendez-vous. Accueil en atelier dès 8h.",
+	},
+	{
+		order: 2,
+		title: "Diagnostic offert",
+		description: "Bilan visuel complet et lecture des codes défaut en 10 minutes.",
+	},
+	{
+		order: 3,
+		title: "Devis transparent",
+		description: "Présentation du devis pièce et main-d'œuvre avant toute intervention.",
+	},
+	{
+		order: 4,
+		title: "Travaux",
+		description: "Réalisés selon les préconisations constructeur, pièces qualifiées.",
+	},
+	{
+		order: 5,
+		title: "Restitution",
+		description: "Test sur route, nettoyage du véhicule, facturation détaillée.",
+	},
+];
+
+const pricingEntretien: ServicePricing[] = [
+	{ label: "Vidange + filtre huile", price: "à partir de 79 € TTC" },
+	{ label: "Révision complète", price: "à partir de 149 € TTC" },
+	{ label: "Courroie de distribution", price: "à partir de 299 € TTC" },
+	{ label: "Contrôle technique", price: "Sur devis", note: "Préparation incluse" },
+	{ label: "Recharge climatisation", price: "à partir de 99 € TTC" },
+	{ label: "4 pneus posés équilibrés", price: "Sur devis", note: "Toutes marques" },
+];
+
+const faqEntretien: ServiceFAQItem[] = [
+	{
+		question: "Mon véhicule est-il trop ancien pour être entretenu chez vous ?",
+		answer: "Non. Nous intervenons sur tous les véhicules toutes marques, quels que soient leur âge ou leur kilométrage. Nous sommes spécialisés dans les japonaises et les boîtes automatiques, mais nous accueillons toutes les marques.",
+	},
+	{
+		question: "Puis-je avoir un devis avant l'intervention ?",
+		answer: "Oui, c'est systématique. Nous ne commençons aucun travail sans votre accord écrit sur le devis. Prix pièce et main-d'œuvre détaillés à l'avance.",
+	},
+	{
+		question: "Avez-vous des véhicules de prêt ?",
+		answer: "Oui, jusqu'à 9 véhicules de prêt sont disponibles (sous réserve de disponibilité) pour que vous puissiez continuer vos déplacements pendant l'intervention.",
+	},
+	{
+		question: "L'entretien fait chez vous est-il compatible avec la garantie constructeur ?",
+		answer: "Oui. Nous respectons strictement les préconisations constructeur et utilisons des pièces de qualité équivalente OEM. L'entretien n'invalide pas votre garantie constructeur.",
+	},
+];
+
+const testimonialsEntretien: ServiceTestimonial[] = [
+	{
+		author: "Laurent M.",
+		location: "Drémil-Lafage",
+		date: "janvier 2025",
+		rating: 5,
+		content: "Vidange + révision faite en 1h30 chrono, devis respecté au centime. Je reviens depuis 4 ans, jamais de mauvaise surprise.",
+	},
+	{
+		author: "Sophie V.",
+		location: "Montrabé",
+		date: "mars 2025",
+		rating: 5,
+		content: "Ils m'ont prêté un véhicule pendant 2 jours pour la révision complète. Accueil très agréable, travail sérieux et propre.",
+	},
+	{
+		author: "Ahmed B.",
+		location: "Toulouse",
+		date: "novembre 2024",
+		rating: 5,
+		content: "Courroie de distribution changée sur ma Toyota. Devis clair, pas de surprise. Je recommande vivement.",
+	},
+];
+
+const stepsMecanique: ServiceStep[] = [
+	{
+		order: 1,
+		title: "Prise en charge",
+		description: "Accueil de votre véhicule et description du problème constaté.",
+	},
+	{
+		order: 2,
+		title: "Diagnostic électronique",
+		description: "Lecture des codes défaut OBD en 10 minutes, bilan des actionneurs.",
+	},
+	{
+		order: 3,
+		title: "Devis pièce & main-d'œuvre",
+		description: "Chiffrage détaillé avant de commencer — aucun frais caché.",
+	},
+	{
+		order: 4,
+		title: "Réparation",
+		description: "Intervention par nos mécaniciens qualifiés, spécialistes japonaises & boîtes auto.",
+	},
+	{
+		order: 5,
+		title: "Contrôle final",
+		description: "Essai sur route, vérification complète et restitution du véhicule propre.",
+	},
+];
+
+const pricingMecanique: ServicePricing[] = [
+	{ label: "Diagnostic OBD", price: "Offert", note: "En moins de 10 min" },
+	{ label: "Embrayage", price: "Sur devis", note: "Toutes marques" },
+	{ label: "Révision boîte automatique", price: "Sur devis" },
+	{ label: "Réparation électronique", price: "Sur devis", note: "À coût maîtrisé" },
+	{ label: "Mise au point moteur", price: "Sur devis" },
+	{ label: "Suspensions complètes", price: "Sur devis" },
+];
+
+const faqMecanique: ServiceFAQItem[] = [
+	{
+		question: "Êtes-vous vraiment spécialisés dans les boîtes automatiques ?",
+		answer: "Oui, c'est notre expertise principale depuis 2001. Nous réalisons des vidanges de boîtes automatiques, des révisions complètes et des réparations de boîtes CVT, DSG et conventionnelles sur toutes marques japonaises.",
+	},
+	{
+		question: "Pouvez-vous réparer des pièces électroniques sans les remplacer ?",
+		answer: "Dans de nombreux cas, oui. Nous sommes équipés pour réparer des calculateurs, des modules de confort et d'autres composants électroniques à un coût bien inférieur au remplacement.",
+	},
+	{
+		question: "Intervenez-vous sur toutes les marques ou seulement les japonaises ?",
+		answer: "Nous intervenons sur toutes les marques. Notre expertise poussée sur les japonaises (Toyota, Nissan, Suzuki, Honda, Mazda, Mitsubishi) nous permet d'aller plus loin sur ces modèles, mais nous sommes pleinement équipés pour les européennes et les coréennes.",
+	},
+	{
+		question: "Combien de temps dure une réparation mécanique ?",
+		answer: "Cela dépend de la réparation. Un diagnostic prend 10 minutes. Une réparation courante (embrayage, boîte auto) prend généralement 1 à 2 jours. Un véhicule de prêt est disponible si besoin.",
+	},
+];
+
+const testimonialsMecanique: ServiceTestimonial[] = [
+	{
+		author: "Pierre D.",
+		location: "Balma",
+		date: "février 2025",
+		rating: 5,
+		content: "Boîte automatique révisée sur ma Nissan Micra. Diagnostic rapide, tarif raisonnable, véhicule de prêt fourni. Tout roule depuis 8 000 km.",
+	},
+	{
+		author: "Fatima R.",
+		location: "Toulouse",
+		date: "décembre 2024",
+		rating: 5,
+		content: "Réparation calculateur évitée grâce à leur expertise en électronique. 3 fois moins cher que chez le concessionnaire. Très professionnel.",
+	},
+];
+
+const stepsCarrosserie: ServiceStep[] = [
+	{
+		order: 1,
+		title: "Évaluation du sinistre",
+		description: "Inspection visuelle et photos du dommage, prise en charge du dossier assurance si besoin.",
+	},
+	{
+		order: 2,
+		title: "Expertise & chiffrage",
+		description: "Devis détaillé transmis à votre assurance ou directement pour les petites réparations.",
+	},
+	{
+		order: 3,
+		title: "Prise en charge",
+		description: "Remise du véhicule de courtoisie, début des travaux en cabine de peinture.",
+	},
+	{
+		order: 4,
+		title: "Carrosserie & peinture",
+		description: "Tôlerie, redressage, peinture en cabine climatisée — finition irréprochable.",
+	},
+	{
+		order: 5,
+		title: "Restitution",
+		description: "Nettoyage intérieur et extérieur complet, restitution du véhicule comme neuf.",
+	},
+];
+
+const pricingCarrosserie: ServicePricing[] = [
+	{ label: "Petite bosse / éraflure", price: "Sur devis", note: "Dès 90 € selon dommage" },
+	{ label: "Pare-brise", price: "Sur devis", note: "Prise en charge assurance possible" },
+	{ label: "Lunette arrière", price: "Sur devis" },
+	{ label: "Véhicule de courtoisie", price: "Gratuit ou 16 € HT/j", note: "Selon durée" },
+	{ label: "Location utilitaire", price: "Sur devis", note: "Déménagement, déplacements pro" },
+	{ label: "Nettoyage après carrosserie", price: "Inclus" },
+];
+
+const faqCarrosserie: ServiceFAQItem[] = [
+	{
+		question: "Prenez-vous en charge le dossier assurance ?",
+		answer: "Oui, intégralement. Nous gérons les démarches avec votre assurance, de l'expertise au règlement, sans que vous ayez à vous en occuper.",
+	},
+	{
+		question: "Ma voiture est grêlée, pouvez-vous la réparer ?",
+		answer: "Oui, c'est une spécialité de notre atelier. Nous traitons les véhicules grêlés en débosselage sans peinture (PDR) ou en peinture complète selon l'étendue des dommages.",
+	},
+	{
+		question: "Intervenez-vous sur les pare-brise de tous les véhicules ?",
+		answer: "Oui, pare-brise et lunettes arrière toutes marques, particuliers et utilitaires. Nous pouvons prendre en charge votre assurance pare-brise si vous en disposez.",
+	},
+	{
+		question: "Faut-il prendre rendez-vous pour un devis carrosserie ?",
+		answer: "Non, vous pouvez vous présenter directement. Nous évaluons le dommage sur place et vous remettons un devis immédiatement ou sous 24h pour les cas complexes.",
+	},
+];
+
+const testimonialsCarrosserie: ServiceTestimonial[] = [
+	{
+		author: "Nathalie C.",
+		location: "Drémil-Lafage",
+		date: "mars 2025",
+		rating: 5,
+		content: "Pare-brise remplacé en 2h, dossier assurance géré par le garage. Rien à faire de mon côté, impeccable.",
+	},
+	{
+		author: "Julien P.",
+		location: "Quint-Fonsegrives",
+		date: "janvier 2025",
+		rating: 5,
+		content: "Carrosserie avant refaite après un choc. Peinture parfaite, on ne voit plus rien. Véhicule rendu propre à l'intérieur aussi.",
+	},
+	{
+		author: "Marie-Hélène T.",
+		location: "Toulouse",
+		date: "novembre 2024",
+		rating: 4,
+		content: "Très bien pour les petites bosses. Devis clair, délai respecté. Véhicule de prêt fourni sans supplément.",
+	},
+];
+
 export const services: Service[] = [
 	{
 		id: "entretien",
 		slug: "entretien",
+		order: 1,
 		is_active: true,
 		title: "Entretien & Révision",
 		icon: "wrench",
@@ -555,6 +798,10 @@ export const services: Service[] = [
 			"Changement d'amortisseurs toutes marques",
 			"Remplacement disques, plaquettes de freins & batterie",
 		],
+		steps: stepsEntretien,
+		pricing: pricingEntretien,
+		faq: faqEntretien,
+		testimonials: testimonialsEntretien,
 		images: [
 			{
 				id: "img-entretien-1",
@@ -570,6 +817,7 @@ export const services: Service[] = [
 	{
 		id: "mecanique",
 		slug: "mecanique",
+		order: 2,
 		is_active: true,
 		title: "Réparation Mécanique & Électronique",
 		icon: "settings",
@@ -587,6 +835,10 @@ export const services: Service[] = [
 			"Devis pièce & main-d'œuvre avant toute intervention",
 			"Véhicule de prêt disponible",
 		],
+		steps: stepsMecanique,
+		pricing: pricingMecanique,
+		faq: faqMecanique,
+		testimonials: testimonialsMecanique,
 		images: [
 			{
 				id: "img-mecanique-1",
@@ -602,6 +854,7 @@ export const services: Service[] = [
 	{
 		id: "carrosserie",
 		slug: "carrosserie",
+		order: 3,
 		is_active: true,
 		title: "Carrosserie, Vitrage & Services",
 		icon: "paintbrush",
@@ -619,6 +872,10 @@ export const services: Service[] = [
 			"Location de véhicules (déménagements, déplacements pro)",
 			"Nettoyage intérieur & extérieur inclus après carrosserie",
 		],
+		steps: stepsCarrosserie,
+		pricing: pricingCarrosserie,
+		faq: faqCarrosserie,
+		testimonials: testimonialsCarrosserie,
 		images: [
 			{
 				id: "img-carrosserie-1",

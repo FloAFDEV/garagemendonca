@@ -77,6 +77,15 @@ export const serviceRepository = {
 		return _store.find((s) => s.slug === slug) ?? null;
 	},
 
+	/**
+	 * Services for a given garage, sorted by `order`.
+	 * In the mock every service belongs to the same garage.
+	 * TODO: Supabase → supabase.from("services").select("*, service_images(*)").eq("garage_id",garageId).order("order")
+	 */
+	getByGarageId: async (_garageId: string): Promise<Service[]> => {
+		return [..._store].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+	},
+
 	/** Partial update by slug. */
 	update: async (slug: string, data: Partial<Service>): Promise<Service> => {
 		// TODO: Supabase → supabase.from("services").update(data).eq("slug",slug).select().single()

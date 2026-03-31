@@ -239,6 +239,46 @@ export interface ServiceImage {
 }
 
 // ─────────────────────────────────────────────
+//  Étapes du processus d'un service
+// ─────────────────────────────────────────────
+export interface ServiceStep {
+	order: number;
+	title: string;
+	description: string;
+}
+
+// ─────────────────────────────────────────────
+//  Tarif indicatif d'un service
+// ─────────────────────────────────────────────
+export interface ServicePricing {
+	label: string;
+	/** Prix formaté, ex : "à partir de 79 €" ou "Sur devis" */
+	price: string;
+	note?: string;
+}
+
+// ─────────────────────────────────────────────
+//  Question / réponse FAQ d'un service
+// ─────────────────────────────────────────────
+export interface ServiceFAQItem {
+	question: string;
+	answer: string;
+}
+
+// ─────────────────────────────────────────────
+//  Témoignage client lié à un service
+// ─────────────────────────────────────────────
+export interface ServiceTestimonial {
+	author: string;
+	location: string;
+	/** Format libre, ex : "mars 2025" */
+	date: string;
+	/** Note de 1 à 5 */
+	rating: number;
+	content: string;
+}
+
+// ─────────────────────────────────────────────
 //  Service
 // ─────────────────────────────────────────────
 export interface Service {
@@ -246,6 +286,8 @@ export interface Service {
 	/** string intentionnel — permet l'ajout dynamique de services
 	 *  sans modifier le type (ex: 'pneumatiques', 'location', etc.) */
 	slug: string;
+	/** Ordre d'affichage (1 = premier) */
+	order?: number;
 	title: string;
 	icon: string;
 	/** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
@@ -253,6 +295,10 @@ export interface Service {
 	/** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
 	long_description: string;
 	features: string[];
+	steps?: ServiceStep[];
+	pricing?: ServicePricing[];
+	faq?: ServiceFAQItem[];
+	testimonials?: ServiceTestimonial[];
 	images: ServiceImage[];
 	is_active: boolean;
 }
