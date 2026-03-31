@@ -15,7 +15,7 @@ const navLinks = [
 	{ href: "/contact", label: "Contact" },
 ];
 
-export default function Header() {
+export default function Header({ banner }: { banner?: React.ReactNode }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 	const pathname = usePathname();
@@ -45,6 +45,9 @@ export default function Header() {
 					: "bg-black/10 backdrop-blur-[2px] py-2",
 			)}
 		>
+			{/* Bannière promotionnelle — slot server component */}
+			{banner}
+
 			{/* Barre info supérieure */}
 			<div
 				className={clsx(

@@ -9,8 +9,10 @@ export default function MainLayout({
 }) {
   return (
     <div className="flex flex-col min-h-screen">
-      <PromoBanner />
-      <Header />
+      {/* PromoBanner est passée comme slot server component au Header fixe —
+          elle se rend à l'intérieur de l'élément <header> position:fixed,
+          au-dessus de la nav, sans conflit de z-index ni hydratation. */}
+      <Header banner={<PromoBanner />} />
       <main id="main-content" className="flex-1">{children}</main>
       <Footer />
     </div>

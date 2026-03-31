@@ -109,7 +109,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="fr">
+		<html lang="fr" suppressHydrationWarning>
 			<head>
 				{/* Anti-FOUC : applique le thème admin avant tout paint */}
 				<script
