@@ -11,6 +11,7 @@ import {
 import clsx from "clsx";
 import type { Banner } from "@/types";
 import { upsertBannerAction } from "./actions";
+import { adminUI } from "@/lib/admin-ui";
 
 const PALETTE = [
   { label: "Rouge", value: "#DC2626" },
@@ -30,13 +31,13 @@ function isBannerLive(banner: Partial<Banner>): boolean {
 }
 
 function getBannerStatus(banner: Partial<Banner>): { label: string; color: string } {
-  if (!banner.is_active) return { label: "Inactive", color: "text-slate-400" };
+  if (!banner.is_active) return { label: "Inactive", color: adminUI.statusInactive };
   const now = new Date();
   if (banner.scheduled_end && new Date(banner.scheduled_end) < now)
-    return { label: "Expirée", color: "text-red-400" };
+    return { label: "Expirée", color: adminUI.statusExpired };
   if (banner.scheduled_start && new Date(banner.scheduled_start) > now)
-    return { label: "Programmée", color: "text-blue-400" };
-  return { label: "Active", color: "text-emerald-400" };
+    return { label: "Programmée", color: adminUI.statusScheduled };
+  return { label: "Active", color: adminUI.statusActive };
 }
 
 export default function AdminBannierePage() {
@@ -57,7 +58,6 @@ export default function AdminBannierePage() {
   });
 
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const [customColor, setCustomColor] = useState("");
 
   const set = <K extends keyof Banner>(key: K, value: Banner[K]) =>
     setForm(p => ({ ...p, [key]: value }));
@@ -79,19 +79,9 @@ export default function AdminBannierePage() {
     if (result.ok) setTimeout(() => setSaveStatus("idle"), 2500);
   };
 
-  const inputClass = [
-    "w-full",
-    t.inputBg,
-    "border",
-    t.inputBorder,
-    "focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
-    "rounded-xl px-4 py-3",
-    t.inputText,
-    t.inputPlaceholder,
-    "outline-none transition-all text-sm",
-  ].join(" ");
-  const labelClass = `block text-sm font-medium ${t.txtMuted} mb-2`;
-  const sectionClass = `${t.surface} rounded-2xl border ${t.border} p-5 sm:p-6`;
+  const inputClass = t.inputClass;
+  const labelClass = t.labelClass;
+  const sectionClass = t.sectionCard;
 
   const status = getBannerStatus(form);
   const isLive = isBannerLive(form);
@@ -142,10 +132,8 @@ export default function AdminBannierePage() {
               type="button"
               onClick={() => set("is_active", !form.is_active)}
               className={clsx(
-                "flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-xl transition-all border",
-                form.is_active
-                  ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/25"
-                  : "bg-slate-500/10 text-slate-400 border-slate-500/20 hover:bg-slate-500/20",
+                "text-sm px-5 py-2.5",
+                form.is_active ? adminUI.toggleOn : adminUI.toggleOff,
               )}
             >
               {form.is_active ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
@@ -219,10 +207,7 @@ export default function AdminBannierePage() {
                     <button
                       key={value}
                       type="button"
-                      onClick={() => {
-                        set("bg_color", value);
-                        setCustomColor("");
-                      }}
+                      onClick={() => set("bg_color", value)}
                       style={{ backgroundColor: value }}
                       title={label}
                       className={clsx(
@@ -392,12 +377,7 @@ export default function AdminBannierePage() {
                 <button
                   type="button"
                   onClick={() => set("is_dismissible", !form.is_dismissible)}
-                  className={clsx(
-                    "flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-xl transition-all border",
-                    form.is_dismissible
-                      ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
-                      : "bg-slate-500/10 text-slate-400 border-slate-500/20",
-                  )}
+                  className={form.is_dismissible ? adminUI.toggleOn : adminUI.toggleOff}
                 >
                   {form.is_dismissible ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
                   {form.is_dismissible ? "Oui" : "Non"}

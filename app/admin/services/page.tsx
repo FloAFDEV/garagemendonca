@@ -9,6 +9,7 @@ import clsx from "clsx";
 import type { Service } from "@/types";
 import { services as seedServices } from "@/lib/data";
 import { updateServiceAction } from "./actions";
+import { adminUI } from "@/lib/admin-ui";
 
 const iconMap: Record<string, React.ReactNode> = {
   wrench: <Wrench size={18} />,
@@ -65,10 +66,8 @@ export default function AdminServicesPage() {
                         onClick={() => toggleActive(service)}
                         disabled={isLoading}
                         className={clsx(
-                          "flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-all",
-                          service.is_active
-                            ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25"
-                            : "bg-slate-500/10 text-slate-400 border border-slate-500/20 hover:bg-slate-500/20",
+                          "text-xs",
+                          service.is_active ? adminUI.toggleOn : adminUI.toggleOff,
                           isLoading && "opacity-50 cursor-wait",
                         )}
                       >
@@ -80,7 +79,7 @@ export default function AdminServicesPage() {
                       <Link
                         href={`/services#${slug}`}
                         target="_blank"
-                        className={clsx("p-2 rounded-lg transition-colors", t.txtMuted, t.hoverBgStrong, t.hoverTxt)}
+                        className={clsx("p-2 rounded-lg transition-colors", t.txtMuted, t.hoverBgStrong, t.hoverTxt, adminUI.focusGhost)}
                         title="Voir sur le site"
                       >
                         <Eye size={15} />
@@ -89,7 +88,7 @@ export default function AdminServicesPage() {
                       {/* Edit */}
                       <Link
                         href={`/admin/services/${slug}`}
-                        className={clsx("p-2 rounded-lg transition-colors hover:text-blue-400", t.txtMuted, t.hoverBgStrong)}
+                        className={clsx("p-2 rounded-lg transition-colors", t.txtMuted, t.hoverBgStrong, t.hoverTxt, adminUI.focusGhost)}
                         title="Modifier"
                       >
                         <Pencil size={15} />

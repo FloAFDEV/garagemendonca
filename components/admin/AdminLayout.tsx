@@ -19,6 +19,7 @@ import {
 import clsx from "clsx";
 import { useAdminTheme } from "@/hooks/useAdminTheme";
 import { AdminThemeProvider, buildTokens } from "@/contexts/AdminThemeContext";
+import { adminUI } from "@/lib/admin-ui";
 
 const navItems = [
 	{
@@ -157,15 +158,9 @@ export default function AdminLayout({
 												setSidebarOpen(false)
 											}
 											className={clsx(
-												"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
 												isActive
-													? /* Actif : bg brand + texte blanc — lisible dans les deux thèmes */
-														"bg-brand-600 text-white shadow-lg"
-													: /* Inactif : texte muted thème-aware, hover brand */
-														clsx(
-															t.txtMuted,
-															"hover:bg-brand-600 hover:text-white",
-														),
+													? adminUI.navLinkActive
+													: clsx(adminUI.navLink, t.txtMuted, "hover:bg-brand-600 hover:text-white"),
 											)}
 										>
 											<Icon size={17} />
@@ -189,12 +184,7 @@ export default function AdminLayout({
 								href="/"
 								target="_blank"
 								rel="noopener noreferrer"
-								className={clsx(
-									"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
-									t.txtMuted,
-									t.hoverBg,
-									"hover:text-brand-500",
-								)}
+								className={clsx(adminUI.navLink, t.txtMuted, t.hoverBg, t.hoverTxt)}
 							>
 								<ExternalLink size={17} />
 								Voir le site
@@ -236,8 +226,9 @@ export default function AdminLayout({
 							<Link
 								href="/admin/login"
 								className={clsx(
-									"transition-colors hover:text-red-500",
-									t.txtSubtle,
+									"p-1 rounded-lg transition-colors hover:text-red-600 dark:hover:text-red-400",
+									adminUI.txtSecondary,
+									adminUI.focusDanger,
 								)}
 								title="Déconnexion"
 							>
@@ -265,6 +256,7 @@ export default function AdminLayout({
 								t.txtMuted,
 								t.hoverBg,
 								t.hoverTxt,
+								adminUI.focusGhost,
 							)}
 							aria-label="Ouvrir le menu"
 						>
@@ -299,9 +291,8 @@ export default function AdminLayout({
 									"p-2 rounded-xl transition-all duration-200",
 									t.txtMuted,
 									t.hoverBg,
-									isDark
-										? "hover:text-amber-400"
-										: "hover:text-amber-600",
+									isDark ? "hover:text-amber-400" : "hover:text-amber-600",
+									adminUI.focusGhost,
 								)}
 								aria-label={
 									isDark
@@ -323,6 +314,7 @@ export default function AdminLayout({
 									t.txtMuted,
 									t.hoverBg,
 									t.hoverTxt,
+									adminUI.focusGhost,
 								)}
 								aria-label="Notifications"
 							>

@@ -13,6 +13,7 @@ import {
 import clsx from "clsx";
 import { services as seedServices } from "@/lib/data";
 import { updateServiceAction } from "../actions";
+import { adminUI } from "@/lib/admin-ui";
 import type {
   ServiceStep, ServicePricing, ServiceFAQItem,
   ServiceTestimonial, ServiceImage,
@@ -38,7 +39,7 @@ function AdminSection({
         onClick={() => setOpen(v => !v)}
         className={clsx(
           "w-full flex items-center justify-between px-5 sm:px-6 py-4 text-left",
-          "focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none",
+          adminUI.focusPrimary,
         )}
       >
         <div>
@@ -102,14 +103,9 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
   }
 
   // ── Helpers classes ─────────────────────────────────────────────────────────
-  const inputClass = [
-    "w-full", t.inputBg, "border", t.inputBorder,
-    "focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
-    "rounded-xl px-4 py-3", t.inputText, t.inputPlaceholder,
-    "outline-none transition-all text-sm",
-  ].join(" ");
-  const labelClass = `block text-sm font-medium ${t.txtMuted} mb-2`;
-  const addBtnClass = "flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors bg-brand-500/10 text-brand-400 hover:bg-brand-500/20";
+  const inputClass = t.inputClass;
+  const labelClass = t.labelClass;
+  const addBtnClass = adminUI.btnAddItem;
 
   // ── Features drag & drop ────────────────────────────────────────────────────
   const handleFeatDragOver = (e: React.DragEvent, idx: number) => {
@@ -186,14 +182,14 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
       <div className="max-w-2xl mx-auto space-y-6">
         {/* ── Header ── */}
         <div className="flex items-center gap-4">
-          <Link href="/admin/services" className={clsx("p-2 rounded-xl transition-colors", t.txtMuted, t.hoverTxt, t.hoverBg)}>
+          <Link href="/admin/services" className={clsx("p-2 rounded-xl transition-colors", t.txtMuted, t.hoverTxt, t.hoverBg, adminUI.focusGhost)}>
             <ArrowLeft size={20} />
           </Link>
           <div className="flex-1 min-w-0">
             <h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>Modifier le service</h2>
             <p className={clsx("text-sm mt-1", t.txtMuted)}>{seed.title}</p>
           </div>
-          <Link href={`/services#${slug}`} target="_blank" className={clsx("flex items-center gap-2 text-sm px-3 py-2 rounded-xl transition-colors", t.txtMuted, t.hoverTxt, t.hoverBg)}>
+          <Link href={`/services#${slug}`} target="_blank" className={clsx("flex items-center gap-2 text-sm px-3 py-2 rounded-xl transition-colors", t.txtMuted, t.hoverTxt, t.hoverBg, adminUI.focusGhost)}>
             <Eye size={16} /><span className="hidden sm:inline">Prévisualiser</span>
           </Link>
         </div>
@@ -210,10 +206,7 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
               <button
                 type="button"
                 onClick={() => setIsActive(v => !v)}
-                className={clsx(
-                  "flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl transition-all border",
-                  isActive ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-slate-500/10 text-slate-400 border-slate-500/20",
-                )}
+                className={isActive ? adminUI.toggleOn : adminUI.toggleOff}
               >
                 {isActive ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
                 {isActive ? "Actif" : "Inactif"}

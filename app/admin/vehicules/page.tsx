@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import clsx from "clsx";
+import { adminUI } from "@/lib/admin-ui";
 
 /* ── Fuel badge variants ─────────────────────────────────────── */
 const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
@@ -28,32 +29,13 @@ const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
 	GPL: "blue",
 };
 
-/* ── Status config (thème-aware pour "draft") ────────────────── */
-function getStatusConfig(
-	isDark: boolean,
-): Record<VehicleStatus, { label: string; className: string }> {
-	return {
-		published: {
-			label: "Publié",
-			className:
-				"bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
-		},
-		draft: {
-			label: "Brouillon",
-			className: isDark
-				? "bg-dark-700 text-dark-400 border border-dark-600"
-				: "bg-slate-100 text-slate-500 border border-slate-300",
-		},
-		scheduled: {
-			label: "Programmé",
-			className: "bg-blue-500/15 text-blue-400 border border-blue-500/30",
-		},
-		sold: {
-			label: "Vendue",
-			className: "bg-red-500/15 text-red-400 border border-red-500/30",
-		},
-	};
-}
+/* ── Status config — utilise adminUI pour WCAG AA en light + dark ── */
+const STATUS_BADGE: Record<VehicleStatus, { label: string; className: string }> = {
+	published: { label: "Publié",    className: adminUI.badgePublished },
+	draft:     { label: "Brouillon", className: adminUI.badgeDraft },
+	scheduled: { label: "Programmé", className: adminUI.badgeScheduled },
+	sold:      { label: "Vendue",    className: adminUI.badgeSold },
+};
 
 const STATUS_ORDER: VehicleStatus[] = [
 	"published",
@@ -74,13 +56,17 @@ function StatusSelect({
 }) {
 	const [open, setOpen] = useState(false);
 	const t = useAdminTokens();
-	const cfg = getStatusConfig(t.isDark)[current];
+	const cfg = STATUS_BADGE[current];
 
 	return (
 		<div className="relative">
 			<button
 				onClick={() => setOpen((v) => !v)}
-				className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg ${cfg.className} transition-opacity hover:opacity-80`}
+				className={clsx(
+					cfg.className,
+					"flex items-center gap-1.5 transition-opacity hover:opacity-80",
+					adminUI.focusGhost,
+				)}
 			>
 				{cfg.label}
 				<ChevronDown size={11} />
@@ -111,9 +97,10 @@ function StatusSelect({
 									s === current
 										? `${t.txt} font-medium`
 										: t.dropdownItemTxt,
+									adminUI.focusGhost,
 								)}
 							>
-								{getStatusConfig(t.isDark)[s].label}
+								{STATUS_BADGE[s].label}
 								{s === current && " ✓"}
 							</button>
 						))}
@@ -177,7 +164,7 @@ export default function AdminVehiclesPage() {
 					</div>
 					<Link
 						href="/admin/vehicules/nouveau"
-						className="btn-primary text-sm !text-slate-50"
+						className="btn-primary text-sm"
 					>
 						<Plus size={16} />
 						<span className="hidden sm:inline">Ajouter</span>
@@ -346,7 +333,7 @@ export default function AdminVehiclesPage() {
 													onClick={() =>
 														handleDelete(vehicle.id)
 													}
-													className="flex-1 px-2 py-1.5 text-xs bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors font-medium"
+													className={clsx("flex-1", adminUI.btnDangerSm)}
 												>
 													Confirmer
 												</button>
@@ -582,7 +569,7 @@ export default function AdminVehiclesPage() {
 															onClick={() =>
 																handleDelete(vehicle.id)
 															}
-															className="px-2 py-1 text-xs bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors font-medium"
+															className={adminUI.btnDangerSm}
 														>
 															Confirmer
 														</button>
@@ -590,11 +577,7 @@ export default function AdminVehiclesPage() {
 															onClick={() =>
 																setDeleteConfirm(null)
 															}
-															className={clsx(
-																"px-2 py-1 text-xs rounded-lg transition-colors",
-																t.txtSubtle,
-																t.hoverTxt,
-															)}
+															className={adminUI.btnGhostSm}
 														>
 															Annuler
 														</button>
