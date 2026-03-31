@@ -79,7 +79,7 @@ export const adminUI = {
 	/** Bouton de suppression/confirmation danger */
 	btnDangerSm:
 		"px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors " +
-		"bg-red-600 text-white hover:bg-red-700 " +
+		"bg-red-600 text-[#ffffff] hover:bg-red-700 " +
 		"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2",
 
 	/** Bouton fantôme neutre petite taille (ex: Annuler dans confirm delete) */
@@ -108,7 +108,7 @@ export const adminUI = {
 
 	navLinkActive:
 		"flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 " +
-		"bg-brand-600 text-white shadow-lg " +
+		"bg-brand-600 text-[#ffffff] shadow-lg " +
 		"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2",
 
 	// ── Couleurs de texte corrigées (contraste AA) ─────────────────────────
