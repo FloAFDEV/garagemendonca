@@ -30,9 +30,13 @@ import type { Banner } from "@/types";
 
 const DEFAULT_BANNER: Banner = {
 	id: "singleton",
-	is_active: false,
-	message: "",
-	bg_color: "#DC2626",
+	is_active: true,
+	message: "Vidange boîte automatique — Offre spéciale printemps",
+	sub_message:
+		"Révision complète + vidange boîte auto à tarif préférentiel. Sur rendez-vous.",
+	cta_label: "Prendre rendez-vous",
+	cta_url: "/contact",
+	bg_color: "#991B1B",
 	display_pages: "all",
 	is_dismissible: true,
 };
@@ -43,7 +47,7 @@ export const bannerRepository = {
 	/** Récupère la bannière courante. Retourne null si jamais configurée. */
 	get: async (): Promise<Banner | null> => {
 		// TODO: Supabase → supabase.from("banners").select("*").eq("id","singleton").single()
-		return _banner.message ? _banner : null;
+		return _banner.is_active && _banner.message ? _banner : null;
 	},
 
 	/** Crée ou met à jour la bannière (singleton). */

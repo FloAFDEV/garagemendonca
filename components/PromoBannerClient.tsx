@@ -17,8 +17,16 @@ export default function PromoBannerClient({ banner }: { banner: Banner }) {
       const dismissed = sessionStorage.getItem(DISMISS_KEY);
       if (dismissed === banner.id) return;
     }
-    const t = setTimeout(() => setVisible(true), 50);
-    return () => clearTimeout(t);
+    // Respecte prefers-reduced-motion : apparition immédiate sans animation
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (prefersReduced) {
+      setVisible(true);
+    } else {
+      const t = setTimeout(() => setVisible(true), 50);
+      return () => clearTimeout(t);
+    }
   }, [banner.id, banner.is_dismissible]);
 
   const dismiss = () => {
@@ -39,9 +47,10 @@ export default function PromoBannerClient({ banner }: { banner: Banner }) {
         maxHeight: visible ? "160px" : "0px",
         opacity: visible ? 1 : 0,
         overflow: "hidden",
-        transition: "max-height 0.3s ease-out, opacity 0.3s ease-out",
+        transition:
+          "max-height 0.3s ease-out, opacity 0.3s ease-out",
       }}
-      className="w-full"
+      className="w-full motion-reduce:transition-none"
     >
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <div className="flex-1 text-center">
