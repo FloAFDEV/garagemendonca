@@ -48,6 +48,95 @@ const services = [
 	},
 ];
 
+const reassuranceItems = [
+	{
+		label: "Depuis 2001",
+		desc: "Plus de 20 ans au service des conducteurs de la région toulousaine.",
+		icon: (
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				aria-hidden="true"
+			>
+				<rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+				<line x1="16" y1="2" x2="16" y2="6" />
+				<line x1="8" y1="2" x2="8" y2="6" />
+				<line x1="3" y1="10" x2="21" y2="10" />
+			</svg>
+		),
+	},
+	{
+		label: "Spécialiste japonaises & boîtes auto",
+		desc: "Toyota, Nissan, Honda, Suzuki, Mazda — boîte automatique incluse.",
+		icon: (
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				aria-hidden="true"
+			>
+				<circle cx="7.5" cy="15.5" r="5.5" />
+				<path d="M21 2L11.5 11.5" />
+				<path d="M15.5 7.5l2 2" />
+				<path d="M18.5 4.5l1 1" />
+			</svg>
+		),
+	},
+	{
+		label: "Devis transparent avant intervention",
+		desc: "Prix pièce et main-d'œuvre communiqué systématiquement avant tout travail.",
+		icon: (
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				aria-hidden="true"
+			>
+				<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+				<polyline points="9 12 11 14 15 10" />
+			</svg>
+		),
+	},
+	{
+		label: "98 % de clients satisfaits",
+		desc: "Accueil avec ou sans rendez-vous, service fiable et bienveillant.",
+		icon: (
+			<svg
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				aria-hidden="true"
+			>
+				<circle cx="12" cy="12" r="10" />
+				<path d="M8 14s1.5 2 4 2 4-2 4-2" />
+				<line x1="9" y1="9" x2="9.01" y2="9" strokeWidth="2" />
+				<line x1="15" y1="9" x2="15.01" y2="9" strokeWidth="2" />
+			</svg>
+		),
+	},
+];
+
 export default function ServicesOverview() {
 	return (
 		<section className="py-28 bg-[#f8fafc]">
@@ -147,6 +236,32 @@ export default function ServicesOverview() {
 						),
 					)}
 				</div>
+
+				{/* ── Bande de réassurance ── */}
+				<AnimateOnScroll>
+					<div className="mt-14 bg-slate-100/70 rounded-2xl py-8 px-6 sm:px-10">
+						<dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+							{reassuranceItems.map(({ label, desc, icon }) => (
+								<div key={label} className="flex items-start gap-4">
+									<div
+										className="w-10 h-10 bg-brand-50 rounded-lg flex items-center justify-center ring-1 ring-brand-100 text-brand-600 flex-shrink-0"
+										aria-hidden="true"
+									>
+										{icon}
+									</div>
+									<div>
+										<dt className="font-medium text-[#0f172a] text-sm leading-snug">
+											{label}
+										</dt>
+										<dd className="font-light text-[#64748b] text-xs leading-relaxed mt-1">
+											{desc}
+										</dd>
+									</div>
+								</div>
+							))}
+						</dl>
+					</div>
+				</AnimateOnScroll>
 			</Container>
 		</section>
 	);
