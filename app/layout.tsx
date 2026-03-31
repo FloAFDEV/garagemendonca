@@ -111,6 +111,12 @@ export default function RootLayout({
 	return (
 		<html lang="fr">
 			<head>
+				{/* Anti-FOUC : applique le thème admin avant tout paint */}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `(function(){try{var t=localStorage.getItem('admin-theme')||'dark';document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})();`,
+					}}
+				/>
 				<script
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
