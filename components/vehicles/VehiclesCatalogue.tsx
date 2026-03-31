@@ -16,7 +16,7 @@ interface Props {
   allFuels: string[];
 }
 
-function CatalogueContent({ vehicles, allBrands, allFuels }: Props) {
+function CatalogueContent({ vehicles, allBrands }: Props) {
   const searchParams = useSearchParams();
   const brandParam = searchParams.get("brand");
 
@@ -26,21 +26,37 @@ function CatalogueContent({ vehicles, allBrands, allFuels }: Props) {
   });
   const [hideSold, setHideSold] = useState(true);
 
-  const filtered = useMemo(() => {
+  /**
+   * Liste sans filtre carburant — sert à calculer les carburants disponibles
+   * compte tenu des autres filtres actifs (marque, km, prix, hideSold).
+   * Ainsi le select ne propose jamais un carburant qui donnerait 0 résultat.
+   */
+  const filteredWithoutFuel = useMemo(() => {
     let list = [...vehicles];
     if (hideSold) list = list.filter((v) => v.status !== "sold");
-
     if (filters.brands.length > 0)
       list = list.filter((v) => filters.brands.includes(v.brand));
+    if (filters.kmMax !== null)
+      list = list.filter((v) => v.mileage <= filters.kmMax!);
+    if (filters.priceMax !== null)
+      list = list.filter((v) => v.price <= filters.priceMax!);
+    return list;
+  }, [vehicles, filters.brands, filters.kmMax, filters.priceMax, hideSold]);
+
+  /** Carburants disponibles pour le select — dédupliqués + triés */
+  const availableFuels = useMemo(
+    () =>
+      Array.from(
+        new Set(filteredWithoutFuel.map((v) => v.fuel).filter(Boolean)),
+      ).sort() as string[],
+    [filteredWithoutFuel],
+  );
+
+  const filtered = useMemo(() => {
+    let list = [...filteredWithoutFuel];
 
     if (filters.fuels.length > 0)
       list = list.filter((v) => filters.fuels.includes(v.fuel));
-
-    if (filters.kmMax !== null)
-      list = list.filter((v) => v.mileage <= filters.kmMax!);
-
-    if (filters.priceMax !== null)
-      list = list.filter((v) => v.price <= filters.priceMax!);
 
     switch (filters.sortBy) {
       case "price-asc":
@@ -58,7 +74,7 @@ function CatalogueContent({ vehicles, allBrands, allFuels }: Props) {
     }
 
     return list;
-  }, [vehicles, filters, hideSold]);
+  }, [filteredWithoutFuel, filters.fuels, filters.sortBy]);
 
   return (
     <>
@@ -68,7 +84,7 @@ function CatalogueContent({ vehicles, allBrands, allFuels }: Props) {
             filters={filters}
             onChange={setFilters}
             availableBrands={allBrands}
-            availableFuels={allFuels}
+            availableFuels={availableFuels}
             totalCount={vehicles.length}
             filteredCount={filtered.length}
             hideSold={hideSold}
