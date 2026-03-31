@@ -8,7 +8,6 @@ import {
 	Award,
 	ChevronDown,
 } from "lucide-react";
-import StatsCounter from "@/components/home/StatsCounter";
 import Container from "@/components/ui/Container";
 
 const trustBadges = [
@@ -18,6 +17,12 @@ const trustBadges = [
 	},
 	{ Icon: Clock, text: "Accueil avec ou sans rendez-vous" },
 	{ Icon: Award, text: "Spécialiste japonaises · boîte automatique" },
+];
+
+const stats = [
+	{ value: "30+", label: "Ans d'expérience" },
+	{ value: "2 000+", label: "Réparations réalisées" },
+	{ value: "98 %", label: "Clients satisfaits" },
 ];
 
 export default function Hero() {
@@ -155,7 +160,22 @@ export default function Hero() {
 							</Link>
 						</div>
 
-						<StatsCounter />
+						{/* Compteurs — valeurs statiques, visibles dès le SSR */}
+						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/12 animate-fade-in">
+							{stats.map(({ value, label }) => (
+								<div
+									key={label}
+									className="text-center sm:text-left"
+								>
+									<div className="ty-stat text-3xl md:text-4xl leading-none mb-1">
+										{value}
+									</div>
+									<div className="text-slate-300 font-light text-xs leading-snug mt-0.5">
+										{label}
+									</div>
+								</div>
+							))}
+						</div>
 					</div>
 				</Container>
 			</div>
