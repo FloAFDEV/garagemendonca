@@ -342,33 +342,16 @@ export default function NewVehiclePage() {
 
 	// ── Styles ───────────────────────────────────────────────────────
 
-	const inputClass = [
-		"w-full",
-		t.inputBg,
-		"border",
-		t.inputBorder,
-		"focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
-		"rounded-xl px-4 py-3",
-		t.inputText,
-		t.inputPlaceholder,
-		"outline-none transition-all text-sm",
-	].join(" ");
+	const inputClass = t.inputClass;
 
 	/** Selects : même base + couleur des <option> forcée pour iOS/dark */
 	const selectClass = [
-		"w-full",
-		t.inputBg,
-		"border",
-		t.inputBorder,
-		"focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
-		"rounded-xl px-4 py-3",
-		t.inputText,
-		"outline-none transition-all text-sm cursor-pointer",
-		"[&>option]:bg-white [&>option]:text-black",
+		t.inputClass,
+		"cursor-pointer [&>option]:bg-white [&>option]:text-black",
 	].join(" ");
 
-	const labelClass = `block text-sm font-medium ${t.txtMuted} mb-2`;
-	const sectionClass = `${t.surface} rounded-2xl border ${t.border} p-5 sm:p-6`;
+	const labelClass = t.labelClass;
+	const sectionClass = t.sectionCard;
 
 	const modelSuggestions = BRANDS_MODELS[form.brand] ?? [];
 
