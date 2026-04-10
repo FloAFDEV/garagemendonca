@@ -94,6 +94,16 @@ create table vehicles (
   -- }
   features        jsonb default '{}',                            -- Vehicle.features
 
+  -- Options équipement structurées (miroir VehicleOptions dans types/index.ts)
+  -- Toutes les clés sont optionnelles (boolean). Exemples :
+  -- {
+  --   "climatisation_automatique": true,
+  --   "toit_panoramique": true,
+  --   "camera_recul": true,
+  --   "bluetooth": true
+  -- }
+  options         jsonb default '{}',                            -- Vehicle.options
+
   -- Timestamps (camelCase côté TS, snake_case en base)
   created_at      timestamptz not null default now(),            -- Vehicle.createdAt
   updated_at      timestamptz not null default now()             -- Vehicle.updatedAt
@@ -141,6 +151,8 @@ create index idx_vehicles_created_at   on vehicles(created_at desc);
 create index idx_vehicles_published_at on vehicles(published_at) where status = 'scheduled';
 -- GIN sur features JSONB pour recherches sur clés libres
 create index idx_vehicles_features     on vehicles using gin(features);
+-- GIN sur options JSONB pour filtrage par équipement (ex: options @> '{"toit_panoramique":true}')
+create index idx_vehicles_options      on vehicles using gin(options);
 
 -- ── Row Level Security (RLS) ────────────────────────────────────
 alter table garages       enable row level security;
@@ -241,6 +253,7 @@ insert into garages (id, name, slug, address, phone, email, plan) values
 --    Vehicle.sold_at       → vehicles.sold_at        (déjà snake_case)
 --    Vehicle.createdAt     → vehicles.created_at
 --    Vehicle.updatedAt     → vehicles.updated_at
+--    Vehicle.options       → vehicles.options      (JSONB, miroir VehicleOptions)
 --
 --  Côté Next.js, lib/vehicles.ts lit/écrit en camelCase.
 --  Le client Supabase renvoie du snake_case → mapper via un helper :
