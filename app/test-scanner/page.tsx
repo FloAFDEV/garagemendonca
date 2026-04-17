@@ -30,7 +30,7 @@ export default function TestScannerPage() {
           className="text-sm font-light max-w-xs mx-auto leading-relaxed"
           style={{ color: '#475569' }}
         >
-          Survolez une zone pour afficher le détail du diagnostic.
+          Survolez une zone · le scanner met à jour le diagnostic en temps réel.
         </p>
       </div>
 
