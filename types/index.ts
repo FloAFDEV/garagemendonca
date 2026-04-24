@@ -133,15 +133,18 @@ export type GaragePlan = "isolated" | "shared";
 //  Mirrors: table "garages"
 // ─────────────────────────────────────────────
 export interface Garage {
-	id: string; // uuid
-	name: string; // "Garage Auto Mendonça"
-	slug: string; // "garage-mendonça" (URL-safe)
-	address?: string; // "6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage"
-	phone?: string; // "05 32 00 20 38"
-	email?: string; // "contact@garagemendonça.com"
-	plan: GaragePlan; // gestion du stock
-	createdAt: string; // ISO 8601
-	updatedAt: string; // ISO 8601
+  id: string;          // uuid
+  name: string;        // "Garage Auto Mendonça"
+  slug: string;        // "garage-mendonca" (URL-safe)
+  address?: string;
+  phone?: string;
+  email?: string;
+  logo_url?: string;   // Supabase Storage URL
+  description?: string;
+  is_active?: boolean;
+  plan: GaragePlan;
+  createdAt: string;   // ISO 8601
+  updatedAt: string;   // ISO 8601
 }
 
 // ─────────────────────────────────────────────
@@ -149,11 +152,32 @@ export interface Garage {
 //  Mirrors: table "garage_users"
 // ─────────────────────────────────────────────
 export interface GarageUser {
-	id: string; // uuid
-	garageId: string; // FK → garages.id
-	email: string;
-	role: UserRole;
-	createdAt: string; // ISO 8601
+  id: string;        // uuid
+  garageId: string;  // FK → garages.id
+  email: string;
+  role: UserRole;
+  createdAt: string; // ISO 8601
+}
+
+// ─────────────────────────────────────────────
+//  Catégorie de véhicule — administrable depuis le dashboard
+//  Mirrors: table "vehicle_categories"
+//
+//  Exemples de slugs : voitures, utilitaires, deux-roues, bateaux, engins-agricoles
+//  Aucune valeur n'est hardcodée dans le code — tout provient de la base.
+// ─────────────────────────────────────────────
+export interface VehicleCategory {
+  id: string;           // uuid
+  garage_id: string;    // FK → garages.id
+  slug: string;         // "voitures" — utilisé dans Vehicle.categories[]
+  label: string;        // "Voitures" — affiché dans les filtres et formulaires
+  icon?: string;        // emoji ou nom icône Lucide : "car", "truck", "🚗"
+  color?: string;       // hex facultatif : "#3b82f6"
+  description?: string; // usage interne admin uniquement
+  sort_order: number;   // ordre d'affichage
+  is_active: boolean;
+  created_at: string;   // ISO 8601
+  updated_at: string;   // ISO 8601
 }
 
 // ─────────────────────────────────────────────
@@ -163,15 +187,15 @@ export interface GarageUser {
 //  Un index signature permet des clés libres supplémentaires.
 // ─────────────────────────────────────────────
 export interface VehicleFeatures {
-	finition?: string;
-	motorisation?: string;
-	provenance?: string;
-	nbProprietaires?: string;
-	carnetEntretien?: string;
-	controleTechnique?: string;
-	garantie?: string;
-	options?: string[]; // ← tableau au lieu de string
-	[key: string]: string | string[] | undefined; // index signature mise à jour pour accepter string[]
+  finition?: string;
+  motorisation?: string;
+  provenance?: string;
+  nbProprietaires?: string;
+  carnetEntretien?: string;
+  controleTechnique?: string;
+  garantie?: string;
+  options?: string[]; // ← tableau au lieu de string
+  [key: string]: string | string[] | undefined;
 }
 
 // ─────────────────────────────────────────────
@@ -179,38 +203,41 @@ export interface VehicleFeatures {
 //  Mirrors: table "vehicles"
 // ─────────────────────────────────────────────
 export interface Vehicle {
-	id: string; // uuid (ou slug court pour les données mock)
-	garageId?: string; // FK → garages.id (requis en multi-garage)
-	brand: string;
-	model: string;
-	year: number;
-	mileage: number;
-	fuel: "Essence" | "Diesel" | "Hybride" | "Électrique" | "GPL" | "Hydrogène";
-	price: number;
-	description: string;
-	images: string[];
-	thumbnailUrl?: string; // image principale mise en cache (Supabase Storage)
-	transmission: "Manuelle" | "Automatique";
-	power: number;
-	color: string;
-	doors: number;
-	critAir?: string;
-	// Statut métier
-	status?: VehicleStatus;
-	// Publication programmée (ISO 8601) — utilisé quand status === "scheduled"
-	published_at?: string;
-	// Date de vente (ISO 8601) — renseignée quand status === "sold"
-	sold_at?: string;
-	// Mise en avant
-	featured?: boolean;
-	featuredOrder?: number; // position parmi les "à la une" (1 = premier)
-	// Timestamps — format ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)
-	createdAt?: string;
-	updatedAt?: string;
-	// Caractéristiques structurées (ancien système — maintenu pour compatibilité)
-	features?: VehicleFeatures;
-	// Options équipement (nouveau système structuré — JSONB Supabase)
-	options?: VehicleOptions;
+  id: string;          // uuid (ou slug court pour les données mock)
+  garageId?: string;   // FK → garages.id (requis en multi-garage)
+  brand: string;
+  model: string;
+  year: number;
+  mileage: number;
+  fuel: "Essence" | "Diesel" | "Hybride" | "Électrique" | "GPL" | "Hydrogène";
+  price: number;
+  description: string;
+  images: string[];
+  thumbnailUrl?: string;  // image principale mise en cache (Supabase Storage)
+  transmission: "Manuelle" | "Automatique";
+  power: number;
+  color: string;
+  doors: number;
+  critAir?: string;
+  // Statut métier
+  status?: VehicleStatus;
+  // Publication programmée (ISO 8601) — utilisé quand status === "scheduled"
+  published_at?: string;
+  // Date de vente (ISO 8601) — renseignée quand status === "sold"
+  sold_at?: string;
+  // Mise en avant
+  featured?: boolean;
+  featuredOrder?: number;  // position parmi les "à la une" (1 = premier)
+  // Classification dynamique — slugs des VehicleCategory de ce garage
+  // Mirrors: vehicles.categories TEXT[]
+  categories?: string[];
+  // Timestamps — format ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)
+  createdAt?: string;
+  updatedAt?: string;
+  // Caractéristiques structurées (ancien système — maintenu pour compatibilité)
+  features?: VehicleFeatures;
+  // Options équipement (nouveau système structuré — JSONB Supabase)
+  options?: VehicleOptions;
 }
 
 // ─────────────────────────────────────────────
@@ -218,8 +245,8 @@ export interface Vehicle {
 //  (id, createdAt, updatedAt sont gérés par la base)
 // ─────────────────────────────────────────────
 export type VehicleCreateInput = Omit<
-	Vehicle,
-	"id" | "createdAt" | "updatedAt"
+  Vehicle,
+  "id" | "createdAt" | "updatedAt"
 >;
 export type VehicleUpdateInput = Partial<VehicleCreateInput>;
 
@@ -228,109 +255,113 @@ export type VehicleUpdateInput = Partial<VehicleCreateInput>;
 //  snake_case intentionnel — mapping 1:1 avec table Supabase service_images
 // ─────────────────────────────────────────────
 export interface ServiceImage {
-	id: string;
-	service_id: string;
-	garage_id: string;
-	/** Chemin local (/images/…) ou URL Supabase Storage */
-	url: string;
-	alt?: string;
-	order: number;
-	is_primary: boolean;
+  id: string;
+  service_id: string;
+  garage_id: string;
+  /** Chemin local (/images/…) ou URL Supabase Storage */
+  url: string;
+  alt?: string;
+  order: number;
+  is_primary: boolean;
 }
 
 // ─────────────────────────────────────────────
 //  Étapes du processus d'un service
 // ─────────────────────────────────────────────
 export interface ServiceStep {
-	order: number;
-	title: string;
-	description: string;
+  order: number;
+  title: string;
+  description: string;
 }
 
 // ─────────────────────────────────────────────
 //  Tarif indicatif d'un service
 // ─────────────────────────────────────────────
 export interface ServicePricing {
-	label: string;
-	/** Prix formaté, ex : "à partir de 79 €" ou "Sur devis" */
-	price: string;
-	note?: string;
+  label: string;
+  /** Prix formaté, ex : "à partir de 79 €" ou "Sur devis" */
+  price: string;
+  note?: string;
 }
 
 // ─────────────────────────────────────────────
 //  Question / réponse FAQ d'un service
 // ─────────────────────────────────────────────
 export interface ServiceFAQItem {
-	question: string;
-	answer: string;
+  question: string;
+  answer: string;
 }
 
 // ─────────────────────────────────────────────
 //  Témoignage client lié à un service
 // ─────────────────────────────────────────────
 export interface ServiceTestimonial {
-	author: string;
-	location: string;
-	/** Format libre, ex : "mars 2025" */
-	date: string;
-	/** Note de 1 à 5 */
-	rating: number;
-	content: string;
+  author: string;
+  location: string;
+  /** Format libre, ex : "mars 2025" */
+  date: string;
+  /** Note de 1 à 5 */
+  rating: number;
+  content: string;
 }
 
 // ─────────────────────────────────────────────
 //  Service
+//  Mirrors: table "services"
 // ─────────────────────────────────────────────
 export interface Service {
-	id: string;
-	/** string intentionnel — permet l'ajout dynamique de services
-	 *  sans modifier le type (ex: 'pneumatiques', 'location', etc.) */
-	slug: string;
-	/** Ordre d'affichage (1 = premier) */
-	order?: number;
-	title: string;
-	icon: string;
-	/** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
-	short_description: string;
-	/** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
-	long_description: string;
-	features: string[];
-	steps?: ServiceStep[];
-	pricing?: ServicePricing[];
-	faq?: ServiceFAQItem[];
-	testimonials?: ServiceTestimonial[];
-	images: ServiceImage[];
-	is_active: boolean;
+  id: string;
+  garage_id?: string;   // FK → garages.id (optionnel en mode mock)
+  /** string intentionnel — permet l'ajout dynamique de services */
+  slug: string;
+  /** Ordre d'affichage (1 = premier) */
+  order?: number;
+  title: string;
+  icon: string;
+  /** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
+  short_description: string;
+  /** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
+  long_description: string;
+  features: string[];
+  steps?: ServiceStep[];
+  pricing?: ServicePricing[];
+  faq?: ServiceFAQItem[];
+  testimonials?: ServiceTestimonial[];
+  images: ServiceImage[];
+  is_active: boolean;
 }
 
 // ─────────────────────────────────────────────
 //  Banner promotionnelle
+//  Mirrors: table "banners"
 // ─────────────────────────────────────────────
 export interface Banner {
-	id: string;
-	is_active: boolean;
-	message: string;
-	sub_message?: string;
-	image_url?: string;
-	cta_label?: string;
-	cta_url?: string;
-	/** Couleur de fond hex : ex. "#DC2626" */
-	bg_color: string;
-	/** ISO 8601 — début programmé (optionnel) */
-	scheduled_start?: string;
-	/** ISO 8601 — fin programmée (optionnel) */
-	scheduled_end?: string;
-	display_pages: "all" | "home_only";
-	is_dismissible: boolean;
+  id: string;
+  garage_id?: string;       // FK → garages.id (optionnel en mode mock)
+  is_active: boolean;
+  message: string;
+  sub_message?: string;
+  image_url?: string;
+  cta_label?: string;
+  cta_url?: string;
+  /** Couleur de fond hex : ex. "#DC2626" */
+  bg_color: string;
+  /** ISO 8601 — début programmé (optionnel) */
+  scheduled_start?: string;
+  /** ISO 8601 — fin programmée (optionnel) */
+  scheduled_end?: string;
+  display_pages: "all" | "home_only";
+  is_dismissible: boolean;
+  updated_at?: string;      // ISO 8601
 }
 
 // ─────────────────────────────────────────────
 //  Formulaire de contact
 // ─────────────────────────────────────────────
 export interface ContactForm {
-	name: string;
-	email: string;
-	phone: string;
-	subject: string;
-	message: string;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
 }
