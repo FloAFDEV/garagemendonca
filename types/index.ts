@@ -129,6 +129,34 @@ export type UserRole = "superadmin" | "admin" | "staff";
 export type GaragePlan = "isolated" | "shared";
 
 // ─────────────────────────────────────────────
+//  Horaires d'ouverture d'un garage
+//  Mirrors: garages.opening_hours JSONB
+//
+//  Format JSONB :
+//  {
+//    "lundi":    {"open": "08:00", "close": "19:00"},
+//    "vendredi": {"open": "08:00", "close": "18:00"},
+//    "samedi":   null,
+//    "dimanche": null
+//  }
+// ─────────────────────────────────────────────
+export interface GarageHours {
+  open: string;   // "08:00"
+  close: string;  // "19:00"
+}
+
+export type GarageDay =
+  | "lundi"
+  | "mardi"
+  | "mercredi"
+  | "jeudi"
+  | "vendredi"
+  | "samedi"
+  | "dimanche";
+
+export type GarageOpeningHours = Partial<Record<GarageDay, GarageHours | null>>;
+
+// ─────────────────────────────────────────────
 //  Garage
 //  Mirrors: table "garages"
 // ─────────────────────────────────────────────
@@ -143,6 +171,14 @@ export interface Garage {
   description?: string;
   is_active?: boolean;
   plan: GaragePlan;
+  // ── SEO local ──────────────────────────────
+  city?: string;
+  postal_code?: string;
+  lat?: number;        // ex: 43.604652
+  lng?: number;        // ex: 1.444209
+  google_maps_url?: string;
+  opening_hours?: GarageOpeningHours;
+  // ── Timestamps ─────────────────────────────
   createdAt: string;   // ISO 8601
   updatedAt: string;   // ISO 8601
 }
@@ -174,17 +210,32 @@ export interface VehicleCategory {
   icon?: string;        // emoji ou nom icône Lucide : "car", "truck", "🚗"
   color?: string;       // hex facultatif : "#3b82f6"
   description?: string; // usage interne admin uniquement
-  sort_order: number;   // ordre d'affichage
+  sort_order: number;
   is_active: boolean;
   created_at: string;   // ISO 8601
   updated_at: string;   // ISO 8601
 }
 
 // ─────────────────────────────────────────────
+//  Image d'un véhicule
+//  Mirrors: table "vehicle_images"
+//
+//  Remplace progressivement le tableau vehicles.images[]
+// ─────────────────────────────────────────────
+export interface VehicleImage {
+  id: string;           // uuid
+  vehicle_id: string;   // FK → vehicles.id
+  garage_id: string;    // FK → garages.id
+  url: string;          // URL Supabase Storage
+  alt?: string;         // texte alternatif SEO
+  sort_order: number;   // 0 = première photo
+  is_primary: boolean;  // true = thumbnail principal
+  created_at?: string;  // ISO 8601
+}
+
+// ─────────────────────────────────────────────
 //  Caractéristiques techniques typées
 //  Mirrors: vehicles.features JSONB
-//  Toutes les clés sont optionnelles.
-//  Un index signature permet des clés libres supplémentaires.
 // ─────────────────────────────────────────────
 export interface VehicleFeatures {
   finition?: string;
@@ -194,7 +245,7 @@ export interface VehicleFeatures {
   carnetEntretien?: string;
   controleTechnique?: string;
   garantie?: string;
-  options?: string[]; // ← tableau au lieu de string
+  options?: string[];
   [key: string]: string | string[] | undefined;
 }
 
@@ -221,19 +272,22 @@ export interface Vehicle {
   critAir?: string;
   // Statut métier
   status?: VehicleStatus;
-  // Publication programmée (ISO 8601) — utilisé quand status === "scheduled"
-  published_at?: string;
-  // Date de vente (ISO 8601) — renseignée quand status === "sold"
-  sold_at?: string;
+  published_at?: string;  // ISO 8601 — utilisé quand status === "scheduled"
+  sold_at?: string;       // ISO 8601 — renseignée quand status === "sold"
   // Mise en avant
   featured?: boolean;
-  featuredOrder?: number;  // position parmi les "à la une" (1 = premier)
+  featuredOrder?: number; // position parmi les "à la une" (1 = premier)
   // Classification dynamique — slugs des VehicleCategory de ce garage
-  // Mirrors: vehicles.categories TEXT[]
-  categories?: string[];
-  // Timestamps — format ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)
-  createdAt?: string;
-  updatedAt?: string;
+  categories?: string[];  // Mirrors: vehicles.categories TEXT[]
+  // ── SEO ──────────────────────────────────────────────────────
+  slug?: string;           // URL-safe unique par garage, ex: "peugeot-208-2021"
+  meta_description?: string;
+  // ── Export portails ──────────────────────────────────────────
+  export_leboncoin?: boolean;
+  external_id?: string;   // identifiant sur le portail externe
+  // ── Timestamps ───────────────────────────────────────────────
+  createdAt?: string;     // ISO 8601
+  updatedAt?: string;     // ISO 8601
   // Caractéristiques structurées (ancien système — maintenu pour compatibilité)
   features?: VehicleFeatures;
   // Options équipement (nouveau système structuré — JSONB Supabase)
@@ -242,13 +296,26 @@ export interface Vehicle {
 
 // ─────────────────────────────────────────────
 //  Payload de création / mise à jour d'un véhicule
-//  (id, createdAt, updatedAt sont gérés par la base)
 // ─────────────────────────────────────────────
-export type VehicleCreateInput = Omit<
-  Vehicle,
-  "id" | "createdAt" | "updatedAt"
->;
+export type VehicleCreateInput = Omit<Vehicle, "id" | "createdAt" | "updatedAt">;
 export type VehicleUpdateInput = Partial<VehicleCreateInput>;
+
+// ─────────────────────────────────────────────
+//  Message de contact / lead
+//  Mirrors: table "messages"
+// ─────────────────────────────────────────────
+export interface Message {
+  id: string;           // uuid
+  garage_id?: string;   // FK → garages.id (optionnel)
+  vehicle_id?: string;  // FK → vehicles.id (lead depuis fiche VO)
+  name: string;
+  email: string;
+  phone?: string;
+  subject?: string;
+  message: string;
+  read_at?: string;     // ISO 8601 — null = non lu
+  created_at: string;   // ISO 8601
+}
 
 // ─────────────────────────────────────────────
 //  ServiceImage
@@ -258,8 +325,7 @@ export interface ServiceImage {
   id: string;
   service_id: string;
   garage_id: string;
-  /** Chemin local (/images/…) ou URL Supabase Storage */
-  url: string;
+  url: string;          // chemin local (/images/…) ou URL Supabase Storage
   alt?: string;
   order: number;
   is_primary: boolean;
@@ -279,8 +345,7 @@ export interface ServiceStep {
 // ─────────────────────────────────────────────
 export interface ServicePricing {
   label: string;
-  /** Prix formaté, ex : "à partir de 79 €" ou "Sur devis" */
-  price: string;
+  price: string;  // ex: "à partir de 79 €" ou "Sur devis"
   note?: string;
 }
 
@@ -298,10 +363,8 @@ export interface ServiceFAQItem {
 export interface ServiceTestimonial {
   author: string;
   location: string;
-  /** Format libre, ex : "mars 2025" */
-  date: string;
-  /** Note de 1 à 5 */
-  rating: number;
+  date: string;    // format libre, ex : "mars 2025"
+  rating: number;  // 1 à 5
   content: string;
 }
 
@@ -312,15 +375,11 @@ export interface ServiceTestimonial {
 export interface Service {
   id: string;
   garage_id?: string;   // FK → garages.id (optionnel en mode mock)
-  /** string intentionnel — permet l'ajout dynamique de services */
   slug: string;
-  /** Ordre d'affichage (1 = premier) */
   order?: number;
   title: string;
   icon: string;
-  /** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
   short_description: string;
-  /** snake_case intentionnel — mapping 1:1 avec colonne Supabase */
   long_description: string;
   features: string[];
   steps?: ServiceStep[];
@@ -344,12 +403,9 @@ export interface Banner {
   image_url?: string;
   cta_label?: string;
   cta_url?: string;
-  /** Couleur de fond hex : ex. "#DC2626" */
-  bg_color: string;
-  /** ISO 8601 — début programmé (optionnel) */
-  scheduled_start?: string;
-  /** ISO 8601 — fin programmée (optionnel) */
-  scheduled_end?: string;
+  bg_color: string;         // hex : "#DC2626"
+  scheduled_start?: string; // ISO 8601
+  scheduled_end?: string;   // ISO 8601
   display_pages: "all" | "home_only";
   is_dismissible: boolean;
   updated_at?: string;      // ISO 8601
@@ -357,6 +413,7 @@ export interface Banner {
 
 // ─────────────────────────────────────────────
 //  Formulaire de contact
+//  (input formulaire → crée un Message côté serveur)
 // ─────────────────────────────────────────────
 export interface ContactForm {
   name: string;

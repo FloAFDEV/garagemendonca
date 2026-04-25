@@ -1,10 +1,18 @@
 -- ═══════════════════════════════════════════════════════════════
 --  Garage Auto Mendonça — Schéma Supabase (PostgreSQL)
---  Architecture multi-garages — v3
+--  Architecture multi-garages — v4
 --  Aligné avec types/index.ts (VehicleStatus, Vehicle, Garage…)
 --
 --  Exécuter dans : Supabase Dashboard > SQL Editor
 --  Ordre d'exécution : ce fichier est autonome (une seule passe).
+--
+--  Historique :
+--    v2 → enums, garages, vehicles, garage_users, RLS de base
+--    v3 → vehicle_categories, services, service_images, banners,
+--          options JSONB, categories TEXT[], triggers updated_at
+--    v4 → messages (leads), vehicle_images, SEO vehicles (slug,
+--          meta_description), export leboncoin, SEO garages
+--          (city, postal_code, lat, lng, google_maps_url, opening_hours)
 -- ═══════════════════════════════════════════════════════════════
 
 -- ── Extensions ──────────────────────────────────────────────────
@@ -32,18 +40,34 @@ create type transmission_type as enum ('Manuelle', 'Automatique');
 --  Miroir de l'interface Garage dans types/index.ts
 -- ─────────────────────────────────────────────────────────────────
 create table garages (
-  id          uuid primary key default uuid_generate_v4(),
-  name        text not null,                          -- Garage.name
-  slug        text not null unique,                   -- Garage.slug (URL-safe)
-  address     text,                                   -- Garage.address
-  phone       text,                                   -- Garage.phone
-  email       text,                                   -- Garage.email
-  logo_url    text,                                   -- Garage.logo_url (Supabase Storage)
-  description text,                                   -- Garage.description
-  is_active   boolean not null default true,          -- Garage.is_active
-  plan        garage_plan not null default 'isolated', -- Garage.plan
-  created_at  timestamptz not null default now(),     -- Garage.createdAt
-  updated_at  timestamptz not null default now()      -- Garage.updatedAt
+  id              uuid primary key default uuid_generate_v4(),
+  name            text not null,                          -- Garage.name
+  slug            text not null unique,                   -- Garage.slug (URL-safe)
+  address         text,                                   -- Garage.address
+  phone           text,                                   -- Garage.phone
+  email           text,                                   -- Garage.email
+  logo_url        text,                                   -- Garage.logo_url (Supabase Storage)
+  description     text,                                   -- Garage.description
+  is_active       boolean not null default true,          -- Garage.is_active
+  plan            garage_plan not null default 'isolated', -- Garage.plan
+
+  -- ── SEO local (v4) ───────────────────────────────────────────
+  city            text,                                   -- Garage.city
+  postal_code     text,                                   -- Garage.postal_code
+  lat             numeric(9,6),                           -- Garage.lat  ex: 43.604652
+  lng             numeric(9,6),                           -- Garage.lng  ex: 1.444209
+  google_maps_url text,                                   -- Garage.google_maps_url
+  -- Horaires JSONB :
+  -- {
+  --   "lundi":    {"open": "08:00", "close": "19:00"},
+  --   "vendredi": {"open": "08:00", "close": "18:00"},
+  --   "samedi":   null,
+  --   "dimanche": null
+  -- }
+  opening_hours   jsonb default '{}',                     -- Garage.opening_hours
+
+  created_at      timestamptz not null default now(),     -- Garage.createdAt
+  updated_at      timestamptz not null default now()      -- Garage.updatedAt
 );
 
 -- ─────────────────────────────────────────────────────────────────
@@ -69,7 +93,7 @@ create table garage_users (
 create table vehicle_categories (
   id          uuid primary key default uuid_generate_v4(),
   garage_id   uuid not null references garages(id) on delete cascade,
-  slug        text not null,           -- VehicleCategory.slug ex: "voitures"
+  slug        text not null,           -- VehicleCategory.slug  ex: "voitures"
   label       text not null,           -- VehicleCategory.label ex: "Voitures"
   icon        text,                    -- VehicleCategory.icon  ex: "car" ou "🚗"
   color       text,                    -- VehicleCategory.color ex: "#3b82f6"
@@ -104,7 +128,7 @@ create table vehicles (
   description     text,                                          -- Vehicle.description
 
   -- Médias
-  images          text[] default '{}',                           -- Vehicle.images
+  images          text[] default '{}',                           -- Vehicle.images (URLs legacy)
   thumbnail_url   text,                                          -- Vehicle.thumbnailUrl
 
   -- Statut métier
@@ -126,8 +150,36 @@ create table vehicles (
   -- Options équipement (JSONB ~84 booléens) — Vehicle.options
   options         jsonb default '{}',
 
+  -- ── SEO (v4) ─────────────────────────────────────────────────
+  -- Slug unique par garage, ex: "peugeot-208-automatique-2021"
+  -- Utilisé pour les URLs SEO : /vehicules/{slug}
+  slug            text,                                          -- Vehicle.slug
+  meta_description text,                                         -- Vehicle.meta_description
+
+  -- ── Export portails (v4) ─────────────────────────────────────
+  export_leboncoin boolean not null default false,               -- Vehicle.export_leboncoin
+  external_id     text,                                          -- Vehicle.external_id
+
   created_at      timestamptz not null default now(),            -- Vehicle.createdAt
-  updated_at      timestamptz not null default now()             -- Vehicle.updatedAt
+  updated_at      timestamptz not null default now(),            -- Vehicle.updatedAt
+
+  unique (garage_id, slug)
+);
+
+-- ─────────────────────────────────────────────────────────────────
+--  TABLE : vehicle_images (v4)
+--  Images indexées d'un véhicule — remplace progressivement vehicles.images[]
+--  Miroir de l'interface VehicleImage dans types/index.ts
+-- ─────────────────────────────────────────────────────────────────
+create table vehicle_images (
+  id          uuid primary key default uuid_generate_v4(),
+  vehicle_id  uuid not null references vehicles(id) on delete cascade, -- VehicleImage.vehicle_id
+  garage_id   uuid not null references garages(id) on delete cascade,  -- VehicleImage.garage_id
+  url         text not null,                  -- VehicleImage.url (Supabase Storage URL)
+  alt         text,                           -- VehicleImage.alt (texte alternatif SEO)
+  sort_order  integer not null default 0,     -- VehicleImage.sort_order (0 = première)
+  is_primary  boolean not null default false, -- VehicleImage.is_primary
+  created_at  timestamptz not null default now()
 );
 
 -- ─────────────────────────────────────────────────────────────────
@@ -144,10 +196,10 @@ create table services (
   short_description text not null,       -- Service.short_description
   long_description  text not null,       -- Service.long_description
   features          text[] default '{}', -- Service.features
-  -- Données imbriquées stockées en JSONB (schéma évolutif, rarement filtrées)
-  steps             jsonb default '[]',  -- Service.steps (ServiceStep[])
-  pricing           jsonb default '[]',  -- Service.pricing (ServicePricing[])
-  faq               jsonb default '[]',  -- Service.faq (ServiceFAQItem[])
+  -- Données imbriquées JSONB (schéma évolutif, rarement filtrées)
+  steps             jsonb default '[]',  -- Service.steps       (ServiceStep[])
+  pricing           jsonb default '[]',  -- Service.pricing     (ServicePricing[])
+  faq               jsonb default '[]',  -- Service.faq         (ServiceFAQItem[])
   testimonials      jsonb default '[]',  -- Service.testimonials (ServiceTestimonial[])
   is_active         boolean not null default true,
   created_at        timestamptz not null default now(),
@@ -155,16 +207,16 @@ create table services (
   unique (garage_id, slug)
 );
 
--- Images de service — table séparée pour permettre le réordonnancement
+-- Images de service — table séparée pour le réordonnancement
 -- Miroir de l'interface ServiceImage dans types/index.ts
 create table service_images (
   id         uuid primary key default uuid_generate_v4(),
   service_id uuid not null references services(id) on delete cascade, -- ServiceImage.service_id
   garage_id  uuid not null references garages(id) on delete cascade,  -- ServiceImage.garage_id
-  url        text not null,           -- ServiceImage.url
-  alt        text,                    -- ServiceImage.alt
-  sort_order integer not null default 0, -- ServiceImage.order
-  is_primary boolean not null default false -- ServiceImage.is_primary
+  url        text not null,                    -- ServiceImage.url
+  alt        text,                             -- ServiceImage.alt
+  sort_order integer not null default 0,       -- ServiceImage.order
+  is_primary boolean not null default false    -- ServiceImage.is_primary
 );
 
 -- ─────────────────────────────────────────────────────────────────
@@ -174,20 +226,44 @@ create table service_images (
 -- ─────────────────────────────────────────────────────────────────
 create table banners (
   id              uuid primary key default uuid_generate_v4(),
-  garage_id       uuid not null references garages(id) on delete cascade, -- Banner.garage_id
-  is_active       boolean not null default false,  -- Banner.is_active
-  message         text not null,                   -- Banner.message
-  sub_message     text,                            -- Banner.sub_message
-  image_url       text,                            -- Banner.image_url
-  cta_label       text,                            -- Banner.cta_label
-  cta_url         text,                            -- Banner.cta_url
-  bg_color        text not null default '#c8102e', -- Banner.bg_color
-  scheduled_start timestamptz,                     -- Banner.scheduled_start
-  scheduled_end   timestamptz,                     -- Banner.scheduled_end
+  garage_id       uuid not null references garages(id) on delete cascade,
+  is_active       boolean not null default false,
+  message         text not null,
+  sub_message     text,
+  image_url       text,
+  cta_label       text,
+  cta_url         text,
+  bg_color        text not null default '#c8102e',
+  scheduled_start timestamptz,
+  scheduled_end   timestamptz,
   display_pages   text not null default 'all' check (display_pages in ('all', 'home_only')),
-  is_dismissible  boolean not null default true,   -- Banner.is_dismissible
+  is_dismissible  boolean not null default true,
   created_at      timestamptz not null default now(),
-  updated_at      timestamptz not null default now() -- Banner.updated_at
+  updated_at      timestamptz not null default now()
+);
+
+-- ─────────────────────────────────────────────────────────────────
+--  TABLE : messages (v4)
+--  Leads et demandes de contact reçus via le formulaire.
+--  Miroir de l'interface Message dans types/index.ts
+-- ─────────────────────────────────────────────────────────────────
+create table messages (
+  id          uuid primary key default uuid_generate_v4(),
+  -- Liens contextuels (optionnels)
+  garage_id   uuid references garages(id) on delete set null,  -- Message.garage_id
+  vehicle_id  uuid references vehicles(id) on delete set null, -- Message.vehicle_id (lead fiche VO)
+
+  -- Corps du message
+  name        text not null,   -- Message.name
+  email       text not null,   -- Message.email
+  phone       text,            -- Message.phone
+  subject     text,            -- Message.subject
+  message     text not null,   -- Message.message
+
+  -- Suivi lecture : null = non lu | timestamptz = lu le ...
+  read_at     timestamptz,     -- Message.read_at
+
+  created_at  timestamptz not null default now()
 );
 
 -- ─────────────────────────────────────────────────────────────────
@@ -225,6 +301,9 @@ create trigger trg_banners_updated_at
 --  INDEX — performance filtres & tris
 -- ─────────────────────────────────────────────────────────────────
 
+-- garages
+create index idx_garages_slug        on garages(slug);
+
 -- vehicles
 create index idx_vehicles_garage_id    on vehicles(garage_id);
 create index idx_vehicles_status       on vehicles(status);
@@ -235,14 +314,19 @@ create index idx_vehicles_brand        on vehicles(brand);
 create index idx_vehicles_fuel         on vehicles(fuel);
 create index idx_vehicles_year         on vehicles(year desc);
 create index idx_vehicles_created_at   on vehicles(created_at desc);
--- WHERE status = 'scheduled' AND published_at <= now()
 create index idx_vehicles_published_at on vehicles(published_at) where status = 'scheduled';
--- GIN : features JSONB (recherches sur clés libres)
 create index idx_vehicles_features     on vehicles using gin(features);
--- GIN : options JSONB (~84 booléens équipement)
 create index idx_vehicles_options      on vehicles using gin(options);
--- GIN : categories TEXT[] — filtre WHERE categories @> ARRAY['voitures']
 create index idx_vehicles_categories   on vehicles using gin(categories);
+-- Lookup SEO : /vehicules/{slug}
+create index idx_vehicles_slug         on vehicles(garage_id, slug);
+-- Export portails (filtre rapide sur les véhicules à exporter)
+create index idx_vehicles_export       on vehicles(garage_id, export_leboncoin)
+  where export_leboncoin = true;
+
+-- vehicle_images
+create index idx_vehicle_images_vehicle on vehicle_images(vehicle_id, sort_order);
+create index idx_vehicle_images_garage  on vehicle_images(garage_id);
 
 -- vehicle_categories
 create index idx_vc_garage_active on vehicle_categories(garage_id, is_active, sort_order);
@@ -252,6 +336,16 @@ create index idx_services_garage on services(garage_id, is_active, sort_order);
 
 -- banners
 create index idx_banners_garage_active on banners(garage_id, is_active);
+
+-- messages
+-- Boîte de réception : messages non lus d'un garage (usage dashboard)
+create index idx_messages_garage_unread on messages(garage_id, read_at)
+  where read_at is null;
+-- Leads liés à un véhicule précis
+create index idx_messages_vehicle  on messages(vehicle_id)
+  where vehicle_id is not null;
+-- Tri chronologique
+create index idx_messages_created  on messages(created_at desc);
 
 -- garage_users
 create index idx_gu_garage on garage_users(garage_id);
@@ -264,9 +358,11 @@ alter table garages            enable row level security;
 alter table garage_users       enable row level security;
 alter table vehicle_categories enable row level security;
 alter table vehicles           enable row level security;
+alter table vehicle_images     enable row level security;
 alter table services           enable row level security;
 alter table service_images     enable row level security;
 alter table banners            enable row level security;
+alter table messages           enable row level security;
 
 -- ── Helper : garage_ids de l'utilisateur courant ──
 create or replace function my_garage_ids()
@@ -318,7 +414,6 @@ create policy "vc_admin_write"
   with check (can_write_garage(garage_id));
 
 -- ── VEHICLES ──
--- Lecture publique : published, sold, ou scheduled dont la date est passée
 create policy "vehicles_public_read"
   on vehicles for select
   using (
@@ -327,14 +422,21 @@ create policy "vehicles_public_read"
     or (status = 'scheduled' and published_at <= now())
   );
 
--- Lecture complète pour les membres du garage
 create policy "vehicles_member_read_all"
   on vehicles for select to authenticated
   using (garage_id in (select my_garage_ids()));
 
--- Écriture : admin/superadmin du garage uniquement
 create policy "vehicles_admin_write"
   on vehicles for all to authenticated
+  using (can_write_garage(garage_id))
+  with check (can_write_garage(garage_id));
+
+-- ── VEHICLE_IMAGES ──
+create policy "vehicle_images_public_read"
+  on vehicle_images for select using (true);
+
+create policy "vehicle_images_admin_write"
+  on vehicle_images for all to authenticated
   using (can_write_garage(garage_id))
   with check (can_write_garage(garage_id));
 
@@ -357,7 +459,6 @@ create policy "service_images_admin_write"
   with check (can_write_garage(garage_id));
 
 -- ── BANNERS ──
--- Lecture publique : bannière active dont la planification est en cours
 create policy "banners_public_read"
   on banners for select
   using (
@@ -371,19 +472,38 @@ create policy "banners_admin_write"
   using (can_write_garage(garage_id))
   with check (can_write_garage(garage_id));
 
+-- ── MESSAGES ──
+-- Tout visiteur peut envoyer un message
+create policy "messages_public_insert"
+  on messages for insert with check (true);
+
+-- Lecture : membres du garage concerné uniquement
+create policy "messages_member_read"
+  on messages for select to authenticated
+  using (garage_id in (select my_garage_ids()));
+
+-- Mise à jour (mark as read) : membres du garage
+create policy "messages_member_update"
+  on messages for update to authenticated
+  using (garage_id in (select my_garage_ids()));
+
 -- ─────────────────────────────────────────────────────────────────
 --  DONNÉES INITIALES
 -- ─────────────────────────────────────────────────────────────────
-insert into garages (id, name, slug, address, phone, email, plan) values
-  (
-    '00000000-0000-0000-0000-000000000001',
-    'Garage Auto Mendonça',
-    'garage-mendonca',
-    '6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage',
-    '05 32 00 20 38',
-    'contact@garagemendonca.com',
-    'isolated'
-  );
+insert into garages (id, name, slug, address, city, postal_code, phone, email, plan, lat, lng)
+values (
+  '00000000-0000-0000-0000-000000000001',
+  'Garage Auto Mendonça',
+  'garage-mendonca',
+  '6 Avenue de la Mouyssaguese',
+  'Drémil-Lafage',
+  '31280',
+  '05 32 00 20 38',
+  'contact@garagemendonca.com',
+  'isolated',
+  43.604652,
+  1.567890
+);
 
 -- ═══════════════════════════════════════════════════════════════
 --  SUPABASE STORAGE — stratégie images
@@ -394,11 +514,14 @@ insert into garages (id, name, slug, address, phone, email, plan) values
 --    "garage-logos"    (public, CDN activé)
 --
 --  Structure vehicle-images :
---    {vehicle_id}/main.webp          ← thumbnail principal ≥ 1200×800
+--    {vehicle_id}/main.webp          ← thumbnail principal (≥ 1200×800)
 --    {vehicle_id}/gallery/001.webp   ← images secondaires numérotées
 --
---  URL publique :
---    https://{project}.supabase.co/storage/v1/object/public/vehicle-images/{id}/main.webp
+--  Workflow upload :
+--    1. Créer le véhicule → récupérer son UUID
+--    2. Upload : storage.upload(`${id}/main.webp`, file)
+--    3. Insérer dans vehicle_images (url, is_primary=true, sort_order=0)
+--    4. Stocker aussi dans vehicles.thumbnail_url pour accès direct
 --
 --  Resize automatique (Supabase Image Transformation) :
 --    ?width=400&height=300&resize=cover   → card thumbnail
@@ -410,23 +533,31 @@ insert into garages (id, name, slug, address, phone, email, plan) values
 --  MAPPING camelCase ↔ snake_case (côté Next.js)
 --
 --  Vehicle :
---    garageId      → garage_id
---    critAir       → crit_air
---    thumbnailUrl  → thumbnail_url
---    featuredOrder → featured_order
---    published_at  → published_at   (déjà snake_case)
---    sold_at       → sold_at         (déjà snake_case)
---    createdAt     → created_at
---    updatedAt     → updated_at
+--    garageId         → garage_id
+--    critAir          → crit_air
+--    thumbnailUrl     → thumbnail_url
+--    featuredOrder    → featured_order
+--    meta_description → meta_description  (déjà snake_case)
+--    export_leboncoin → export_leboncoin  (déjà snake_case)
+--    external_id      → external_id       (déjà snake_case)
+--    published_at     → published_at      (déjà snake_case)
+--    sold_at          → sold_at           (déjà snake_case)
+--    createdAt        → created_at
+--    updatedAt        → updated_at
 --
 --  Garage :
---    logo_url      → logo_url       (déjà snake_case)
---    is_active     → is_active      (déjà snake_case)
---    createdAt     → created_at
---    updatedAt     → updated_at
+--    logo_url         → logo_url          (déjà snake_case)
+--    is_active        → is_active         (déjà snake_case)
+--    postal_code      → postal_code       (déjà snake_case)
+--    google_maps_url  → google_maps_url   (déjà snake_case)
+--    opening_hours    → opening_hours     (déjà snake_case)
+--    createdAt        → created_at
+--    updatedAt        → updated_at
 --
---  Helpers de mapping dans lib/vehicles.ts :
---    function mapVehicle(row): Vehicle { ... }
---    function mapGarage(row): Garage { ... }
+--  Message :
+--    garage_id   → garage_id   (déjà snake_case)
+--    vehicle_id  → vehicle_id  (déjà snake_case)
+--    read_at     → read_at     (déjà snake_case)
+--    created_at  → created_at  (déjà snake_case)
 --
 -- ═══════════════════════════════════════════════════════════════
