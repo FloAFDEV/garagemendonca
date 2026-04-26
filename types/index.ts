@@ -314,6 +314,7 @@ export interface Message {
   subject?: string;
   message: string;
   read_at?: string;     // ISO 8601 — null = non lu
+  status: "new" | "read" | "archived";
   created_at: string;   // ISO 8601
 }
 

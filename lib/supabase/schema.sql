@@ -164,9 +164,7 @@ create table vehicles (
   external_id     text,                                          -- Vehicle.external_id
 
   created_at      timestamptz not null default now(),            -- Vehicle.createdAt
-  updated_at      timestamptz not null default now(),            -- Vehicle.updatedAt
-
-  CONSTRAINT uniq_vehicle_slug_per_garage UNIQUE (garage_id, slug)
+  updated_at      timestamptz not null default now()             -- Vehicle.updatedAt
 );
 
 -- ─────────────────────────────────────────────────────────────────
@@ -266,6 +264,10 @@ create table messages (
   -- Suivi lecture : null = non lu | timestamptz = lu le ...
   read_at     timestamptz,     -- Message.read_at
 
+  -- Statut admin simple : new → read → archived
+  status      text not null default 'new'
+                check (status in ('new', 'read', 'archived')),
+
   created_at  timestamptz not null default now()
 );
 
@@ -301,11 +303,33 @@ create trigger trg_banners_updated_at
   for each row execute function set_updated_at();
 
 -- ─────────────────────────────────────────────────────────────────
+--  TRIGGER : cohérence vehicle_images (garage_id ↔ vehicle_id)
+--  Garantit qu'une image appartient bien au garage du véhicule référencé.
+-- ─────────────────────────────────────────────────────────────────
+create or replace function check_vehicle_image_garage()
+returns trigger as $$
+begin
+  if not exists (
+    select 1 from vehicles v
+    where v.id = new.vehicle_id
+      and v.garage_id = new.garage_id
+  ) then
+    raise exception 'vehicle_image: vehicle_id and garage_id mismatch';
+  end if;
+  return new;
+end;
+$$ language plpgsql;
+
+create trigger trg_vehicle_image_garage
+  before insert or update on vehicle_images
+  for each row execute function check_vehicle_image_garage();
+
+-- ─────────────────────────────────────────────────────────────────
 --  INDEX — performance filtres & tris
 -- ─────────────────────────────────────────────────────────────────
--- Note : les UNIQUE CONSTRAINT inline (uniq_vehicle_slug_per_garage,
--- uniq_category_slug_per_garage, uniq_service_slug_per_garage) créent
--- implicitement des index B-tree. Pas d'index supplémentaire nécessaire.
+-- Note : les UNIQUE CONSTRAINT inline (uniq_category_slug_per_garage,
+-- uniq_service_slug_per_garage) créent implicitement des index B-tree.
+-- Le slug véhicule utilise un index CI fonctionnel (voir ci-dessous).
 
 -- vehicles
 create index idx_vehicles_garage_id    on vehicles(garage_id);
@@ -321,8 +345,12 @@ create index idx_vehicles_published_at on vehicles(published_at) where status = 
 create index idx_vehicles_features     on vehicles using gin(features);
 create index idx_vehicles_options      on vehicles using gin(options);
 create index idx_vehicles_categories   on vehicles using gin(categories);
--- Lookup SEO : /vehicules/{slug}
-create index idx_vehicles_slug         on vehicles(garage_id, slug);
+-- Slug SEO : unicité case-insensitive + lookup /vehicules/{slug}
+-- Index fonctionnel sur lower(slug) pour rejeter "Peugeot-208" si "peugeot-208" existe.
+-- Partial (WHERE slug IS NOT NULL) : les véhicules sans slug ne sont pas indexés.
+create unique index uniq_vehicle_slug_per_garage_ci
+  on vehicles (garage_id, lower(slug))
+  where slug is not null;
 -- Export portails (filtre rapide sur les véhicules à exporter)
 create index idx_vehicles_export       on vehicles(garage_id, export_leboncoin)
   where export_leboncoin = true;
@@ -480,9 +508,13 @@ create policy "banners_admin_write"
   with check (can_write_garage(garage_id));
 
 -- ── MESSAGES ──
--- Tout visiteur peut envoyer un message
+-- Tout visiteur peut envoyer un message (validation anti-spam minimale)
 create policy "messages_public_insert"
-  on messages for insert with check (true);
+  on messages for insert
+  with check (
+    email ~* '^[^@]+@[^@]+\.[^@]+$'
+    and length(message) > 10
+  );
 
 -- Lecture : membres du garage concerné uniquement
 create policy "messages_member_read"
