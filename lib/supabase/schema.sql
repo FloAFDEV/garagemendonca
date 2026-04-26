@@ -153,6 +153,9 @@ create table vehicles (
   -- ── SEO (v4) ─────────────────────────────────────────────────
   -- Slug unique par garage, ex: "peugeot-208-automatique-2021"
   -- Utilisé pour les URLs SEO : /vehicules/{slug}
+  -- nullable intentionnel : la génération du slug est applicative (lib/vehicles.ts).
+  -- Passage en NOT NULL possible une fois que createVehicle() génère le slug
+  -- et qu'une migration backfill a été exécutée sur les véhicules existants.
   slug            text,                                          -- Vehicle.slug
   meta_description text,                                         -- Vehicle.meta_description
 
@@ -494,7 +497,10 @@ create policy "messages_member_update"
 -- ─────────────────────────────────────────────────────────────────
 --  DONNÉES INITIALES
 -- ─────────────────────────────────────────────────────────────────
-insert into garages (id, name, slug, address, city, postal_code, phone, email, plan, lat, lng)
+insert into garages (
+  id, name, slug, address, city, postal_code, phone, email,
+  plan, lat, lng, description, is_active, google_maps_url, opening_hours
+)
 values (
   '00000000-0000-0000-0000-000000000001',
   'Garage Auto Mendonça',
@@ -506,7 +512,11 @@ values (
   'contact@garagemendonca.com',
   'isolated',
   43.604652,
-  1.567890
+  1.567890,
+  'Spécialiste de la mécanique, carrosserie et vente de véhicules d''occasion japonais à boîte automatique à Drémil-Lafage depuis 2001.',
+  true,
+  'https://maps.google.com/?q=6+Avenue+de+la+Mouyssaguese+31280+Dr%C3%A9mil-Lafage',
+  '{"lundi":{"open":"08:00","close":"19:00"},"mardi":{"open":"08:00","close":"19:00"},"mercredi":{"open":"08:00","close":"19:00"},"jeudi":{"open":"08:00","close":"19:00"},"vendredi":{"open":"08:00","close":"18:00"},"samedi":null,"dimanche":null}'
 );
 
 -- ═══════════════════════════════════════════════════════════════
