@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SkipToContent from "@/components/ui/SkipToContent";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 export const metadata: Metadata = {
 	title: {
@@ -124,7 +125,7 @@ export default function RootLayout({
 			</head>
 			<body>
 				<SkipToContent />
-				{children}
+				<QueryProvider>{children}</QueryProvider>
 			</body>
 		</html>
 	);
