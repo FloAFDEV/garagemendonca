@@ -102,7 +102,7 @@ create table vehicle_categories (
   is_active   boolean not null default true,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now(),
-  unique (garage_id, slug)
+  CONSTRAINT uniq_category_slug_per_garage UNIQUE (garage_id, slug)
 );
 
 -- ─────────────────────────────────────────────────────────────────
@@ -163,7 +163,7 @@ create table vehicles (
   created_at      timestamptz not null default now(),            -- Vehicle.createdAt
   updated_at      timestamptz not null default now(),            -- Vehicle.updatedAt
 
-  unique (garage_id, slug)
+  CONSTRAINT uniq_vehicle_slug_per_garage UNIQUE (garage_id, slug)
 );
 
 -- ─────────────────────────────────────────────────────────────────
@@ -204,7 +204,7 @@ create table services (
   is_active         boolean not null default true,
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now(),
-  unique (garage_id, slug)
+  CONSTRAINT uniq_service_slug_per_garage UNIQUE (garage_id, slug)
 );
 
 -- Images de service — table séparée pour le réordonnancement
@@ -300,9 +300,9 @@ create trigger trg_banners_updated_at
 -- ─────────────────────────────────────────────────────────────────
 --  INDEX — performance filtres & tris
 -- ─────────────────────────────────────────────────────────────────
-
--- garages
-create index idx_garages_slug        on garages(slug);
+-- Note : les UNIQUE CONSTRAINT inline (uniq_vehicle_slug_per_garage,
+-- uniq_category_slug_per_garage, uniq_service_slug_per_garage) créent
+-- implicitement des index B-tree. Pas d'index supplémentaire nécessaire.
 
 -- vehicles
 create index idx_vehicles_garage_id    on vehicles(garage_id);
@@ -327,6 +327,10 @@ create index idx_vehicles_export       on vehicles(garage_id, export_leboncoin)
 -- vehicle_images
 create index idx_vehicle_images_vehicle on vehicle_images(vehicle_id, sort_order);
 create index idx_vehicle_images_garage  on vehicle_images(garage_id);
+-- Contrainte : une seule image principale par véhicule (partial unique index)
+create unique index uniq_primary_image_per_vehicle
+  on vehicle_images (vehicle_id)
+  where is_primary = true;
 
 -- vehicle_categories
 create index idx_vc_garage_active on vehicle_categories(garage_id, is_active, sort_order);
