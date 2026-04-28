@@ -28,6 +28,7 @@ export default function NotFound() {
             height={400}
             className="w-[280px] h-auto md:w-[380px] object-contain mx-auto"
             priority
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
           />
         </motion.div>
 
