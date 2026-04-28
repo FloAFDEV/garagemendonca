@@ -4,16 +4,16 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 
 export const metadata: Metadata = {
-	title: "Conditions Générales d'Utilisation — Garage Mendonça",
+	title: "Conditions Générales d'Utilisation — Garage Mendonca",
 	description:
-		"Conditions Générales d'Utilisation du site internet du Garage Auto Mendonça à Drémil-Lafage (31).",
+		"Conditions Générales d'Utilisation du site internet du Garage Auto Mendonca à Drémil-Lafage (31).",
 	robots: { index: false, follow: false },
 };
 
 const sections = [
 	{
 		title: "1. Objet",
-		content: `Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation du site internet www.garagemendonça.com, édité par le Garage Auto Mendonça (ci-après « le Garage »).
+		content: `Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation du site internet www.garagemendonca.com, édité par le Garage Auto Mendonca (ci-après « le Garage »).
 
 Tout accès au site implique l'acceptation sans réserve des présentes CGU. Le Garage se réserve le droit de les modifier à tout moment ; les modifications entrent en vigueur dès leur publication sur le site.`,
 	},
@@ -58,7 +58,7 @@ Le Garage décline toute responsabilité pour tout préjudice direct ou indirect
 		title: "7. Protection des données personnelles",
 		content: `La collecte et le traitement des données personnelles sont régis par notre Politique de confidentialité, consultable à l'adresse /politique-confidentialite.
 
-Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, de suppression et de portabilité de vos données. Pour exercer ces droits, contactez-nous à : contact@garagemendonça.com`,
+Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, de suppression et de portabilité de vos données. Pour exercer ces droits, contactez-nous à : contact@garagemendonca.com`,
 	},
 	{
 		title: "8. Cookies",

@@ -76,10 +76,10 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 						</span>
 					</span>
 					<a
-						href="mailto:contact@garagemendonça.com"
+						href="mailto:contact@garagemendonca.com"
 						className="font-light hover:text-slate-300 transition-colors"
 					>
-						contact@garagemendonça.com
+						contact@garagemendonca.com
 					</a>
 				</Container>
 			</div>
@@ -95,7 +95,7 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 						<div className="relative h-[55px] md:h-[60px] w-[180px] md:w-[220px]">
 							<Image
 								src="/images/logo.webp"
-								alt="Garage Mendonça"
+								alt="Garage Mendonca"
 								fill
 								priority
 								className="object-contain object-left"

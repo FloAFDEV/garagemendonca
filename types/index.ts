@@ -162,7 +162,7 @@ export type GarageOpeningHours = Partial<Record<GarageDay, GarageHours | null>>;
 // ─────────────────────────────────────────────
 export interface Garage {
   id: string;          // uuid
-  name: string;        // "Garage Auto Mendonça"
+  name: string;        // "Garage Auto Mendonca"
   slug: string;        // "garage-mendonca" (URL-safe)
   address?: string;
   phone?: string;

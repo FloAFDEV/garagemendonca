@@ -2,60 +2,47 @@
 
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import { vehicles } from "@/lib/data";
+import { useVehiclesAdmin } from "@/lib/queries/useVehicles";
 import { Car, TrendingUp, Mail, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
 
-/* Stats dynamiques depuis les vraies données */
-const stockCount = vehicles.filter((v) => v.status !== "sold").length;
-const soldCount = vehicles.filter((v) => v.status === "sold").length;
-const publishedCount = vehicles.filter((v) => v.status === "published").length;
-
-const stats = [
-	{
-		label: "Véhicules en stock",
-		value: stockCount.toString(),
-		change: `${publishedCount} publiés`,
-		icon: Car,
-		color: "text-brand-500",
-		bg: "bg-brand-500/10",
-	},
-	{
-		label: "Demandes reçues",
-		value: "23",
-		change: "+5 cette semaine",
-		icon: Mail,
-		color: "text-emerald-500",
-		bg: "bg-emerald-500/10",
-	},
-	{
-		label: "Véhicules vendus",
-		value: soldCount.toString(),
-		change: "au total",
-		icon: TrendingUp,
-		color: "text-violet-500",
-		bg: "bg-violet-500/10",
-	},
-];
-
-const recentMessages = [
-	{
-		name: "Marc Leblanc",
-		subject: "Renseignement Peugeot 308 SW",
-		time: "Il y a 2h",
-	},
-	{
-		name: "Sophie Durand",
-		subject: "Demande de devis freinage",
-		time: "Il y a 5h",
-	},
-	{ name: "Thomas Martin", subject: "Intéressé BMW Série 1", time: "Hier" },
-	{ name: "Julie Fontaine", subject: "Rendez-vous révision", time: "Hier" },
-];
+const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
 export default function DashboardPage() {
 	const t = useAdminTokens();
+	const { data: vehicles = [] } = useVehiclesAdmin(GARAGE_ID);
+
+	const stockCount     = vehicles.filter((v) => v.status !== "sold").length;
+	const soldCount      = vehicles.filter((v) => v.status === "sold").length;
+	const publishedCount = vehicles.filter((v) => v.status === "published").length;
+
+	const stats = [
+		{
+			label: "Véhicules en stock",
+			value: stockCount.toString(),
+			change: `${publishedCount} publiés`,
+			icon: Car,
+			color: "text-brand-500",
+			bg: "bg-brand-500/10",
+		},
+		{
+			label: "Demandes reçues",
+			value: "—",
+			change: "voir messagerie",
+			icon: Mail,
+			color: "text-emerald-500",
+			bg: "bg-emerald-500/10",
+		},
+		{
+			label: "Véhicules vendus",
+			value: soldCount.toString(),
+			change: "au total",
+			icon: TrendingUp,
+			color: "text-violet-500",
+			bg: "bg-violet-500/10",
+		},
+	];
 
 	return (
 		<AdminLayout>
@@ -214,75 +201,24 @@ export default function DashboardPage() {
 						</div>
 					</div>
 
-					{/* Recent messages */}
+					{/* Messagerie */}
 					<div
 						className={clsx(
-							"rounded-2xl border p-6",
+							"rounded-2xl border p-6 flex flex-col items-center justify-center gap-4 text-center",
 							t.surface,
 							t.border,
 						)}
 					>
-						<h3
-							className={clsx(
-								"font-heading font-normal tracking-wide mb-6",
-								t.txt,
-							)}
-						>
-							Derniers messages
-						</h3>
-						<div className="space-y-4">
-							{recentMessages.map(({ name, subject, time }) => (
-								<div
-									key={name}
-									className={clsx(
-										"flex items-start gap-3 py-3 border-b last:border-0",
-										t.border,
-									)}
-								>
-									<div
-										className={clsx(
-											"w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-											t.surface3,
-										)}
-									>
-										<span
-											className={clsx(
-												"text-xs font-medium",
-												t.txtMuted,
-											)}
-										>
-											{name[0]}
-										</span>
-									</div>
-									<div className="flex-1 min-w-0">
-										<div
-											className={clsx(
-												"text-sm font-medium truncate",
-												t.txt,
-											)}
-										>
-											{name}
-										</div>
-										<div
-											className={clsx(
-												"text-xs mt-0.5 truncate",
-												t.txtSubtle,
-											)}
-										>
-											{subject}
-										</div>
-										<div
-											className={clsx(
-												"text-xs mt-1",
-												t.txtFaint,
-											)}
-										>
-											{time}
-										</div>
-									</div>
-								</div>
-							))}
+						<Mail size={28} className={t.txtMuted} aria-hidden="true" />
+						<div>
+							<p className={clsx("font-normal text-sm", t.txt)}>Messagerie</p>
+							<p className={clsx("text-xs mt-1", t.txtSubtle)}>
+								Consultez les demandes de contact
+							</p>
 						</div>
+						<Link href="/admin/messages" className="btn-secondary text-xs py-2 px-4">
+							Voir les messages
+						</Link>
 					</div>
 				</div>
 			</div>

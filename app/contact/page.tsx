@@ -8,7 +8,7 @@ import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 export const metadata: Metadata = {
 	title: "Contact et Devis",
 	description:
-		"Contactez Garage Auto Mendonça à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message pour un devis gratuit. Réponse sous 24h.",
+		"Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message pour un devis gratuit. Réponse sous 24h.",
 };
 
 function ContactFormWrapper({
@@ -132,10 +132,10 @@ export default async function ContactPage({ searchParams }: PageProps) {
 											Email
 										</p>
 										<a
-											href="mailto:contact@garagemendonça.com"
+											href="mailto:contact@garagemendonca.com"
 											className="font-normal text-[#0f172a] hover:text-brand-600 transition-colors text-sm break-all"
 										>
-											contact@garagemendonça.com
+											contact@garagemendonca.com
 										</a>
 									</div>
 								</div>
@@ -245,7 +245,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							allowFullScreen
 							loading="lazy"
 							referrerPolicy="no-referrer-when-downgrade"
-							title="Plan d'accès au Garage Mendonça — 6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage"
+							title="Plan d'accès au Garage Mendonca — 6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage"
 						/>
 					</div>
 				</Container>

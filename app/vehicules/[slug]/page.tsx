@@ -160,7 +160,7 @@ export async function generateMetadata({
 	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} €`;
 	const desc =
 		vehicle.meta_description ??
-		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, ${vehicle.transmission}. ${vehicle.description.slice(0, 110)}… Garage Mendonça, Drémil-Lafage (31).`;
+		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, ${vehicle.transmission}. ${vehicle.description.slice(0, 110)}… Garage Mendonca, Drémil-Lafage (31).`;
 
 	const ogImage = vehicle.thumbnailUrl ?? vehicle.images[0];
 
@@ -227,7 +227,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			availability: isAvailable
 				? "https://schema.org/InStock"
 				: "https://schema.org/SoldOut",
-			seller: { "@type": "AutoDealer", name: "Garage Auto Mendonça" },
+			seller: { "@type": "AutoDealer", name: "Garage Auto Mendonca" },
 		},
 	};
 

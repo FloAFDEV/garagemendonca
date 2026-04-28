@@ -67,7 +67,7 @@ export default function Footer() {
 							<div>
 								{/* Nom garage — normal, pas bold */}
 								<div className="ty-subheading text-white text-base leading-tight">
-									Garage Mendonça
+									Garage Mendonca
 								</div>
 								<div className="font-light text-xs text-slate-600 mt-0.5">
 									Depuis 2001 · Drémil-Lafage
@@ -77,7 +77,7 @@ export default function Footer() {
 
 						<p className="font-light text-sm leading-relaxed text-slate-500 mb-5">
 							Spécialiste des voitures japonaises et boîtes
-							automatiques depuis 2001, le Garage Mendonça
+							automatiques depuis 2001, le Garage Mendonca
 							accueille jeunes conducteurs, seniors et personnes à
 							mobilité réduite. Nous parlons portugais et
 							francais.
@@ -146,7 +146,7 @@ export default function Footer() {
 										31280 Drémil-Lafage
 									</span>
 									<a
-										href="https://maps.google.com/?q=Garage+Mendonça+6+Avenue+de+la+Mouyssaguese+31280+Dremil-Lafage"
+										href="https://maps.google.com/?q=Garage+Mendonca+6+Avenue+de+la+Mouyssaguese+31280+Dremil-Lafage"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="inline-flex items-center gap-1 text-brand-400 hover:text-brand-300 text-xs mt-2 transition-colors"
@@ -180,10 +180,10 @@ export default function Footer() {
 									aria-hidden="true"
 								/>
 								<a
-									href="mailto:contact@garagemendonça.com"
+									href="mailto:contact@garagemendonca.com"
 									className="font-light hover:text-brand-400 transition-colors break-all"
 								>
-									contact@garagemendonça.com
+									contact@garagemendonca.com
 								</a>
 							</li>
 						</ul>
@@ -241,7 +241,7 @@ export default function Footer() {
 			<div className="border-t border-slate-800">
 				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-400">
 					<p>
-						© {new Date().getFullYear()} Garage Auto Mendonça · SARL
+						© {new Date().getFullYear()} Garage Auto Mendonca · SARL
 						· SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700
 						€
 					</p>

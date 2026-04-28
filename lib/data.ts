@@ -13,12 +13,12 @@ import {
 // ─────────────────────────────────────────────
 export const garages: Garage[] = [
 	{
-		id: "garage-mendonça",
-		name: "Garage Auto Mendonça",
-		slug: "garage-mendonça",
+		id: "garage-mendonca",
+		name: "Garage Auto Mendonca",
+		slug: "garage-mendonca",
 		address: "6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage",
 		phone: "05 32 00 20 38",
-		email: "contact@garagemendonça.com",
+		email: "contact@garagemendonca.com",
 		plan: "isolated",
 		createdAt: "2001-01-01T00:00:00Z",
 		updatedAt: "2025-01-01T00:00:00Z",
@@ -32,7 +32,7 @@ export const garages: Garage[] = [
 export const vehicles: Vehicle[] = [
 	{
 		id: "1",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Suzuki",
 		model: "Swift",
 		year: 2018,
@@ -131,7 +131,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 	},
 	{
 		id: "3",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Toyota",
 		model: "AYGO",
 		year: 2020,
@@ -184,7 +184,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 	},
 	{
 		id: "2",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Nissan",
 		model: "Micra",
 		year: 2019,
@@ -251,7 +251,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 	},
 	{
 		id: "4",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Nissan",
 		model: "Pixo",
 		year: 2017,
@@ -299,7 +299,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 	},
 	{
 		id: "5",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Mitsubishi",
 		model: "Space Star",
 		year: 2014,
@@ -376,7 +376,7 @@ Autres notes : Véhicule en cours de roulage, idéal pour la ville et jeunes per
 	},
 	{
 		id: "6",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Hyundai",
 		model: "i10",
 		year: 2018,
@@ -428,7 +428,7 @@ Autres notes : Véhicule en cours de roulage, idéal pour la ville et jeunes per
 	},
 	{
 		id: "7",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Peugeot",
 		model: "107",
 		year: 2007,
@@ -492,7 +492,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 	},
 	{
 		id: "8",
-		garageId: "garage-mendonça",
+		garageId: "garage-mendonca",
 		brand: "Citroën",
 		model: "C1",
 		year: 2020,
@@ -540,7 +540,7 @@ Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune
 ];
 
 /** Identifiant du garage actif — même valeur que ACTIVE_GARAGE_ID dans lib/config/garage.ts */
-const GARAGE_ID = "garage-mendonça";
+const GARAGE_ID = "garage-mendonca";
 
 // ── Steps, pricing, faq, testimonials partagés ────────────────────────────
 const stepsEntretien: ServiceStep[] = [
@@ -787,7 +787,7 @@ export const services: Service[] = [
 		short_description:
 			"Service de proximité pour tous véhicules toutes marques. Préconisations constructeur toujours respectées.",
 		long_description:
-			"Depuis 2001, le Garage Mendonça assure l'entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Accueil adapté aux jeunes conducteurs, seniors et personnes à mobilité réduite. Les préconisations constructeur sont toujours respectées.",
+			"Depuis 2001, le Garage Mendonca assure l'entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Accueil adapté aux jeunes conducteurs, seniors et personnes à mobilité réduite. Les préconisations constructeur sont toujours respectées.",
 		features: [
 			"Vidange huile moteur & remplacement filtres",
 			"Révision garantie constructeur",
@@ -808,7 +808,7 @@ export const services: Service[] = [
 				service_id: "entretien",
 				garage_id: GARAGE_ID,
 				url: "/images/entretien.webp",
-				alt: "Entretien véhicule au Garage Mendonça",
+				alt: "Entretien véhicule au Garage Mendonca",
 				order: 1,
 				is_primary: true,
 			},
@@ -824,7 +824,7 @@ export const services: Service[] = [
 		short_description:
 			"Spécialiste véhicules japonais et boîtes automatiques. Réparation électronique à coût maîtrisé, devis avant intervention.",
 		long_description:
-			"À la fois généraliste et expert, le Garage Mendonça intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé.",
+			"À la fois généraliste et expert, le Garage Mendonca intervient sur l'entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé.",
 		features: [
 			"Réparation moteur, embrayage & boîte de vitesses",
 			"Suspensions, direction et amortisseurs",
@@ -845,7 +845,7 @@ export const services: Service[] = [
 				service_id: "mecanique",
 				garage_id: GARAGE_ID,
 				url: "/images/mecanique.webp",
-				alt: "Réparation mécanique au Garage Mendonça",
+				alt: "Réparation mécanique au Garage Mendonca",
 				order: 1,
 				is_primary: true,
 			},
@@ -861,7 +861,7 @@ export const services: Service[] = [
 		short_description:
 			"Nouvelle cabine de peinture. Tôlerie, collision, pare-brise toutes marques. Véhicule de courtoisie inclus.",
 		long_description:
-			"Le Garage Mendonça a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",
+			"Le Garage Mendonca a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.",
 		features: [
 			"Tôlerie, peinture, réparation plastiques — cabine neuve",
 			"Pare-brise & lunette arrière (particuliers et utilitaires)",
@@ -882,7 +882,7 @@ export const services: Service[] = [
 				service_id: "carrosserie",
 				garage_id: GARAGE_ID,
 				url: "/images/carrosserie.webp",
-				alt: "Carrosserie et peinture au Garage Mendonça",
+				alt: "Carrosserie et peinture au Garage Mendonca",
 				order: 1,
 				is_primary: true,
 			},

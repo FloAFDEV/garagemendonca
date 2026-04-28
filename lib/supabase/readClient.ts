@@ -1,27 +1,47 @@
 /**
- * Client Supabase read-only (anon key) — partagé entre tous les repositories.
+ * Mode d'exécution de l'application.
  *
- * Utilise @supabase/supabase-js directement (pas SSR) car les lectures
- * publiques ne nécessitent pas de cookies — la RLS anon key suffit.
+ * DEMO_MODE=true  → données statiques (lib/data.ts), aucun appel Supabase.
+ * DEMO_MODE=false → Supabase obligatoire. Erreur si non configuré.
+ * DEMO_MODE auto  → si Supabase absent et DEMO_MODE non défini, bascule en démo.
  *
- * SUPABASE_ENABLED est false si les variables d'environnement sont absentes :
- * le shadow mode se désactive automatiquement et les repositories basculent
- * sur le store in-memory sans intervention manuelle.
+ * SUPABASE_ENABLED → true uniquement si URL + clé présentes ET DEMO_MODE=false.
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-export const SUPABASE_ENABLED =
+const _hasSupabaseEnv =
   !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
   !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+const _explicitDemo = process.env.NEXT_PUBLIC_DEMO_MODE;
+
+/**
+ * Mode démo : données statiques, aucun appel DB.
+ * true si :
+ *   - NEXT_PUBLIC_DEMO_MODE=true explicitement, OU
+ *   - Supabase non configuré ET NEXT_PUBLIC_DEMO_MODE ne vaut pas "false"
+ */
+export const DEMO_MODE: boolean =
+  _explicitDemo === "true" ||
+  (!_hasSupabaseEnv && _explicitDemo !== "false");
+
+/**
+ * Mode Supabase actif.
+ * true si URL + clé présents, DEMO_MODE=false, et SUPABASE_ENABLED≠false.
+ */
+export const SUPABASE_ENABLED: boolean =
+  !DEMO_MODE &&
+  process.env.NEXT_PUBLIC_SUPABASE_ENABLED !== "false" &&
+  _hasSupabaseEnv;
+
 let _client: SupabaseClient | null = null;
 
-/** Retourne un client singleton anon-key. Lance une erreur si non configuré. */
+/** Client Supabase anon (lecture publique via RLS). */
 export function getReadClient(): SupabaseClient {
   if (!SUPABASE_ENABLED) {
     throw new Error(
-      "Supabase non configuré — définir NEXT_PUBLIC_SUPABASE_URL et NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "[Supabase] Non configuré — définir NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY et NEXT_PUBLIC_DEMO_MODE=false",
     );
   }
   _client ??= createClient(

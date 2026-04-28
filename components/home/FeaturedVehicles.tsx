@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck } from "lucide-react";
-import { vehicles } from "@/lib/data";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
+import { vehicleRepository } from "@/lib/repositories/vehicleRepository";
+import { DEMO_MODE } from "@/lib/supabase/readClient";
+
+const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
 const guarantees = [
 	"Garantie 6 à 12 mois km illimités",
@@ -12,17 +15,22 @@ const guarantees = [
 	"Révision boîte automatique incluse",
 ];
 
-export default function FeaturedVehicles() {
-	const featured = vehicles.filter((v) => v.featured);
-	const displayed = (
-		featured.length > 0
-			? featured
-			: [...vehicles].sort((a, b) =>
-					(b.createdAt || "1900-01-01").localeCompare(
-						a.createdAt || "1900-01-01",
-					),
-				)
-	).slice(0, 4);
+export default async function FeaturedVehicles() {
+	const allFeatured = await vehicleRepository.getFeatured(4, GARAGE_ID || undefined).catch(() => []);
+
+	const displayed = allFeatured.length > 0
+		? allFeatured
+		: await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []).then((vs) =>
+				[...vs].sort((a, b) =>
+					(b.createdAt || "1900-01-01").localeCompare(a.createdAt || "1900-01-01"),
+				).slice(0, 4),
+		  );
+
+	const totalCount = await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []).then((vs) => vs.length);
+
+	if (displayed.length === 0 && !DEMO_MODE) {
+		return null;
+	}
 
 	return (
 		<section className="py-20 sm:py-28 bg-white">
@@ -90,7 +98,7 @@ export default function FeaturedVehicles() {
 								className="btn-primary text-sm sm:text-base py-2.5 sm:py-3 flex-shrink-0 inline-flex items-center gap-2 group"
 								aria-label="Voir tous les véhicules disponibles"
 							>
-								Voir tous nos véhicules ({vehicles.length})
+								Voir tous nos véhicules ({totalCount})
 								<ArrowRight
 									size={14}
 									className="transition-transform group-hover:translate-x-1"

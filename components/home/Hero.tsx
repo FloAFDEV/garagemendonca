@@ -48,14 +48,14 @@ export default function Hero() {
 
 			    <Image
 			      src="/images/garage-hero-mobile.webp"   ← portrait, enseigne centrée
-			      alt="Atelier du Garage Auto Mendonça"
+			      alt="Atelier du Garage Auto Mendonca"
 			      fill priority
 			      className="sm:hidden object-cover object-center"
 			      sizes="100vw"
 			    />
 			    <Image
 			      src="/images/garage-hero.webp"
-			      alt="Atelier du Garage Auto Mendonça"
+			      alt="Atelier du Garage Auto Mendonca"
 			      fill priority
 			      className="hidden sm:block object-cover object-[20%_center] lg:object-[5%_50%]"
 			      sizes="100vw"
@@ -64,7 +64,7 @@ export default function Hero() {
 			<div className="absolute inset-0 z-0">
 				<Image
 					src="/images/garage-hero.webp"
-					alt="Atelier du Garage Auto Mendonça"
+					alt="Atelier du Garage Auto Mendonca"
 					fill
 					priority
 					className="object-cover object-[72%_center] sm:object-[60%_center] md:object-[20%_center] lg:object-[5%_50%]"
@@ -103,7 +103,7 @@ export default function Hero() {
 								aria-hidden="true"
 							/>
 							<span className="text-brand-400 font-normal text-[10px] uppercase tracking-caps leading-tight">
-								Garage Mendonça – Expert auto depuis 2001
+								Garage Mendonca – Expert auto depuis 2001
 							</span>
 						</div>
 

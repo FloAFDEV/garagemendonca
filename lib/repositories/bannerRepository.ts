@@ -1,31 +1,20 @@
 /**
- * Banner Repository — shadow mode Phase 2A.
+ * Banner Repository — source de vérité unique.
  *
- * Lecture : Supabase en priorité (si configuré), fallback in-memory.
- * Écriture : toujours in-memory — aucun write Supabase en Phase 2A.
- *
- * La RLS Supabase gère la planification (scheduled_start / scheduled_end).
- * Le composant PromoBanner.tsx applique également ses propres vérifications —
- * les deux logiques sont compatibles.
- *
- * -- SQL Supabase -----------------------------------------------------------
- * Voir lib/supabase/schema.sql → table banners
- * Mapping dans lib/supabase/mappers.ts → mapBanner()
- * --------------------------------------------------------------------------
+ * DEMO_MODE=true  → bannière statique embarquée.
+ * SUPABASE_ENABLED → Supabase exclusif (RLS gère scheduling).
+ * Ni l'un ni l'autre → erreur explicite.
  */
 
 import type { Banner } from "@/types";
-import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
+import { DEMO_MODE, SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapBanner } from "@/lib/supabase/mappers";
 
-const USE_SUPABASE_READ_ONLY = SUPABASE_ENABLED;
-
-const DEFAULT_BANNER: Banner = {
-  id: "singleton",
+const DEMO_BANNER: Banner = {
+  id: "demo-banner",
   is_active: true,
   message: "Vidange boîte automatique — Offre spéciale printemps",
-  sub_message:
-    "Révision complète + vidange boîte auto à tarif préférentiel. Sur rendez-vous.",
+  sub_message: "Révision complète + vidange boîte auto à tarif préférentiel. Sur rendez-vous.",
   cta_label: "Prendre rendez-vous",
   cta_url: "/contact",
   bg_color: "#991B1B",
@@ -33,14 +22,8 @@ const DEFAULT_BANNER: Banner = {
   is_dismissible: true,
 };
 
-let _banner: Banner = { ...DEFAULT_BANNER };
-
-// ─── Lecture Supabase privée ─────────────────────────────────────────────────
-
 async function getActiveSupabase(garageId: string): Promise<Banner | null> {
-  const db = getReadClient();
-  // La RLS filtre : is_active = true AND scheduled_start <= now() AND scheduled_end > now()
-  const { data, error } = await db
+  const { data, error } = await getReadClient()
     .from("banners")
     .select("*")
     .eq("garage_id", garageId)
@@ -51,29 +34,18 @@ async function getActiveSupabase(garageId: string): Promise<Banner | null> {
   return data ? mapBanner(data) : null;
 }
 
-// ─── Repository public ───────────────────────────────────────────────────────
-
 export const bannerRepository = {
-  /** Bannière active. Retourne null si aucune. */
   get: async (): Promise<Banner | null> => {
-    if (USE_SUPABASE_READ_ONLY) {
+    if (SUPABASE_ENABLED) {
       const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
-      if (garageId) {
-        try {
-          const data = await getActiveSupabase(garageId);
-          console.log(`[shadow] USING SUPABASE (READ ONLY) — banner.get (${data ? "active" : "null"})`);
-          return data;
-        } catch (err) {
-          console.warn("[shadow] FALLBACK TO MEMORY STORE — banner.get:", err);
-        }
-      }
+      if (!garageId) return null;
+      return getActiveSupabase(garageId);
     }
-    return _banner.is_active && _banner.message ? _banner : null;
+    if (DEMO_MODE) return DEMO_BANNER;
+    throw new Error("[bannerRepository] Aucune source de données : configurer Supabase ou NEXT_PUBLIC_DEMO_MODE=true");
   },
 
-  /** Crée ou met à jour la bannière — toujours in-memory en Phase 2A. */
   upsert: async (data: Partial<Banner>): Promise<Banner> => {
-    _banner = { ..._banner, ...data, id: "singleton" };
-    return _banner;
+    return { ...DEMO_BANNER, ...data, id: "demo-banner" };
   },
 };

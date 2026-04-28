@@ -53,7 +53,7 @@ export function GarageForm({ garage, onSubmit, isPending = false, error }: Garag
       {/* ── Identité ─────────────────────────────────────────── */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Nom du garage *" error={err("name")}>
-          <input {...register("name")} placeholder="Garage Mendonça" className={inputCls(err("name"))} />
+          <input {...register("name")} placeholder="Garage Mendonca" className={inputCls(err("name"))} />
         </Field>
         <Field label="Slug *" error={err("slug")}>
           <input {...register("slug")} placeholder="garage-mendonca" className={inputCls(err("slug"))} />

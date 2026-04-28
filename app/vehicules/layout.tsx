@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 		"Toyota Nissan Suzuki occasion 31",
 	],
 	openGraph: {
-		title: "Occasions — Garage Auto Mendonça",
+		title: "Occasions — Garage Auto Mendonca",
 		description:
 			"Véhicules d'occasion révisés & garantis à Drémil-Lafage. Boîte automatique, toutes marques. Financement et reprise disponibles.",
 	},

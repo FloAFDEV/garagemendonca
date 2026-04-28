@@ -4,18 +4,18 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 
 export const metadata: Metadata = {
-	title: "Mentions Légales — Garage Mendonça",
+	title: "Mentions Légales — Garage Mendonca",
 	description:
-		"Mentions légales du site internet du Garage Auto Mendonça à Drémil-Lafage (31).",
+		"Mentions légales du site internet du Garage Auto Mendonca à Drémil-Lafage (31).",
 	robots: { index: false, follow: false },
 };
 
 const sections = [
 	{
 		title: "1. Éditeur du site",
-		content: `Le site internet www.garagemendonça.com est édité par :
+		content: `Le site internet www.garagemendonca.com est édité par :
 
-**Garage Auto Mendonça**
+**Garage Auto Mendonca**
 Forme juridique : SARL
 Capital social : 7 700 €
 SIRET : 449 948 975 00023
@@ -29,9 +29,9 @@ Adresse du siège social :
 France
 
 Téléphone : 05 32 00 20 38
-Email : contact@garagemendonça.com
+Email : contact@garagemendonca.com
 
-Directeur de la publication : Vitor Mendonça`,
+Directeur de la publication : Vitor Mendonca`,
 	},
 	{
 		title: "2. Hébergeur",
@@ -45,9 +45,9 @@ Site web : https://vercel.com`,
 	},
 	{
 		title: "3. Propriété intellectuelle",
-		content: `L'ensemble des éléments constituant ce site (textes, images, graphismes, logo, icônes, sons, logiciels, etc.) est la propriété exclusive du Garage Auto Mendonça ou de ses partenaires.
+		content: `L'ensemble des éléments constituant ce site (textes, images, graphismes, logo, icônes, sons, logiciels, etc.) est la propriété exclusive du Garage Auto Mendonca ou de ses partenaires.
 
-Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable du Garage Auto Mendonça.
+Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable du Garage Auto Mendonca.
 
 Toute exploitation non autorisée du site ou de l'un quelconque des éléments qu'il contient sera considérée comme constitutive d'une contrefacon et poursuivie conformément aux dispositions des articles L.335-2 et suivants du Code de Propriété Intellectuelle.`,
 	},
@@ -55,13 +55,13 @@ Toute exploitation non autorisée du site ou de l'un quelconque des éléments q
 		title: "4. Limitation de responsabilité",
 		content: `Les informations contenues sur ce site sont aussi précises que possible et le site est périodiquement remis à jour, mais peut toutefois contenir des inexactitudes, des omissions ou des lacunes.
 
-Le Garage Auto Mendonça ne saurait être tenu responsable des dommages directs ou indirects, quelle qu'en soit la cause, origine, nature ou conséquence, provoqués à raison de l'accès de quiconque au site ou de l'impossibilité d'y accéder.
+Le Garage Auto Mendonca ne saurait être tenu responsable des dommages directs ou indirects, quelle qu'en soit la cause, origine, nature ou conséquence, provoqués à raison de l'accès de quiconque au site ou de l'impossibilité d'y accéder.
 
 Les photos présentées sur le site sont non contractuelles.`,
 	},
 	{
 		title: "5. Liens hypertextes",
-		content: `Le site peut contenir des liens vers des sites tiers. Ces liens sont fournis à titre d'information uniquement. Le Garage Auto Mendonça n'a aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.`,
+		content: `Le site peut contenir des liens vers des sites tiers. Ces liens sont fournis à titre d'information uniquement. Le Garage Auto Mendonca n'a aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.`,
 	},
 	{
 		title: "6. Droit applicable",

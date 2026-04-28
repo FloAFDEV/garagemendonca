@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description:
     "Découvrez notre stock de véhicules d'occasion à Drémil-Lafage (31). Chaque voiture est inspectée en 160 points, révisée et garantie 6 à 12 mois. Financement et reprise.",
   openGraph: {
-    title: "Occasions révisées & garanties — Garage Auto Mendonça",
+    title: "Occasions révisées & garanties — Garage Auto Mendonca",
     description:
       "Stock de véhicules d'occasion à Drémil-Lafage. Inspection 160 points, révision, garantie 6–12 mois, financement personnalisé.",
     type: "website",
