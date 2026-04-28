@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
-import { vehicles } from "@/lib/data";
+import { vehicleRepository } from "@/lib/repositories/vehicleRepository";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import {
 	Car,
@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-	title: "Véhicules d'occasion — Garage Mendonça",
+	title: "Véhicules d'occasion — Garage Mendonca",
 	description:
-		"Découvrez nos véhicules d'occasion soigneusement sélectionnés, révisés et garantis. Toutes marques, financement disponible. Garage Mendonça à Drémil-Lafage.",
+		"Découvrez nos véhicules d'occasion soigneusement sélectionnés, révisés et garantis. Toutes marques, financement disponible. Garage Mendonca à Drémil-Lafage.",
 };
 
 const guarantees = [
@@ -44,10 +44,12 @@ const guarantees = [
 	},
 ];
 
-const featured = vehicles.filter((v) => v.featured).slice(0, 3);
-const rest = vehicles.filter((v) => !v.featured).slice(0, 3);
+const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
-export default function ProduitPage() {
+export default async function ProduitPage() {
+	const allVehicles = await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []);
+	const featured = allVehicles.filter((v) => v.featured).slice(0, 3);
+	const rest = allVehicles.filter((v) => !v.featured).slice(0, 3);
 	return (
 		<MainLayout>
 			{/* ── Hero ── */}
@@ -197,7 +199,7 @@ export default function ProduitPage() {
 								className="btn-primary text-base px-10 py-4"
 							>
 								<Car size={18} />
-								Voir tous les véhicules ({vehicles.length}{" "}
+								Voir tous les véhicules ({allVehicles.length}{" "}
 								disponibles)
 							</Link>
 						</div>

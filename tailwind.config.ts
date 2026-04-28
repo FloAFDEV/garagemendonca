@@ -19,7 +19,7 @@ const config: Config = {
 					200: "#ffc2cb",
 					300: "#ff94a3",
 					400: "#f95c72",
-					500: "#c8102e" /* Rouge logo Garage Mendonça */,
+					500: "#c8102e" /* Rouge logo Garage Mendonca */,
 					600: "#a50e25",
 					700: "#880c1e",
 					800: "#6e0a18",
@@ -47,7 +47,7 @@ const config: Config = {
 				heading: ["Manrope", "system-ui", "sans-serif"],
 			},
 			/**
-			 * Échelle typographique — Garage Mendonça
+			 * Échelle typographique — Garage Mendonca
 			 *
 			 * Règle d'or :
 			 *   80% → normal (400) | 15% → light (300) | 5% → medium (500)

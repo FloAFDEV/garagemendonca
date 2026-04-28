@@ -9,7 +9,7 @@ const badges = [
 		label: "D'expérience",
 		pill: "Depuis 2001",
 		description:
-			"M. Vitor Mendonça et son équipe mettent leur savoir-faire à votre service pour des prestations fiables et durables.",
+			"M. Vitor Mendonca et son équipe mettent leur savoir-faire à votre service pour des prestations fiables et durables.",
 		iconBg: "bg-gradient-to-br from-red-50 to-red-100",
 		iconRing: "ring-1 ring-red-200",
 		iconColor: "text-red-600",

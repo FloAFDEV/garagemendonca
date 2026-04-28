@@ -1,39 +1,24 @@
 /**
- * Service Repository — shadow mode Phase 2A.
+ * Service Repository — source de vérité unique.
  *
- * Lectures : Supabase en priorité (si configuré), fallback in-memory.
- * Écritures : toujours in-memory — aucun write Supabase en Phase 2A.
- *
- * -- SQL Supabase -----------------------------------------------------------
- * Voir lib/supabase/schema.sql → tables services + service_images
- * Mapping dans lib/supabase/mappers.ts → mapService()
- * --------------------------------------------------------------------------
+ * DEMO_MODE=true  → données statiques (lib/data.ts).
+ * SUPABASE_ENABLED → Supabase exclusif, aucun fallback silencieux.
  */
 
 import type { Service } from "@/types";
-import { services as seedServices } from "@/lib/data";
-import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
+import { services as demoServices } from "@/lib/data";
+import { DEMO_MODE, SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapService } from "@/lib/supabase/mappers";
 
-const USE_SUPABASE_READ_ONLY = SUPABASE_ENABLED;
-
-/**
- * Transforme une ligne Supabase (snake_case) en type Service.
- * @deprecated Utiliser mapService() depuis lib/supabase/mappers.ts
- */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function mapServiceFromDB(row: any, images: any[] = []): Service {
   return mapService({ ...row, service_images: images });
 }
 
-/** In-memory store — initialisé depuis lib/data.ts */
-let _store: Service[] = seedServices.map((s) => ({ ...s }));
-
-// ─── Lectures Supabase privées ───────────────────────────────────────────────
+// ─── Lectures Supabase ───────────────────────────────────────────────────────
 
 async function getAllSupabase(garageId: string): Promise<Service[]> {
-  const db = getReadClient();
-  const { data, error } = await db
+  const { data, error } = await getReadClient()
     .from("services")
     .select("*, service_images(*)")
     .eq("garage_id", garageId)
@@ -44,8 +29,7 @@ async function getAllSupabase(garageId: string): Promise<Service[]> {
 }
 
 async function getBySlugSupabase(slug: string, garageId: string): Promise<Service | null> {
-  const db = getReadClient();
-  const { data, error } = await db
+  const { data, error } = await getReadClient()
     .from("services")
     .select("*, service_images(*)")
     .eq("slug", slug)
@@ -57,37 +41,32 @@ async function getBySlugSupabase(slug: string, garageId: string): Promise<Servic
 
 // ─── Repository public ───────────────────────────────────────────────────────
 
+const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+
 export const serviceRepository = {
-  /** Tous les services. */
   getAll: async (): Promise<Service[]> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
-      if (garageId) return getAllSupabase(garageId);
-    }
-    return _store;
+    if (SUPABASE_ENABLED) return getAllSupabase(GARAGE_ID());
+    if (DEMO_MODE)        return [...demoServices];
+    throw new Error("[serviceRepository] Aucune source de données : configurer Supabase ou NEXT_PUBLIC_DEMO_MODE=true");
   },
 
-  /** Service par slug. */
   getBySlug: async (slug: string): Promise<Service | null> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
-      if (garageId) return getBySlugSupabase(slug, garageId);
-    }
-    return _store.find((s) => s.slug === slug) ?? null;
+    if (SUPABASE_ENABLED) return getBySlugSupabase(slug, GARAGE_ID());
+    if (DEMO_MODE)        return demoServices.find((s) => s.slug === slug) ?? null;
+    throw new Error("[serviceRepository] Aucune source de données");
   },
 
-  /** Services d'un garage triés par order. */
   getByGarageId: async (garageId: string): Promise<Service[]> => {
-    if (USE_SUPABASE_READ_ONLY) return getAllSupabase(garageId);
-    return [..._store].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+    if (SUPABASE_ENABLED) return getAllSupabase(garageId);
+    if (DEMO_MODE)        return [...demoServices].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+    throw new Error("[serviceRepository] Aucune source de données");
   },
 
-  /** Mise à jour partielle — toujours in-memory en Phase 2A. */
+  // Écriture — in-memory uniquement (admin Phase 2A)
   update: async (slug: string, data: Partial<Service>): Promise<Service> => {
-    const idx = _store.findIndex((s) => s.slug === slug);
+    const store = [...demoServices];
+    const idx = store.findIndex((s) => s.slug === slug);
     if (idx === -1) throw new Error(`Service "${slug}" not found`);
-    const updated: Service = { ..._store[idx], ...data };
-    _store = _store.map((s, i) => (i === idx ? updated : s));
-    return updated;
+    return { ...store[idx], ...data };
   },
 };

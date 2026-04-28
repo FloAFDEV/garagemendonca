@@ -53,12 +53,12 @@ function formatOpeningHours(hours: GarageOpeningHours): string {
 export default async function GarageAddressBlock() {
   const garage = GARAGE_ID ? await fetchGarageByIdAction(GARAGE_ID).catch(() => null) : null;
 
-  const name    = garage?.name    ?? "Garage Mendonça";
+  const name    = garage?.name    ?? "Garage Mendonca";
   const address = garage?.address ?? "6 Avenue de la Mouyssaguese";
   const city    = garage
     ? `${garage.postalCode ?? "31280"} ${garage.city ?? "Drémil-Lafage"}`
     : "31280 Drémil-Lafage";
-  const mapsUrl = garage?.googleMapsUrl ?? "https://maps.google.com/maps?q=Garage+Auto+Mendon%C3%A7a+Dr%C3%A9mil-Lafage";
+  const mapsUrl = garage?.googleMapsUrl ?? "https://maps.google.com/maps?q=Garage+Auto+Mendonca+Dr%C3%A9mil-Lafage";
   const hoursStr = garage?.openingHours
     ? formatOpeningHours(garage.openingHours)
     : "Lun–Jeu 8h–19h · Ven 8h–18h";

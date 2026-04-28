@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
---  Garage Auto Mendonça — Schéma Supabase (PostgreSQL)
+--  Garage Auto Mendonca — Schéma Supabase (PostgreSQL)
 --  Architecture multi-garages — v4
 --  Aligné avec types/index.ts (VehicleStatus, Vehicle, Garage…)
 --
@@ -535,7 +535,7 @@ insert into garages (
 )
 values (
   '00000000-0000-0000-0000-000000000001',
-  'Garage Auto Mendonça',
+  'Garage Auto Mendonca',
   'garage-mendonca',
   '6 Avenue de la Mouyssaguese',
   'Drémil-Lafage',

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
---  001_init.sql — Garage Auto Mendonça — Schéma initial (idempotent)
+--  001_init.sql — Garage Auto Mendonca — Schéma initial (idempotent)
 --
 --  Sûr à ré-exécuter (IF NOT EXISTS, DROP … IF EXISTS, OR REPLACE).
 --  Supabase Dashboard > SQL Editor > Run.
@@ -403,7 +403,7 @@ INSERT INTO garages (
   plan, lat, lng, description, is_active, google_maps_url, opening_hours
 ) VALUES (
   '00000000-0000-0000-0000-000000000001',
-  'Garage Auto Mendonça',
+  'Garage Auto Mendonca',
   'garage-mendonca',
   '6 Avenue de la Mouyssaguese',
   'Drémil-Lafage',

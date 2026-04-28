@@ -1,15 +1,9 @@
 /**
- * Vehicle Repository — shadow mode Phase 2A.
+ * Vehicle Repository — source de vérité unique.
  *
- * Lectures : Supabase en priorité (si NEXT_PUBLIC_SUPABASE_URL configuré),
- *            fallback automatique sur le store in-memory.
- * Écritures : toujours in-memory — aucun write Supabase en Phase 2A.
- * Admin     : toujours in-memory (pas d'auth Supabase en Phase 2A).
- *
- * -- SQL Supabase -----------------------------------------------------------
- * Voir lib/supabase/schema.sql → table vehicles
- * Mapping camelCase ↔ snake_case dans lib/supabase/mappers.ts → mapVehicle()
- * --------------------------------------------------------------------------
+ * DEMO_MODE=true  → données statiques (lib/data.ts), aucun appel Supabase.
+ * SUPABASE_ENABLED → Supabase exclusif, aucun fallback silencieux.
+ * Ni l'un ni l'autre → erreur explicite.
  */
 
 import type { Vehicle, VehicleCreateInput, VehicleUpdateInput } from "@/types";
@@ -24,16 +18,13 @@ import {
   updateVehicle,
   deleteVehicle,
 } from "@/lib/vehicles";
-import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
+import { DEMO_MODE, SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapVehicle } from "@/lib/supabase/mappers";
 
-const USE_SUPABASE_READ_ONLY = SUPABASE_ENABLED;
-
-// ─── Lectures Supabase privées ───────────────────────────────────────────────
+// ─── Lectures Supabase ───────────────────────────────────────────────────────
 
 async function getAllSupabase(garageId?: string): Promise<Vehicle[]> {
   const db = getReadClient();
-  // La RLS public_read filtre déjà : published | sold | (scheduled + published_at <= now())
   let q = db.from("vehicles").select("*").order("created_at", { ascending: false });
   if (garageId) q = q.eq("garage_id", garageId);
   const { data, error } = await q;
@@ -42,21 +33,15 @@ async function getAllSupabase(garageId?: string): Promise<Vehicle[]> {
 }
 
 async function getByIdSupabase(id: string): Promise<Vehicle | null> {
-  const db = getReadClient();
-  const { data, error } = await db
-    .from("vehicles")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+  const { data, error } = await getReadClient()
+    .from("vehicles").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
   return data ? mapVehicle(data) : null;
 }
 
 async function getFeaturedSupabase(limit: number, garageId?: string): Promise<Vehicle[]> {
-  const db = getReadClient();
-  let q = db
-    .from("vehicles")
-    .select("*")
+  let q = getReadClient()
+    .from("vehicles").select("*")
     .eq("featured", true)
     .order("featured_order", { ascending: true, nullsFirst: false })
     .limit(limit);
@@ -66,17 +51,9 @@ async function getFeaturedSupabase(limit: number, garageId?: string): Promise<Ve
   return (data ?? []).map(mapVehicle);
 }
 
-async function getRelatedSupabase(
-  excludeId: string,
-  limit: number,
-  garageId?: string,
-): Promise<Vehicle[]> {
-  const db = getReadClient();
-  let q = db
-    .from("vehicles")
-    .select("*")
-    .neq("id", excludeId)
-    .limit(limit);
+async function getRelatedSupabase(excludeId: string, limit: number, garageId?: string): Promise<Vehicle[]> {
+  let q = getReadClient()
+    .from("vehicles").select("*").neq("id", excludeId).limit(limit);
   if (garageId) q = q.eq("garage_id", garageId);
   const { data, error } = await q;
   if (error) throw error;
@@ -86,41 +63,40 @@ async function getRelatedSupabase(
 // ─── Repository public ───────────────────────────────────────────────────────
 
 export const vehicleRepository = {
-  /** Véhicules visibles côté public (published + sold + scheduled passé). */
   getAll: async (garageId?: string): Promise<Vehicle[]> => {
-    if (USE_SUPABASE_READ_ONLY) return getAllSupabase(garageId);
-    return getAllVehicles(garageId);
+    if (SUPABASE_ENABLED) return getAllSupabase(garageId);
+    if (DEMO_MODE)        return getAllVehicles(garageId);
+    throw new Error("[vehicleRepository] Aucune source de données : configurer Supabase ou NEXT_PUBLIC_DEMO_MODE=true");
   },
 
-  /** Admin — toujours in-memory (pas d'auth en Phase 2A). */
-  getAllAdmin: (garageId?: string): Promise<Vehicle[]> =>
-    getAllVehiclesAdmin(garageId),
+  getAllAdmin: async (garageId?: string): Promise<Vehicle[]> => {
+    if (SUPABASE_ENABLED) return getAllSupabase(garageId);
+    if (DEMO_MODE)        return getAllVehiclesAdmin(garageId);
+    throw new Error("[vehicleRepository] Aucune source de données");
+  },
 
   getById: async (id: string): Promise<Vehicle | null> => {
-    if (USE_SUPABASE_READ_ONLY) return getByIdSupabase(id);
-    return getVehicleById(id);
+    if (SUPABASE_ENABLED) return getByIdSupabase(id);
+    if (DEMO_MODE)        return getVehicleById(id);
+    throw new Error("[vehicleRepository] Aucune source de données");
   },
 
   getFeatured: async (limit = 3, garageId?: string): Promise<Vehicle[]> => {
-    if (USE_SUPABASE_READ_ONLY) return getFeaturedSupabase(limit, garageId);
-    return getFeaturedVehicles(limit, garageId);
+    if (SUPABASE_ENABLED) return getFeaturedSupabase(limit, garageId);
+    if (DEMO_MODE)        return getFeaturedVehicles(limit, garageId);
+    throw new Error("[vehicleRepository] Aucune source de données");
   },
 
   getRelated: async (excludeId: string, limit = 3, garageId?: string): Promise<Vehicle[]> => {
-    if (USE_SUPABASE_READ_ONLY) return getRelatedSupabase(excludeId, limit, garageId);
-    return getRelatedVehicles(excludeId, limit, garageId);
+    if (SUPABASE_ENABLED) return getRelatedSupabase(excludeId, limit, garageId);
+    if (DEMO_MODE)        return getRelatedVehicles(excludeId, limit, garageId);
+    throw new Error("[vehicleRepository] Aucune source de données");
   },
 
-  /** Pour generateStaticParams — in-memory (build-time stable). */
   getStaticParams: (): Promise<{ id: string }[]> => getVehicleStaticParams(),
 
-  // ── Écritures — toujours in-memory (aucun write Supabase en Phase 2A) ──
-
-  create: (data: VehicleCreateInput & { id?: string }): Promise<Vehicle> =>
-    createVehicle(data),
-
-  update: (id: string, data: VehicleUpdateInput): Promise<Vehicle> =>
-    updateVehicle(id, data),
-
+  // ── Écritures — in-memory (admin Phase 2A) ──
+  create: (data: VehicleCreateInput & { id?: string }): Promise<Vehicle> => createVehicle(data),
+  update: (id: string, data: VehicleUpdateInput): Promise<Vehicle> => updateVehicle(id, data),
   delete: (id: string): Promise<void> => deleteVehicle(id),
 };

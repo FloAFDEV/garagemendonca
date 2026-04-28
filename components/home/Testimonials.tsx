@@ -10,7 +10,7 @@ const testimonials = [
 		rating: 5,
 		date: "Juillet 2024",
 		comment:
-			"Après l'allumage de 3 voyants sur mon BMW X5, le diagnostic BMW préconisait une boîte de transfert à 2 000 € HT. M. Mendonça a trouvé un kit réparation servomoteur à 103 € seulement, en se battant pour obtenir la pièce au détail. Depuis, le diagnostic est vierge.",
+			"Après l'allumage de 3 voyants sur mon BMW X5, le diagnostic BMW préconisait une boîte de transfert à 2 000 € HT. M. Mendonca a trouvé un kit réparation servomoteur à 103 € seulement, en se battant pour obtenir la pièce au détail. Depuis, le diagnostic est vierge.",
 		color: "bg-blue-600",
 	},
 	{
@@ -20,7 +20,7 @@ const testimonials = [
 		rating: 5,
 		date: "Novembre 2024",
 		comment:
-			"M. Mendonça est très consciencieux. Il est intervenu sur mon véhicule et a réalisé plusieurs réparations consécutives. Il se donne la peine de tout vous expliquer, de manière claire et transparente. Je recommande sans hésiter.",
+			"M. Mendonca est très consciencieux. Il est intervenu sur mon véhicule et a réalisé plusieurs réparations consécutives. Il se donne la peine de tout vous expliquer, de manière claire et transparente. Je recommande sans hésiter.",
 		color: "bg-emerald-600",
 	},
 	{

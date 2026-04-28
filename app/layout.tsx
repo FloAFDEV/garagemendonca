@@ -6,8 +6,8 @@ import { QueryProvider } from "@/providers/QueryProvider";
 export const metadata: Metadata = {
 	title: {
 		default:
-			"Garage Auto Mendonça — Garagiste Drémil-Lafage (31) — Mécanique, Carrosserie, Vente",
-		template: "%s | Garage Auto Mendonça — Drémil-Lafage",
+			"Garage Auto Mendonca — Garagiste Drémil-Lafage (31) — Mécanique, Carrosserie, Vente",
+		template: "%s | Garage Auto Mendonca — Drémil-Lafage",
 	},
 	description:
 		"Garage auto à Drémil-Lafage (31) — Mécanique, carrosserie, diagnostic et vente VO depuis 2001. Spécialiste japonaises, boîte automatique. Diagnostic en 10 min, devis gratuit, 9 véhicules de prêt. ☎ 05 32 00 20 38.",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 		"filtre à particules DPF",
 	],
 	openGraph: {
-		title: "Garage Auto Mendonça — Spécialiste automobile Drémil-Lafage",
+		title: "Garage Auto Mendonca — Spécialiste automobile Drémil-Lafage",
 		description:
 			"Garage auto à Drémil-Lafage (31) depuis 2001. Mécanique, carrosserie, vente VO. Spécialiste japonaises · boîte automatique. Diagnostic en 10 min.",
 		type: "website",
@@ -35,12 +35,12 @@ export const metadata: Metadata = {
 const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "AutoRepair",
-	name: "Garage Auto Mendonça",
+	name: "Garage Auto Mendonca",
 	description:
 		"Spécialiste de la mécanique, carrosserie et vente de véhicules d'occasion japonais à boîte automatique à Drémil-Lafage depuis 2001.",
-	url: "https://www.garagemendonça.com",
+	url: "https://www.garagemendonca.com",
 	telephone: "+33532002038",
-	email: "contact@garagemendonça.com",
+	email: "contact@garagemendonca.com",
 	address: {
 		"@type": "PostalAddress",
 		streetAddress: "6 Avenue de la Mouyssaguese",

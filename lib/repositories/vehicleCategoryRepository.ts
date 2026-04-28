@@ -14,7 +14,7 @@
  */
 
 import type { VehicleCategory } from "@/types";
-import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
+import { DEMO_MODE, SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapVehicleCategory } from "@/lib/supabase/mappers";
 
 export type VehicleCategoryCreateInput = Pick<
@@ -25,8 +25,6 @@ export type VehicleCategoryCreateInput = Pick<
 export type VehicleCategoryUpdateInput = Partial<
   VehicleCategoryCreateInput & { is_active: boolean }
 >;
-
-const USE_SUPABASE_READ_ONLY = SUPABASE_ENABLED;
 
 let _store: VehicleCategory[] = [];
 
@@ -68,18 +66,15 @@ async function getBySlugSupabase(
 export const vehicleCategoryRepository = {
   /** Catégories actives d'un garage — usage public/filtres. */
   getAll: async (garageId: string): Promise<VehicleCategory[]> => {
-    if (USE_SUPABASE_READ_ONLY) return getAllSupabase(garageId);
-    return _store
-      .filter((c) => c.garage_id === garageId && c.is_active)
-      .sort((a, b) => a.sort_order - b.sort_order);
+    if (SUPABASE_ENABLED) return getAllSupabase(garageId);
+    if (DEMO_MODE)        return _store.filter((c) => c.garage_id === garageId && c.is_active).sort((a, b) => a.sort_order - b.sort_order);
+    throw new Error("[vehicleCategoryRepository] Aucune source de données");
   },
 
   /** Toutes les catégories (actives + inactives) — usage admin dashboard. */
   getAllAdmin: async (garageId: string): Promise<VehicleCategory[]> => {
-    // Admin toujours in-memory en Phase 2A
-    return _store
-      .filter((c) => c.garage_id === garageId)
-      .sort((a, b) => a.sort_order - b.sort_order);
+    if (SUPABASE_ENABLED) return getAllSupabase(garageId);
+    return _store.filter((c) => c.garage_id === garageId).sort((a, b) => a.sort_order - b.sort_order);
   },
 
   /** Catégorie par slug. */
@@ -87,10 +82,9 @@ export const vehicleCategoryRepository = {
     garageId: string,
     slug: string,
   ): Promise<VehicleCategory | null> => {
-    if (USE_SUPABASE_READ_ONLY) return getBySlugSupabase(garageId, slug);
-    return (
-      _store.find((c) => c.garage_id === garageId && c.slug === slug) ?? null
-    );
+    if (SUPABASE_ENABLED) return getBySlugSupabase(garageId, slug);
+    if (DEMO_MODE)        return _store.find((c) => c.garage_id === garageId && c.slug === slug) ?? null;
+    throw new Error("[vehicleCategoryRepository] Aucune source de données");
   },
 
   // ── Écritures — toujours in-memory en Phase 2A ──

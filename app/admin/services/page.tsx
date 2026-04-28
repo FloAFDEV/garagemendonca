@@ -7,7 +7,8 @@ import Link from "next/link";
 import { Pencil, Eye, ToggleLeft, ToggleRight, Wrench, Settings, Paintbrush } from "lucide-react";
 import clsx from "clsx";
 import type { Service } from "@/types";
-import { services as seedServices } from "@/lib/data";
+import { services as demoServices } from "@/lib/data";
+import { DEMO_MODE } from "@/lib/supabase/readClient";
 import { updateServiceAction } from "./actions";
 import { adminUI } from "@/lib/admin-ui";
 
@@ -19,7 +20,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default function AdminServicesPage() {
   const t = useAdminTokens();
-  const [services, setServices] = useState<Service[]>(seedServices);
+  const [services, setServices] = useState<Service[]>(DEMO_MODE ? demoServices : []);
   const [loading, setLoading] = useState<string | null>(null);
 
   const toggleActive = async (service: Service) => {

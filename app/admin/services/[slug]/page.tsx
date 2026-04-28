@@ -11,7 +11,7 @@ import {
   ToggleLeft, ToggleRight, ChevronDown,
 } from "lucide-react";
 import clsx from "clsx";
-import { services as seedServices } from "@/lib/data";
+import { services as demoServices } from "@/lib/data";
 import { updateServiceAction } from "../actions";
 import { adminUI } from "@/lib/admin-ui";
 import type {
@@ -59,7 +59,7 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
   const router = useRouter();
   const { slug } = use(params);
 
-  const seed = seedServices.find(s => s.slug === slug);
+  const seed = demoServices.find(s => s.slug === slug);
 
   // ── État contenu ────────────────────────────────────────────────────────────
   const [title, setTitle] = useState(seed?.title ?? "");

@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
 						</svg>
 					</div>
 					<h1 className="font-heading font-light text-white text-2xl tracking-tight">
-						Garage Mendonça
+						Garage Mendonca
 					</h1>
 					<p className="text-dark-400 text-sm mt-1">
 						Espace d&apos;administration

@@ -1,5 +1,5 @@
 -- ============================================================
---  Garage Auto Mendonça — Supabase Schema v2 (Production)
+--  Garage Auto Mendonca — Supabase Schema v2 (Production)
 --  PostgreSQL / Supabase — Multi-garage ready, RLS sécurisé
 -- ============================================================
 
@@ -308,12 +308,12 @@ WHERE gv.is_visible = true
 -- ────────────────────────────────────────────────────────────
 INSERT INTO garages (name, slug, address, city, postal_code, phone, email)
 VALUES (
-  'Garage Auto Mendonça',
-  'mendonça-dremil-lafage',
+  'Garage Auto Mendonca',
+  'mendonca-dremil-lafage',
   '6 Avenue de la Mouyssaguese',
   'Drémil-Lafage', '31280',
   '0532002038',
-  'contact@garagemendonça.com'
+  'contact@garagemendonca.com'
 );
 
 -- ────────────────────────────────────────────────────────────

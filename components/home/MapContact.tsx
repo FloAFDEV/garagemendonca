@@ -53,7 +53,7 @@ export default function MapContact() {
 										31280 Drémil-Lafage, France
 									</p>
 									<a
-										href="https://maps.google.com/?q=Garage+Mendonça+Drémil-Lafage"
+										href="https://maps.google.com/?q=Garage+Mendonca+Drémil-Lafage"
 										target="_blank"
 										rel="noopener noreferrer"
 										className="inline-flex items-center gap-1.5 text-brand-600 text-xs font-normal mt-3 hover:text-brand-700 transition-colors rounded"
@@ -100,10 +100,10 @@ export default function MapContact() {
 											Email
 										</p>
 										<a
-											href="mailto:contact@garagemendonça.com"
+											href="mailto:contact@garagemendonca.com"
 											className="font-normal text-[#0f172a] hover:text-brand-600 transition-colors text-sm"
 										>
-											contact@garagemendonça.com
+											contact@garagemendonca.com
 										</a>
 									</div>
 								</div>
@@ -158,7 +158,7 @@ export default function MapContact() {
 								allowFullScreen
 								loading="lazy"
 								referrerPolicy="no-referrer-when-downgrade"
-								title="Carte Garage Mendonça"
+								title="Carte Garage Mendonca"
 							/>
 						</div>
 					</AnimateOnScroll>

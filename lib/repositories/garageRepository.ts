@@ -1,38 +1,31 @@
 /**
- * Garage Repository — implémentation mock (in-memory).
+ * Garage Repository — source de vérité unique.
  *
- * -- SQL Supabase -----------------------------------------------------------
- * CREATE TABLE garages (
- *   id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
- *   name       TEXT NOT NULL,
- *   slug       TEXT UNIQUE NOT NULL,
- *   address    TEXT,
- *   phone      TEXT,
- *   email      TEXT,
- *   plan       TEXT NOT NULL DEFAULT 'isolated',
- *   created_at TIMESTAMPTZ DEFAULT NOW(),
- *   updated_at TIMESTAMPTZ DEFAULT NOW()
- * );
- * --------------------------------------------------------------------------
+ * DEMO_MODE=true  → données statiques (lib/data.ts).
+ * SUPABASE_ENABLED → garageDb exclusif, aucun fallback silencieux.
  */
 
 import type { Garage } from "@/types";
-import { garages as seedGarages } from "@/lib/data";
-
-const _store: Garage[] = [...seedGarages];
+import { garages as demoGarages } from "@/lib/data";
+import { DEMO_MODE, SUPABASE_ENABLED } from "@/lib/supabase/readClient";
+import { garageDb } from "@/lib/db/garage.repository";
 
 export const garageRepository = {
-	/** All garages. */
-	getAll: async (): Promise<Garage[]> => {
-		// TODO: Supabase → supabase.from("garages").select("*")
-		return _store;
-	},
+  getAll: async (): Promise<Garage[]> => {
+    if (SUPABASE_ENABLED) return garageDb.list();
+    if (DEMO_MODE)        return [...demoGarages];
+    throw new Error("[garageRepository] Aucune source de données : configurer Supabase ou NEXT_PUBLIC_DEMO_MODE=true");
+  },
 
-	/** Find by id or slug. */
-	getById: async (idOrSlug: string): Promise<Garage | null> => {
-		// TODO: Supabase → supabase.from("garages").select("*").or(`id.eq.${id},slug.eq.${id}`).single()
-		return (
-			_store.find((g) => g.id === idOrSlug || g.slug === idOrSlug) ?? null
-		);
-	},
+  getById: async (idOrSlug: string): Promise<Garage | null> => {
+    if (SUPABASE_ENABLED) {
+      const byId = await garageDb.getById(idOrSlug);
+      if (byId) return byId;
+      return garageDb.getBySlug(idOrSlug);
+    }
+    if (DEMO_MODE) {
+      return demoGarages.find((g) => g.id === idOrSlug || g.slug === idOrSlug) ?? null;
+    }
+    throw new Error("[garageRepository] Aucune source de données");
+  },
 };

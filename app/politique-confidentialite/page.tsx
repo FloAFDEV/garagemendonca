@@ -4,21 +4,21 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 
 export const metadata: Metadata = {
-	title: "Politique de confidentialité — Garage Mendonça",
+	title: "Politique de confidentialité — Garage Mendonca",
 	description:
-		"Politique de confidentialité et protection des données personnelles du Garage Auto Mendonça (RGPD).",
+		"Politique de confidentialité et protection des données personnelles du Garage Auto Mendonca (RGPD).",
 	robots: { index: false, follow: false },
 };
 
 const sections = [
 	{
 		title: "1. Responsable du traitement",
-		content: `Le responsable du traitement des données personnelles collectées via le site www.garagemendonça.com est :
+		content: `Le responsable du traitement des données personnelles collectées via le site www.garagemendonca.com est :
 
-Garage Auto Mendonça — SARL
+Garage Auto Mendonca — SARL
 6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage
 Téléphone : 05 32 00 20 38
-Email : contact@garagemendonça.com`,
+Email : contact@garagemendonca.com`,
 	},
 	{
 		title: "2. Données collectées",
@@ -69,7 +69,7 @@ Vos données ne sont jamais vendues, louées ou cédées à des tiers à des fin
 • Droit d'opposition : vous opposer au traitement de vos données pour des raisons liées à votre situation particulière.
 • Droit de retrait du consentement : retirer votre consentement à tout moment, sans que cela n'affecte la légalité des traitements effectués avant ce retrait.
 
-Pour exercer ces droits, contactez-nous par email à contact@garagemendonça.com ou par courrier à notre adresse.
+Pour exercer ces droits, contactez-nous par email à contact@garagemendonca.com ou par courrier à notre adresse.
 
 Vous avez également le droit d'introduire une réclamation auprès de la CNIL (www.cnil.fr).`,
 	},
@@ -81,7 +81,7 @@ Le site utilise le protocole HTTPS pour sécuriser les échanges de données ent
 	},
 	{
 		title: "8. Cookies",
-		content: `Le site www.garagemendonça.com peut utiliser des cookies de fonctionnement essentiels au bon fonctionnement du site, et des cookies analytiques anonymisés pour mesurer l'audience.
+		content: `Le site www.garagemendonca.com peut utiliser des cookies de fonctionnement essentiels au bon fonctionnement du site, et des cookies analytiques anonymisés pour mesurer l'audience.
 
 Vous pouvez à tout moment configurer votre navigateur pour refuser les cookies non essentiels. Cela n'affecte pas les fonctionnalités principales du site.`,
 	},
@@ -93,8 +93,8 @@ Vous pouvez à tout moment configurer votre navigateur pour refuser les cookies 
 		title: "10. Contact DPO",
 		content: `Pour toute question relative à la protection de vos données personnelles, vous pouvez nous contacter :
 
-Par email : contact@garagemendonça.com
-Par courrier : Garage Auto Mendonça, 6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage
+Par email : contact@garagemendonca.com
+Par courrier : Garage Auto Mendonca, 6 Avenue de la Mouyssaguese, 31280 Drémil-Lafage
 Par téléphone : 05 32 00 20 38 (du lundi au vendredi)`,
 	},
 ];
@@ -150,7 +150,7 @@ export default function PolitiqueConfidentialitePage() {
 								Engagement RGPD
 							</p>
 							<p className="text-[#475569] text-sm leading-relaxed">
-								Le Garage Auto Mendonça s'engage à traiter vos
+								Le Garage Auto Mendonca s'engage à traiter vos
 								données personnelles de manière transparente,
 								sécurisée et conforme au Règlement Général sur
 								la Protection des Données (UE) 2016/679.
