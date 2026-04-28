@@ -11,7 +11,11 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
+// NEXT_PUBLIC_SUPABASE_ENABLED=false désactive explicitement Supabase même si
+// l'URL et la clé sont présentes (utile pour forcer le mode mock en preview).
+// Par défaut (non définie) : activé si URL + clé présentes.
 export const SUPABASE_ENABLED =
+  process.env.NEXT_PUBLIC_SUPABASE_ENABLED !== "false" &&
   !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
   !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 

@@ -62,15 +62,7 @@ export const serviceRepository = {
   getAll: async (): Promise<Service[]> => {
     if (USE_SUPABASE_READ_ONLY) {
       const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
-      if (garageId) {
-        try {
-          const data = await getAllSupabase(garageId);
-          console.log(`[shadow] USING SUPABASE (READ ONLY) — services.getAll (${data.length})`);
-          return data;
-        } catch (err) {
-          console.warn("[shadow] FALLBACK TO MEMORY STORE — services.getAll:", err);
-        }
-      }
+      if (garageId) return getAllSupabase(garageId);
     }
     return _store;
   },
@@ -79,30 +71,14 @@ export const serviceRepository = {
   getBySlug: async (slug: string): Promise<Service | null> => {
     if (USE_SUPABASE_READ_ONLY) {
       const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
-      if (garageId) {
-        try {
-          const data = await getBySlugSupabase(slug, garageId);
-          console.log(`[shadow] USING SUPABASE (READ ONLY) — services.getBySlug(${slug})`);
-          return data;
-        } catch (err) {
-          console.warn("[shadow] FALLBACK TO MEMORY STORE — services.getBySlug:", err);
-        }
-      }
+      if (garageId) return getBySlugSupabase(slug, garageId);
     }
     return _store.find((s) => s.slug === slug) ?? null;
   },
 
   /** Services d'un garage triés par order. */
   getByGarageId: async (garageId: string): Promise<Service[]> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      try {
-        const data = await getAllSupabase(garageId);
-        console.log(`[shadow] USING SUPABASE (READ ONLY) — services.getByGarageId (${data.length})`);
-        return data;
-      } catch (err) {
-        console.warn("[shadow] FALLBACK TO MEMORY STORE — services.getByGarageId:", err);
-      }
-    }
+    if (USE_SUPABASE_READ_ONLY) return getAllSupabase(garageId);
     return [..._store].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
   },
 

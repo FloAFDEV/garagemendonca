@@ -9,4 +9,4 @@
  * utilisation dans les composants Client sans passer de props.
  */
 export const ACTIVE_GARAGE_ID =
-	process.env.NEXT_PUBLIC_GARAGE_ID ?? "garage-mendonça";
+	process.env.NEXT_PUBLIC_GARAGE_ID ?? "";

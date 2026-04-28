@@ -88,15 +88,7 @@ async function getRelatedSupabase(
 export const vehicleRepository = {
   /** Véhicules visibles côté public (published + sold + scheduled passé). */
   getAll: async (garageId?: string): Promise<Vehicle[]> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      try {
-        const data = await getAllSupabase(garageId);
-        console.log(`[shadow] USING SUPABASE (READ ONLY) — getAll (${data.length} véhicules)`);
-        return data;
-      } catch (err) {
-        console.warn("[shadow] FALLBACK TO MEMORY STORE — getAll:", err);
-      }
-    }
+    if (USE_SUPABASE_READ_ONLY) return getAllSupabase(garageId);
     return getAllVehicles(garageId);
   },
 
@@ -105,41 +97,17 @@ export const vehicleRepository = {
     getAllVehiclesAdmin(garageId),
 
   getById: async (id: string): Promise<Vehicle | null> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      try {
-        const data = await getByIdSupabase(id);
-        console.log(`[shadow] USING SUPABASE (READ ONLY) — getById(${id})`);
-        return data;
-      } catch (err) {
-        console.warn("[shadow] FALLBACK TO MEMORY STORE — getById:", err);
-      }
-    }
+    if (USE_SUPABASE_READ_ONLY) return getByIdSupabase(id);
     return getVehicleById(id);
   },
 
   getFeatured: async (limit = 3, garageId?: string): Promise<Vehicle[]> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      try {
-        const data = await getFeaturedSupabase(limit, garageId);
-        console.log(`[shadow] USING SUPABASE (READ ONLY) — getFeatured (${data.length})`);
-        return data;
-      } catch (err) {
-        console.warn("[shadow] FALLBACK TO MEMORY STORE — getFeatured:", err);
-      }
-    }
+    if (USE_SUPABASE_READ_ONLY) return getFeaturedSupabase(limit, garageId);
     return getFeaturedVehicles(limit, garageId);
   },
 
   getRelated: async (excludeId: string, limit = 3, garageId?: string): Promise<Vehicle[]> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      try {
-        const data = await getRelatedSupabase(excludeId, limit, garageId);
-        console.log(`[shadow] USING SUPABASE (READ ONLY) — getRelated (${data.length})`);
-        return data;
-      } catch (err) {
-        console.warn("[shadow] FALLBACK TO MEMORY STORE — getRelated:", err);
-      }
-    }
+    if (USE_SUPABASE_READ_ONLY) return getRelatedSupabase(excludeId, limit, garageId);
     return getRelatedVehicles(excludeId, limit, garageId);
   },
 

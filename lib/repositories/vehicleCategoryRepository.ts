@@ -68,15 +68,7 @@ async function getBySlugSupabase(
 export const vehicleCategoryRepository = {
   /** Catégories actives d'un garage — usage public/filtres. */
   getAll: async (garageId: string): Promise<VehicleCategory[]> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      try {
-        const data = await getAllSupabase(garageId);
-        console.log(`[shadow] USING SUPABASE (READ ONLY) — categories.getAll (${data.length})`);
-        return data;
-      } catch (err) {
-        console.warn("[shadow] FALLBACK TO MEMORY STORE — categories.getAll:", err);
-      }
-    }
+    if (USE_SUPABASE_READ_ONLY) return getAllSupabase(garageId);
     return _store
       .filter((c) => c.garage_id === garageId && c.is_active)
       .sort((a, b) => a.sort_order - b.sort_order);
@@ -95,15 +87,7 @@ export const vehicleCategoryRepository = {
     garageId: string,
     slug: string,
   ): Promise<VehicleCategory | null> => {
-    if (USE_SUPABASE_READ_ONLY) {
-      try {
-        const data = await getBySlugSupabase(garageId, slug);
-        console.log(`[shadow] USING SUPABASE (READ ONLY) — categories.getBySlug(${slug})`);
-        return data;
-      } catch (err) {
-        console.warn("[shadow] FALLBACK TO MEMORY STORE — categories.getBySlug:", err);
-      }
-    }
+    if (USE_SUPABASE_READ_ONLY) return getBySlugSupabase(garageId, slug);
     return (
       _store.find((c) => c.garage_id === garageId && c.slug === slug) ?? null
     );

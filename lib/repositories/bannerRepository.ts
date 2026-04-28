@@ -58,15 +58,7 @@ export const bannerRepository = {
   get: async (): Promise<Banner | null> => {
     if (USE_SUPABASE_READ_ONLY) {
       const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
-      if (garageId) {
-        try {
-          const data = await getActiveSupabase(garageId);
-          console.log(`[shadow] USING SUPABASE (READ ONLY) — banner.get (${data ? "active" : "null"})`);
-          return data;
-        } catch (err) {
-          console.warn("[shadow] FALLBACK TO MEMORY STORE — banner.get:", err);
-        }
-      }
+      if (garageId) return getActiveSupabase(garageId);
     }
     return _banner.is_active && _banner.message ? _banner : null;
   },
