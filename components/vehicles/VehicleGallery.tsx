@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
+import type { VehicleImage } from "@/types";
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -11,6 +12,7 @@ import Lightbox from "./Lightbox";
 interface VehicleGalleryProps {
 	images: string[];
 	vehicleName: string;
+	vehicleImages?: VehicleImage[]; // alt SEO depuis vehicle_images table
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -24,6 +26,7 @@ interface VehicleGalleryProps {
 export default function VehicleGallery({
 	images,
 	vehicleName,
+	vehicleImages,
 }: VehicleGalleryProps) {
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -124,7 +127,7 @@ export default function VehicleGallery({
 							>
 								<Image
 									src={src}
-									alt={`${vehicleName} — photo ${idx + 1} sur ${images.length}`}
+									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${images.length}`}
 									fill
 									className={[
 										"object-cover object-top",

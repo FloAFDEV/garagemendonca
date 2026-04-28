@@ -5,15 +5,47 @@
  * Tout passe par vehicleFromDb() et vehicleToDb().
  */
 
-import type { Vehicle, VehicleFeatures, VehicleOptions } from "@/types";
+import type { Vehicle, VehicleFeatures, VehicleOptions, VehicleImage } from "@/types";
 import type { VehicleRow, VehicleInsert, VehicleUpdate } from "@/lib/supabase/database.types";
 import type { VehicleCreateInput, VehicleUpdateInput } from "@/lib/validation/vehicle.schema";
 
 // ─────────────────────────────────────────────────────────────────
 //  DB → Domaine
+//
+//  La ligne peut inclure vehicle_images[] via LEFT JOIN PostgREST :
+//    .select("*, vehicle_images(id, url, alt, sort_order, is_primary)")
+//  Si présentes, elles priment sur vehicles.images[] (legacy).
 // ─────────────────────────────────────────────────────────────────
 
-export function vehicleFromDb(row: VehicleRow): Vehicle {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type VehicleRowWithImages = VehicleRow & { vehicle_images?: any[] };
+
+function mapVehicleImages(raw: unknown[]): VehicleImage[] {
+  return (raw as VehicleImage[])
+    .map((img) => ({
+      id:         img.id,
+      vehicle_id: img.vehicle_id ?? "",
+      garage_id:  img.garage_id ?? "",
+      url:        img.url,
+      alt:        img.alt ?? undefined,
+      sort_order: img.sort_order ?? 0,
+      is_primary: img.is_primary ?? false,
+      created_at: img.created_at ?? undefined,
+    }))
+    .sort((a, b) => a.sort_order - b.sort_order);
+}
+
+export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
+  const joinedImages =
+    Array.isArray(row.vehicle_images) && row.vehicle_images.length > 0
+      ? mapVehicleImages(row.vehicle_images)
+      : undefined;
+
+  // Si vehicle_images jointes, elles deviennent la source canonique des URLs
+  const images       = joinedImages ? joinedImages.map((i) => i.url) : (row.images ?? []);
+  const primaryImage = joinedImages?.find((i) => i.is_primary) ?? joinedImages?.[0];
+  const thumbnailUrl = primaryImage?.url ?? row.thumbnail_url ?? undefined;
+
   return {
     id:               row.id,
     garageId:         row.garage_id,
@@ -29,8 +61,9 @@ export function vehicleFromDb(row: VehicleRow): Vehicle {
     doors:            row.doors ?? 5,
     critAir:          row.crit_air ?? undefined,
     description:      row.description ?? "",
-    images:           row.images ?? [],
-    thumbnailUrl:     row.thumbnail_url ?? undefined,
+    images,
+    thumbnailUrl,
+    vehicleImages:    joinedImages,
     status:           row.status,
     published_at:     row.published_at ?? undefined,
     sold_at:          row.sold_at ?? undefined,

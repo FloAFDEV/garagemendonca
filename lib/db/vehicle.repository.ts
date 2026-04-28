@@ -29,6 +29,9 @@ function adminDb(): Q {
   return createSupabaseAdminClient();
 }
 
+// Sélecteur commun : inclut toujours vehicle_images pour alt/order/is_primary
+const SEL_WITH_IMAGES = "*, vehicle_images(id, url, alt, sort_order, is_primary)";
+
 // ─── Filtres pour list() ──────────────────────────────────────────
 
 export interface VehicleListFilters {
@@ -53,7 +56,7 @@ export interface VehicleListFilters {
 
 export const vehicleDb = {
   async list(garageId: string, filters: VehicleListFilters = {}): Promise<Vehicle[]> {
-    let q = anonDb().from("vehicles").select("*").eq("garage_id", garageId);
+    let q = anonDb().from("vehicles").select(SEL_WITH_IMAGES).eq("garage_id", garageId);
 
     if (filters.status)       q = q.eq("status", filters.status);
     if (filters.brand)        q = q.ilike("brand", `%${filters.brand}%`);
@@ -78,21 +81,21 @@ export const vehicleDb = {
 
   async getById(id: string): Promise<Vehicle | null> {
     const { data, error } = await anonDb()
-      .from("vehicles").select("*").eq("id", id).maybeSingle();
+      .from("vehicles").select(SEL_WITH_IMAGES).eq("id", id).maybeSingle();
     if (error) throw error;
     return data ? vehicleFromDb(data as VehicleRow) : null;
   },
 
   async getBySlug(garageId: string, slug: string): Promise<Vehicle | null> {
     const { data, error } = await anonDb()
-      .from("vehicles").select("*").eq("garage_id", garageId).ilike("slug", slug).maybeSingle();
+      .from("vehicles").select(SEL_WITH_IMAGES).eq("garage_id", garageId).ilike("slug", slug).maybeSingle();
     if (error) throw error;
     return data ? vehicleFromDb(data as VehicleRow) : null;
   },
 
   async getFeatured(garageId: string, limit = 6): Promise<Vehicle[]> {
     const { data, error } = await anonDb()
-      .from("vehicles").select("*")
+      .from("vehicles").select(SEL_WITH_IMAGES)
       .eq("garage_id", garageId).eq("featured", true)
       .in("status", ["published", "sold"])
       .order("featured_order", { ascending: true, nullsFirst: false })
@@ -109,9 +112,35 @@ export const vehicleDb = {
     return (count ?? 0) > 0;
   },
 
+  async getRelated(vehicleId: string, garageId: string, limit = 3): Promise<Vehicle[]> {
+    const current = await vehicleDb.getById(vehicleId);
+    if (!current) return [];
+    const { data, error } = await anonDb()
+      .from("vehicles").select(SEL_WITH_IMAGES)
+      .eq("garage_id", garageId)
+      .neq("id", vehicleId)
+      .in("status", ["published", "scheduled", "sold"])
+      .or(`fuel.eq.${current.fuel},brand.ilike.${current.brand}`)
+      .limit(limit);
+    if (error) return [];
+    return ((data ?? []) as VehicleRow[]).map(vehicleFromDb);
+  },
+
+  async listSlugs(garageId: string): Promise<{ slug: string }[]> {
+    const { data, error } = await anonDb()
+      .from("vehicles")
+      .select("slug")
+      .eq("garage_id", garageId)
+      .not("slug", "is", null)
+      .in("status", ["published", "scheduled", "sold"]);
+    if (error) return [];
+    return ((data ?? []) as { slug: string | null }[])
+      .filter((r): r is { slug: string } => r.slug !== null);
+  },
+
   async listAdmin(garageId: string): Promise<Vehicle[]> {
     const { data, error } = await adminDb()
-      .from("vehicles").select("*").eq("garage_id", garageId)
+      .from("vehicles").select(SEL_WITH_IMAGES).eq("garage_id", garageId)
       .order("created_at", { ascending: false });
     if (error) throw error;
     return ((data ?? []) as VehicleRow[]).map(vehicleFromDb);
