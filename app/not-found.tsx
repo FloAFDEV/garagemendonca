@@ -10,7 +10,7 @@ export default function NotFound() {
     <>
       <Header />
 
-      <main className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center px-4 text-center">
+      <main className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-72px)] mt-16 md:mt-[72px] bg-[#f8fafc] flex flex-col items-center justify-center px-4 py-10 text-center">
 
         {/* Numéro 404 */}
         <motion.div
