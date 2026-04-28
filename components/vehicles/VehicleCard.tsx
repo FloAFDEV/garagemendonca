@@ -61,17 +61,26 @@ export default function VehicleCard({
 	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.color} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
 	const priceLabel = `${vehicle.price.toLocaleString("fr-FR")} euros`;
 
+	// Priorité : thumbnailUrl > first vehicleImage > first images[] URL
+	const imgSrc = vehicle.thumbnailUrl
+		?? vehicle.vehicleImages?.[0]?.url
+		?? vehicle.images?.[0];
+	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
+
+	// Lien : slug SEO si disponible, UUID en fallback
+	const href = `/vehicules/${vehicle.slug ?? vehicle.id}`;
+
 	return (
 		<Link
-			href={`/vehicules/${vehicle.id}`}
+			href={href}
 			className="group flex flex-col h-full bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400"
 			aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
 		>
 			{/* Image */}
 			<div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
 				<Image
-					src={vehicle.images[0]}
-					alt={altText}
+					src={imgSrc}
+					alt={imgAlt}
 					fill
 					priority={priority}
 					className={`object-cover transition-transform duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}

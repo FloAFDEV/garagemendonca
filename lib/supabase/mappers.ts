@@ -38,8 +38,11 @@ export function mapVehicle(row: any): Vehicle {
     featured: row.featured ?? false,
     featuredOrder: row.featured_order ?? undefined,
     categories: row.categories ?? [],
+    slug:             row.slug ?? undefined,
+    meta_description: row.meta_description ?? undefined,
     features: row.features ?? {},
     options: row.options ?? {},
+    export_leboncoin: row.export_leboncoin ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

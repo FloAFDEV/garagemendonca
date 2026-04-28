@@ -282,6 +282,8 @@ export interface Vehicle {
   // ── SEO ──────────────────────────────────────────────────────
   slug?: string;           // URL-safe unique par garage, ex: "peugeot-208-2021"
   meta_description?: string;
+  // ── Images enrichies (vehicle_images table, remplace progressivement images[]) ──
+  vehicleImages?: VehicleImage[];
   // ── Export portails ──────────────────────────────────────────
   export_leboncoin?: boolean;
   external_id?: string;   // identifiant sur le portail externe

@@ -1,6 +1,3 @@
-// Toujours rendu dynamiquement → voit les modifications admin en temps réel
-export const dynamic = "force-dynamic";
-
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -8,7 +5,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehicleGallery from "@/components/vehicles/VehicleGallery";
 import VehicleCard from "@/components/vehicles/VehicleCard";
-import { vehicleRepository } from "@/lib/repositories";
+import GarageAddressBlock from "@/components/layout/GarageAddressBlock";
 import Image from "next/image";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
@@ -16,20 +13,29 @@ import {
 	ArrowLeft,
 	Phone,
 	MessageSquare,
-	Calendar,
-	Gauge,
-	Fuel,
-	Zap,
-	Settings2,
-	DoorOpen,
-	Palette,
-	Wind,
 	CheckCircle2,
 	ShieldCheck,
-	RefreshCw,
-	CreditCard,
 	Star,
 } from "lucide-react";
+import { vehicleDb } from "@/lib/db/vehicle.repository";
+import type { Vehicle } from "@/types";
+
+const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+
+// UUID v4 pattern — pour le fallback getById si le slug ressemble à un UUID
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function getVehicle(slug: string): Promise<Vehicle | null> {
+	// 1. Recherche par slug (chemin normal)
+	const bySlug = await vehicleDb.getBySlug(GARAGE_ID, slug).catch(() => null);
+	if (bySlug) return bySlug;
+
+	// 2. Fallback UUID — compatibilité liens existants
+	if (UUID_RE.test(slug)) {
+		return vehicleDb.getById(slug).catch(() => null);
+	}
+	return null;
+}
 
 /* ─────────── carnet d'entretien parser ─────────── */
 const CARNET_LINE_RE =
@@ -140,19 +146,23 @@ function DescriptionRenderer({ text }: { text: string }) {
 
 /* ─────────── types ─────────── */
 interface PageProps {
-	params: Promise<{ id: string }>;
+	params: Promise<{ slug: string }>;
 }
 
 /* ─────────── metadata ─────────── */
 export async function generateMetadata({
 	params,
 }: PageProps): Promise<Metadata> {
-	const { id } = await params;
-	const vehicle = await vehicleRepository.getById(id);
+	const { slug } = await params;
+	const vehicle = await getVehicle(slug);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
 	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} €`;
-	const desc = `${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, ${vehicle.transmission}. ${vehicle.description.slice(0, 110)}… Garage Mendonça, Drémil-Lafage (31).`;
+	const desc =
+		vehicle.meta_description ??
+		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, ${vehicle.transmission}. ${vehicle.description.slice(0, 110)}… Garage Mendonça, Drémil-Lafage (31).`;
+
+	const ogImage = vehicle.thumbnailUrl ?? vehicle.images[0];
 
 	return {
 		title,
@@ -160,30 +170,35 @@ export async function generateMetadata({
 		openGraph: {
 			title,
 			description: desc,
-			images: [
-				{
-					url: vehicle.images[0],
-					width: 1200,
-					height: 630,
-					alt: `${vehicle.brand} ${vehicle.model} ${vehicle.year}`,
-				},
-			],
+			...(ogImage && {
+				images: [
+					{
+						url: ogImage,
+						width: 1200,
+						height: 630,
+						alt: `${vehicle.brand} ${vehicle.model} ${vehicle.year}`,
+					},
+				],
+			}),
 		},
 	};
 }
 
 export async function generateStaticParams() {
-	return vehicleRepository.getStaticParams();
+	if (!GARAGE_ID) return [];
+	const slugs = await vehicleDb.listSlugs(GARAGE_ID).catch(() => []);
+	return slugs.map(({ slug }) => ({ slug }));
 }
 
 /* ─────────── composant ─────────── */
 export default async function VehicleDetailPage({ params }: PageProps) {
-	const { id } = await params;
-	const [vehicle, related] = await Promise.all([
-		vehicleRepository.getById(id),
-		vehicleRepository.getRelated(id, 3),
-	]);
+	const { slug } = await params;
+	const vehicle = await getVehicle(slug);
 	if (!vehicle) notFound();
+
+	const relatedVehicles = await vehicleDb
+		.getRelated(vehicle.id, GARAGE_ID, 3)
+		.catch(() => []);
 
 	const isAvailable = vehicle.status !== "sold";
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
@@ -215,6 +230,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			seller: { "@type": "AutoDealer", name: "Garage Auto Mendonça" },
 		},
 	};
+
 
 	return (
 		<MainLayout>
@@ -305,14 +321,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</h1>
 							</div>
 						</div>
-						<div className="hidden text-right">
-							<div className="ty-value font-heading text-4xl">
-								{vehicle.price.toLocaleString("fr-FR")} €
-							</div>
-							<p className="text-slate-400 text-sm mt-0.5 font-medium">
-								Prix TTC · Révisé & Garanti
-							</p>
-						</div>
 					</div>
 
 					{/* ── Layout principal ── */}
@@ -322,6 +330,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							<VehicleGallery
 								images={vehicle.images}
 								vehicleName={vehicleName}
+								vehicleImages={vehicle.vehicleImages}
 							/>
 
 							{/* Description & Confiance */}
@@ -527,41 +536,13 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</ul>
 							</div>
 
-							{/* Adresse Garage */}
-							<div className="bg-[#0f172a] rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative group">
-								<div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform">
-									<ArrowLeft
-										size={80}
-										className="rotate-135"
-									/>
-								</div>
-								<div className="ty-label text-brand-400 mb-4 text-base">
-									Garage Mendonça
-								</div>
-								<p className="text-slate-300 text-sm leading-relaxed mb-6 font-light">
-									6 Avenue de la Mouyssaguese
-									<br />
-									31280 Drémil-Lafage
-									<br />
-									Lun–Jeu 8h–19h · Ven 8h–18h
-								</p>
-								<a
-									href="https://maps.google.com"
-									target="_blank"
-									className="inline-flex items-center gap-2 text-brand-400 hover:text-red-500 text-xs font-medium transition-colors uppercase tracking-widest"
-								>
-									Itinéraire Maps{" "}
-									<ArrowLeft
-										size={12}
-										className="rotate-180"
-									/>
-								</a>
-							</div>
+							{/* Adresse Garage — données depuis DB */}
+							<GarageAddressBlock />
 						</aside>
 					</div>
 
 					{/* Véhicules similaires */}
-					{related.length > 0 && (
+					{relatedVehicles.length > 0 && (
 						<section className="mt-24 border-t border-slate-100 pt-16">
 							<div className="flex items-center justify-between mb-10">
 								<h2 className="ty-heading text-[#0f172a] text-3xl">
@@ -575,7 +556,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</Link>
 							</div>
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-								{related.map((v) => (
+								{relatedVehicles.map((v) => (
 									<VehicleCard key={v.id} vehicle={v} />
 								))}
 							</div>
@@ -604,3 +585,4 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 		</MainLayout>
 	);
 }
+

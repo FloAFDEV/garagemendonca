@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Send, CheckCircle2, Loader2 } from "lucide-react";
+import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
+
+const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
 const subjects = [
   "Demande de devis réparation",
@@ -11,7 +14,13 @@ const subjects = [
   "Autre",
 ];
 
-export default function ContactForm({ vehicule }: { vehicule?: string }) {
+export default function ContactForm({
+  vehicule,
+  vehicleId,
+}: {
+  vehicule?: string;
+  vehicleId?: string;
+}) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -21,7 +30,9 @@ export default function ContactForm({ vehicule }: { vehicule?: string }) {
       ? `Bonjour, je suis intéressé(e) par le véhicule : ${vehicule}. Pourriez-vous me recontacter ? Merci.`
       : "",
   });
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [sent, setSent] = useState(false);
+
+  const { mutate, isPending, isError } = useCreateMessage();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -29,14 +40,25 @@ export default function ContactForm({ vehicule }: { vehicule?: string }) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("sending");
-    await new Promise((res) => setTimeout(res, 1500));
-    setStatus("sent");
+    mutate(
+      {
+        garage_id:  GARAGE_ID || undefined,
+        vehicle_id: vehicleId ?? undefined,
+        name:       form.name,
+        email:      form.email,
+        phone:      form.phone || undefined,
+        subject:    form.subject || undefined,
+        message:    form.message,
+      },
+      {
+        onSuccess: () => setSent(true),
+      }
+    );
   };
 
-  if (status === "sent") {
+  if (sent) {
     return (
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
         <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5" aria-hidden="true">
@@ -49,7 +71,7 @@ export default function ContactForm({ vehicule }: { vehicule?: string }) {
         </p>
         <button
           onClick={() => {
-            setStatus("idle");
+            setSent(false);
             setForm({ name: "", email: "", phone: "", subject: "", message: "" });
           }}
           className="mt-6 text-brand-600 font-normal hover:text-brand-700 transition-colors text-sm"
@@ -172,13 +194,19 @@ export default function ContactForm({ vehicule }: { vehicule?: string }) {
         </label>
       </div>
 
+      {isError && (
+        <p className="text-sm text-red-600" role="alert">
+          Une erreur est survenue. Vérifiez votre email et réessayez.
+        </p>
+      )}
+
       <button
         type="submit"
-        disabled={status === "sending"}
+        disabled={isPending}
         className="btn-primary w-full justify-center py-4 text-base"
-        aria-busy={status === "sending"}
+        aria-busy={isPending}
       >
-        {status === "sending" ? (
+        {isPending ? (
           <>
             <Loader2 size={18} className="animate-spin" aria-hidden="true" />
             Envoi en cours…
