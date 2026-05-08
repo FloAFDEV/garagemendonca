@@ -1,387 +1,736 @@
 -- ═══════════════════════════════════════════════════════════════════
---  seed.sql — Données de test réalistes — Garage Auto Mendonca
+--  seed.sql — Garage Auto Mendonca — Données démo validées client
 --
---  Prérequis : 001_init.sql exécuté.
---  Idempotent : ON CONFLICT DO NOTHING sur tous les INSERT.
+--  Prérequis : schema.sql exécuté (ou migrations 001 → 006).
+--  Idempotent : ON CONFLICT (id) DO UPDATE — écrase les seeds
+--  incorrects issus des migrations 003 / 004.
 --
---  Contenu :
---    • 1 garage complet
---    • 3 catégories de véhicules
---    • 10 véhicules publiés (7) + sold (1) + drafts (2)
---    • 5 services complets
---    • 3 bannières (1 active, 2 inactives / planifiées)
---    • 5 messages (mix new/read)
+--  UUIDs fixes :
+--    Garage      : 00000000-0000-0000-0000-000000000001
+--    Services    : ...0301 (entretien) | ...0302 (mecanique) | ...0303 (carrosserie)
+--    Testimonials: ...0401 (Patrick L.) | ...0402 (Isabelle M.) | ...0403 (Laurent B.)
+--    Gallery     : ...0501 → ...0505
+--    Vehicles    : ...0201 (Suzuki Swift) | ...0202 (Toyota AYGO)
+--                  ...0203 (Nissan Micra) | ...0204 (Nissan Pixo)
+--                  ...0205 (Mitsubishi Space Star) | ...0206 (Hyundai i10)
+--                  ...0207 (Peugeot 107) | ...0208 (Citroën C1)
 -- ═══════════════════════════════════════════════════════════════════
 
--- UUIDs fixes pour reproductibilité
--- Garage    : 00000000-0000-0000-0000-000000000001  (défini dans 001_init.sql)
--- Catégs    : 00000000-0000-0000-0000-000000000101 à ...103
--- Véhicules : 00000000-0000-0000-0000-000000000201 à ...210
--- Services  : 00000000-0000-0000-0000-000000000301 à ...305
--- Banners   : 00000000-0000-0000-0000-000000000401 à ...403
--- Messages  : 00000000-0000-0000-0000-000000000501 à ...505
+-- ── 1. GARAGE ────────────────────────────────────────────────────
+INSERT INTO garages (
+  id, name, slug, address, city, postal_code, phone, email,
+  plan, lat, lng, description, is_active, google_maps_url, opening_hours,
+  content, seo_title, seo_description, seo_keywords
+) VALUES (
+  '00000000-0000-0000-0000-000000000001',
+  'Garage Auto Mendonca',
+  'garage-mendonca',
+  '6 Avenue de la Mouyssaguese',
+  'Drémil-Lafage',
+  '31280',
+  '05 32 00 20 38',
+  'contact@garagemendonca.com',
+  'isolated',
+  43.604652,
+  1.567890,
+  'Spécialiste de la mécanique, carrosserie et vente de véhicules d''occasion japonais à boîte automatique à Drémil-Lafage depuis 2001.',
+  true,
+  'https://maps.google.com/?q=6+Avenue+de+la+Mouyssaguese+31280+Dr%C3%A9mil-Lafage',
+  '{"lundi":{"open":"08:00","close":"19:00"},"mardi":{"open":"08:00","close":"19:00"},"mercredi":{"open":"08:00","close":"19:00"},"jeudi":{"open":"08:00","close":"19:00"},"vendredi":{"open":"08:00","close":"18:00"},"samedi":null,"dimanche":null}',
+  jsonb_build_object(
+    'hero', jsonb_build_object(
+      'eyebrow',            'Garage Mendonca – Expert auto depuis 2001',
+      'h1_prefix',          'Votre garage de confiance à',
+      'h1_city',            'Drémil-Lafage',
+      'subtitle',           'Mécaniciens qualifiés, équipement dernière génération, devis transparent avant toute intervention. Spécialiste japonaises et boîte automatique depuis 2001. Jeunes conducteurs, seniors & PMR bienvenus.',
+      'h3_prefix',          'Spécialiste',
+      'h3_highlight',       'japonaises et coréennes',
+      'cta_primary_text',   'Nous contacter',
+      'cta_primary_href',   'tel:0532002038',
+      'cta_secondary_text', 'Demander un devis gratuit',
+      'cta_secondary_href', '/contact',
+      'stats', jsonb_build_array(
+        jsonb_build_object('value', '30+',    'label', 'Ans d''expérience'),
+        jsonb_build_object('value', '2 000+', 'label', 'Réparations réalisées'),
+        jsonb_build_object('value', '98 %',   'label', 'Clients satisfaits')
+      ),
+      'trust_badges', jsonb_build_array(
+        jsonb_build_object('icon', 'shield-check', 'text', 'Devis pièce & main-d''œuvre avant toute intervention'),
+        jsonb_build_object('icon', 'clock',        'text', 'Accueil avec ou sans rendez-vous'),
+        jsonb_build_object('icon', 'award',        'text', 'Spécialiste japonaises · boîte automatique')
+      )
+    ),
+    'reassurances', jsonb_build_array(
+      jsonb_build_object(
+        'label',       'Depuis 2001',
+        'description', 'Plus de 20 ans au service des conducteurs de la région toulousaine.'
+      ),
+      jsonb_build_object(
+        'label',       'Spécialiste japonaises & boîtes auto',
+        'description', 'Toyota, Nissan, Honda, Suzuki, Mazda — boîte automatique incluse.'
+      ),
+      jsonb_build_object(
+        'label',       'Devis transparent avant intervention',
+        'description', 'Prix pièce et main-d''œuvre communiqué systématiquement avant tout travail.'
+      ),
+      jsonb_build_object(
+        'label',       '98 % de clients satisfaits',
+        'description', 'Accueil avec ou sans rendez-vous, service fiable et bienveillant.'
+      )
+    ),
+    'cta_section', jsonb_build_object(
+      'h2_prefix',    'Besoin d''une réparation',
+      'h2_highlight', 'rapide et fiable ?',
+      'paragraph',    'Contactez-nous par téléphone ou via notre formulaire.',
+      'guarantees', jsonb_build_array(
+        'Devis 100% gratuit',
+        'Réponse sous 24h',
+        'Avec ou sans RDV',
+        'Prix transparents'
+      )
+    ),
+    'vehicle_guarantees', jsonb_build_array(
+      jsonb_build_object('icon', 'clipboard-check', 'label', 'Contrôle technique récent'),
+      jsonb_build_object('icon', 'wrench',          'label', 'Révision complète effectuée'),
+      jsonb_build_object('icon', 'book-open',       'label', 'Carnet d''entretien vérifié'),
+      jsonb_build_object('icon', 'shield-check',    'label', 'Garantie 6 à 12 mois km illimités')
+    )
+  ),
+  'Garage Auto Mendonca — Garagiste Drémil-Lafage (31) — Mécanique, Carrosserie, Vente',
+  'Garage auto à Drémil-Lafage (31) — Mécanique, carrosserie, diagnostic et vente VO depuis 2001. Spécialiste japonaises, boîte automatique. Diagnostic en 10 min, devis gratuit. ☎ 05 32 00 20 38.',
+  ARRAY[
+    'garage automobile Drémil-Lafage',
+    'garagiste Toulouse',
+    'réparation voiture 31',
+    'mécanique japonaises boîte automatique',
+    'carrosserie peinture',
+    'diagnostic OBD',
+    'occasions boîte automatique',
+    'devis gratuit mécanique',
+    'contrôle technique',
+    'filtre à particules DPF'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  name            = EXCLUDED.name,
+  slug            = EXCLUDED.slug,
+  address         = EXCLUDED.address,
+  city            = EXCLUDED.city,
+  postal_code     = EXCLUDED.postal_code,
+  phone           = EXCLUDED.phone,
+  email           = EXCLUDED.email,
+  plan            = EXCLUDED.plan,
+  lat             = EXCLUDED.lat,
+  lng             = EXCLUDED.lng,
+  description     = EXCLUDED.description,
+  is_active       = EXCLUDED.is_active,
+  google_maps_url = EXCLUDED.google_maps_url,
+  opening_hours   = EXCLUDED.opening_hours,
+  content         = EXCLUDED.content,
+  seo_title       = EXCLUDED.seo_title,
+  seo_description = EXCLUDED.seo_description,
+  seo_keywords    = EXCLUDED.seo_keywords;
 
--- ── Catégories ────────────────────────────────────────────────────
-INSERT INTO vehicle_categories (id, garage_id, slug, label, icon, color, sort_order, is_active)
-VALUES
-  ('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000001',
-   'voitures', 'Voitures', '🚗', '#3b82f6', 0, true),
-  ('00000000-0000-0000-0000-000000000102', '00000000-0000-0000-0000-000000000001',
-   'utilitaires', 'Utilitaires', '🚐', '#f59e0b', 1, true),
-  ('00000000-0000-0000-0000-000000000103', '00000000-0000-0000-0000-000000000001',
-   'premium', 'Premium', '⭐', '#8b5cf6', 2, true)
-ON CONFLICT (garage_id, slug) DO NOTHING;
 
--- ── Véhicules publiés ─────────────────────────────────────────────
-
-INSERT INTO vehicles (
-  id, garage_id, brand, model, year, mileage, fuel, transmission,
-  power, price, color, doors, crit_air, description, status, published_at,
-  featured, featured_order, categories, slug, meta_description,
-  options, features
-) VALUES
-
--- 1. Toyota Yaris Hybride — featured #1
-('00000000-0000-0000-0000-000000000201',
- '00000000-0000-0000-0000-000000000001',
- 'Toyota', 'Yaris', 2021, 38500, 'Hybride', 'Automatique',
- 116, 16900, 'Blanc Nacré', 5, '1',
- 'Toyota Yaris hybride automatique en excellent état. Idéale en ville et sur route, très économique. Carnet d''entretien complet. Garantie 6 mois.',
- 'published', now() - interval '10 days',
- true, 1,
- ARRAY['voitures'],
- 'toyota-yaris-hybride-automatique-2021',
- 'Toyota Yaris Hybride 116ch Automatique 2021 — 38 500 km — 16 900 € — Garage Mendonca Drémil-Lafage (31)',
- '{"climatisation_automatique":true,"bluetooth":true,"regulateur_vitesse":true,"camera_recul":true,"ecran_tactile":true,"demarrage_sans_cle":true,"gps":true}',
- '{"nb_portes":5,"nb_places":5,"puissance_fiscale":6}'
-),
-
--- 2. Honda CR-V Hybride — featured #2
-('00000000-0000-0000-0000-000000000202',
- '00000000-0000-0000-0000-000000000001',
- 'Honda', 'CR-V', 2020, 52000, 'Hybride', 'Automatique',
- 184, 24500, 'Gris Métallisé', 5, '1',
- 'Honda CR-V e:HEV, SUV hybride automatique, très bien équipé. Toit panoramique, sièges chauffants, GPS. Première main, 0 accident.',
- 'published', now() - interval '8 days',
- true, 2,
- ARRAY['voitures', 'premium'],
- 'honda-cr-v-hybride-automatique-2020',
- 'Honda CR-V Hybride 184ch Automatique 2020 — 52 000 km — 24 500 € — Garage Mendonca',
- '{"toit_panoramique":true,"climatisation_automatique":true,"sieges_chauffants":true,"gps":true,"camera_recul":true,"regulateur_adaptatif":true,"jantes_alliage":true}',
- '{"nb_portes":5,"nb_places":5,"puissance_fiscale":9}'
-),
-
--- 3. Lexus IS 300h — featured #3 — premium
-('00000000-0000-0000-0000-000000000203',
- '00000000-0000-0000-0000-000000000001',
- 'Lexus', 'IS 300h', 2018, 89000, 'Hybride', 'Automatique',
- 223, 22800, 'Noir Obsidienne', 4, '1',
- 'Lexus IS 300h hybride, berline premium automatique. Finition Executive, cuir full. Carnet d''entretien Lexus. Véhicule d''exception au prix du marché.',
- 'published', now() - interval '5 days',
- true, 3,
- ARRAY['voitures', 'premium'],
- 'lexus-is-300h-hybride-automatique-2018',
- 'Lexus IS 300h Hybride 223ch Automatique 2018 — 89 000 km — 22 800 € — Garage Mendonca Drémil-Lafage',
- '{"climatisation_automatique":true,"toit_panoramique":true,"sieges_chauffants":true,"gps":true,"camera_recul":true,"jantes_alliage":true,"regulateur_adaptatif":true,"demarrage_sans_cle":true,"ecran_tactile":true}',
- '{"nb_portes":4,"nb_places":5,"puissance_fiscale":10}'
-),
-
--- 4. Nissan Micra
-('00000000-0000-0000-0000-000000000204',
- '00000000-0000-0000-0000-000000000001',
- 'Nissan', 'Micra', 2019, 61200, 'Essence', 'Automatique',
- 90, 11400, 'Rouge', 5, '2',
- 'Nissan Micra boîte automatique CVT, agréable à conduire en ville. Entretien Nissan, pas d''accident, prête à rouler.',
- 'published', now() - interval '15 days',
- false, NULL,
- ARRAY['voitures'],
- 'nissan-micra-essence-automatique-2019',
- 'Nissan Micra 90ch Automatique 2019 — 61 200 km — 11 400 € — Garage Mendonca Drémil-Lafage',
- '{"climatisation":true,"bluetooth":true,"regulateur_vitesse":true}',
- '{"nb_portes":5,"nb_places":5,"puissance_fiscale":4}'
-),
-
--- 5. Mazda CX-5 Diesel
-('00000000-0000-0000-0000-000000000205',
- '00000000-0000-0000-0000-000000000001',
- 'Mazda', 'CX-5', 2022, 28000, 'Diesel', 'Automatique',
- 150, 27900, 'Bleu Métallisé', 5, '2',
- 'Mazda CX-5 Skyactiv-D 150ch automatique, SUV familial. Finition Exclusive-Line. Garantie constructeur restante jusqu''en 2025.',
- 'published', now() - interval '3 days',
- false, NULL,
- ARRAY['voitures'],
- 'mazda-cx5-diesel-automatique-2022',
- 'Mazda CX-5 Diesel 150ch Automatique 2022 — 28 000 km — 27 900 € — Garage Mendonca Drémil-Lafage',
- '{"climatisation_automatique":true,"camera_recul":true,"regulateur_adaptatif":true,"jantes_alliage":true,"ecran_tactile":true,"gps":true,"bluetooth":true}',
- '{"nb_portes":5,"nb_places":5,"puissance_fiscale":8}'
-),
-
--- 6. Toyota Corolla Hybride
-('00000000-0000-0000-0000-000000000206',
- '00000000-0000-0000-0000-000000000001',
- 'Toyota', 'Corolla', 2023, 18500, 'Hybride', 'Automatique',
- 140, 26900, 'Gris Magnétique', 5, '1',
- 'Toyota Corolla hybride 2023, quasi-neuve. 18 500 km seulement. Garantie constructeur active jusqu''en 2026. Finition Active + Tech. Toutes les aides à la conduite.',
- 'published', now() - interval '2 days',
- true, 4,
- ARRAY['voitures'],
- 'toyota-corolla-hybride-automatique-2023',
- 'Toyota Corolla Hybride 140ch Automatique 2023 — 18 500 km — 26 900 € — Garage Mendonca',
- '{"climatisation_automatique":true,"camera_recul":true,"regulateur_adaptatif":true,"bluetooth":true,"ecran_tactile":true,"demarrage_sans_cle":true,"sieges_chauffants":true,"jantes_alliage":true}',
- '{"nb_portes":5,"nb_places":5,"puissance_fiscale":7}'
-),
-
--- 7. Suzuki Swift Sport
-('00000000-0000-0000-0000-000000000207',
- '00000000-0000-0000-0000-000000000001',
- 'Suzuki', 'Swift Sport', 2019, 54000, 'Essence', 'Manuelle',
- 140, 14900, 'Blanc Nacré', 3, '2',
- 'Suzuki Swift Sport en parfait état. 140ch, 0 à 100 en 8,1s. Entretien complet, carnet tamponné. Véhicule pétillant et économique.',
- 'published', now() - interval '20 days',
- false, NULL,
- ARRAY['voitures'],
- 'suzuki-swift-sport-essence-2019',
- 'Suzuki Swift Sport 140ch 2019 — 54 000 km — 14 900 € — Garage Mendonca Drémil-Lafage',
- '{"climatisation":true,"bluetooth":true,"camera_recul":true,"ecran_tactile":true,"jantes_alliage":true}',
- '{"nb_portes":3,"nb_places":4,"puissance_fiscale":6}'
-)
-
-ON CONFLICT (id) DO NOTHING;
-
--- ── Véhicule vendu ────────────────────────────────────────────────
-INSERT INTO vehicles (
-  id, garage_id, brand, model, year, mileage, fuel, transmission,
-  power, price, color, doors, status, sold_at, categories, slug
-) VALUES
-('00000000-0000-0000-0000-000000000208',
- '00000000-0000-0000-0000-000000000001',
- 'Honda', 'Jazz', 2021, 31000, 'Hybride', 'Automatique',
- 109, 18500, 'Gris Platine', 5,
- 'sold', now() - interval '5 days',
- ARRAY['voitures'],
- 'honda-jazz-hybride-automatique-2021'
-)
-ON CONFLICT (id) DO NOTHING;
-
--- ── Véhicules brouillons ──────────────────────────────────────────
-INSERT INTO vehicles (
-  id, garage_id, brand, model, year, mileage, fuel, transmission,
-  power, price, color, doors, status, categories, slug
-) VALUES
-('00000000-0000-0000-0000-000000000209',
- '00000000-0000-0000-0000-000000000001',
- 'Toyota', 'RAV4', 2020, 74000, 'Hybride', 'Automatique',
- 218, 29900, 'Gris', 5,
- 'draft', ARRAY['voitures'],
- 'toyota-rav4-hybride-automatique-2020'
-),
-('00000000-0000-0000-0000-000000000210',
- '00000000-0000-0000-0000-000000000001',
- 'Lexus', 'UX 250h', 2022, 42000, 'Hybride', 'Automatique',
- 184, 31500, 'Bronze', 5,
- 'draft', ARRAY['voitures', 'premium'],
- 'lexus-ux-250h-hybride-automatique-2022'
-)
-ON CONFLICT (id) DO NOTHING;
-
--- ── Services ──────────────────────────────────────────────────────
+-- ── 2. SERVICES (entretien, mecanique, carrosserie) ───────────────
 INSERT INTO services (
   id, garage_id, slug, sort_order, title, icon,
-  short_description, long_description, features, is_active
+  short_description, long_description, features, is_active, show_on_homepage,
+  steps, pricing, faq, testimonials
 ) VALUES
 
--- 1. Entretien & Révision
-('00000000-0000-0000-0000-000000000301',
- '00000000-0000-0000-0000-000000000001',
- 'entretien', 0, 'Entretien & Révision', 'wrench',
- 'Service de proximité toutes marques. Vidange, filtres, freins, climatisation — préconisations constructeur respectées.',
- 'Depuis 2001, le Garage Mendonca assure l''entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Les préconisations constructeur sont toujours respectées.',
- ARRAY[
-   'Vidange huile moteur & remplacement filtres',
-   'Révision garantie constructeur',
-   'Remplacement courroie de distribution',
-   'Préparation contrôle technique',
-   'Pneus toutes marques — équipement Facom',
-   'Climatisation — recharge, filtre pollen',
-   'Changement d''amortisseurs',
-   'Disques, plaquettes de freins & batterie'
- ],
- true
+-- ── 2.1 Entretien & Révision ─────────────────────────────────────
+(
+  '00000000-0000-0000-0000-000000000301',
+  '00000000-0000-0000-0000-000000000001',
+  'entretien', 1,
+  'Entretien & Révision',
+  'wrench',
+  'Service de proximité pour tous véhicules toutes marques. Préconisations constructeur toujours respectées.',
+  'Depuis 2001, le Garage Mendonca assure l''entretien de tous les véhicules avec un service de proximité et une qualité constante. Spécialistes des marques japonaises (Toyota, Nissan, Suzuki, Honda, Mazda…) et des boîtes automatiques. Accueil adapté aux jeunes conducteurs, seniors et personnes à mobilité réduite. Les préconisations constructeur sont toujours respectées.',
+  ARRAY[
+    'Vidange huile moteur & remplacement filtres',
+    'Révision garantie constructeur',
+    'Remplacement courroie de distribution',
+    'Préparation contrôle technique',
+    'Pneus toutes marques — équipement Facom',
+    'Climatisation — recharge, filtre pollen, traitement antibactérien',
+    'Changement d''amortisseurs toutes marques',
+    'Remplacement disques, plaquettes de freins & batterie'
+  ],
+  true, true,
+  '[{"order":1,"title":"Dépôt du véhicule","description":"Sans rendez-vous ou sur rendez-vous. Accueil en atelier dès 8h."},{"order":2,"title":"Diagnostic offert","description":"Bilan visuel complet et lecture des codes défaut en 10 minutes."},{"order":3,"title":"Devis transparent","description":"Présentation du devis pièce et main-d''œuvre avant toute intervention."},{"order":4,"title":"Travaux","description":"Réalisés selon les préconisations constructeur, pièces qualifiées."},{"order":5,"title":"Restitution","description":"Test sur route, nettoyage du véhicule, facturation détaillée."}]',
+  '[{"label":"Vidange + filtre huile","price":"à partir de 79 € TTC"},{"label":"Révision complète","price":"à partir de 149 € TTC"},{"label":"Courroie de distribution","price":"à partir de 299 € TTC"},{"label":"Contrôle technique","price":"Sur devis","note":"Préparation incluse"},{"label":"Recharge climatisation","price":"à partir de 99 € TTC"},{"label":"4 pneus posés équilibrés","price":"Sur devis","note":"Toutes marques"}]',
+  '[{"question":"Mon véhicule est-il trop ancien pour être entretenu chez vous ?","answer":"Non. Nous intervenons sur tous les véhicules toutes marques, quels que soient leur âge ou leur kilométrage. Nous sommes spécialisés dans les japonaises et les boîtes automatiques, mais nous accueillons toutes les marques."},{"question":"Puis-je avoir un devis avant l''intervention ?","answer":"Oui, c''est systématique. Nous ne commençons aucun travail sans votre accord écrit sur le devis. Prix pièce et main-d''œuvre détaillés à l''avance."},{"question":"Avez-vous des véhicules de prêt ?","answer":"Oui, jusqu''à 9 véhicules de prêt sont disponibles (sous réserve de disponibilité) pour que vous puissiez continuer vos déplacements pendant l''intervention."},{"question":"L''entretien fait chez vous est-il compatible avec la garantie constructeur ?","answer":"Oui. Nous respectons strictement les préconisations constructeur et utilisons des pièces de qualité équivalente OEM. L''entretien n''invalide pas votre garantie constructeur."}]',
+  '[{"author":"Laurent M.","location":"Drémil-Lafage","date":"janvier 2025","rating":5,"content":"Vidange + révision faite en 1h30 chrono, devis respecté au centime. Je reviens depuis 4 ans, jamais de mauvaise surprise."},{"author":"Sophie V.","location":"Montrabé","date":"mars 2025","rating":5,"content":"Ils m''ont prêté un véhicule pendant 2 jours pour la révision complète. Accueil très agréable, travail sérieux et propre."},{"author":"Ahmed B.","location":"Toulouse","date":"novembre 2024","rating":5,"content":"Courroie de distribution changée sur ma Toyota. Devis clair, pas de surprise. Je recommande vivement."}]'
 ),
 
--- 2. Boîte Automatique
-('00000000-0000-0000-0000-000000000302',
- '00000000-0000-0000-0000-000000000001',
- 'boite-automatique', 1, 'Boîte Automatique', 'settings',
- 'Spécialiste boîte automatique et CVT depuis 2001 — vidange ATF, réparation, échange standard.',
- 'La boîte automatique est notre spécialité historique depuis 2001. Nous intervenons sur toutes les technologies : boîtes hydrauliques, CVT, DSG/DCT, e-CVT hybrides (Toyota, Honda, Lexus…). Vidange à l''intervalle constructeur, remplacement sur échange standard ou neuf.',
- ARRAY[
-   'Vidange boîte automatique (ATF)',
-   'Boîtes CVT (Toyota, Nissan, Honda)',
-   'Boîtes hybrides e-CVT',
-   'DSG et boîtes à double embrayage',
-   'Diagnostic électronique boîte',
-   'Remplacement et échange standard'
- ],
- true
+-- ── 2.2 Réparation Mécanique & Électronique ───────────────────────
+(
+  '00000000-0000-0000-0000-000000000302',
+  '00000000-0000-0000-0000-000000000001',
+  'mecanique', 2,
+  'Réparation Mécanique & Électronique',
+  'settings',
+  'Spécialiste véhicules japonais et boîtes automatiques. Réparation électronique à coût maîtrisé, devis avant intervention.',
+  'À la fois généraliste et expert, le Garage Mendonca intervient sur l''entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais (Toyota, Nissan, Suzuki, Honda…) et des boîtes automatiques, nos mécaniciens qualifiés assurent le meilleur service. Réparation de pièces électroniques automobiles à coût maîtrisé.',
+  ARRAY[
+    'Réparation moteur, embrayage & boîte de vitesses',
+    'Suspensions, direction et amortisseurs',
+    'Réparation pièces électroniques automobiles',
+    'Spécialiste japonaises · boîte automatique',
+    'Réparation boîte de vitesse automatique',
+    'Mise au point moteur',
+    'Devis pièce & main-d''œuvre avant toute intervention',
+    'Véhicule de prêt disponible'
+  ],
+  true, true,
+  '[{"order":1,"title":"Prise en charge","description":"Accueil de votre véhicule et description du problème constaté."},{"order":2,"title":"Diagnostic électronique","description":"Lecture des codes défaut OBD en 10 minutes, bilan des actionneurs."},{"order":3,"title":"Devis pièce & main-d''œuvre","description":"Chiffrage détaillé avant de commencer — aucun frais caché."},{"order":4,"title":"Réparation","description":"Intervention par nos mécaniciens qualifiés, spécialistes japonaises & boîtes auto."},{"order":5,"title":"Contrôle final","description":"Essai sur route, vérification complète et restitution du véhicule propre."}]',
+  '[{"label":"Diagnostic OBD","price":"Offert","note":"En moins de 10 min"},{"label":"Embrayage","price":"Sur devis","note":"Toutes marques"},{"label":"Révision boîte automatique","price":"Sur devis"},{"label":"Réparation électronique","price":"Sur devis","note":"À coût maîtrisé"},{"label":"Mise au point moteur","price":"Sur devis"},{"label":"Suspensions complètes","price":"Sur devis"}]',
+  '[{"question":"Êtes-vous vraiment spécialisés dans les boîtes automatiques ?","answer":"Oui, c''est notre expertise principale depuis 2001. Nous réalisons des vidanges de boîtes automatiques, des révisions complètes et des réparations de boîtes CVT, DSG et conventionnelles sur toutes marques japonaises."},{"question":"Pouvez-vous réparer des pièces électroniques sans les remplacer ?","answer":"Dans de nombreux cas, oui. Nous sommes équipés pour réparer des calculateurs, des modules de confort et d''autres composants électroniques à un coût bien inférieur au remplacement."},{"question":"Intervenez-vous sur toutes les marques ou seulement les japonaises ?","answer":"Nous intervenons sur toutes les marques. Notre expertise poussée sur les japonaises (Toyota, Nissan, Suzuki, Honda, Mazda, Mitsubishi) nous permet d''aller plus loin sur ces modèles, mais nous sommes pleinement équipés pour les européennes et les coréennes."},{"question":"Combien de temps dure une réparation mécanique ?","answer":"Cela dépend de la réparation. Un diagnostic prend 10 minutes. Une réparation courante (embrayage, boîte auto) prend généralement 1 à 2 jours. Un véhicule de prêt est disponible si besoin."}]',
+  '[{"author":"Pierre D.","location":"Balma","date":"février 2025","rating":5,"content":"Boîte automatique révisée sur ma Nissan Micra. Diagnostic rapide, tarif raisonnable, véhicule de prêt fourni. Tout roule depuis 8 000 km."},{"author":"Fatima R.","location":"Toulouse","date":"décembre 2024","rating":5,"content":"Réparation calculateur évitée grâce à leur expertise en électronique. 3 fois moins cher que chez le concessionnaire. Très professionnel."}]'
 ),
 
--- 3. Mécanique & Électronique
-('00000000-0000-0000-0000-000000000303',
- '00000000-0000-0000-0000-000000000001',
- 'mecanique', 2, 'Mécanique & Électronique', 'cpu',
- 'Spécialiste véhicules japonais. Réparation moteur, embrayage, suspension. Diagnostic électronique — devis avant intervention.',
- 'À la fois généraliste et expert, le Garage Mendonca intervient sur l''entretien courant comme sur les réparations les plus techniques. Spécialistes des véhicules japonais et des boîtes automatiques, nos mécaniciens assurent le meilleur service avec devis systématique avant travaux.',
- ARRAY[
-   'Réparation moteur, embrayage & boîte de vitesses',
-   'Suspensions, direction et amortisseurs',
-   'Réparation pièces électroniques automobiles',
-   'Spécialiste japonaises — boîte automatique',
-   'Mise au point moteur',
-   'Diagnostic toutes marques',
-   'Devis pièce & main-d''œuvre avant intervention',
-   'Véhicule de prêt disponible'
- ],
- true
-),
-
--- 4. Carrosserie & Peinture
-('00000000-0000-0000-0000-000000000304',
- '00000000-0000-0000-0000-000000000001',
- 'carrosserie', 3, 'Carrosserie & Peinture', 'paintbrush',
- 'Nouvelle cabine de peinture. Tôlerie, collision, pare-brise toutes marques. Dossier assurance pris en charge.',
- 'Le Garage Mendonca a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.',
- ARRAY[
-   'Tôlerie, peinture, réparation plastiques',
-   'Pare-brise & lunette arrière',
-   'Rénovation optiques et phares',
-   'Prise en charge véhicule grêlé',
-   'Dossier assurance & expertise sinistre',
-   'Véhicule de courtoisie disponible',
-   'Nettoyage intérieur & extérieur inclus'
- ],
- true
-),
-
--- 5. Vente de véhicules
-('00000000-0000-0000-0000-000000000305',
- '00000000-0000-0000-0000-000000000001',
- 'vente-vehicules', 4, 'Vente de Véhicules', 'car',
- 'Véhicules d''occasion soigneusement sélectionnés, révisés et garantis 6 à 12 mois. Financement et reprise.',
- 'Notre sélection de véhicules d''occasion est inspectée en 160 points, révisée par nos mécaniciens et garantie 6 à 12 mois kilométrage illimité. Spécialistes des véhicules japonais à boîte automatique. Financement sur mesure et reprise de votre véhicule.',
- ARRAY[
-   'Contrôle 160 points systématique',
-   'Révision complète avant mise en vente',
-   'Garantie 6 à 12 mois — kilométrage illimité',
-   'Spécialité : japonaises boîte automatique',
-   'Financement sur mesure (LOA, crédit)',
-   'Reprise & estimation gratuite',
-   '250–500 km parcourus avant vente'
- ],
- true
+-- ── 2.3 Carrosserie, Vitrage & Services ──────────────────────────
+(
+  '00000000-0000-0000-0000-000000000303',
+  '00000000-0000-0000-0000-000000000001',
+  'carrosserie', 3,
+  'Carrosserie, Vitrage & Services',
+  'paintbrush',
+  'Nouvelle cabine de peinture. Tôlerie, collision, pare-brise toutes marques. Véhicule de courtoisie inclus.',
+  'Le Garage Mendonca a investi dans une toute nouvelle cabine de peinture pour des finitions irréprochables. Spécialisé dans les petits travaux de tôlerie et la simple collision, toutes marques. Remplacement de pare-brise et lunette arrière pour particuliers et utilitaires. Véhicule de courtoisie disponible, dossier assurance pris en charge intégralement.',
+  ARRAY[
+    'Tôlerie, peinture, réparation plastiques — cabine neuve',
+    'Pare-brise & lunette arrière (particuliers et utilitaires)',
+    'Rénovation optiques et phares',
+    'Prise en charge véhicule grêlé',
+    'Dossier assurance & expertise sinistre',
+    'Véhicule de courtoisie (gratuit ou 16 € HT/j)',
+    'Location de véhicules (déménagements, déplacements pro)',
+    'Nettoyage intérieur & extérieur inclus après carrosserie'
+  ],
+  true, true,
+  '[{"order":1,"title":"Évaluation du sinistre","description":"Inspection visuelle et photos du dommage, prise en charge du dossier assurance si besoin."},{"order":2,"title":"Expertise & chiffrage","description":"Devis détaillé transmis à votre assurance ou directement pour les petites réparations."},{"order":3,"title":"Prise en charge","description":"Remise du véhicule de courtoisie, début des travaux en cabine de peinture."},{"order":4,"title":"Carrosserie & peinture","description":"Tôlerie, redressage, peinture en cabine climatisée — finition irréprochable."},{"order":5,"title":"Restitution","description":"Nettoyage intérieur et extérieur complet, restitution du véhicule comme neuf."}]',
+  '[{"label":"Petite bosse / éraflure","price":"Sur devis","note":"Dès 90 € selon dommage"},{"label":"Pare-brise","price":"Sur devis","note":"Prise en charge assurance possible"},{"label":"Lunette arrière","price":"Sur devis"},{"label":"Véhicule de courtoisie","price":"Gratuit ou 16 € HT/j","note":"Selon durée"},{"label":"Location utilitaire","price":"Sur devis","note":"Déménagement, déplacements pro"},{"label":"Nettoyage après carrosserie","price":"Inclus"}]',
+  '[{"question":"Prenez-vous en charge le dossier assurance ?","answer":"Oui, intégralement. Nous gérons les démarches avec votre assurance, de l''expertise au règlement, sans que vous ayez à vous en occuper."},{"question":"Ma voiture est grêlée, pouvez-vous la réparer ?","answer":"Oui, c''est une spécialité de notre atelier. Nous traitons les véhicules grêlés en débosselage sans peinture (PDR) ou en peinture complète selon l''étendue des dommages."},{"question":"Intervenez-vous sur les pare-brise de tous les véhicules ?","answer":"Oui, pare-brise et lunettes arrière toutes marques, particuliers et utilitaires. Nous pouvons prendre en charge votre assurance pare-brise si vous en disposez."},{"question":"Faut-il prendre rendez-vous pour un devis carrosserie ?","answer":"Non, vous pouvez vous présenter directement. Nous évaluons le dommage sur place et vous remettons un devis immédiatement ou sous 24h pour les cas complexes."}]',
+  '[{"author":"Nathalie C.","location":"Drémil-Lafage","date":"mars 2025","rating":5,"content":"Pare-brise remplacé en 2h, dossier assurance géré par le garage. Rien à faire de mon côté, impeccable."},{"author":"Julien P.","location":"Quint-Fonsegrives","date":"janvier 2025","rating":5,"content":"Carrosserie avant refaite après un choc. Peinture parfaite, on ne voit plus rien. Véhicule rendu propre à l''intérieur aussi."},{"author":"Marie-Hélène T.","location":"Toulouse","date":"novembre 2024","rating":4,"content":"Très bien pour les petites bosses. Devis clair, délai respecté. Véhicule de prêt fourni sans supplément."}]'
 )
 
-ON CONFLICT (garage_id, slug) DO NOTHING;
+ON CONFLICT (garage_id, slug) DO UPDATE SET
+  sort_order        = EXCLUDED.sort_order,
+  title             = EXCLUDED.title,
+  icon              = EXCLUDED.icon,
+  short_description = EXCLUDED.short_description,
+  long_description  = EXCLUDED.long_description,
+  features          = EXCLUDED.features,
+  is_active         = EXCLUDED.is_active,
+  show_on_homepage  = EXCLUDED.show_on_homepage,
+  steps             = EXCLUDED.steps,
+  pricing           = EXCLUDED.pricing,
+  faq               = EXCLUDED.faq,
+  testimonials      = EXCLUDED.testimonials;
 
--- ── Bannières ─────────────────────────────────────────────────────
 
-INSERT INTO banners (
-  id, garage_id, is_active, message, sub_message,
-  cta_label, cta_url, bg_color, display_pages, is_dismissible,
-  scheduled_start, scheduled_end
+-- ── 3. TESTIMONIALS (texte exact de Testimonials.tsx) ────────────
+INSERT INTO testimonials (
+  id, garage_id, author, initials, location, rating, date_label, comment, color, sort_order, is_active
 ) VALUES
-
--- Bannière 1 : active (offre printemps)
-('00000000-0000-0000-0000-000000000401',
- '00000000-0000-0000-0000-000000000001',
- true,
- 'Vidange boîte automatique — Offre Printemps 2025',
- 'Révision complète + vidange boîte automatique à tarif préférentiel. Sur rendez-vous uniquement.',
- 'Prendre rendez-vous',
- '/contact',
- '#991B1B',
- 'all',
- true,
- NULL, NULL
+(
+  '00000000-0000-0000-0000-000000000401',
+  '00000000-0000-0000-0000-000000000001',
+  'Patrick L.', 'PL', 'Toulouse', 5, 'Juillet 2024',
+  'Après l''allumage de 3 voyants sur mon BMW X5, le diagnostic BMW préconisait une boîte de transfert à 2 000 € HT. M. Mendonca a trouvé un kit réparation servomoteur à 103 € seulement, en se battant pour obtenir la pièce au détail. Depuis, le diagnostic est vierge.',
+  'bg-blue-600', 0, true
 ),
-
--- Bannière 2 : inactive (été, planifiée pour plus tard)
-('00000000-0000-0000-0000-000000000402',
- '00000000-0000-0000-0000-000000000001',
- false,
- 'Contrôle technique offert — Été 2025',
- 'Pour tout achat d''un véhicule du stock, contrôle technique remboursé. Offre du 1er juillet au 31 août.',
- 'Voir nos véhicules',
- '/vehicules',
- '#0f172a',
- 'home_only',
- true,
- '2025-07-01 00:00:00+00', '2025-08-31 23:59:59+00'
+(
+  '00000000-0000-0000-0000-000000000402',
+  '00000000-0000-0000-0000-000000000001',
+  'Isabelle M.', 'IM', 'Drémil-Lafage', 5, 'Novembre 2024',
+  'M. Mendonca est très consciencieux. Il est intervenu sur mon véhicule et a réalisé plusieurs réparations consécutives. Il se donne la peine de tout vous expliquer, de manière claire et transparente. Je recommande sans hésiter.',
+  'bg-emerald-600', 1, true
 ),
-
--- Bannière 3 : inactive (information générale)
-('00000000-0000-0000-0000-000000000403',
- '00000000-0000-0000-0000-000000000001',
- false,
- 'Fermeture annuelle du 11 au 25 août 2025',
- 'Le garage sera fermé du 11 au 25 août. Pour toute urgence, contactez-nous par email.',
- 'Nous contacter',
- '/contact',
- '#1e3a5f',
- 'all',
- false,
- '2025-08-01 00:00:00+00', '2025-08-25 23:59:59+00'
+(
+  '00000000-0000-0000-0000-000000000403',
+  '00000000-0000-0000-0000-000000000001',
+  'Laurent B.', 'LB', 'Quint-Fonsegrives', 5, 'Septembre 2024',
+  'Véhicule de courtoisie mis à disposition pendant toute la réparation. Carrosserie refaite avec la cabine de peinture neuve, résultat impeccable. Franchise offerte et dossier assurance pris en charge. Service 5 étoiles.',
+  'bg-violet-600', 2, true
 )
+ON CONFLICT (id) DO UPDATE SET
+  author     = EXCLUDED.author,
+  initials   = EXCLUDED.initials,
+  location   = EXCLUDED.location,
+  rating     = EXCLUDED.rating,
+  date_label = EXCLUDED.date_label,
+  comment    = EXCLUDED.comment,
+  color      = EXCLUDED.color,
+  sort_order = EXCLUDED.sort_order,
+  is_active  = EXCLUDED.is_active;
 
-ON CONFLICT (id) DO NOTHING;
 
--- ── Messages de contact ───────────────────────────────────────────
-INSERT INTO messages (id, garage_id, vehicle_id, name, email, phone, subject, message, status, read_at)
-VALUES
-
-('00000000-0000-0000-0000-000000000501',
- '00000000-0000-0000-0000-000000000001',
- '00000000-0000-0000-0000-000000000201',
- 'Jean-Pierre Durand', 'jp.durand@email.fr', '06 12 34 56 78',
- 'Renseignement véhicule',
- 'Bonjour, je suis intéressé par la Toyota Yaris Hybride 2021. Est-elle encore disponible ? Peut-on organiser un essai cette semaine ? Merci.',
- 'new', NULL
+-- ── 4. GARAGE GALLERY (photos de GalleryAtelier.tsx) ─────────────
+INSERT INTO garage_gallery (
+  id, garage_id, url, alt, caption, span, sort_order, is_active
+) VALUES
+(
+  '00000000-0000-0000-0000-000000000501',
+  '00000000-0000-0000-0000-000000000001',
+  'https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=800&q=80',
+  'Mécanicien au travail sur un moteur',
+  'Atelier mécanique',
+  'lg:col-span-2 lg:row-span-2',
+  0, true
 ),
-
-('00000000-0000-0000-0000-000000000502',
- '00000000-0000-0000-0000-000000000001',
- NULL,
- 'Sophie Martin', 'sophie.martin@gmail.com', NULL,
- 'Demande de devis réparation',
- 'Bonjour, j''aurais besoin d''un devis pour la vidange de la boîte automatique de ma Honda Jazz 2019. Quels sont vos tarifs ?',
- 'new', NULL
+(
+  '00000000-0000-0000-0000-000000000502',
+  '00000000-0000-0000-0000-000000000001',
+  'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&q=80',
+  'Véhicule sur pont élévateur',
+  'Pont élévateur',
+  '',
+  1, true
 ),
-
-('00000000-0000-0000-0000-000000000503',
- '00000000-0000-0000-0000-000000000001',
- NULL,
- 'Marc Leblanc', 'marc.leblanc@outlook.com', '07 98 76 54 32',
- 'Prise de rendez-vous',
- 'Je souhaite prendre rendez-vous pour la révision de mon véhicule la semaine prochaine. Avez-vous des disponibilités mardi ou mercredi matin ?',
- 'read', now() - interval '1 day'
+(
+  '00000000-0000-0000-0000-000000000503',
+  '00000000-0000-0000-0000-000000000001',
+  'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80',
+  'Diagnostic électronique automobile',
+  'Diagnostic électronique',
+  '',
+  2, true
 ),
-
-('00000000-0000-0000-0000-000000000504',
- '00000000-0000-0000-0000-000000000001',
- '00000000-0000-0000-0000-000000000203',
- 'Isabelle Petit', 'i.petit@yahoo.fr', '06 55 44 33 22',
- 'Renseignement véhicule',
- 'Bonjour, j''aimerais en savoir plus sur le Lexus IS 300h. Peut-on organiser un essai ? Est-ce que la garantie est transférable ? Merci d''avance.',
- 'read', now() - interval '3 days'
+(
+  '00000000-0000-0000-0000-000000000504',
+  '00000000-0000-0000-0000-000000000001',
+  'https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?w=800&q=80',
+  'Outils de mécanique professionnels',
+  'Outillage professionnel',
+  '',
+  3, true
 ),
-
-('00000000-0000-0000-0000-000000000505',
- '00000000-0000-0000-0000-000000000001',
- NULL,
- 'Thomas Nguyen', 'thomas.n@protonmail.com', NULL,
- 'Demande d''information',
- 'Bonjour, est-ce que vous acceptez la reprise de mon ancien véhicule lors de l''achat d''une voiture chez vous ? Si oui, comment ça se passe et avez-vous un formulaire d''estimation en ligne ?',
- 'new', NULL
+(
+  '00000000-0000-0000-0000-000000000505',
+  '00000000-0000-0000-0000-000000000001',
+  'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&q=80',
+  'Atelier automobile équipé',
+  'Espace de travail',
+  '',
+  4, true
 )
+ON CONFLICT (id) DO UPDATE SET
+  url        = EXCLUDED.url,
+  alt        = EXCLUDED.alt,
+  caption    = EXCLUDED.caption,
+  span       = EXCLUDED.span,
+  sort_order = EXCLUDED.sort_order,
+  is_active  = EXCLUDED.is_active;
 
-ON CONFLICT (id) DO NOTHING;
+
+-- ── 5. VEHICLES ───────────────────────────────────────────────────
+
+-- ── 5.1 Suzuki Swift 2018 (featured #1) ──────────────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, published_at,
+  featured, featured_order, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000201',
+  '00000000-0000-0000-0000-000000000001',
+  'Suzuki', 'Swift', 2018, 68500, 'Essence', 'Automatique',
+  110, 11200, 'Speedy Blue (ZWG)', 5, '2',
+  'published', '2026-03-20T00:00:00Z',
+  true, 1,
+  'suzuki-swift-automatique-2018',
+  'Suzuki Swift Comfort+ 110ch Automatique 2018 — 68 500 km — 11 200 € — Garage Mendonca Drémil-Lafage (31)',
+  'Suzuki Swift 2018 avec 68 500 km. Finition Comfort+ et couleur Speedy Blue (ZWG). Moteur 110 ch (6cv) avec boîte automatique.
+
+Garantie : 6 mois complète couvrant l''ensemble des composants mécaniques et électroniques.
+
+Mécanique : Carnet d''entretien tamponné SUZUKI
+- 16/08/2019 : 14 631 km
+- 24/08/2020 : 25 037 km
+- 27/09/2021 : 31 366 km
+- 19/10/2022 : 38 602 km
+- 21/11/2023 : 48 478 km
+- Entretien réalisé pour la vente à 68 250 km
+
+Carrosserie : Très bon état général. Photos supplémentaires et vidéo en cours de préparation.
+
+Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeunes permis en boîte automatique.',
+  '{"Finition":"Comfort+","Motorisation":"1.0i 110 ch BoosterJet","Provenance":"Francaise","Carnet d''entretien":"À jour","Contrôle technique":"À jour","Garantie":"6 mois complète"}',
+  '{"abs":true,"esp":true,"airbags":true,"airbags_lateraux":true,"aide_freinage_urgence":true,"isofix":true,"regulateur_adaptatif":true,"regulateur_vitesse":true,"freinage_automatique":true,"alerte_franchissement_ligne":true,"feux_automatiques":true,"camera_recul":true,"jantes_alliage":true,"taille_jantes":16,"vitres_surteintees":true,"feux_led":true,"retroviseurs_electriques":true,"retroviseurs_degivrants":true,"climatisation_automatique":true,"sieges_chauffants":true,"volant_cuir":true,"volant_reglable":true,"demarrage_sans_cle":true,"ouverture_sans_cle":true,"vitres_electriques_avant":true,"vitres_electriques_arriere":true,"ecran_tactile":true,"bluetooth":true,"usb":true,"prise_12v":true,"boite_automatique":true,"start_stop":true}',
+  ARRAY[
+    'https://www.garagemendonca.com/public/img/big/20260313134541Copierjpg_69b7b050aaa46.jpg',
+    'https://www.garagemendonca.com/public/img/big/20260313135600Copierjpg_69b7b0500daac.jpg',
+    'https://www.garagemendonca.com/public/img/big/20260313134700Copierjpg_69b7b05054e68.jpg',
+    'https://www.garagemendonca.com/public/img/big/20260313134736Copierjpg_69b7b05039a17.jpg',
+    'https://www.garagemendonca.com/public/img/big/20260313135309Copierjpg_69b7b05080440.jpg',
+    'https://www.garagemendonca.com/public/img/big/20260313134926Copierjpg_69b7b04fe5e1c.jpg',
+    'https://www.garagemendonca.com/public/img/big/20260313134443Copierjpg_69b7b04fc7a77.jpg',
+    'https://www.garagemendonca.com/public/img/big/20260313135536Copierjpg_69b7b050d5569.jpg'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  published_at     = EXCLUDED.published_at,
+  featured         = EXCLUDED.featured,
+  featured_order   = EXCLUDED.featured_order,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
+
+-- ── 5.2 Toyota AYGO 2020 (featured #2) ───────────────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, published_at,
+  featured, featured_order, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000202',
+  '00000000-0000-0000-0000-000000000001',
+  'Toyota', 'AYGO', 2020, 32000, 'Essence', 'Automatique',
+  68, 9900, 'Blanc', 5, '2',
+  'published', '2025-11-30T00:00:00Z',
+  true, 2,
+  'toyota-aygo-automatique-2020',
+  'Toyota AYGO X-Play 68ch Automatique 2020 — 32 000 km — 9 900 € — Garage Mendonca Drémil-Lafage (31)',
+  'Toyota AYGO boîte automatique, Crit''Air 2. Idéale en ville, très économique. Vérifiée en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois kilométrages illimités. Révision boîte automatique effectuée.',
+  '{"Finition":"X-Play","Motorisation":"1.0 VVT-i 68 ch","Provenance":"Francaise","Carnet d''entretien":"À jour","Contrôle technique":"À jour","Garantie":"6 à 12 mois km illimités","Nb propriétaires":"1"}',
+  '{"abs":true,"esp":true,"airbags":true,"airbags_lateraux":true,"isofix":true,"climatisation":true,"vitres_electriques_avant":true,"fermeture_centralisee":true,"sieges_rabattables":true,"bluetooth":true,"usb":true,"boite_automatique":true,"start_stop":true}',
+  ARRAY[
+    'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&q=80',
+    'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&q=80'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  published_at     = EXCLUDED.published_at,
+  featured         = EXCLUDED.featured,
+  featured_order   = EXCLUDED.featured_order,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
+
+-- ── 5.3 Nissan Micra 2019 (featured #3) ──────────────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, published_at,
+  featured, featured_order, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000203',
+  '00000000-0000-0000-0000-000000000001',
+  'Nissan', 'Micra', 2019, 48000, 'Essence', 'Automatique',
+  88, 10500, 'Gris Métallisé', 5, '2',
+  'published', '2025-12-15T00:00:00Z',
+  true, 3,
+  'nissan-micra-automatique-2019',
+  'Nissan Micra Acenta 88ch Automatique 2019 — 48 000 km — 10 500 € — Garage Mendonca Drémil-Lafage (31)',
+  'Nissan Micra 1.4 88 ch Acenta, boîte automatique, Crit''Air 2. Véhicule francais, bien entretenu, carnet à jour. Vérification en 160 points, 250 km parcourus avant mise en vente. Garantie 6 à 12 mois km illimités. Révision boîte automatique incluse.',
+  '{"Finition":"Acenta","Motorisation":"1.4 88 ch","Provenance":"Francaise","Carnet d''entretien":"À jour","Contrôle technique":"À jour","Garantie":"6 à 12 mois km illimités","Nb propriétaires":"1"}',
+  '{"abs":true,"esp":true,"airbags":true,"airbags_lateraux":true,"detection_pression_pneus":true,"isofix":true,"regulateur_vitesse":true,"limiteur_vitesse":true,"camera_recul":true,"radar_arriere":true,"jantes_alliage":true,"taille_jantes":16,"feux_led":true,"retroviseurs_electriques":true,"climatisation_automatique":true,"vitres_electriques_avant":true,"vitres_electriques_arriere":true,"fermeture_centralisee":true,"commande_au_volant":true,"sieges_rabattables":true,"ecran_tactile":true,"bluetooth":true,"usb":true,"boite_automatique":true,"start_stop":true}',
+  ARRAY[
+    'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800&q=80',
+    'https://images.unsplash.com/photo-1502161254066-6c74afbf07aa?w=800&q=80'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  published_at     = EXCLUDED.published_at,
+  featured         = EXCLUDED.featured,
+  featured_order   = EXCLUDED.featured_order,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
+
+-- ── 5.4 Nissan Pixo 2017 (featured #4) ───────────────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, published_at,
+  featured, featured_order, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000204',
+  '00000000-0000-0000-0000-000000000001',
+  'Nissan', 'Pixo', 2017, 65000, 'Essence', 'Automatique',
+  68, 7900, 'Argent', 5, '2',
+  'published', '2026-02-05T00:00:00Z',
+  true, 4,
+  'nissan-pixo-automatique-2017',
+  'Nissan Pixo Acenta 68ch Automatique 2017 — 65 000 km — 7 900 € — Garage Mendonca Drémil-Lafage (31)',
+  'Nissan Pixo 1.0i 68 ch Acenta, boîte automatique, 1ère main. Petite citadine très maniable, faible consommation. Entretien complet réalisé par notre atelier. Garantie 6 à 12 mois km illimités, vérification 160 points.',
+  '{"Finition":"Acenta","Motorisation":"1.0i 68 ch","Provenance":"Francaise","Nb propriétaires":"1","Carnet d''entretien":"À jour","Contrôle technique":"À jour","Garantie":"6 à 12 mois km illimités"}',
+  '{"abs":true,"esp":true,"airbags":true,"climatisation":true,"vitres_electriques_avant":true,"fermeture_centralisee":true,"sieges_rabattables":true,"boite_automatique":true,"start_stop":true}',
+  ARRAY[
+    'https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=800&q=80',
+    'https://images.unsplash.com/photo-1616422285623-13ff0162193c?w=800&q=80'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  published_at     = EXCLUDED.published_at,
+  featured         = EXCLUDED.featured,
+  featured_order   = EXCLUDED.featured_order,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
+
+-- ── 5.5 Mitsubishi Space Star 2014 (not featured) ─────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, published_at,
+  featured, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000205',
+  '00000000-0000-0000-0000-000000000001',
+  'Mitsubishi', 'Space Star', 2014, 79900, 'Essence', 'Automatique',
+  80, 9990, 'Non précisé', 5, '2',
+  'published', '2026-02-25T00:00:00Z',
+  false,
+  'mitsubishi-space-star-automatique-2014',
+  'Mitsubishi Space Star TOP 80ch Automatique 2014 — 79 900 km — 9 990 € — Garage Mendonca Drémil-Lafage (31)',
+  'Mitsubishi Space Star 1.2i 80 ch TOP / Boîte Automatique & 1ère Main !
+
+Notre enseigne met en vente ce magnifique véhicule qui possède 79 900 kms du 14/10/2014. Il possède la finition TOP. Moteur 80 ch (5cv) associé à une boîte automatique.
+
+Ce véhicule bénéficie d''une garantie de 6 mois complète, couvrant tous les composants mécaniques et électroniques, comme un véhicule neuf.
+
+Carrosserie : Bon état général. Photos supplémentaires et vidéo en cours de préparation.
+
+Autres notes : Véhicule en cours de roulage, idéal pour la ville et jeunes permis en boîte automatique.',
+  '{"Finition":"TOP","Motorisation":"1.2i 80 ch","Provenance":"Non précisé","Carnet d''entretien":"À jour","Contrôle technique":"À jour","Garantie":"6 mois complète"}',
+  '{"jantes_alliage":true,"feux_automatiques":true,"retroviseurs_electriques":true,"vitres_electriques_avant":true,"vitres_electriques_arriere":true,"fermeture_centralisee":true,"ouverture_sans_cle":true,"demarrage_sans_cle":true,"climatisation_automatique":true,"sieges_chauffants":true,"commande_au_volant":true,"sieges_rabattables":true,"essuie_glaces_automatiques":true,"bluetooth":true,"prise_12v":true,"regulateur_vitesse":true,"boite_automatique":true}',
+  ARRAY[
+    'https://www.garagemendonca.com/public/img/big/20251031153752Copierjpg_6904f66ac72c3.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031154515Copierjpg_6904f67d5ad63.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031154945Copierjpg_6904f67db91b5.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031154558Copierjpg_6904f67deabc4.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031153950Copierjpg_6904f67d3a012.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031155012Copierjpg_6904f67d7c715.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031153647Copierjpg_6904f66a8b49d.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031154750Copierjpg_6904f66b3be56.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251031154413Copierjpg_6904f66b07179.jpg'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  published_at     = EXCLUDED.published_at,
+  featured         = EXCLUDED.featured,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
+
+-- ── 5.6 Hyundai i10 2018 (sold) ───────────────────────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, sold_at,
+  featured, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000206',
+  '00000000-0000-0000-0000-000000000001',
+  'Hyundai', 'i10', 2018, 58000, 'Essence', 'Automatique',
+  67, 8900, 'Blanc', 5, '2',
+  'sold', '2026-03-10T00:00:00Z',
+  false,
+  'hyundai-i10-automatique-2018',
+  'Hyundai i10 67ch Automatique 2018 — 58 000 km — 8 900 € — Garage Mendonca Drémil-Lafage (31)',
+  'Hyundai i10 boîte automatique. Légère, économique et facile à garer. Parfaite pour la ville et les trajets courts. Véhicule contrôlé et révisé par notre atelier, prêt à rouler. Garantie 6 à 12 mois km illimités.',
+  '{"Motorisation":"1.0i 67 ch","Provenance":"Francaise","Carnet d''entretien":"À jour","Contrôle technique":"À jour","Garantie":"6 à 12 mois km illimités"}',
+  '{"abs":true,"esp":true,"airbags":true,"airbags_lateraux":true,"isofix":true,"climatisation_automatique":true,"vitres_electriques_avant":true,"fermeture_centralisee":true,"commande_au_volant":true,"sieges_rabattables":true,"bluetooth":true,"usb":true,"boite_automatique":true,"start_stop":true}',
+  ARRAY[
+    'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80',
+    'https://images.unsplash.com/photo-1520031441872-265e4ff70366?w=800&q=80'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  sold_at          = EXCLUDED.sold_at,
+  featured         = EXCLUDED.featured,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
+
+-- ── 5.7 Peugeot 107 2007 (featured #5) ───────────────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, published_at,
+  featured, featured_order, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000207',
+  '00000000-0000-0000-0000-000000000001',
+  'Peugeot', '107', 2007, 76500, 'Essence', 'Automatique',
+  68, 6500, 'Gris Gallium (KTB)', 5, '2',
+  'published', '2026-03-01T00:00:00Z',
+  true, 5,
+  'peugeot-107-automatique-2007',
+  'Peugeot 107 Trendy 68ch Automatique 2007 — 76 500 km — 6 500 € — Garage Mendonca Drémil-Lafage (31)',
+  'Peugeot 107 1.0i 68 ch finition Trendy, boîte automatique à 5 rapports, mise en circulation le 07/06/2007 avec 76 500 km. Couleur Gris Gallium (KTB).
+
+Garantie : 6 mois complète couvrant l''ensemble des composants mécaniques et électroniques.
+
+Mécanique : Entretien réalisé pour la vente
+- Révision complète (huile, filtres, bougies)
+- Révision de la boîte automatique
+- Remplacement de 2 pneus avant
+- Disques et plaquettes de frein avant
+
+Carrosserie : Bon état général. Photos supplémentaires et vidéo disponibles prochainement.
+
+Autres notes : Véhicule en cours de roulage. Idéal pour la ville et pour jeune permis en boîte automatique.',
+  '{"finition":"Trendy","motorisation":"1.0i 68 ch (4cv)","provenance":"Française","carnetEntretien":"Entretien à jour","controleTechnique":"À jour","garantie":"6 mois complète"}',
+  '{"abs":true,"airbags":true,"vitres_electriques_avant":true,"fermeture_centralisee":true,"sieges_rabattables":true,"prise_12v":true,"boite_automatique":true}',
+  ARRAY[
+    'https://www.garagemendonca.com/public/img/big/20251119144533Copierjpg_691ee9050666b.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251119144426Copierjpg_691ee904ca3a1.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251119144630Copierjpg_691ee90535b65.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251119144718Copierjpg_691ee9047e6b4.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251119144802Copierjpg_691ee905772c2.jpg',
+    'https://www.garagemendonca.com/public/img/big/20251119144650Copierjpg_691ee904a2301.jpg'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  published_at     = EXCLUDED.published_at,
+  featured         = EXCLUDED.featured,
+  featured_order   = EXCLUDED.featured_order,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
+
+-- ── 5.8 Citroën C1 2020 (not featured, published) ─────────────────
+INSERT INTO vehicles (
+  id, garage_id, brand, model, year, mileage, fuel, transmission,
+  power, price, color, doors, crit_air, status, published_at,
+  featured, slug, meta_description,
+  description, features, options, images
+) VALUES (
+  '00000000-0000-0000-0000-000000000208',
+  '00000000-0000-0000-0000-000000000001',
+  'Citroën', 'C1', 2020, 22000, 'Hybride', 'Automatique',
+  72, 10900, 'Gris', 5, '2',
+  'published', '2026-03-18T00:00:00Z',
+  false,
+  'citroen-c1-automatique-2020',
+  'Citroën C1 72ch Automatique 2020 — 22 000 km — 10 900 € — Garage Mendonca Drémil-Lafage (31)',
+  'Citroën C1 boîte automatique. En cours de préparation, disponible prochainement.',
+  '{"Motorisation":"1.2i 72 ch","Provenance":"Francaise","Garantie":"6 à 12 mois km illimités"}',
+  '{"abs":true,"esp":true,"airbags":true,"isofix":true,"climatisation":true,"vitres_electriques_avant":true,"fermeture_centralisee":true,"commande_au_volant":true,"bluetooth":true,"usb":true,"boite_automatique":true,"start_stop":true}',
+  ARRAY[
+    'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800&q=80'
+  ]
+) ON CONFLICT (id) DO UPDATE SET
+  brand            = EXCLUDED.brand,
+  model            = EXCLUDED.model,
+  year             = EXCLUDED.year,
+  mileage          = EXCLUDED.mileage,
+  fuel             = EXCLUDED.fuel,
+  transmission     = EXCLUDED.transmission,
+  power            = EXCLUDED.power,
+  price            = EXCLUDED.price,
+  color            = EXCLUDED.color,
+  doors            = EXCLUDED.doors,
+  crit_air         = EXCLUDED.crit_air,
+  status           = EXCLUDED.status,
+  published_at     = EXCLUDED.published_at,
+  featured         = EXCLUDED.featured,
+  slug             = EXCLUDED.slug,
+  meta_description = EXCLUDED.meta_description,
+  description      = EXCLUDED.description,
+  features         = EXCLUDED.features,
+  options          = EXCLUDED.options,
+  images           = EXCLUDED.images;
