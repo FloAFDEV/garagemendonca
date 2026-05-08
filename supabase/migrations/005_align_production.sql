@@ -635,7 +635,7 @@ DROP POLICY IF EXISTS "messages_member_update"  ON messages;
 
 CREATE POLICY "messages_public_insert" ON messages
   FOR INSERT WITH CHECK (
-    email   ~* '^[^@]+@[^@]+\.  [^@]+$'
+    email ~* '^[^@]+@[^@]+\.[^@]+$'
     AND length(message) > 10
   );
 
