@@ -4,7 +4,6 @@ import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
 import { vehicleRepository } from "@/lib/repositories/vehicleRepository";
-import { DEMO_MODE } from "@/lib/supabase/readClient";
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
@@ -28,7 +27,7 @@ export default async function FeaturedVehicles() {
 
 	const totalCount = await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []).then((vs) => vs.length);
 
-	if (displayed.length === 0 && !DEMO_MODE) {
+	if (displayed.length === 0) {
 		return null;
 	}
 

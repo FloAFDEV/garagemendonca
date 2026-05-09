@@ -6,19 +6,8 @@
  * Ni l'un ni l'autre → erreur explicite.
  */
 
-import type { Vehicle, VehicleCreateInput, VehicleUpdateInput } from "@/types";
-import {
-  getAllVehicles,
-  getAllVehiclesAdmin,
-  getVehicleById,
-  getFeaturedVehicles,
-  getRelatedVehicles,
-  getVehicleStaticParams,
-  createVehicle,
-  updateVehicle,
-  deleteVehicle,
-} from "@/lib/vehicles";
-import { DEMO_MODE, SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
+import type { Vehicle } from "@/types";
+import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapVehicle } from "@/lib/supabase/mappers";
 
 // ─── Lectures Supabase ───────────────────────────────────────────────────────
@@ -65,38 +54,27 @@ async function getRelatedSupabase(excludeId: string, limit: number, garageId?: s
 export const vehicleRepository = {
   getAll: async (garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    if (DEMO_MODE)        return getAllVehicles(garageId);
-    throw new Error("[vehicleRepository] Aucune source de données : configurer Supabase ou NEXT_PUBLIC_DEMO_MODE=true");
+    throw new Error("[vehicleRepository] Aucune source de données : configurer Supabase");
   },
 
   getAllAdmin: async (garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    if (DEMO_MODE)        return getAllVehiclesAdmin(garageId);
     throw new Error("[vehicleRepository] Aucune source de données");
   },
 
   getById: async (id: string): Promise<Vehicle | null> => {
     if (SUPABASE_ENABLED) return getByIdSupabase(id);
-    if (DEMO_MODE)        return getVehicleById(id);
     throw new Error("[vehicleRepository] Aucune source de données");
   },
 
   getFeatured: async (limit = 3, garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getFeaturedSupabase(limit, garageId);
-    if (DEMO_MODE)        return getFeaturedVehicles(limit, garageId);
     throw new Error("[vehicleRepository] Aucune source de données");
   },
 
   getRelated: async (excludeId: string, limit = 3, garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getRelatedSupabase(excludeId, limit, garageId);
-    if (DEMO_MODE)        return getRelatedVehicles(excludeId, limit, garageId);
     throw new Error("[vehicleRepository] Aucune source de données");
   },
 
-  getStaticParams: (): Promise<{ id: string }[]> => getVehicleStaticParams(),
-
-  // ── Écritures — in-memory (admin Phase 2A) ──
-  create: (data: VehicleCreateInput & { id?: string }): Promise<Vehicle> => createVehicle(data),
-  update: (id: string, data: VehicleUpdateInput): Promise<Vehicle> => updateVehicle(id, data),
-  delete: (id: string): Promise<void> => deleteVehicle(id),
 };

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, use, useRef, useCallback } from "react";
+import { useState, use, useEffect, useRef, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
-import { useDemoStore } from "@/lib/demoStore";
+import { getAdminVehicleById, saveVehicle } from "@/app/admin/vehicules/actions";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
 import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
@@ -186,66 +186,84 @@ export default function EditVehiclePage({
 	const t = useAdminTokens();
 	const { id } = use(params);
 	const router = useRouter();
-	const { getVehicle, updateVehicle } = useDemoStore();
 
-	const vehicle = getVehicle(id);
+	const [loadState, setLoadState] = useState<"loading" | "ready" | "notfound">("loading");
+	const [vehicleLabel, setVehicleLabel] = useState("");
+	const [extraFeatures, setExtraFeatures] = useState<Record<string, unknown>>({});
 
-	const [form, setForm] = useState<VehicleForm>(() => {
-		if (!vehicle)
-			return {
-				brand: "",
-				model: "",
-				finition: "",
-				year: "",
-				mileage: "",
-				fuel: "Essence",
-				transmission: "Manuelle",
-				power: "",
-				critAir: "",
-				price: "",
-				color: "",
-				doors: "5",
-				description: "",
-				status: "draft",
-				published_at: "",
-				featured: false,
-				garantie: "",
-				options: {},
-			};
-		return {
-			brand: vehicle.brand,
-			model: vehicle.model,
-			finition: (Array.isArray(vehicle.features?.["Finition"]) ? vehicle.features!["Finition"][0] : vehicle.features?.["Finition"]) ?? "",
-			year: vehicle.year.toString(),
-			mileage: vehicle.mileage.toString(),
-			fuel: vehicle.fuel,
-			transmission: vehicle.transmission,
-			power: vehicle.power.toString(),
-			critAir: vehicle.critAir ?? "",
-			price: vehicle.price.toString(),
-			color: vehicle.color,
-			doors: vehicle.doors.toString(),
-			description: vehicle.description,
-			status: vehicle.status ?? "draft",
-			published_at: vehicle.published_at ?? "",
-			featured: vehicle.featured ?? false,
-			garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? vehicle.features!["Garantie"][0] : vehicle.features?.["Garantie"]) ?? "",
-			options: vehicle.options ?? {},
-		};
+	const [form, setForm] = useState<VehicleForm>({
+		brand: "",
+		model: "",
+		finition: "",
+		year: "",
+		mileage: "",
+		fuel: "Essence",
+		transmission: "Manuelle",
+		power: "",
+		critAir: "",
+		price: "",
+		color: "",
+		doors: "5",
+		description: "",
+		status: "draft",
+		published_at: "",
+		featured: false,
+		garantie: "",
+		options: {},
 	});
 
-	const [images, setImages] = useState<string[]>(vehicle?.images ?? []);
+	const [images, setImages] = useState<string[]>([]);
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
 		"idle",
 	);
 
+	useEffect(() => {
+		getAdminVehicleById(id).then((vehicle) => {
+			if (!vehicle) { setLoadState("notfound"); return; }
+			setVehicleLabel(`${vehicle.brand} ${vehicle.model} · ${vehicle.year} · #${vehicle.id}`);
+			setExtraFeatures(vehicle.features ?? {});
+			setForm({
+				brand: vehicle.brand,
+				model: vehicle.model,
+				finition: (Array.isArray(vehicle.features?.["Finition"]) ? String(vehicle.features!["Finition"][0]) : String(vehicle.features?.["Finition"] ?? "")) || "",
+				year: vehicle.year.toString(),
+				mileage: vehicle.mileage.toString(),
+				fuel: vehicle.fuel,
+				transmission: vehicle.transmission,
+				power: vehicle.power.toString(),
+				critAir: vehicle.critAir ?? "",
+				price: vehicle.price.toString(),
+				color: vehicle.color,
+				doors: vehicle.doors.toString(),
+				description: vehicle.description,
+				status: vehicle.status ?? "draft",
+				published_at: vehicle.published_at ?? "",
+				featured: vehicle.featured ?? false,
+				garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? String(vehicle.features!["Garantie"][0]) : String(vehicle.features?.["Garantie"] ?? "")) || "",
+				options: vehicle.options ?? {},
+			});
+			setImages(vehicle.images ?? []);
+			setLoadState("ready");
+		}).catch(() => setLoadState("notfound"));
+	}, [id]);
+
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const cameraInputRef = useRef<HTMLInputElement>(null);
 
-	// ── Not found ────────────────────────────────────────────────────
+	// ── Guards ───────────────────────────────────────────────────────
 
-	if (!vehicle) {
+	if (loadState === "loading") {
+		return (
+			<AdminLayout>
+				<div className="flex items-center justify-center min-h-[400px]">
+					<Loader2 size={32} className="animate-spin text-brand-400" />
+				</div>
+			</AdminLayout>
+		);
+	}
+
+	if (loadState === "notfound") {
 		return (
 			<AdminLayout>
 				<div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
@@ -328,8 +346,7 @@ export default function EditVehiclePage({
 			return;
 		}
 		setSaveStatus("saving");
-		await new Promise((r) => setTimeout(r, 900));
-		updateVehicle(id, {
+		await saveVehicle(id, {
 			brand: form.brand,
 			model: form.model,
 			year: +form.year,
@@ -341,14 +358,14 @@ export default function EditVehiclePage({
 			color: form.color,
 			doors: +form.doors,
 			description: form.description,
-			images,
+			images: images.filter((u) => u.startsWith("http")),
 			status: form.status as Vehicle["status"],
 			published_at: form.published_at || undefined,
 			featured: form.featured,
 			critAir: form.critAir || undefined,
 			options: form.options,
 			features: {
-				...(vehicle.features ?? {}),
+				...extraFeatures,
 				...(form.finition ? { Finition: form.finition } : {}),
 				...(form.garantie ? { Garantie: form.garantie } : {}),
 			},
@@ -389,8 +406,7 @@ export default function EditVehiclePage({
 							Modifier le véhicule
 						</h2>
 						<p className={`${t.txtMuted} text-sm mt-1 truncate`}>
-							{vehicle.brand} {vehicle.model} · {vehicle.year} · #
-							{vehicle.id}
+							{vehicleLabel}
 						</p>
 					</div>
 					<Link

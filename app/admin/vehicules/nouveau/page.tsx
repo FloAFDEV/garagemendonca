@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
-import { useDemoStore } from "@/lib/demoStore";
+import { createVehicleAction } from "@/app/admin/vehicules/actions";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
 import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
@@ -235,7 +235,6 @@ function Combobox({
 export default function NewVehiclePage() {
 	const t = useAdminTokens();
 	const router = useRouter();
-	const { addVehicle } = useDemoStore();
 
 	const [form, setForm] = useState<VehicleForm>(emptyForm);
 	const [images, setImages] = useState<string[]>([]);
@@ -307,8 +306,7 @@ export default function NewVehiclePage() {
 			return;
 		}
 		setSaveStatus("saving");
-		await new Promise((r) => setTimeout(r, 900));
-		addVehicle({
+		await createVehicleAction({
 			brand: form.brand,
 			model: form.model,
 			year: +form.year,
@@ -322,10 +320,8 @@ export default function NewVehiclePage() {
 			description: form.description,
 			images:
 				images.length > 0
-					? images
-					: [
-							"https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800",
-						],
+					? images.filter((u) => u.startsWith("http"))
+					: ["https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800"],
 			status: form.vehicleStatus as Vehicle["status"],
 			published_at: form.published_at || undefined,
 			featured: form.featured,
