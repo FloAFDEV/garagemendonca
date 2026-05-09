@@ -3,6 +3,10 @@
  *
  * DEMO_MODE=true  → données statiques (lib/data.ts).
  * SUPABASE_ENABLED → Supabase exclusif, aucun fallback silencieux.
+ *
+ * Migration 007 : lecture prioritaire depuis les tables relationnelles
+ * (service_steps, service_pricing, service_faq, testimonials.service_id).
+ * Fallback automatique sur les colonnes JSONB si les tables sont vides.
  */
 
 import type { Service } from "@/types";
@@ -15,28 +19,66 @@ export function mapServiceFromDB(row: any, images: any[] = []): Service {
   return mapService({ ...row, service_images: images });
 }
 
+// ─── Sélecteur commun (tables relationnelles migration 007) ─────────────────
+
+const SERVICE_SELECT = `
+  *,
+  service_images(*),
+  service_steps(sort_order, title, description),
+  service_pricing(sort_order, label, price, note),
+  service_faq(sort_order, question, answer)
+` as const;
+
+// ─── Fetch groupé des témoignages par service (évite N+1) ────────────────────
+
+async function fetchServiceTestimonials(
+  serviceIds: string[],
+): Promise<Record<string, any[]>> {
+  if (!serviceIds.length) return {};
+  const { data } = await getReadClient()
+    .from("testimonials")
+    .select("service_id, author, location, date_label, rating, comment, sort_order")
+    .in("service_id", serviceIds)
+    .eq("is_active", true)
+    .order("sort_order");
+  const map: Record<string, any[]> = {};
+  for (const t of data ?? []) {
+    (map[t.service_id] ??= []).push(t);
+  }
+  return map;
+}
+
 // ─── Lectures Supabase ───────────────────────────────────────────────────────
 
 async function getAllSupabase(garageId: string): Promise<Service[]> {
   const { data, error } = await getReadClient()
     .from("services")
-    .select("*, service_images(*)")
+    .select(SERVICE_SELECT)
     .eq("garage_id", garageId)
     .eq("is_active", true)
     .order("sort_order");
   if (error) throw error;
-  return (data ?? []).map(mapService);
+
+  const rows = data ?? [];
+  const testimonialsMap = await fetchServiceTestimonials(rows.map((r) => r.id));
+
+  return rows.map((row) =>
+    mapService({ ...row, _testimonials: testimonialsMap[row.id] ?? [] }),
+  );
 }
 
 async function getBySlugSupabase(slug: string, garageId: string): Promise<Service | null> {
   const { data, error } = await getReadClient()
     .from("services")
-    .select("*, service_images(*)")
+    .select(SERVICE_SELECT)
     .eq("slug", slug)
     .eq("garage_id", garageId)
     .maybeSingle();
   if (error) throw error;
-  return data ? mapService(data) : null;
+  if (!data) return null;
+
+  const testimonialsMap = await fetchServiceTestimonials([data.id]);
+  return mapService({ ...data, _testimonials: testimonialsMap[data.id] ?? [] });
 }
 
 // ─── Repository public ───────────────────────────────────────────────────────
