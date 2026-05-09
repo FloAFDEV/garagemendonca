@@ -87,16 +87,16 @@ const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 export const serviceRepository = {
   getAll: async (): Promise<Service[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(GARAGE_ID());
-    throw new Error("[serviceRepository] Aucune source de données : configurer Supabase");
+    return [];
   },
 
   getBySlug: async (slug: string): Promise<Service | null> => {
     if (SUPABASE_ENABLED) return getBySlugSupabase(slug, GARAGE_ID());
-    throw new Error("[serviceRepository] Aucune source de données");
+    return null;
   },
 
   getByGarageId: async (garageId: string): Promise<Service[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    throw new Error("[serviceRepository] Aucune source de données");
+    return [];
   },
 };

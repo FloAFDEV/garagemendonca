@@ -54,27 +54,27 @@ async function getRelatedSupabase(excludeId: string, limit: number, garageId?: s
 export const vehicleRepository = {
   getAll: async (garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    throw new Error("[vehicleRepository] Aucune source de données : configurer Supabase");
+    return [];
   },
 
   getAllAdmin: async (garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    throw new Error("[vehicleRepository] Aucune source de données");
+    return [];
   },
 
   getById: async (id: string): Promise<Vehicle | null> => {
     if (SUPABASE_ENABLED) return getByIdSupabase(id);
-    throw new Error("[vehicleRepository] Aucune source de données");
+    return null;
   },
 
   getFeatured: async (limit = 3, garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getFeaturedSupabase(limit, garageId);
-    throw new Error("[vehicleRepository] Aucune source de données");
+    return [];
   },
 
   getRelated: async (excludeId: string, limit = 3, garageId?: string): Promise<Vehicle[]> => {
     if (SUPABASE_ENABLED) return getRelatedSupabase(excludeId, limit, garageId);
-    throw new Error("[vehicleRepository] Aucune source de données");
+    return [];
   },
 
 };

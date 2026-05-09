@@ -21,6 +21,6 @@ export const bannerRepository = {
       if (!garageId) return null;
       return getActiveSupabase(garageId);
     }
-    throw new Error("[bannerRepository] Aucune source de données : configurer Supabase");
+    return null;
   },
 };

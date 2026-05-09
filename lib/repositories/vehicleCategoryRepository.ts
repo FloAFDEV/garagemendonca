@@ -67,7 +67,7 @@ export const vehicleCategoryRepository = {
   /** Catégories actives d'un garage — usage public/filtres. */
   getAll: async (garageId: string): Promise<VehicleCategory[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    throw new Error("[vehicleCategoryRepository] Aucune source de données");
+    return [];
   },
 
   /** Toutes les catégories (actives + inactives) — usage admin dashboard. */
@@ -82,7 +82,7 @@ export const vehicleCategoryRepository = {
     slug: string,
   ): Promise<VehicleCategory | null> => {
     if (SUPABASE_ENABLED) return getBySlugSupabase(garageId, slug);
-    throw new Error("[vehicleCategoryRepository] Aucune source de données");
+    return null;
   },
 
   // ── Écritures — toujours in-memory en Phase 2A ──
