@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS garages (
   lng             numeric(9,6),
   google_maps_url text,
   opening_hours   jsonb       DEFAULT '{}',
-  content         jsonb       NOT NULL DEFAULT '{}',
+  content jsonb NOT NULL DEFAULT '{}'::jsonb,
   seo_title       text,
   seo_description text,
   seo_keywords    text[]      DEFAULT '{}',
@@ -263,7 +263,10 @@ CREATE TABLE IF NOT EXISTS garage_gallery (
 
 -- ── FUNCTION : set_updated_at ─────────────────────────────────────
 CREATE OR REPLACE FUNCTION set_updated_at()
-RETURNS trigger LANGUAGE plpgsql AS $$
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN
   NEW.updated_at = now();
   RETURN NEW;
@@ -319,14 +322,19 @@ CREATE TRIGGER trg_gallery_updated_at
 
 -- ── FUNCTION + TRIGGER : cohérence garage vehicle_images ─────────
 CREATE OR REPLACE FUNCTION check_vehicle_image_garage()
-RETURNS trigger LANGUAGE plpgsql AS $$
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM vehicles v
-    WHERE v.id = NEW.vehicle_id AND v.garage_id = NEW.garage_id
+    WHERE v.id = NEW.vehicle_id
+      AND v.garage_id = NEW.garage_id
   ) THEN
     RAISE EXCEPTION 'vehicle_image: vehicle_id and garage_id mismatch';
   END IF;
+
   RETURN NEW;
 END;
 $$;
