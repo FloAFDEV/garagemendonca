@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, useEffect, use } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,7 @@ import {
   ToggleLeft, ToggleRight, ChevronDown,
 } from "lucide-react";
 import clsx from "clsx";
-import { services as demoServices } from "@/lib/data";
+import { serviceRepository } from "@/lib/repositories";
 import { updateServiceAction } from "../actions";
 import { adminUI } from "@/lib/admin-ui";
 import type {
@@ -59,38 +59,68 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
   const router = useRouter();
   const { slug } = use(params);
 
-  const seed = demoServices.find(s => s.slug === slug);
+  // ── État de chargement ──────────────────────────────────────────────────────
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "notfound">("loading");
 
   // ── État contenu ────────────────────────────────────────────────────────────
-  const [title, setTitle] = useState(seed?.title ?? "");
-  const [shortDesc, setShortDesc] = useState(seed?.short_description ?? "");
-  const [longDesc, setLongDesc] = useState(seed?.long_description ?? "");
-  const [isActive, setIsActive] = useState(seed?.is_active ?? true);
+  const [title, setTitle] = useState("");
+  const [shortDesc, setShortDesc] = useState("");
+  const [longDesc, setLongDesc] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
   // ── Prestations ─────────────────────────────────────────────────────────────
-  const [features, setFeatures] = useState<string[]>(seed?.features ?? []);
+  const [features, setFeatures] = useState<string[]>([]);
   const [featDragIdx, setFeatDragIdx] = useState<number | null>(null);
 
   // ── Étapes ──────────────────────────────────────────────────────────────────
-  const [steps, setSteps] = useState<StepDraft[]>(seed?.steps ?? []);
+  const [steps, setSteps] = useState<StepDraft[]>([]);
 
   // ── Tarifs ──────────────────────────────────────────────────────────────────
-  const [pricing, setPricing] = useState<PricingDraft[]>(seed?.pricing ?? []);
+  const [pricing, setPricing] = useState<PricingDraft[]>([]);
 
   // ── FAQ ─────────────────────────────────────────────────────────────────────
-  const [faq, setFaq] = useState<FAQDraft[]>(seed?.faq ?? []);
+  const [faq, setFaq] = useState<FAQDraft[]>([]);
 
   // ── Témoignages ─────────────────────────────────────────────────────────────
-  const [testimonials, setTestimonials] = useState<TestimonialDraft[]>(seed?.testimonials ?? []);
+  const [testimonials, setTestimonials] = useState<TestimonialDraft[]>([]);
 
   // ── Images ──────────────────────────────────────────────────────────────────
-  const [images, setImages] = useState<ImageDraft[]>(seed?.images ?? []);
+  const [images, setImages] = useState<ImageDraft[]>([]);
 
   // ── Save status ─────────────────────────────────────────────────────────────
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
+  // ── Chargement initial depuis Supabase ──────────────────────────────────────
+  useEffect(() => {
+    serviceRepository.getBySlug(slug).then((svc) => {
+      if (!svc) { setLoadState("notfound"); return; }
+      setTitle(svc.title);
+      setShortDesc(svc.short_description);
+      setLongDesc(svc.long_description);
+      setIsActive(svc.is_active ?? true);
+      setFeatures(svc.features ?? []);
+      setSteps(svc.steps ?? []);
+      setPricing(svc.pricing ?? []);
+      setFaq(svc.faq ?? []);
+      setTestimonials(svc.testimonials ?? []);
+      setImages(svc.images ?? []);
+      setLoadState("ready");
+    }).catch(() => setLoadState("notfound"));
+  }, [slug]);
+
+  // ── Guard : chargement ──────────────────────────────────────────────────────
+  if (loadState === "loading") {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 size={32} className="animate-spin text-brand-400" />
+        </div>
+      </AdminLayout>
+    );
+  }
+
   // ── Guard : service introuvable ─────────────────────────────────────────────
-  if (!seed) {
+  if (loadState === "notfound") {
     return (
       <AdminLayout>
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
@@ -187,7 +217,7 @@ export default function EditServicePage({ params }: { params: Promise<{ slug: st
           </Link>
           <div className="flex-1 min-w-0">
             <h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>Modifier le service</h2>
-            <p className={clsx("text-sm mt-1", t.txtMuted)}>{seed.title}</p>
+            <p className={clsx("text-sm mt-1", t.txtMuted)}>{title}</p>
           </div>
           <Link href={`/services#${slug}`} target="_blank" className={clsx("flex items-center gap-2 text-sm px-3 py-2 rounded-xl transition-colors", t.txtMuted, t.hoverTxt, t.hoverBg, adminUI.focusGhost)}>
             <Eye size={16} /><span className="hidden sm:inline">Prévisualiser</span>

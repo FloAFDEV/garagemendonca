@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
-import { SUPABASE_ENABLED, DEMO_MODE } from "@/lib/supabase/readClient";
-import { vehicles as demoVehicles } from "@/lib/data";
+import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 
 const BASE_URL = "https://www.garagemendonca.com";
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
@@ -13,13 +12,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		const slugs = await vehicleDb.listSlugs(GARAGE_ID).catch(() => []);
 		vehicleEntries = slugs.map(({ slug }) => ({
 			url: `${BASE_URL}/vehicules/${slug}`,
-			lastModified: new Date(),
-			changeFrequency: "weekly",
-			priority: 0.8,
-		}));
-	} else if (DEMO_MODE) {
-		vehicleEntries = demoVehicles.map((v) => ({
-			url: `${BASE_URL}/vehicules/${v.slug ?? v.id}`,
 			lastModified: new Date(),
 			changeFrequency: "weekly",
 			priority: 0.8,
