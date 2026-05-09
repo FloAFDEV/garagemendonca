@@ -30,6 +30,11 @@ export const metadata: Metadata = {
 		type: "website",
 		locale: "fr_FR",
 	},
+	icons: {
+		icon: "/icons/favicon-32.png",
+		shortcut: "/favicon.ico",
+		apple: "/icons/apple-touch-icon.png",
+	},
 };
 
 const jsonLd = {
