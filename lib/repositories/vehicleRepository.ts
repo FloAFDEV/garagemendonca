@@ -14,7 +14,11 @@ import { mapVehicle } from "@/lib/supabase/mappers";
 
 async function getAllSupabase(garageId?: string): Promise<Vehicle[]> {
   const db = getReadClient();
-  let q = db.from("vehicles").select("*").order("created_at", { ascending: false });
+  let q = db
+    .from("vehicles")
+    .select("*")
+    .in("status", ["published", "sold", "scheduled"])
+    .order("created_at", { ascending: false });
   if (garageId) q = q.eq("garage_id", garageId);
   const { data, error } = await q;
   if (error) throw error;
