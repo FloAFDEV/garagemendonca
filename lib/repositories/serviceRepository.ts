@@ -3,11 +3,14 @@
  *
  * DEMO_MODE=true  → données statiques (lib/data.ts).
  * SUPABASE_ENABLED → Supabase exclusif, aucun fallback silencieux.
+ *
+ * Migration 007 : lecture prioritaire depuis les tables relationnelles
+ * (service_steps, service_pricing, service_faq, testimonials.service_id).
+ * Fallback automatique sur les colonnes JSONB si les tables sont vides.
  */
 
 import type { Service } from "@/types";
-import { services as demoServices } from "@/lib/data";
-import { DEMO_MODE, SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
+import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapService } from "@/lib/supabase/mappers";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,28 +18,66 @@ export function mapServiceFromDB(row: any, images: any[] = []): Service {
   return mapService({ ...row, service_images: images });
 }
 
+// ─── Sélecteur commun (tables relationnelles migration 007) ─────────────────
+
+const SERVICE_SELECT = `
+  *,
+  service_images(*),
+  service_steps(sort_order, title, description),
+  service_pricing(sort_order, label, price, note),
+  service_faq(sort_order, question, answer)
+` as const;
+
+// ─── Fetch groupé des témoignages par service (évite N+1) ────────────────────
+
+async function fetchServiceTestimonials(
+  serviceIds: string[],
+): Promise<Record<string, any[]>> {
+  if (!serviceIds.length) return {};
+  const { data } = await getReadClient()
+    .from("testimonials")
+    .select("service_id, author, location, date_label, rating, comment, sort_order")
+    .in("service_id", serviceIds)
+    .eq("is_active", true)
+    .order("sort_order");
+  const map: Record<string, any[]> = {};
+  for (const t of data ?? []) {
+    (map[t.service_id] ??= []).push(t);
+  }
+  return map;
+}
+
 // ─── Lectures Supabase ───────────────────────────────────────────────────────
 
 async function getAllSupabase(garageId: string): Promise<Service[]> {
   const { data, error } = await getReadClient()
     .from("services")
-    .select("*, service_images(*)")
+    .select(SERVICE_SELECT)
     .eq("garage_id", garageId)
     .eq("is_active", true)
     .order("sort_order");
   if (error) throw error;
-  return (data ?? []).map(mapService);
+
+  const rows = data ?? [];
+  const testimonialsMap = await fetchServiceTestimonials(rows.map((r) => r.id));
+
+  return rows.map((row) =>
+    mapService({ ...row, _testimonials: testimonialsMap[row.id] ?? [] }),
+  );
 }
 
 async function getBySlugSupabase(slug: string, garageId: string): Promise<Service | null> {
   const { data, error } = await getReadClient()
     .from("services")
-    .select("*, service_images(*)")
+    .select(SERVICE_SELECT)
     .eq("slug", slug)
     .eq("garage_id", garageId)
     .maybeSingle();
   if (error) throw error;
-  return data ? mapService(data) : null;
+  if (!data) return null;
+
+  const testimonialsMap = await fetchServiceTestimonials([data.id]);
+  return mapService({ ...data, _testimonials: testimonialsMap[data.id] ?? [] });
 }
 
 // ─── Repository public ───────────────────────────────────────────────────────
@@ -46,27 +87,16 @@ const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 export const serviceRepository = {
   getAll: async (): Promise<Service[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(GARAGE_ID());
-    if (DEMO_MODE)        return [...demoServices];
-    throw new Error("[serviceRepository] Aucune source de données : configurer Supabase ou NEXT_PUBLIC_DEMO_MODE=true");
+    return [];
   },
 
   getBySlug: async (slug: string): Promise<Service | null> => {
     if (SUPABASE_ENABLED) return getBySlugSupabase(slug, GARAGE_ID());
-    if (DEMO_MODE)        return demoServices.find((s) => s.slug === slug) ?? null;
-    throw new Error("[serviceRepository] Aucune source de données");
+    return null;
   },
 
   getByGarageId: async (garageId: string): Promise<Service[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    if (DEMO_MODE)        return [...demoServices].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
-    throw new Error("[serviceRepository] Aucune source de données");
-  },
-
-  // Écriture — in-memory uniquement (admin Phase 2A)
-  update: async (slug: string, data: Partial<Service>): Promise<Service> => {
-    const store = [...demoServices];
-    const idx = store.findIndex((s) => s.slug === slug);
-    if (idx === -1) throw new Error(`Service "${slug}" not found`);
-    return { ...store[idx], ...data };
+    return [];
   },
 };

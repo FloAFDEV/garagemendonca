@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import Link from "next/link";
 import { Pencil, Eye, ToggleLeft, ToggleRight, Wrench, Settings, Paintbrush } from "lucide-react";
 import clsx from "clsx";
 import type { Service } from "@/types";
-import { services as demoServices } from "@/lib/data";
-import { DEMO_MODE } from "@/lib/supabase/readClient";
+import { serviceRepository } from "@/lib/repositories";
 import { updateServiceAction } from "./actions";
 import { adminUI } from "@/lib/admin-ui";
 
@@ -20,8 +19,12 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default function AdminServicesPage() {
   const t = useAdminTokens();
-  const [services, setServices] = useState<Service[]>(DEMO_MODE ? demoServices : []);
+  const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    serviceRepository.getAll().then(setServices).catch(console.error);
+  }, []);
 
   const toggleActive = async (service: Service) => {
     const slug = service.slug;

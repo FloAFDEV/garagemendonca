@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import { useDemoStore } from "@/lib/demoStore";
 import { Vehicle, VehicleStatus } from "@/types";
 import {
 	Plus,
@@ -19,6 +18,7 @@ import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import clsx from "clsx";
 import { adminUI } from "@/lib/admin-ui";
+import { getAdminVehicles, updateVehicleStatus, deleteVehicleAction } from "./actions";
 
 /* ── Fuel badge variants ─────────────────────────────────────── */
 const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
@@ -113,10 +113,14 @@ function StatusSelect({
 
 /* ── Page ────────────────────────────────────────────────────── */
 export default function AdminVehiclesPage() {
-	const { vehicles, updateVehicle, deleteVehicle } = useDemoStore();
+	const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 	const [search, setSearch] = useState("");
 	const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 	const t = useAdminTokens();
+
+	useEffect(() => {
+		getAdminVehicles().then(setVehicles).catch(console.error);
+	}, []);
 
 	const filtered = vehicles.filter((v) =>
 		`${v.brand} ${v.model} ${v.year}`
@@ -125,15 +129,20 @@ export default function AdminVehiclesPage() {
 	);
 
 	const handleDelete = (id: string) => {
-		deleteVehicle(id);
+		setVehicles((prev) => prev.filter((v) => v.id !== id));
 		setDeleteConfirm(null);
+		deleteVehicleAction(id).catch(console.error);
 	};
 
 	const handleStatusChange = (id: string, status: VehicleStatus) => {
-		updateVehicle(id, {
-			status,
-			...(status === "sold" ? { sold_at: new Date().toISOString() } : {}),
-		});
+		setVehicles((prev) =>
+			prev.map((v) =>
+				v.id === id
+					? { ...v, status, ...(status === "sold" ? { sold_at: new Date().toISOString() } : {}) }
+					: v,
+			),
+		);
+		updateVehicleStatus(id, status).catch(console.error);
 	};
 
 	/* ── Shared style helpers ─────────────────────────── */

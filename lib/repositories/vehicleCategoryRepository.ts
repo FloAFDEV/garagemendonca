@@ -14,7 +14,7 @@
  */
 
 import type { VehicleCategory } from "@/types";
-import { DEMO_MODE, SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
+import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapVehicleCategory } from "@/lib/supabase/mappers";
 
 export type VehicleCategoryCreateInput = Pick<
@@ -67,8 +67,7 @@ export const vehicleCategoryRepository = {
   /** Catégories actives d'un garage — usage public/filtres. */
   getAll: async (garageId: string): Promise<VehicleCategory[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(garageId);
-    if (DEMO_MODE)        return _store.filter((c) => c.garage_id === garageId && c.is_active).sort((a, b) => a.sort_order - b.sort_order);
-    throw new Error("[vehicleCategoryRepository] Aucune source de données");
+    return [];
   },
 
   /** Toutes les catégories (actives + inactives) — usage admin dashboard. */
@@ -83,8 +82,7 @@ export const vehicleCategoryRepository = {
     slug: string,
   ): Promise<VehicleCategory | null> => {
     if (SUPABASE_ENABLED) return getBySlugSupabase(garageId, slug);
-    if (DEMO_MODE)        return _store.find((c) => c.garage_id === garageId && c.slug === slug) ?? null;
-    throw new Error("[vehicleCategoryRepository] Aucune source de données");
+    return null;
   },
 
   // ── Écritures — toujours in-memory en Phase 2A ──
