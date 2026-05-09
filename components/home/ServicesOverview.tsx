@@ -106,7 +106,7 @@ const reassuranceItems = [
 ];
 
 export default async function ServicesOverview() {
-	const services = await serviceRepository.getAll();
+	const services = await serviceRepository.getAll().catch(() => []);
 	return (
 		<section className="py-28 bg-[#f8fafc]">
 			<Container>

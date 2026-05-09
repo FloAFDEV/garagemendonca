@@ -18,6 +18,7 @@ import {
 	Star,
 } from "lucide-react";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
@@ -185,7 +186,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-	if (!GARAGE_ID) return [];
+	if (!SUPABASE_ENABLED || !GARAGE_ID) return [];
 	const slugs = await vehicleDb.listSlugs(GARAGE_ID).catch(() => []);
 	return slugs.map(({ slug }) => ({ slug }));
 }

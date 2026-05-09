@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default async function VehiculesPage() {
-  const vehicles = await vehicleRepository.getAll();
+  const vehicles = await vehicleRepository.getAll().catch(() => []);
 
   const allBrands = Array.from(new Set(vehicles.map((v) => v.brand))).sort();
   const allFuels = Array.from(new Set(vehicles.map((v) => v.fuel)));
