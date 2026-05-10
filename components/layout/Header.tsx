@@ -98,6 +98,7 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 								alt="Garage Mendonca"
 								fill
 								priority
+								sizes="180px"
 								className="object-contain object-left"
 							/>
 						</div>

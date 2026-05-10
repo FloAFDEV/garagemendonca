@@ -61,13 +61,14 @@ export default function VehicleFiltersBar({ totalCount }: VehicleFiltersBarProps
       if (value) params.set(key, value);
       else params.delete(key);
       const qs = params.toString();
-      router.push(`/vehicules/page/1${qs ? `?${qs}` : ""}`, { scroll: false });
+      // Revenir toujours à la page 1 (URL canonique = /vehicules)
+      router.push(`/vehicules${qs ? `?${qs}` : ""}`, { scroll: false });
     },
     [searchParams, router],
   );
 
   const resetAll = () => {
-    router.push("/vehicules/page/1", { scroll: false });
+    router.push("/vehicules", { scroll: false });
   };
 
   return (

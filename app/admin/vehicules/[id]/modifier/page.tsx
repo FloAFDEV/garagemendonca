@@ -20,7 +20,6 @@ import {
 	AlertCircle,
 	Star,
 	Eye,
-	Wand2,
 } from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
@@ -220,13 +219,17 @@ export default function EditVehiclePage({
 	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
 		"idle",
 	);
-	const [extractCount, setExtractCount] = useState<number | null>(null);
 
 	useEffect(() => {
 		getAdminVehicleById(id).then((vehicle) => {
 			if (!vehicle) { setLoadState("notfound"); return; }
 			setVehicleLabel(`${vehicle.brand} ${vehicle.model} · ${vehicle.year} · #${vehicle.id}`);
 			setExtraFeatures(vehicle.features ?? {});
+
+			// Auto-extraction des équipements depuis la description
+			const { detectedOptions, remainingText } = parseDescriptionToOptions(vehicle.description ?? "");
+			const mergedOptions = { ...vehicle.options ?? {}, ...detectedOptions };
+
 			setForm({
 				brand: vehicle.brand,
 				model: vehicle.model,
@@ -240,12 +243,12 @@ export default function EditVehiclePage({
 				price: vehicle.price.toString(),
 				color: vehicle.color,
 				doors: vehicle.doors.toString(),
-				description: vehicle.description,
+				description: remainingText,
 				status: vehicle.status ?? "draft",
 				published_at: vehicle.published_at ?? "",
 				featured: vehicle.featured ?? false,
 				garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? String(vehicle.features!["Garantie"][0]) : String(vehicle.features?.["Garantie"] ?? "")) || "",
-				options: vehicle.options ?? {},
+				options: mergedOptions,
 			});
 			setImages(getVehicleImages(vehicle));
 			setLoadState("ready");
@@ -801,40 +804,11 @@ export default function EditVehiclePage({
 
 					{/* ── Description ────────────────────────────────────── */}
 					<div className={sectionClass}>
-						<div className="flex items-center justify-between mb-6">
-							<h3 className={`font-heading font-normal ${t.txt} tracking-widest`}>
-								Description
-							</h3>
-							<button
-								type="button"
-								onClick={() => {
-									const { detectedOptions, remainingText, matchCount } =
-										parseDescriptionToOptions(form.description);
-									if (matchCount === 0) {
-										setExtractCount(0);
-										return;
-									}
-									setForm((p) => ({
-										...p,
-										description: remainingText,
-										options: { ...p.options, ...detectedOptions },
-									}));
-									setExtractCount(matchCount);
-								}}
-								className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${t.border} ${t.txtMuted} ${t.hoverBgStrong} ${t.hoverTxt}`}
-								title="Détecter automatiquement les équipements dans la description et les cocher"
-							>
-								<Wand2 size={13} />
-								Détecter les équipements
-							</button>
-						</div>
-						{extractCount !== null && (
-							<p className={`text-xs mb-3 ${extractCount > 0 ? "text-emerald-400" : t.txtSubtle}`}>
-								{extractCount > 0
-									? `${extractCount} équipement${extractCount > 1 ? "s" : ""} détecté${extractCount > 1 ? "s" : ""} et coché${extractCount > 1 ? "s" : ""} automatiquement.`
-									: "Aucun équipement reconnu dans la description."}
-							</p>
-						)}
+						<h3
+							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+						>
+							Description
+						</h3>
 						<textarea
 							name="description"
 							rows={5}

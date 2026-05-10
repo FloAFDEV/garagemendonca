@@ -19,13 +19,17 @@ import {
 } from "lucide-react";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
-import { getVehicleImages, getPrimaryImageUrl } from "@/lib/utils/vehicle-images";
+import {
+	getVehicleImages,
+	getPrimaryImageUrl,
+} from "@/lib/utils/vehicle-images";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
 // UUID v4 pattern — pour le fallback getById si le slug ressemble à un UUID
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID_RE =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 async function getVehicle(slug: string): Promise<Vehicle | null> {
 	// 1. Recherche par slug (chemin normal)
@@ -40,8 +44,7 @@ async function getVehicle(slug: string): Promise<Vehicle | null> {
 }
 
 /* ─────────── carnet d'entretien parser ─────────── */
-const CARNET_LINE_RE =
-	/^\s*-?\s*(\d{2}\/\d{2}\/\d{4})\s*:\s*([\d\s]+km)\s*$/;
+const CARNET_LINE_RE = /^\s*-?\s*(\d{2}\/\d{2}\/\d{4})\s*:\s*([\d\s]+km)\s*$/;
 
 type DescSegment =
 	| { kind: "text"; text: string }
@@ -233,7 +236,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 		},
 	};
 
-
 	return (
 		<MainLayout>
 			<script
@@ -340,7 +342,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								<h2 className="ty-subheading text-[#0f172a] text-xl mb-6">
 									Description du véhicule
 								</h2>
-								<DescriptionRenderer text={vehicle.description} />
+								<DescriptionRenderer
+									text={vehicle.description}
+								/>
 								<div className="mt-8 pt-8 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
 									{[
 										"Contrôle technique à jour",
@@ -464,7 +468,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 													value === "Non" ||
 													key === "Finition" ||
 													key === "Motorisation" ||
-													key === "Carnet d'entretien" ||
+													key ===
+														"Carnet d'entretien" ||
 													key === "Contrôle technique"
 												)
 													return null;
@@ -513,7 +518,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										href={contactHref}
 										className="btn-secondary w-full justify-center py-4 text-sm border-2 border-brand-500 text-brand-600 bg-transparent hover:bg-brand-50"
 									>
-										<MessageSquare size={17} /> Envoyer un message
+										<MessageSquare size={17} /> Envoyer un
+										message
 									</Link>
 								</div>
 
@@ -587,4 +593,3 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 		</MainLayout>
 	);
 }
-
