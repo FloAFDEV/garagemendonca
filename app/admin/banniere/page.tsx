@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import type { Banner } from "@/types";
-import { upsertBannerAction } from "./actions";
+import { upsertBannerAction, getBannerAction } from "./actions";
 import { adminUI } from "@/lib/admin-ui";
 
 const PALETTE = [
@@ -58,6 +58,26 @@ export default function AdminBannierePage() {
   });
 
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+
+  useEffect(() => {
+    getBannerAction().then((banner) => {
+      if (!banner) return;
+      setForm({
+        id: banner.id,
+        is_active: banner.is_active,
+        message: banner.message ?? "",
+        sub_message: banner.sub_message ?? "",
+        image_url: banner.image_url ?? "",
+        cta_label: banner.cta_label ?? "",
+        cta_url: banner.cta_url ?? "",
+        bg_color: banner.bg_color ?? "#DC2626",
+        scheduled_start: banner.scheduled_start ?? "",
+        scheduled_end: banner.scheduled_end ?? "",
+        display_pages: banner.display_pages ?? "all",
+        is_dismissible: banner.is_dismissible ?? true,
+      });
+    });
+  }, []);
 
   const set = <K extends keyof Banner>(key: K, value: Banner[K]) =>
     setForm(p => ({ ...p, [key]: value }));
