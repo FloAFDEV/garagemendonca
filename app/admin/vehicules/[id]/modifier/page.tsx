@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useEffect, useRef, useCallback } from "react";
+import { useState, use, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { getAdminVehicleById, saveVehicle } from "@/app/admin/vehicules/actions";
@@ -9,23 +9,14 @@ import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import type { VehicleOptions } from "@/types";
 import type { Vehicle } from "@/types";
-import {
-	Camera,
-	Images,
-	X,
-	Save,
-	ArrowLeft,
-	CheckCircle2,
-	Loader2,
-	AlertCircle,
-	Star,
-	Eye,
-} from "lucide-react";
+import { Save, ArrowLeft, CheckCircle2, Loader2, AlertCircle, Star, Eye } from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { parseDescriptionToOptions } from "@/lib/utils/parse-description-options";
+import ImageUploadZone from "@/components/admin/ImageUploadZone";
+import { syncVehicleImages } from "@/lib/safe-actions/image.actions";
 
 // ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
 
@@ -255,17 +246,6 @@ export default function EditVehiclePage({
 		}).catch(() => setLoadState("notfound"));
 	}, [id]);
 
-	const fileInputRef = useRef<HTMLInputElement>(null);
-	const cameraInputRef = useRef<HTMLInputElement>(null);
-
-	// ── Image upload — déclaré AVANT les early returns (règles des hooks) ──
-	const handleFiles = useCallback((files: FileList | null) => {
-		if (!files || files.length === 0) return;
-		Array.from(files).forEach((file) => {
-			const url = URL.createObjectURL(file);
-			setImages((p) => [...p, url]);
-		});
-	}, []);
 
 	// ── Guards ───────────────────────────────────────────────────────
 
@@ -351,6 +331,7 @@ export default function EditVehiclePage({
 			return;
 		}
 		setSaveStatus("saving");
+		const httpImages = images.filter((u) => u.startsWith("http"));
 		await saveVehicle(id, {
 			brand: form.brand,
 			model: form.model,
@@ -363,7 +344,7 @@ export default function EditVehiclePage({
 			color: form.color,
 			doors: +form.doors,
 			description: form.description,
-			images: images.filter((u) => u.startsWith("http")),
+			images: httpImages,
 			status: form.status as Vehicle["status"],
 			published_at: form.published_at || undefined,
 			featured: form.featured,
@@ -375,6 +356,13 @@ export default function EditVehiclePage({
 				...(form.garantie ? { Garantie: form.garantie } : {}),
 			},
 		});
+		// Sync vehicle_images table
+		await syncVehicleImages(
+			id,
+			process.env.NEXT_PUBLIC_GARAGE_ID ?? "",
+			httpImages,
+			`${form.brand} ${form.model}`,
+		);
 		setSaveStatus("saved");
 		setTimeout(() => router.push("/admin/vehicules"), 1200);
 	};
@@ -826,69 +814,23 @@ export default function EditVehiclePage({
 
 					{/* ── Photos ─────────────────────────────────────────── */}
 					<div className={sectionClass}>
-						<h3
-							className={`font-heading font-normal ${t.txt} mb-2 tracking-widest`}
-						>
+						<h3 className={`font-heading font-normal ${t.txt} mb-1 tracking-widest`}>
 							Photos
 						</h3>
 						<p className={`${t.txtSubtle} text-xs mb-5`}>
-							La première photo est l&apos;image principale.
-							Cliquez pour définir une autre photo comme
-							principale.
+							La première photo est l&apos;image principale · max 10 · WebP automatique
 						</p>
-						<div className="flex flex-wrap gap-3 mb-5">
-							<button
-								type="button"
-								onClick={() => cameraInputRef.current?.click()}
-								className="flex items-center gap-2 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-medium"
-							>
-								<Camera size={16} />
-								Prendre une photo
-							</button>
-							<button
-								type="button"
-								onClick={() => fileInputRef.current?.click()}
-								className={`flex items-center gap-2 ${t.surface3} ${t.hoverBgStrong} active:scale-95 ${t.txt} px-4 py-2.5 rounded-xl transition-all text-sm font-medium`}
-							>
-								<Images size={16} />
-								Choisir depuis la galerie
-							</button>
-							<input
-								ref={cameraInputRef}
-								type="file"
-								accept="image/*"
-								capture="environment"
-								className="hidden"
-								onChange={(e) => handleFiles(e.target.files)}
-							/>
-							<input
-								ref={fileInputRef}
-								type="file"
-								accept="image/*"
-								multiple
-								className="hidden"
-								onChange={(e) => handleFiles(e.target.files)}
-							/>
-						</div>
-						{images.length > 0 ? (
-							<SortablePhotoGrid
-								images={images}
-								onChange={setImages}
-							/>
-						) : (
-							<button
-								type="button"
-								onClick={() => fileInputRef.current?.click()}
-								className={`w-full border-2 border-dashed ${t.borderMuted} hover:border-brand-500/50 rounded-xl py-12 text-center transition-colors group`}
-							>
-								<Images
-									size={32}
-									className={`${t.txtFaint} group-hover:text-brand-500/50 mx-auto mb-3 transition-colors`}
-								/>
-								<p className={`${t.txtSubtle} text-sm`}>
-									Cliquez pour ajouter des photos
-								</p>
-							</button>
+						<ImageUploadZone
+							entityId={id}
+							type="vehicle"
+							onUploaded={(url) => setImages((p) => [...p, url])}
+							maxFiles={10}
+							currentCount={images.length}
+						/>
+						{images.length > 0 && (
+							<div className="mt-4">
+								<SortablePhotoGrid images={images} onChange={setImages} />
+							</div>
 						)}
 					</div>
 

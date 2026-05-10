@@ -185,7 +185,7 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
   const filters = parsePageFilters(sp);
   const filterQuery = filtersToQs(sp);
 
-  const [vehicles, totalCount] = await Promise.all([
+  const [vehicles, totalCount, availableBrands] = await Promise.all([
     vehicleDb.listPaginated(GARAGE_ID, page, VEHICLES_PER_PAGE, filters).catch((err) => {
       console.error("[VehiculesPaginatedPage] listPaginated failed:", err);
       return [];
@@ -194,6 +194,7 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
       console.error("[VehiculesPaginatedPage] countPublic failed:", err);
       return 0;
     }),
+    vehicleDb.listBrands(GARAGE_ID).catch(() => []),
   ]);
 
   const meta = buildPaginationMeta(page, totalCount);
@@ -245,7 +246,7 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
         <Container>
           {/* Filtres (client component, besoin de Suspense pour useSearchParams) */}
           <Suspense>
-            <VehicleFiltersBar totalCount={totalCount} />
+            <VehicleFiltersBar totalCount={totalCount} availableBrands={availableBrands} />
           </Suspense>
 
           {vehicles.length > 0 ? (

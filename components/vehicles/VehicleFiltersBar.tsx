@@ -7,12 +7,6 @@ import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 
 // ─── Données statiques ───────────────────────────────────────────
 
-const AVAILABLE_BRANDS = [
-  "Citroën", "Dacia", "Daihatsu", "Ford", "Genesis", "Honda",
-  "Hyundai", "Infiniti", "Kia", "KGM", "Mazda", "Mitsubishi",
-  "Nissan", "Peugeot", "Renault", "SsangYong", "Suzuki", "Toyota", "Volkswagen",
-];
-
 const FUELS = ["Essence", "Diesel", "Hybride", "GPL"];
 const TRANSMISSIONS = ["Automatique", "Manuelle"];
 
@@ -70,9 +64,11 @@ function BrandLogo({ brand, size = 24 }: { brand: string; size?: number }) {
 function BrandMultiSelect({
   selected,
   onChange,
+  availableBrands,
 }: {
   selected: string[];
   onChange: (brands: string[]) => void;
+  availableBrands: string[];
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -142,7 +138,7 @@ function BrandMultiSelect({
 
           {/* Grille marques */}
           <ul className="max-h-72 overflow-y-auto py-2">
-            {AVAILABLE_BRANDS.map((brand) => {
+            {availableBrands.map((brand) => {
               const active = selected.includes(brand);
               return (
                 <li key={brand}>
@@ -172,7 +168,13 @@ function BrandMultiSelect({
 
 // ─── Composant principal ──────────────────────────────────────────
 
-export default function VehicleFiltersBar({ totalCount }: { totalCount: number }) {
+export default function VehicleFiltersBar({
+  totalCount,
+  availableBrands,
+}: {
+  totalCount: number;
+  availableBrands: string[];
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -263,7 +265,7 @@ export default function VehicleFiltersBar({ totalCount }: { totalCount: number }
         </div>
 
         {/* ── Multi-select marques ── */}
-        <BrandMultiSelect selected={selectedBrands} onChange={handleBrandsChange} />
+        <BrandMultiSelect selected={selectedBrands} onChange={handleBrandsChange} availableBrands={availableBrands} />
 
         {/* ── Carburant ── */}
         <select

@@ -10,7 +10,8 @@ import Container from "@/components/ui/Container";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
-import { vehicleDb, type VehicleListFilters } from "@/lib/db/vehicle.repository";
+import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
 import {
   buildPaginationMeta,
   paginationRange,
@@ -30,39 +31,9 @@ import {
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
-// ─── Helpers searchParams ────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────
 
 type SearchParams = Record<string, string | string[] | undefined>;
-
-function parseFilters(sp: SearchParams): Omit<VehicleListFilters, "limit" | "offset"> {
-  const str = (key: string) => {
-    const v = sp[key];
-    return typeof v === "string" && v.trim() ? v.trim() : undefined;
-  };
-  const num = (key: string) => {
-    const v = str(key);
-    if (!v) return undefined;
-    const n = parseInt(v, 10);
-    return isNaN(n) ? undefined : n;
-  };
-  return {
-    brand:        str("brand"),
-    fuel:         str("fuel") as VehicleListFilters["fuel"],
-    transmission: str("transmission") as VehicleListFilters["transmission"],
-    maxMileage:   num("maxKm"),
-    maxPrice:     num("maxPrice"),
-  };
-}
-
-function filtersToQs(sp: SearchParams): string {
-  const keys = ["brand", "fuel", "transmission", "maxKm", "maxPrice"];
-  const params = new URLSearchParams();
-  for (const k of keys) {
-    const v = sp[k];
-    if (typeof v === "string" && v.trim()) params.set(k, v.trim());
-  }
-  return params.toString();
-}
 
 // ─── Metadata ────────────────────────────────────────────────────
 
@@ -72,7 +43,7 @@ export async function generateMetadata({
   searchParams: Promise<SearchParams>;
 }): Promise<Metadata> {
   const sp = await searchParams;
-  const filters = parseFilters(sp);
+  const filters = parsePageFilters(sp);
   const totalCount = await vehicleDb.countPublic(GARAGE_ID, filters).catch(() => 0);
   const desc = listingDescription(1, totalCount);
   return {
@@ -156,10 +127,10 @@ export default async function VehiculesPage({
   searchParams: Promise<SearchParams>;
 }) {
   const sp = await searchParams;
-  const filters = parseFilters(sp);
+  const filters = parsePageFilters(sp);
   const filterQuery = filtersToQs(sp);
 
-  const [vehicles, totalCount] = await Promise.all([
+  const [vehicles, totalCount, availableBrands] = await Promise.all([
     vehicleDb.listPaginated(GARAGE_ID, 1, VEHICLES_PER_PAGE, filters).catch((err) => {
       console.error("[VehiculesPage] listPaginated failed:", err);
       return [];
@@ -168,6 +139,7 @@ export default async function VehiculesPage({
       console.error("[VehiculesPage] countPublic failed:", err);
       return 0;
     }),
+    vehicleDb.listBrands(GARAGE_ID).catch(() => []),
   ]);
 
   const meta = buildPaginationMeta(1, totalCount);
@@ -202,7 +174,7 @@ export default async function VehiculesPage({
         <Container>
           {/* Filtres */}
           <Suspense>
-            <VehicleFiltersBar totalCount={totalCount} />
+            <VehicleFiltersBar totalCount={totalCount} availableBrands={availableBrands} />
           </Suspense>
 
           {vehicles.length > 0 ? (

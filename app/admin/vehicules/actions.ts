@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { mapVehicle } from "@/lib/supabase/mappers";
+import { vehicleFromDb } from "@/lib/mappers/vehicle.mapper";
 
 const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
@@ -27,11 +28,12 @@ export async function getAdminVehicleById(id: string): Promise<Vehicle | null> {
 	const db = createSupabaseAdminClient();
 	const { data, error } = await db
 		.from("vehicles")
-		.select("*")
+		.select("*, vehicle_images(id, url, alt, sort_order, is_primary, storage_path)")
 		.eq("id", id)
 		.maybeSingle();
 	if (error) throw error;
-	return data ? mapVehicle(data) : null;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return data ? vehicleFromDb(data as any) : null;
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */

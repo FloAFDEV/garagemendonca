@@ -6,7 +6,7 @@ import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import Link from "next/link";
 import {
   Save, Loader2, CheckCircle2, AlertCircle, Eye, ToggleLeft, ToggleRight,
-  Megaphone, Calendar, Palette, ExternalLink
+  Megaphone, Calendar, Palette, ExternalLink, ImagePlus, X,
 } from "lucide-react";
 import clsx from "clsx";
 import type { Banner } from "@/types";
@@ -38,6 +38,41 @@ function getBannerStatus(banner: Partial<Banner>): { label: string; color: strin
   if (banner.scheduled_start && new Date(banner.scheduled_start) > now)
     return { label: "Programmée", color: adminUI.statusScheduled };
   return { label: "Active", color: adminUI.statusActive };
+}
+
+function BannerImageUpload({ onUploaded }: { onUploaded: (url: string) => void }) {
+  const [uploading, setUploading] = useState(false);
+
+  async function handleFile(file: File) {
+    if (!file.type.startsWith("image/")) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("type", "banner");
+      fd.append("entityId", "banner");
+      fd.append("garageId", process.env.NEXT_PUBLIC_GARAGE_ID ?? "");
+      const res = await fetch("/api/upload-image", { method: "POST", body: fd });
+      if (!res.ok) throw new Error("Upload failed");
+      const { url } = await res.json();
+      onUploaded(url);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <label className={`mt-1 flex items-center gap-3 cursor-pointer w-fit px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors ${uploading ? "opacity-50 pointer-events-none" : "hover:border-brand-500 hover:text-brand-400"}`}>
+      <input
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
+      />
+      {uploading ? <Loader2 size={16} className="animate-spin" /> : <ImagePlus size={16} />}
+      {uploading ? "Téléchargement…" : "Choisir une image"}
+    </label>
+  );
 }
 
 export default function AdminBannierePage() {
@@ -252,24 +287,33 @@ export default function AdminBannierePage() {
                 </div>
               </div>
 
-              {/* Image URL */}
+              {/* Image de fond */}
               <div>
-                <label className={labelClass}>Image de fond (optionnel, URL)</label>
-                <input
-                  value={form.image_url ?? ""}
-                  onChange={e => set("image_url", e.target.value)}
-                  className={inputClass}
-                  placeholder="https://… ou /images/promo.webp"
-                />
-                {form.image_url && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={form.image_url}
-                    alt="Preview"
-                    className="mt-3 rounded-xl w-full max-h-32 object-cover opacity-80"
-                    onError={e => (e.currentTarget.style.display = "none")}
-                  />
+                <label className={labelClass}>Image de fond (optionnel)</label>
+                {form.image_url ? (
+                  <div className="relative mt-1 rounded-xl overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={form.image_url}
+                      alt="Preview bannière"
+                      className="w-full max-h-40 object-cover"
+                      onError={e => (e.currentTarget.style.display = "none")}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => set("image_url", "")}
+                      className="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
+                      aria-label="Supprimer l'image"
+                    >
+                      <X size={12} className="text-white" />
+                    </button>
+                  </div>
+                ) : (
+                  <BannerImageUpload onUploaded={(url) => set("image_url", url)} />
                 )}
+                <p className={clsx("text-xs mt-1.5", t.txtSubtle)}>
+                  Recommandé : 1920 × 900 px — sera converti en WebP automatiquement.
+                </p>
               </div>
             </div>
           </div>

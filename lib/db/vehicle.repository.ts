@@ -160,6 +160,20 @@ export const vehicleDb = {
     return ((data ?? []) as VehicleRow[]).map(vehicleFromDb);
   },
 
+  /** Marques distinctes ayant des véhicules publics (published / scheduled / sold), triées. */
+  async listBrands(garageId: string): Promise<string[]> {
+    const { data, error } = await anonDb()
+      .from("vehicles")
+      .select("brand")
+      .eq("garage_id", garageId)
+      .in("status", ["published", "scheduled", "sold"]);
+    if (error) return [];
+    const brands = [...new Set((data ?? []).map((r: { brand: string }) => r.brand))]
+      .filter((b): b is string => typeof b === "string" && b.length > 0)
+      .sort((a, b) => a.localeCompare(b, "fr"));
+    return brands;
+  },
+
   async listSlugs(garageId: string): Promise<{ slug: string }[]> {
     const { data, error } = await anonDb()
       .from("vehicles")

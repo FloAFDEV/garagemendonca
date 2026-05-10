@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { createVehicleAction } from "@/app/admin/vehicules/actions";
@@ -9,18 +9,10 @@ import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import type { VehicleOptions } from "@/types";
 import type { Vehicle } from "@/types";
-import {
-	Camera,
-	Images,
-	X,
-	Save,
-	ArrowLeft,
-	CheckCircle2,
-	Loader2,
-	Star,
-	AlertCircle,
-} from "lucide-react";
+import { Save, ArrowLeft, CheckCircle2, Loader2, Star, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import ImageUploadZone from "@/components/admin/ImageUploadZone";
+import { syncVehicleImages } from "@/lib/safe-actions/image.actions";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 
@@ -243,8 +235,8 @@ export default function NewVehiclePage() {
 		"idle",
 	);
 
-	const fileInputRef = useRef<HTMLInputElement>(null);
-	const cameraInputRef = useRef<HTMLInputElement>(null);
+	// ID stable pour le nouveau véhicule — utilisé pour le chemin storage avant création DB
+	const vehicleIdRef = useRef(crypto.randomUUID());
 
 	// ── Field helpers ────────────────────────────────────────────────
 
@@ -263,17 +255,6 @@ export default function NewVehiclePage() {
 			setErrors((p) => ({ ...p, [name]: undefined }));
 		}
 	};
-
-	// ── Image upload ─────────────────────────────────────────────────
-
-	const handleFiles = useCallback((files: FileList | null) => {
-		if (!files || files.length === 0) return;
-		Array.from(files).forEach((file) => {
-			const url = URL.createObjectURL(file);
-			setImages((p) => [...p, url]);
-		});
-	}, []);
-
 
 	// ── Validation ───────────────────────────────────────────────────
 
@@ -306,7 +287,9 @@ export default function NewVehiclePage() {
 			return;
 		}
 		setSaveStatus("saving");
+		const httpImages = images.filter((u) => u.startsWith("http"));
 		await createVehicleAction({
+			id: vehicleIdRef.current,
 			brand: form.brand,
 			model: form.model,
 			year: +form.year,
@@ -318,10 +301,7 @@ export default function NewVehiclePage() {
 			color: form.color,
 			doors: +form.doors,
 			description: form.description,
-			images:
-				images.length > 0
-					? images.filter((u) => u.startsWith("http"))
-					: ["https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800"],
+			images: httpImages,
 			status: form.vehicleStatus as Vehicle["status"],
 			published_at: form.published_at || undefined,
 			featured: form.featured,
@@ -332,6 +312,15 @@ export default function NewVehiclePage() {
 				...(form.garantie ? { Garantie: form.garantie } : {}),
 			},
 		});
+		// Sync vehicle_images table avec les URLs réelles
+		if (httpImages.length > 0) {
+			await syncVehicleImages(
+				vehicleIdRef.current,
+				process.env.NEXT_PUBLIC_GARAGE_ID ?? "",
+				httpImages,
+				`${form.brand} ${form.model}`,
+			);
+		}
 		setSaveStatus("saved");
 		setTimeout(() => router.push("/admin/vehicules"), 1200);
 	};
@@ -776,79 +765,23 @@ export default function NewVehiclePage() {
 
 					{/* ── Photos ─────────────────────────────────────────── */}
 					<div className={sectionClass}>
-						<h3
-							className={`font-heading font-normal ${t.txt} mb-2 tracking-widest`}
-						>
+						<h3 className={`font-heading font-normal ${t.txt} mb-1 tracking-widest`}>
 							Photos
 						</h3>
 						<p className={`${t.txtSubtle} text-xs mb-5`}>
-							Ajoutez des photos depuis votre galerie ou prenez
-							une photo directement.
+							Max 10 photos · WebP automatique · compression intelligente
 						</p>
-
-						{/* Upload buttons */}
-						<div className="flex flex-wrap gap-3 mb-5">
-							<button
-								type="button"
-								onClick={() => cameraInputRef.current?.click()}
-								className="flex items-center gap-2 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white px-4 py-2.5 rounded-xl transition-all text-sm font-medium"
-							>
-								<Camera size={16} />
-								Prendre une photo
-							</button>
-							<button
-								type="button"
-								onClick={() => fileInputRef.current?.click()}
-								className={`flex items-center gap-2 ${t.surface3} ${t.hoverBgStrong} active:scale-95 ${t.txt} px-4 py-2.5 rounded-xl transition-all text-sm font-medium`}
-							>
-								<Images size={16} />
-								Choisir depuis la galerie
-							</button>
-
-							{/* Hidden inputs */}
-							<input
-								ref={cameraInputRef}
-								type="file"
-								accept="image/*"
-								capture="environment"
-								className="hidden"
-								onChange={(e) => handleFiles(e.target.files)}
-							/>
-							<input
-								ref={fileInputRef}
-								type="file"
-								accept="image/*"
-								multiple
-								className="hidden"
-								onChange={(e) => handleFiles(e.target.files)}
-							/>
-						</div>
-
-						{/* Preview grid */}
-						{images.length > 0 ? (
-							<SortablePhotoGrid
-								images={images}
-								onChange={setImages}
-							/>
-						) : (
-							<button
-								type="button"
-								onClick={() => fileInputRef.current?.click()}
-								className={`w-full border-2 border-dashed ${t.borderMuted} hover:border-brand-500/50 rounded-xl py-12 text-center transition-colors group`}
-							>
-								<Images
-									size={32}
-									className={`${t.txtFaint} group-hover:text-brand-500/50 mx-auto mb-3 transition-colors`}
-								/>
-								<p className={`${t.txtSubtle} text-sm`}>
-									Glissez des photos ou cliquez pour en
-									ajouter
-								</p>
-								<p className={`${t.txtFaint} text-xs mt-1`}>
-									Un placeholder sera utilisé si aucune photo
-									n&apos;est ajoutée
-								</p>
-							</button>
+						<ImageUploadZone
+							entityId={vehicleIdRef.current}
+							type="vehicle"
+							onUploaded={(url) => setImages((p) => [...p, url])}
+							maxFiles={10}
+							currentCount={images.length}
+						/>
+						{images.length > 0 && (
+							<div className="mt-4">
+								<SortablePhotoGrid images={images} onChange={setImages} />
+							</div>
 						)}
 					</div>
 
