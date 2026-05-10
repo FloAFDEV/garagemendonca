@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
+import { getVehicleImages, getPrimaryImageUrl } from "@/lib/utils/vehicle-images";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
@@ -163,7 +164,7 @@ export async function generateMetadata({
 		vehicle.meta_description ??
 		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, ${vehicle.transmission}. ${vehicle.description.slice(0, 110)}… Garage Mendonca, Drémil-Lafage (31).`;
 
-	const ogImage = vehicle.thumbnailUrl ?? vehicle.images[0];
+	const ogImage = getPrimaryImageUrl(vehicle);
 
 	return {
 		title,
@@ -329,7 +330,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						{/* ════ Colonne gauche ════ */}
 						<div className="space-y-10 min-w-0">
 							<VehicleGallery
-								images={vehicle.images}
+								images={getVehicleImages(vehicle)}
 								vehicleName={vehicleName}
 								vehicleImages={vehicle.vehicleImages}
 							/>

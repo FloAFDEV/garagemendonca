@@ -24,6 +24,7 @@ import {
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+import { getVehicleImages } from "@/lib/utils/vehicle-images";
 
 // ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
 
@@ -243,7 +244,7 @@ export default function EditVehiclePage({
 				garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? String(vehicle.features!["Garantie"][0]) : String(vehicle.features?.["Garantie"] ?? "")) || "",
 				options: vehicle.options ?? {},
 			});
-			setImages(vehicle.images ?? []);
+			setImages(getVehicleImages(vehicle));
 			setLoadState("ready");
 		}).catch(() => setLoadState("notfound"));
 	}, [id]);

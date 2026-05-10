@@ -18,6 +18,7 @@ import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import clsx from "clsx";
 import { adminUI } from "@/lib/admin-ui";
+import { getPrimaryImageUrl } from "@/lib/utils/vehicle-images";
 import { getAdminVehicles, updateVehicleStatus, deleteVehicleAction } from "./actions";
 
 /* ── Fuel badge variants ─────────────────────────────────────── */
@@ -227,11 +228,11 @@ export default function AdminVehiclesPage() {
 								)}
 							>
 								{/* Thumbnail */}
-								{vehicle.images[0] ? (
+								{getPrimaryImageUrl(vehicle) ? (
 									<div className="w-full h-36 overflow-hidden bg-slate-700">
 										{/* eslint-disable-next-line @next/next/no-img-element */}
 										<img
-											src={vehicle.images[0]}
+											src={getPrimaryImageUrl(vehicle)}
 											alt=""
 											className="w-full h-full object-cover"
 										/>
@@ -427,10 +428,10 @@ export default function AdminVehiclesPage() {
 										{/* Photo */}
 										<td className="px-3 py-3">
 											<div className="w-12 h-10 rounded-lg overflow-hidden bg-slate-700 flex-shrink-0 flex items-center justify-center">
-												{vehicle.images[0] ? (
+												{getPrimaryImageUrl(vehicle) ? (
 													// eslint-disable-next-line @next/next/no-img-element
 													<img
-														src={vehicle.images[0]}
+														src={getPrimaryImageUrl(vehicle)}
 														alt=""
 														className="w-full h-full object-cover"
 													/>
