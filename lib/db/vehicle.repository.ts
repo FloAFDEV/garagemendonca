@@ -32,7 +32,9 @@ const SEL_WITH_IMAGES = "*, vehicle_images(id, url, alt, sort_order, is_primary)
 
 export interface VehicleListFilters {
   status?:       VehicleRow["status"];
-  brand?:        string;
+  brand?:        string;        // filtre interne (single brand, ilike)
+  brands?:       string[];      // multi-sélection catalogue public
+  search?:       string;        // recherche texte sur brand + model
   fuel?:         VehicleRow["fuel"];
   transmission?: VehicleRow["transmission"];
   minPrice?:     number;
@@ -44,6 +46,42 @@ export interface VehicleListFilters {
   featured?:     boolean;
   limit?:        number;
   offset?:       number;
+}
+
+/** Supprime les diacritiques et met en minuscule pour l'ILIKE. */
+function normalizeSearch(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+/** Applique les filtres publics communs (brands, search, fuel, transmission, km, price). */
+function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "offset">): Q {
+  if (filters.brands?.length) {
+    q = q.in("brand", filters.brands);
+  } else if (filters.brand) {
+    q = q.ilike("brand", `%${filters.brand}%`);
+  }
+
+  if (filters.fuel)         q = q.eq("fuel", filters.fuel);
+  if (filters.transmission) q = q.eq("transmission", filters.transmission);
+  if (filters.maxPrice)     q = q.lte("price", filters.maxPrice);
+  if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
+
+  if (filters.search) {
+    const tokens = normalizeSearch(filters.search)
+      .split(/\s+/)
+      .filter((t) => t.length >= 1)
+      .map((t) => t.replace(/[%_\\]/g, "\\$&")); // escape LIKE wildcards
+
+    for (const token of tokens) {
+      q = q.or(`brand.ilike.%${token}%,model.ilike.%${token}%`);
+    }
+  }
+
+  return q;
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -169,18 +207,14 @@ export const vehicleDb = {
       .eq("garage_id", garageId)
       .in("status", ["published", "scheduled", "sold"]);
 
-    if (filters.brand)        q = q.ilike("brand", `%${filters.brand}%`);
-    if (filters.fuel)         q = q.eq("fuel", filters.fuel);
-    if (filters.transmission) q = q.eq("transmission", filters.transmission);
-    if (filters.maxPrice)     q = q.lte("price", filters.maxPrice);
-    if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
+    q = applyPublicFilters(q, filters);
 
     const { count, error } = await q;
     if (error) throw error;
     return count ?? 0;
   },
 
-  /** Liste paginée pour les pages SEO /vehicules/page/[page], avec filtres optionnels */
+  /** Liste paginée pour les pages /vehicules et /vehicules/page/[page], avec filtres optionnels */
   async listPaginated(
     garageId: string,
     page: number,
@@ -194,11 +228,7 @@ export const vehicleDb = {
       .eq("garage_id", garageId)
       .in("status", ["published", "scheduled", "sold"]);
 
-    if (filters.brand)        q = q.ilike("brand", `%${filters.brand}%`);
-    if (filters.fuel)         q = q.eq("fuel", filters.fuel);
-    if (filters.transmission) q = q.eq("transmission", filters.transmission);
-    if (filters.maxPrice)     q = q.lte("price", filters.maxPrice);
-    if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
+    q = applyPublicFilters(q, filters);
 
     q = q.order("created_at", { ascending: false }).range(offset, offset + perPage - 1);
 

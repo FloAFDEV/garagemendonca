@@ -10,7 +10,8 @@ import Container from "@/components/ui/Container";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
-import { vehicleDb, type VehicleListFilters } from "@/lib/db/vehicle.repository";
+import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
 import {
   buildPaginationMeta,
   paginationRange,
@@ -24,46 +25,10 @@ import { ChevronLeft, ChevronRight, ShieldCheck, ClipboardCheck, Wrench, BookOpe
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
 // ─────────────────────────────────────────────────────────────────
-//  Helpers
+//  Types
 // ─────────────────────────────────────────────────────────────────
 
 type SearchParams = Record<string, string | string[] | undefined>;
-
-function parseFilters(sp: SearchParams): Omit<VehicleListFilters, "limit" | "offset"> {
-  const str = (key: string) => {
-    const v = sp[key];
-    return typeof v === "string" && v.trim() ? v.trim() : undefined;
-  };
-  const num = (key: string) => {
-    const v = str(key);
-    if (!v) return undefined;
-    const n = parseInt(v, 10);
-    return isNaN(n) ? undefined : n;
-  };
-
-  return {
-    brand:        str("brand"),
-    fuel:         str("fuel") as VehicleListFilters["fuel"],
-    transmission: str("transmission") as VehicleListFilters["transmission"],
-    maxMileage:   num("maxKm"),
-    maxPrice:     num("maxPrice"),
-  };
-}
-
-/** Sérialise les filtres actifs en query string (pour les liens de pagination) */
-function filtersToQs(sp: SearchParams): string {
-  const keys = ["brand", "fuel", "transmission", "maxKm", "maxPrice"];
-  const params = new URLSearchParams();
-  for (const k of keys) {
-    const v = sp[k];
-    if (typeof v === "string" && v.trim()) params.set(k, v.trim());
-  }
-  return params.toString();
-}
-
-// ─────────────────────────────────────────────────────────────────
-//  Types
-// ─────────────────────────────────────────────────────────────────
 
 type PageProps = {
   params: Promise<{ page: string }>;
@@ -80,7 +45,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   if (isNaN(page) || page < 1) return { title: "Page introuvable" };
 
   const sp = await searchParams;
-  const filters = parseFilters(sp);
+  const filters = parsePageFilters(sp);
   const totalCount = await vehicleDb.countPublic(GARAGE_ID, filters).catch(() => 0);
   const meta = buildPaginationMeta(page, totalCount);
   const canonical = `https://www.garagemendonca.com${listingCanonical(page)}`;
@@ -217,7 +182,7 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
   if (isNaN(page) || page < 1) notFound();
 
   const sp = await searchParams;
-  const filters = parseFilters(sp);
+  const filters = parsePageFilters(sp);
   const filterQuery = filtersToQs(sp);
 
   const [vehicles, totalCount] = await Promise.all([

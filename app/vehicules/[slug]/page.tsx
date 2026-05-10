@@ -437,58 +437,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 											))}
 										</div>
 									</div>
-
-									{/* Équipements & Options Dynamiques */}
-									<div className="px-2">
-										<h3 className="ty-subheading text-[#0f172a] text-xl mb-8 flex items-center gap-4">
-											Équipements & Confort{" "}
-											<div className="h-px flex-1 bg-slate-100" />
-										</h3>
-										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-y-6 gap-x-8">
-											{Object.entries(
-												vehicle.features,
-											).map(([key, value]) => {
-												if (Array.isArray(value)) {
-													return value.map(
-														(option, idx) => (
-															<div
-																key={`${key}-${idx}`}
-																className="pl-4 border-l-2 border-slate-100 hover:border-brand-500 transition-colors py-1 group"
-															>
-																<span className="text-sm font-normal text-slate-700 group-hover:text-brand-600 transition-colors leading-tight block">
-																	{option}
-																</span>
-															</div>
-														),
-													);
-												}
-												if (
-													key === "Options" ||
-													!value ||
-													value === "Non" ||
-													key === "Finition" ||
-													key === "Motorisation" ||
-													key ===
-														"Carnet d'entretien" ||
-													key === "Contrôle technique"
-												)
-													return null;
-												return (
-													<div
-														key={key}
-														className="pl-4 border-l-2 border-slate-100 hover:border-brand-500 py-1 group"
-													>
-														<span className="ty-label block mb-0.5">
-															{key}
-														</span>
-														<span className="text-sm font-normal text-[#0f172a] group-hover:text-brand-600 transition-colors leading-tight block">
-															{String(value)}
-														</span>
-													</div>
-												);
-											})}
-										</div>
-									</div>
 								</div>
 							)}
 						</div>
@@ -498,13 +446,30 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							{/* Carte Prix & CTA */}
 							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
 								<div className="mb-6 pb-6 border-b border-slate-100">
+									<div className="mt-4 m-4 flex items-center gap-2">
+										{BRAND_LOGO_MAP[vehicle.brand] && (
+											<Image
+												src={
+													BRAND_LOGO_MAP[
+														vehicle.brand
+													]
+												}
+												alt={vehicle.brand}
+												width={50}
+												height={50}
+												className="object-contain border rounded-md p-1 bg-white"
+											/>
+										)}
+										{vehicle.brand} {vehicle.model}{" "}
+										{vehicle.year}
+									</div>
 									<div className="ty-value font-heading text-4xl">
 										{vehicle.price.toLocaleString("fr-FR")}{" "}
 										€
 									</div>
 									<p className="text-slate-400 text-sm mt-1 font-medium italic">
 										Prix TTC
-									</p>
+									</p>{" "}
 								</div>
 
 								<div className="space-y-4">
