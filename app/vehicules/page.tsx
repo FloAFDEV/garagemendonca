@@ -6,24 +6,37 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehiclesCatalogue from "@/components/vehicles/VehiclesCatalogue";
 import { vehicleRepository } from "@/lib/repositories";
-import { ClipboardCheck, Wrench, BookOpen, ShieldCheck } from "lucide-react";
+import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { buildPaginationMeta, listingDescription } from "@/lib/vehicles/pagination";
+import Link from "next/link";
+import { ClipboardCheck, Wrench, BookOpen, ShieldCheck, ChevronRight } from "lucide-react";
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
-export const metadata: Metadata = {
-	title: "Véhicules d'occasion révisés & garantis",
-	description:
-		"Découvrez notre stock de véhicules d'occasion à Drémil-Lafage (31). Chaque voiture est inspectée en 160 points, révisée et garantie 6 à 12 mois. Financement et reprise.",
-	openGraph: {
-		title: "Occasions révisées & garanties — Garage Auto Mendonca",
-		description:
-			"Stock de véhicules d'occasion à Drémil-Lafage. Inspection 160 points, révision, garantie 6–12 mois, financement personnalisé.",
-		type: "website",
-	},
-};
+export async function generateMetadata(): Promise<Metadata> {
+	const totalCount = await vehicleDb.countPublic(GARAGE_ID).catch(() => 0);
+	const desc = listingDescription(1, totalCount);
+	return {
+		title: "Véhicules d'occasion révisés & garantis | Garage Mendonça",
+		description: desc,
+		alternates: { canonical: "https://www.garagemendonca.com/vehicules" },
+		openGraph: {
+			title: "Occasions révisées & garanties — Garage Mendonça, Drémil-Lafage",
+			description: desc,
+			type: "website",
+		},
+		twitter: { card: "summary_large_image", title: "Voitures d'occasion — Garage Mendonça", description: desc },
+	};
+}
 
 export default async function VehiculesPage() {
-	const vehicles = await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []);
+	const vehicles = await vehicleRepository.getAll(GARAGE_ID || undefined).catch((err) => {
+		console.error("[VehiculesPage] fetch vehicles failed:", err);
+		return [];
+	});
+
+	const totalCount = await vehicleDb.countPublic(GARAGE_ID).catch(() => vehicles.length);
+	const meta = buildPaginationMeta(1, totalCount);
 
 	const allBrands = Array.from(new Set(vehicles.map((v) => v.brand))).sort();
 	const allFuels = Array.from(new Set(vehicles.map((v) => v.fuel)));
@@ -44,7 +57,7 @@ export default async function VehiculesPage() {
 								aria-hidden="true"
 							/>
 							<span className="text-brand-400 font-normal text-xs uppercase tracking-caps">
-								Notre stock
+								Notre stock · {totalCount} véhicule{totalCount > 1 ? "s" : ""}
 							</span>
 						</div>
 						<h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
@@ -70,6 +83,30 @@ export default async function VehiculesPage() {
 						allBrands={allBrands}
 						allFuels={allFuels}
 					/>
+
+					{/* Lien vers les pages paginées SEO */}
+					{meta.totalPages > 1 && (
+						<div className="mt-10 flex flex-wrap gap-2 justify-center">
+							<p className="w-full text-center text-sm text-slate-500 mb-2">
+								Parcourir le catalogue page par page :
+							</p>
+							{Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((p) => (
+								<Link
+									key={p}
+									href={`/vehicules/page/${p}`}
+									className="w-9 h-9 flex items-center justify-center rounded-xl text-sm text-slate-600 border border-slate-200 hover:bg-slate-100 transition-colors"
+								>
+									{p}
+								</Link>
+							))}
+							<Link
+								href="/vehicules/page/2"
+								className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm text-brand-600 border border-brand-200 hover:bg-brand-50 transition-colors ml-2"
+							>
+								Page suivante <ChevronRight size={14} />
+							</Link>
+						</div>
+					)}
 				</Container>
 			</section>
 

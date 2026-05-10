@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none">
+  <!-- Infiniti logo: triangle with curved lines -->
+  <path d="M40 12 L70 58 L10 58 Z" stroke="currentColor" stroke-width="2" fill="none"/>
+  <path d="M10 58 Q40 38 70 58" stroke="currentColor" stroke-width="2" fill="none"/>
+</svg>

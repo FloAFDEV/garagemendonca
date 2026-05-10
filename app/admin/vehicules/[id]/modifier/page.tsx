@@ -20,11 +20,13 @@ import {
 	AlertCircle,
 	Star,
 	Eye,
+	Wand2,
 } from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
+import { parseDescriptionToOptions } from "@/lib/utils/parse-description-options";
 
 // ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
 
@@ -218,6 +220,7 @@ export default function EditVehiclePage({
 	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
 		"idle",
 	);
+	const [extractCount, setExtractCount] = useState<number | null>(null);
 
 	useEffect(() => {
 		getAdminVehicleById(id).then((vehicle) => {
@@ -251,6 +254,15 @@ export default function EditVehiclePage({
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const cameraInputRef = useRef<HTMLInputElement>(null);
+
+	// ── Image upload — déclaré AVANT les early returns (règles des hooks) ──
+	const handleFiles = useCallback((files: FileList | null) => {
+		if (!files || files.length === 0) return;
+		Array.from(files).forEach((file) => {
+			const url = URL.createObjectURL(file);
+			setImages((p) => [...p, url]);
+		});
+	}, []);
 
 	// ── Guards ───────────────────────────────────────────────────────
 
@@ -306,17 +318,6 @@ export default function EditVehiclePage({
 			setErrors((p) => ({ ...p, [name]: undefined }));
 		}
 	};
-
-	// ── Image upload ─────────────────────────────────────────────────
-
-	const handleFiles = useCallback((files: FileList | null) => {
-		if (!files || files.length === 0) return;
-		Array.from(files).forEach((file) => {
-			const url = URL.createObjectURL(file);
-			setImages((p) => [...p, url]);
-		});
-	}, []);
-
 
 	// ── Validation ───────────────────────────────────────────────────
 
@@ -800,11 +801,40 @@ export default function EditVehiclePage({
 
 					{/* ── Description ────────────────────────────────────── */}
 					<div className={sectionClass}>
-						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
-						>
-							Description
-						</h3>
+						<div className="flex items-center justify-between mb-6">
+							<h3 className={`font-heading font-normal ${t.txt} tracking-widest`}>
+								Description
+							</h3>
+							<button
+								type="button"
+								onClick={() => {
+									const { detectedOptions, remainingText, matchCount } =
+										parseDescriptionToOptions(form.description);
+									if (matchCount === 0) {
+										setExtractCount(0);
+										return;
+									}
+									setForm((p) => ({
+										...p,
+										description: remainingText,
+										options: { ...p.options, ...detectedOptions },
+									}));
+									setExtractCount(matchCount);
+								}}
+								className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors ${t.border} ${t.txtMuted} ${t.hoverBgStrong} ${t.hoverTxt}`}
+								title="Détecter automatiquement les équipements dans la description et les cocher"
+							>
+								<Wand2 size={13} />
+								Détecter les équipements
+							</button>
+						</div>
+						{extractCount !== null && (
+							<p className={`text-xs mb-3 ${extractCount > 0 ? "text-emerald-400" : t.txtSubtle}`}>
+								{extractCount > 0
+									? `${extractCount} équipement${extractCount > 1 ? "s" : ""} détecté${extractCount > 1 ? "s" : ""} et coché${extractCount > 1 ? "s" : ""} automatiquement.`
+									: "Aucun équipement reconnu dans la description."}
+							</p>
+						)}
 						<textarea
 							name="description"
 							rows={5}

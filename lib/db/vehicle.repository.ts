@@ -9,21 +9,17 @@
  * Écritures admin    : client service-role (auth vérifiée en amont).
  */
 
-import { createBrowserClient } from "@supabase/ssr";
 import type { VehicleRow, VehicleInsert, VehicleUpdate } from "@/lib/supabase/database.types";
 import { vehicleFromDb } from "@/lib/mappers/vehicle.mapper";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
+import { getReadClient } from "@/lib/supabase/readClient";
 import type { Vehicle } from "@/types";
+import { VEHICLES_PER_PAGE, pageOffset } from "@/lib/vehicles/pagination";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Q = any;
 
-function anonDb(): Q {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
-}
+const anonDb = (): Q => getReadClient();
 
 function adminDb(): Q {
   return createSupabaseAdminClient();
@@ -163,5 +159,51 @@ export const vehicleDb = {
   async delete(id: string): Promise<void> {
     const { error } = await adminDb().from("vehicles").delete().eq("id", id);
     if (error) throw error;
+  },
+
+  /** Compte les véhicules publics (published + scheduled + sold), avec filtres optionnels */
+  async countPublic(garageId: string, filters: Omit<VehicleListFilters, "limit" | "offset"> = {}): Promise<number> {
+    let q = anonDb()
+      .from("vehicles")
+      .select("id", { count: "exact", head: true })
+      .eq("garage_id", garageId)
+      .in("status", ["published", "scheduled", "sold"]);
+
+    if (filters.brand)        q = q.ilike("brand", `%${filters.brand}%`);
+    if (filters.fuel)         q = q.eq("fuel", filters.fuel);
+    if (filters.transmission) q = q.eq("transmission", filters.transmission);
+    if (filters.maxPrice)     q = q.lte("price", filters.maxPrice);
+    if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
+
+    const { count, error } = await q;
+    if (error) throw error;
+    return count ?? 0;
+  },
+
+  /** Liste paginée pour les pages SEO /vehicules/page/[page], avec filtres optionnels */
+  async listPaginated(
+    garageId: string,
+    page: number,
+    perPage = VEHICLES_PER_PAGE,
+    filters: Omit<VehicleListFilters, "limit" | "offset"> = {},
+  ): Promise<Vehicle[]> {
+    const offset = pageOffset(page, perPage);
+    let q = anonDb()
+      .from("vehicles")
+      .select(SEL_WITH_IMAGES)
+      .eq("garage_id", garageId)
+      .in("status", ["published", "scheduled", "sold"]);
+
+    if (filters.brand)        q = q.ilike("brand", `%${filters.brand}%`);
+    if (filters.fuel)         q = q.eq("fuel", filters.fuel);
+    if (filters.transmission) q = q.eq("transmission", filters.transmission);
+    if (filters.maxPrice)     q = q.lte("price", filters.maxPrice);
+    if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
+
+    q = q.order("created_at", { ascending: false }).range(offset, offset + perPage - 1);
+
+    const { data, error } = await q;
+    if (error) throw error;
+    return ((data ?? []) as VehicleRow[]).map(vehicleFromDb);
   },
 };

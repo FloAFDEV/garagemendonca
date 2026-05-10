@@ -34,6 +34,7 @@ export const BRAND_LOGO_FILENAMES: Partial<Record<string, string>> = {
 
   // ── Japonaises ─────────────────────────────────────────────────
   Honda:         "honda.svg",
+  Infiniti:      "infiniti.svg",
   Lexus:         "lexus.svg",
   Mazda:         "mazda.svg",
   Mitsubishi:    "mitsubishi.svg",
@@ -41,11 +42,14 @@ export const BRAND_LOGO_FILENAMES: Partial<Record<string, string>> = {
   Subaru:        "subaru.svg",
   Suzuki:        "suzuki.svg",
   Toyota:        "toyota.svg",
+  Daihatsu:      "daihatsu.svg",
 
   // ── Coréennes ──────────────────────────────────────────────────
   Hyundai:       "hyundai.svg",
   Kia:           "kia.svg",
   KGM:           "kgm.svg",
+  Genesis:       "genesis.svg",
+  SsangYong:     "ssangyong.svg",
 
   // ── Espagnoles ─────────────────────────────────────────────────
   Cupra:         "cupra.svg",
