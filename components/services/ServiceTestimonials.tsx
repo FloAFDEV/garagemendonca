@@ -21,7 +21,9 @@ function StarRating({ rating }: { rating: number }) {
 					fill={i < clamped ? "currentColor" : "none"}
 					stroke="currentColor"
 					strokeWidth="1.5"
-					className={i < clamped ? "text-amber-400" : "text-slate-200"}
+					className={
+						i < clamped ? "text-amber-400" : "text-slate-200"
+					}
 					aria-hidden="true"
 				>
 					<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -43,7 +45,9 @@ export default function ServiceTestimonials({ testimonials }: Props) {
 
 	return (
 		<div>
-			<h3 className="ty-label text-brand-600 mb-5">Ce qu&apos;ils en disent</h3>
+			<h3 className="ty-label text-brand-600 mb-5">
+				Ce qu&apos;ils en disent
+			</h3>
 			<div className={`grid grid-cols-1 ${colClass} gap-4`}>
 				{testimonials.map((t, i) => (
 					<div
@@ -51,7 +55,8 @@ export default function ServiceTestimonials({ testimonials }: Props) {
 						className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col gap-3"
 					>
 						<StarRating rating={t.rating} />
-						<p className="text-sm text-slate-700 leading-relaxed before:content-['\u00AB\u00a0'] after:content-['\u00a0\u00BB']">
+						<p className="text-sm text-slate-700 leading-relaxed before:content-['«_'] after:content-['_»']">
+							{" "}
 							{t.content}
 						</p>
 						<div className="mt-auto pt-2 border-t border-slate-100">
