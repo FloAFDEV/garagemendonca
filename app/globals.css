@@ -20,7 +20,12 @@
 		letter-spacing: 0.01em;
 	}
 
-	h1, h2, h3, h4, h5, h6 {
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
 		@apply font-heading font-normal tracking-tight;
 	}
 
@@ -32,7 +37,6 @@
 }
 
 @layer components {
-
 	/* ══════════════════════════════════════
      BOUTONS — font-medium max, jamais bold
   ══════════════════════════════════════ */
@@ -255,27 +259,60 @@
 }
 
 /* Barre de défilement sobre */
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+::-webkit-scrollbar {
+	width: 5px;
+}
+::-webkit-scrollbar-track {
+	background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+	background: #e2e8f0;
+	border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: #cbd5e1;
+}
 
 /* ══════════════════════════════════════
    ADMIN — THÈME CLAIR
    Active via data-admin-theme="light" sur la racine AdminLayout
 ══════════════════════════════════════ */
-[data-admin-theme="light"] .bg-dark-950 { background-color: #f1f5f9; }
-[data-admin-theme="light"] .bg-dark-900 { background-color: #ffffff; }
-[data-admin-theme="light"] .bg-dark-800 { background-color: #f8fafc; }
-[data-admin-theme="light"] .bg-dark-700 { background-color: #e2e8f0; }
-[data-admin-theme="light"] .border-dark-800 { border-color: #e2e8f0; }
-[data-admin-theme="light"] .border-dark-700 { border-color: #cbd5e1; }
-[data-admin-theme="light"] .text-white { color: #0f172a; }
-[data-admin-theme="light"] .text-dark-300 { color: #334155; }
-[data-admin-theme="light"] .text-dark-400 { color: #475569; }
-[data-admin-theme="light"] .text-dark-500 { color: #64748b; }
-[data-admin-theme="light"] .text-dark-600 { color: #94a3b8; }
-[data-admin-theme="light"] .placeholder-dark-500::placeholder { color: #94a3b8; }
+[data-admin-theme="light"] .bg-dark-950 {
+	background-color: #f1f5f9;
+}
+[data-admin-theme="light"] .bg-dark-900 {
+	background-color: #ffffff;
+}
+[data-admin-theme="light"] .bg-dark-800 {
+	background-color: #f8fafc;
+}
+[data-admin-theme="light"] .bg-dark-700 {
+	background-color: #e2e8f0;
+}
+[data-admin-theme="light"] .border-dark-800 {
+	border-color: #e2e8f0;
+}
+[data-admin-theme="light"] .border-dark-700 {
+	border-color: #cbd5e1;
+}
+[data-admin-theme="light"] .text-white {
+	color: #0f172a;
+}
+[data-admin-theme="light"] .text-dark-300 {
+	color: #334155;
+}
+[data-admin-theme="light"] .text-dark-400 {
+	color: #475569;
+}
+[data-admin-theme="light"] .text-dark-500 {
+	color: #64748b;
+}
+[data-admin-theme="light"] .text-dark-600 {
+	color: #94a3b8;
+}
+[data-admin-theme="light"] .placeholder-dark-500::placeholder {
+	color: #94a3b8;
+}
 [data-admin-theme="light"] input.bg-dark-800,
 [data-admin-theme="light"] select.bg-dark-800,
 [data-admin-theme="light"] textarea.bg-dark-800 {
@@ -288,16 +325,30 @@
 	background-color: #f8fafc;
 	color: #0f172a;
 }
-[data-admin-theme="light"] tr:hover { background-color: rgba(241, 245, 249, 0.8); }
-[data-admin-theme="light"] .focus\:border-brand-500:focus { border-color: #c8102e; }
-[data-admin-theme="light"] .bg-dark-600\/20 { background-color: rgba(200, 16, 46, 0.08); }
-
-@keyframes marquee {
-	0% { transform: translateX(0%); }
-	100% { transform: translateX(-50%); }
+[data-admin-theme="light"] tr:hover {
+	background-color: rgba(241, 245, 249, 0.8);
+}
+[data-admin-theme="light"] .focus\:border-brand-500:focus {
+	border-color: #c8102e;
+}
+[data-admin-theme="light"] .bg-dark-600\/20 {
+	background-color: rgba(200, 16, 46, 0.08);
 }
 
-.animate-marquee { animation: marquee 60s linear infinite; }
+@keyframes marquee {
+	0% {
+		transform: translateX(0%);
+	}
+	100% {
+		transform: translateX(-50%);
+	}
+}
+
+.animate-marquee {
+	animation: marquee 60s linear infinite;
+}
 @media (prefers-reduced-motion: reduce) {
-	.animate-marquee { animation: none; }
+	.animate-marquee {
+		animation: none;
+	}
 }
