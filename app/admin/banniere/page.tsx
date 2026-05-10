@@ -13,6 +13,14 @@ import type { Banner } from "@/types";
 import { upsertBannerAction, getBannerAction } from "./actions";
 import { adminUI } from "@/lib/admin-ui";
 
+function toDatetimeLocal(iso: string | null | undefined): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 const PALETTE = [
   { label: "Rouge", value: "#DC2626" },
   { label: "Bordeaux", value: "#9B1C1C" },
@@ -106,8 +114,8 @@ export default function AdminBannierePage() {
         cta_label: banner.cta_label ?? "",
         cta_url: banner.cta_url ?? "",
         bg_color: banner.bg_color ?? "#DC2626",
-        scheduled_start: banner.scheduled_start ?? "",
-        scheduled_end: banner.scheduled_end ?? "",
+        scheduled_start: toDatetimeLocal(banner.scheduled_start),
+        scheduled_end: toDatetimeLocal(banner.scheduled_end),
         display_pages: banner.display_pages ?? "all",
         is_dismissible: banner.is_dismissible ?? true,
       });
