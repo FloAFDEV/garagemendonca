@@ -77,7 +77,7 @@ export default function ProcessSteps() {
 								<div className="relative flex flex-col group">
 									<div className="flex lg:flex-col items-center lg:items-start gap-4 lg:gap-0 mb-5 lg:mb-6">
 										{/* Cercle numéroté */}
-										<div className="relative z-10 w-[72px] h-[72px] lg:w-[60px] lg:h-[60px] flex-shrink-0 bg-white border-2 border-slate-200 rounded-full flex items-center justify-center shadow-sm transition-all duration-300 group-hover:border-brand-200 group-hover:shadow-[0_0_0_4px_rgba(249,115,22,0.08)]">
+										<div className="relative z-10 w-[72px] h-[72px] lg:w-[60px] lg:h-[60px] flex-shrink-0 bg-white border-2 border-slate-400 rounded-full flex items-center justify-center shadow-sm transition-all duration-300 group-hover:border-brand-400 group-hover:shadow-[0_0_0_4px_rgba(249,115,22,0.08)]">
 											<div className="w-11 h-11 lg:w-9 lg:h-9 bg-brand-500 rounded-full flex items-center justify-center shadow-brand">
 												<Icon
 													size={18}

@@ -24,7 +24,7 @@ const hours = [
 
 export default function Footer() {
 	return (
-		<footer className="bg-slate-900 text-slate-500">
+		<footer className="bg-slate-900 text-slate-300">
 			{/* Bande accent top */}
 			<div
 				className="h-px bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600"
@@ -69,13 +69,13 @@ export default function Footer() {
 								<div className="ty-subheading text-white text-base leading-tight">
 									Garage Mendonca
 								</div>
-								<div className="font-light text-xs text-slate-600 mt-0.5">
+								<div className="font-light text-xs text-slate-300 mt-0.5">
 									Depuis 2001 · Drémil-Lafage
 								</div>
 							</div>
 						</Link>
 
-						<p className="font-light text-sm leading-relaxed text-slate-500 mb-5">
+						<p className="font-light text-sm leading-relaxed text-slate-300 mb-5">
 							Spécialiste des voitures japonaises et boîtes
 							automatiques depuis 2001, le Garage Mendonca
 							accueille jeunes conducteurs, seniors et personnes à
@@ -97,7 +97,7 @@ export default function Footer() {
 										className="font-light text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
 									>
 										<span
-											className="w-1 h-1 bg-slate-700 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
+											className="w-1 h-1 bg-slate-200 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
 											aria-hidden="true"
 										/>
 										{link.label}
@@ -117,7 +117,7 @@ export default function Footer() {
 										className="font-light text-sm hover:text-brand-400 transition-colors flex items-center gap-2 group"
 									>
 										<span
-											className="w-1 h-1 bg-slate-700 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
+											className="w-1 h-1 bg-slate-200 rounded-full flex-shrink-0 group-hover:bg-brand-400 transition-colors"
 											aria-hidden="true"
 										/>
 										{link.label}
@@ -200,7 +200,7 @@ export default function Footer() {
 								className="text-brand-500"
 								aria-hidden="true"
 							/>
-							<span className="font-light text-xs text-slate-600">
+							<span className="font-light text-xs text-slate-300">
 								Avec ou sans rendez-vous
 							</span>
 						</div>
@@ -210,13 +210,13 @@ export default function Footer() {
 									key={day}
 									className="flex items-center justify-between text-sm py-2 border-b border-slate-800 last:border-0"
 								>
-									<span className="font-light text-slate-500">
+									<span className="font-light text-slate-200">
 										{day}
 									</span>
 									<span
 										className={`font-medium text-xs ${
 											time === "Fermé"
-												? "text-slate-700"
+												? "text-slate-500"
 												: "text-slate-300"
 										}`}
 									>

@@ -67,8 +67,11 @@ export default function Hero() {
 					alt="Atelier du Garage Auto Mendonca"
 					fill
 					priority
-					className="object-cover object-[72%_center] sm:object-[60%_center] md:object-[20%_center] lg:object-[5%_50%]"
-					sizes="100vw"
+					quality={95}
+					placeholder="blur"
+					blurDataURL="/images/garage-hero-blur.webp"
+					className="object-cover object-[72%_center] sm:object-[60%_center] md:object-[20%_center] lg:object-[5%_50%] scale-[1.01]"
+					sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 2560px"
 				/>
 			</div>
 
