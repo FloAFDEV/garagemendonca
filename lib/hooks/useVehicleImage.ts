@@ -35,28 +35,31 @@ export function useVehicleImage(
   storagePath: string | undefined,
   fallback?: string,
 ): { url: string | undefined; loading: boolean; error: boolean } {
-  const hit = storagePath ? getCached(storagePath) : undefined;
+  // When storage_path is missing, try to derive it from the fallback URL
+  const effectivePath = storagePath ?? (fallback ? extractStoragePath(fallback) : undefined);
+
+  const hit = effectivePath ? getCached(effectivePath) : undefined;
   const [url, setUrl]         = useState<string | undefined>(hit ?? fallback);
-  const [loading, setLoading] = useState(!hit && !!storagePath);
+  const [loading, setLoading] = useState(!hit && !!effectivePath);
   const [error, setError]     = useState(false);
 
   useEffect(() => {
-    if (!storagePath) return;
-    const cached = getCached(storagePath);
+    if (!effectivePath) return;
+    const cached = getCached(effectivePath);
     if (cached) { setUrl(cached); setLoading(false); return; }
     setLoading(true);
     createSupabaseBrowserClient()
       .storage.from(BUCKET)
-      .createSignedUrl(storagePath, TTL)
+      .createSignedUrl(effectivePath, TTL)
       .then(({ data, error: err }) => {
         if (err || !data?.signedUrl) { setLoading(false); setError(true); return; }
-        setCached(storagePath, data.signedUrl);
+        setCached(effectivePath, data.signedUrl);
         setUrl(data.signedUrl);
         setLoading(false);
       });
-  // storagePath est stable pour une même fiche véhicule
+  // effectivePath est stable pour une même fiche véhicule
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storagePath]);
+  }, [effectivePath]);
 
   return { url, loading, error };
 }
@@ -66,24 +69,30 @@ export function useVehicleImages(
   vehicleImages: VehicleImage[] | undefined,
   fallbacks: string[],
 ): { urls: string[]; loading: boolean; error: boolean } {
-  const initial = vehicleImages?.map((img, i) =>
-    (img.storage_path ? getCached(img.storage_path) : undefined) ?? fallbacks[i] ?? img.url,
-  ) ?? fallbacks;
+  // Resolve effective storage path: explicit > extracted from url > none
+  function getPath(img: VehicleImage): string | undefined {
+    return img.storage_path ?? extractStoragePath(img.url) ?? undefined;
+  }
+
+  const initial = vehicleImages?.map((img, i) => {
+    const path = getPath(img);
+    return (path ? getCached(path) : undefined) ?? fallbacks[i] ?? img.url;
+  }) ?? fallbacks;
 
   const [urls, setUrls]       = useState<string[]>(initial);
   const [loading, setLoading] = useState(
-    !!vehicleImages?.some((img) => img.storage_path && !getCached(img.storage_path)),
+    !!vehicleImages?.some((img) => { const p = getPath(img); return p && !getCached(p); }),
   );
   const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!vehicleImages?.length) return;
-    if (!vehicleImages.some((img) => img.storage_path)) return;
+    if (!vehicleImages.some((img) => getPath(img))) return;
     const sb = createSupabaseBrowserClient();
     setLoading(true);
     Promise.all(
       vehicleImages.map(async (img, i) => {
-        const path = img.storage_path;
+        const path = getPath(img);
         if (!path) return fallbacks[i] ?? img.url;
         const hit = getCached(path);
         if (hit) return hit;

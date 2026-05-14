@@ -129,13 +129,22 @@ function StatusSelect({
 }
 
 /* ── Thumbnail signée ───────────────────────────────────────────── */
-function VehicleThumb({ vehicle, className }: { vehicle: Vehicle; className: string }) {
-  const path = vehicle.vehicleImages?.[0]?.storage_path;
-  const fallback = vehicle.thumbnailUrl ?? vehicle.vehicleImages?.[0]?.url ?? vehicle.images?.[0];
-  const { url } = useVehicleImage(path, fallback);
-  if (!url) return <Car size={14} className="text-slate-500" />;
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={url} alt="" className={className} />;
+function VehicleThumb({
+	vehicle,
+	className,
+}: {
+	vehicle: Vehicle;
+	className: string;
+}) {
+	const path = vehicle.vehicleImages?.[0]?.storage_path;
+	const fallback =
+		vehicle.thumbnailUrl ??
+		vehicle.vehicleImages?.[0]?.url ??
+		vehicle.images?.[0];
+	const { url } = useVehicleImage(path, fallback);
+	if (!url) return <Car size={14} className="text-slate-500" />;
+	// eslint-disable-next-line @next/next/no-img-element
+	return <img src={url} alt="" className={className} />;
 }
 
 /* ── Page ───────────────────────────────────────────────────────── */
@@ -524,8 +533,16 @@ export default function AdminVehiclesPage() {
 									t.border,
 								)}
 							>
-								<div className={clsx("w-full h-36 overflow-hidden flex items-center justify-center", t.surface)}>
-									<VehicleThumb vehicle={vehicle} className="w-full h-full object-cover" />
+								<div
+									className={clsx(
+										"w-full h-36 overflow-hidden flex items-center justify-center",
+										t.surface,
+									)}
+								>
+									<VehicleThumb
+										vehicle={vehicle}
+										className="w-full h-full object-cover"
+									/>
 								</div>
 								<div className="p-4 space-y-3">
 									<div className="flex items-start justify-between gap-3">
@@ -717,21 +734,24 @@ export default function AdminVehiclesPage() {
 									>
 										<td className="px-3 py-3">
 											<div className="w-12 h-10 rounded-lg overflow-hidden bg-slate-700 flex-shrink-0 flex items-center justify-center">
-												<VehicleThumb vehicle={vehicle} className="w-full h-full object-cover" />
+												<VehicleThumb
+													vehicle={vehicle}
+													className="w-full h-full object-cover"
+												/>
 											</div>
 										</td>
 										<td className="px-5 py-4">
 											<div>
 												<div
 													className={clsx(
-														"font-normal text-sm flex items-center gap-1.5",
+														"font-normal text-pink-700 text-md flex items-center gap-1.5",
 														t.txt,
 													)}
 												>
 													{vehicle.featured && (
 														<Star
 															size={11}
-															className="text-amber-400 flex-shrink-0"
+															className="text-amber-500 flex-shrink-0"
 														/>
 													)}
 													{vehicle.brand}{" "}
@@ -739,7 +759,7 @@ export default function AdminVehiclesPage() {
 													{vehicle.features?.[
 														"Finition"
 													] && (
-														<span className="text-brand-400 text-xs font-normal ml-1">
+														<span className="text-brand-500 text-xs font-normal ml-1">
 															—{" "}
 															{
 																vehicle
@@ -980,7 +1000,7 @@ export default function AdminVehiclesPage() {
 											className={clsx(
 												"w-9 h-9 rounded-xl text-sm border transition-colors",
 												p === page
-													? "text-white border-gray-600"
+													? "text-pink-700 border-gray-600"
 													: clsx(
 															t.border,
 															t.txtMuted,

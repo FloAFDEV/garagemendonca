@@ -4,7 +4,6 @@ import type { Vehicle, VehicleStatus, VehicleUpdateInput, VehicleCreateInput } f
 import { revalidatePath } from "next/cache";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
-import { mapVehicle } from "@/lib/supabase/mappers";
 import { vehicleFromDb } from "@/lib/mappers/vehicle.mapper";
 
 const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
@@ -16,11 +15,12 @@ export async function getAdminVehicles(): Promise<Vehicle[]> {
 	const db = createSupabaseAdminClient();
 	const { data, error } = await db
 		.from("vehicles")
-		.select("*")
+		.select("*, vehicle_images(id, url, storage_path, alt, sort_order, is_primary)")
 		.eq("garage_id", GARAGE_ID())
 		.order("created_at", { ascending: false });
 	if (error) throw error;
-	return (data ?? []).map(mapVehicle);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (data ?? []).map((row) => vehicleFromDb(row as any));
 }
 
 export async function getAdminVehicleById(id: string): Promise<Vehicle | null> {
