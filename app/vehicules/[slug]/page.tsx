@@ -19,10 +19,7 @@ import {
 } from "lucide-react";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
-import {
-	getVehicleImages,
-	getPrimaryImageUrl,
-} from "@/lib/utils/vehicle-images";
+import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
@@ -165,24 +162,22 @@ export async function generateMetadata({
 		vehicle.meta_description ??
 		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, ${vehicle.transmission}. ${vehicle.description.slice(0, 110)}… Garage Mendonca, Drémil-Lafage (31).`;
 
-	const ogImage = getPrimaryImageUrl(vehicle);
+	const canonical = `https://www.garagemendonca.com/vehicules/${vehicle.slug ?? vehicle.id}`;
 
 	return {
 		title,
 		description: desc,
+		alternates: { canonical },
 		openGraph: {
 			title,
 			description: desc,
-			...(ogImage && {
-				images: [
-					{
-						url: ogImage,
-						width: 1200,
-						height: 630,
-						alt: `${vehicle.brand} ${vehicle.model} ${vehicle.year}`,
-					},
-				],
-			}),
+			url: canonical,
+			type: "website",
+		},
+		twitter: {
+			card: "summary_large_image",
+			title,
+			description: desc,
 		},
 	};
 }

@@ -9,8 +9,10 @@ const DISMISS_KEY = "promo_banner_dismissed";
 
 export default function PromoBannerClient({
 	banner,
+	signedImageUrl,
 }: {
 	banner?: Banner | null;
+	signedImageUrl?: string;
 }) {
 	// Guard critique
 	if (!banner) return null;
@@ -65,10 +67,10 @@ export default function PromoBannerClient({
 			role="banner"
 			aria-live="polite"
 			style={{
-				background: banner.image_url
+				background: signedImageUrl
 					? `linear-gradient(${banner.bg_color || "#111827"}cc, ${
 							banner.bg_color || "#111827"
-						}cc), url(${banner.image_url}) center/cover no-repeat`
+						}cc), url(${signedImageUrl}) center/cover no-repeat`
 					: banner.bg_color || "#111827",
 				maxHeight: visible ? "160px" : "0px",
 				opacity: visible ? 1 : 0,

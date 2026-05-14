@@ -68,7 +68,7 @@ export default function VehicleCard({
 		?? vehicle.vehicleImages?.[0]?.url
 		?? vehicle.images?.[0];
 	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
-	const { url: imgSrc } = useVehicleImage(vehicle.vehicleImages?.[0]?.storage_path, fallbackSrc);
+	const { url: imgSrc, loading: imgLoading } = useVehicleImage(vehicle.vehicleImages?.[0]?.storage_path, fallbackSrc);
 
 	// Lien : slug SEO si disponible, UUID en fallback
 	const href = `/vehicules/${vehicle.slug ?? vehicle.id}`;
@@ -81,11 +81,17 @@ export default function VehicleCard({
 		>
 			{/* Image */}
 			<div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
+				{/* Skeleton pendant le chargement de la signed URL */}
+				{imgLoading && (
+					<div className="absolute inset-0 bg-slate-200 animate-pulse" aria-hidden="true" />
+				)}
 				{/* eslint-disable-next-line @next/next/no-img-element */}
 				<img
 					src={imgSrc}
 					alt={imgAlt}
-					className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
+					loading={priority ? "eager" : "lazy"}
+					decoding="async"
+					className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${imgLoading ? "opacity-0" : "opacity-100"} ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 				/>
 
 				{/* Overlay Vendu */}

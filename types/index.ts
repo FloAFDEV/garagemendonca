@@ -346,7 +346,8 @@ export interface ServiceImage {
   id: string;
   service_id: string;
   garage_id: string;
-  url: string;          // chemin local (/images/…) ou URL Supabase Storage
+  url: string;
+  storage_path?: string;
   alt?: string;
   order: number;
   is_primary: boolean;

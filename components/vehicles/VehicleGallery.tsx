@@ -31,7 +31,7 @@ export default function VehicleGallery({
 }: VehicleGalleryProps) {
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
-	const { urls: signedUrls } = useVehicleImages(vehicleImages, images);
+	const { urls: signedUrls, loading: imgsLoading } = useVehicleImages(vehicleImages, images);
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const thumbsRef = useRef<HTMLDivElement>(null);
@@ -131,11 +131,21 @@ export default function VehicleGallery({
 								<img
 									src={src}
 									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${signedUrls.length}`}
-									className="w-full h-full object-cover object-top"
+									loading={idx === 0 ? "eager" : "lazy"}
+									decoding={idx === 0 ? "sync" : "async"}
+									className={`w-full h-full object-cover object-top transition-opacity duration-300 ${imgsLoading ? "opacity-0" : "opacity-100"}`}
 								/>
 							</div>
 						))}
 					</div>
+
+					{/* Skeleton pendant le chargement des signed URLs */}
+					{imgsLoading && (
+						<div
+							className="absolute inset-0 bg-slate-200 animate-pulse pointer-events-none z-[1]"
+							aria-hidden="true"
+						/>
+					)}
 
 					{/* Gradient overlay */}
 					<div
@@ -271,6 +281,8 @@ export default function VehicleGallery({
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
 										className="absolute inset-0 w-full h-full object-cover object-top"
+									loading="lazy"
+									decoding="async"
 									/>
 								</button>
 							))}
@@ -306,6 +318,8 @@ export default function VehicleGallery({
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
 										className="absolute inset-0 w-full h-full object-cover object-top"
+									loading="lazy"
+									decoding="async"
 									/>
 									{activeIdx !== idx && (
 										<span className="absolute bottom-1 right-1 text-[9px] text-white bg-black/40 rounded px-1 pointer-events-none">

@@ -59,6 +59,7 @@ function mapServiceImage(img: any): ServiceImage {
     service_id: img.service_id,
     garage_id: img.garage_id,
     url: img.url,
+    storage_path: img.storage_path ?? undefined,
     alt: img.alt ?? undefined,
     order: img.sort_order ?? img.order ?? 0,
     is_primary: img.is_primary ?? false,

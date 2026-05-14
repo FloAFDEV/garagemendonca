@@ -29,6 +29,29 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+// ─── JSON-LD ─────────────────────────────────────────────────────
+
+function buildItemListJsonLd(
+  vehicles: Awaited<ReturnType<typeof vehicleDb.listPaginated>>,
+  totalCount: number,
+): object {
+  const baseUrl = "https://www.garagemendonca.com";
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Voitures d'occasion — Garage Mendonça",
+    description: "Catalogue de véhicules d'occasion révisés et garantis",
+    url: `${baseUrl}/vehicules`,
+    numberOfItems: totalCount,
+    itemListElement: vehicles.map((v, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${baseUrl}/vehicules/${v.slug ?? v.id}`,
+      name: `${v.brand} ${v.model} ${v.year}`,
+    })),
+  };
+}
+
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
 // ─── Types ───────────────────────────────────────────────────────
@@ -144,8 +167,14 @@ export default async function VehiculesPage({
 
   const meta = buildPaginationMeta(1, totalCount);
 
+  const jsonLd = buildItemListJsonLd(vehicles, totalCount);
+
   return (
     <MainLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* ── Hero ── */}
       <section className="bg-[#0f172a] pt-36 pb-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
