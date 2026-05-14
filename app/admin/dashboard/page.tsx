@@ -13,9 +13,11 @@ export default function DashboardPage() {
 	const t = useAdminTokens();
 	const { data: vehicles = [] } = useVehiclesAdmin(GARAGE_ID);
 
-	const stockCount     = vehicles.filter((v) => v.status !== "sold").length;
-	const soldCount      = vehicles.filter((v) => v.status === "sold").length;
-	const publishedCount = vehicles.filter((v) => v.status === "published").length;
+	const stockCount = vehicles.filter((v) => v.status !== "sold").length;
+	const soldCount = vehicles.filter((v) => v.status === "sold").length;
+	const publishedCount = vehicles.filter(
+		(v) => v.status === "published",
+	).length;
 
 	const stats = [
 		{
@@ -65,9 +67,9 @@ export default function DashboardPage() {
 					<Link
 						href="/admin/vehicules/nouveau"
 						className={clsx(
-							"btn-secondary text-sm",
+							"btn-primary text-sm",
 							t.txtMuted,
-							"hover:text-brand-500",
+							"hover:text-gray-100 text-gray-300 dark:text-gray-200 hover:bg-brand-500",
 						)}
 					>
 						<Plus size={16} />
@@ -209,14 +211,23 @@ export default function DashboardPage() {
 							t.border,
 						)}
 					>
-						<Mail size={28} className={t.txtMuted} aria-hidden="true" />
+						<Mail
+							size={28}
+							className={t.txtMuted}
+							aria-hidden="true"
+						/>
 						<div>
-							<p className={clsx("font-normal text-sm", t.txt)}>Messagerie</p>
+							<p className={clsx("font-normal text-sm", t.txt)}>
+								Messagerie
+							</p>
 							<p className={clsx("text-xs mt-1", t.txtSubtle)}>
 								Consultez les demandes de contact
 							</p>
 						</div>
-						<Link href="/admin/messages" className="btn-secondary text-xs py-2 px-4">
+						<Link
+							href="/admin/messages"
+							className="btn-secondary text-xs py-2 px-4"
+						>
 							Voir les messages
 						</Link>
 					</div>

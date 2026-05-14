@@ -1,10 +1,15 @@
-/* Manrope 300–600 (suppression 700–900) + Inter 300–500 */
+/* ══════════════════════════════════════
+   FONTS
+══════════════════════════════════════ */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Manrope:wght@300;400;500;600&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ══════════════════════════════════════
+   BASE
+══════════════════════════════════════ */
 @layer base {
 	:root {
 		scroll-behavior: smooth;
@@ -26,204 +31,82 @@
 	h4,
 	h5,
 	h6 {
-		@apply font-heading font-normal tracking-tight;
+		@apply font-heading font-normal tracking-tight text-[#0f172a];
 	}
 
 	:focus-visible {
-		outline: 2px solid #c8102e;
+		outline: 2px solid #e11d48;
 		outline-offset: 3px;
 		border-radius: 4px;
 	}
 }
 
+/* ══════════════════════════════════════
+   COMPONENTS
+══════════════════════════════════════ */
 @layer components {
-	/* ══════════════════════════════════════
-     BOUTONS — font-medium max, jamais bold
-  ══════════════════════════════════════ */
-
+	/* BUTTON PRIMARY (ROUGE) */
 	.btn-primary {
 		@apply inline-flex items-center gap-2
-           bg-brand-500 hover:bg-brand-600 active:bg-brand-700
-           text-white font-medium tracking-wide
-           px-6 py-3 rounded-lg
-           min-h-[44px]
-           transition-all duration-200
-           shadow-brand hover:shadow-brand-lg
-           hover:-translate-y-[2px] active:translate-y-0
-           focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+		bg-[#e11d48] hover:bg-[#be123c] active:bg-[#9f1239]
+		text-white font-medium px-6 py-3 rounded-lg
+		transition-all duration-200
+		hover:-translate-y-[2px] active:translate-y-0;
 	}
 
+	/* BUTTON SECONDARY */
 	.btn-secondary {
 		@apply inline-flex items-center gap-2
-           bg-white hover:bg-slate-50
-           text-[#0f172a] font-medium tracking-wide
-           px-6 py-3 rounded-lg
-           min-h-[44px]
-           border border-slate-200
-           transition-all duration-200
-           hover:-translate-y-[2px] active:translate-y-0
-           shadow-sm hover:shadow-md;
+		bg-white border border-slate-200
+		text-[#0f172a] font-medium px-6 py-3 rounded-lg
+		hover:bg-slate-50 transition-all duration-200;
 	}
 
-	.btn-outline {
-		@apply inline-flex items-center gap-2
-           border border-white/40 text-white
-           hover:bg-white/10 hover:border-white/60
-           font-medium tracking-wide px-6 py-3 rounded-lg
-           min-h-[44px]
-           transition-all duration-200
-           hover:-translate-y-[2px] active:translate-y-0
-           focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent;
-	}
-
-	.btn-outline-light {
-		@apply inline-flex items-center gap-2
-           border border-slate-300 text-[#475569]
-           hover:border-brand-500 hover:text-brand-600
-           font-medium tracking-wide px-6 py-3 rounded-lg
-           min-h-[44px]
-           transition-all duration-200
-           hover:-translate-y-[2px] active:translate-y-0
-           focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2;
-	}
-
-	/* ══════════════════════════════════════
-     TYPOGRAPHIE — système sémantique
-  ══════════════════════════════════════ */
-
-	/* Titres de section — sobre, aéré */
+	/* TITRES SECTION */
 	.section-title {
-		@apply text-3xl md:text-4xl font-heading font-normal tracking-tight text-[#0f172a] leading-tight;
+		@apply text-3xl md:text-4xl font-heading font-normal text-[#0f172a];
 	}
 
-	.section-title-light {
-		@apply text-3xl md:text-4xl font-heading font-light tracking-tight text-white leading-tight;
-	}
-
-	/* Sous-titres */
 	.section-subtitle {
-		@apply text-[#64748b] text-base mt-4 max-w-2xl leading-relaxed font-light;
+		@apply text-[#64748b] text-base mt-4 max-w-2xl leading-relaxed;
 	}
 
-	.section-subtitle-light {
-		@apply text-slate-300 text-base mt-4 max-w-2xl leading-relaxed font-light;
+	/* TITRE DESIGN (ROSE) — USAGE EXPLICITE UNIQUEMENT */
+	.text-title {
+		color: #d63384;
 	}
 
-	/* Eyebrow — petite étiquette de catégorie */
-	.eyebrow {
-		@apply inline-flex items-center gap-2
-           text-brand-500 font-normal
-           text-[10px] uppercase tracking-[0.22em] mb-3;
+	/* BRAND ACCENT (ROUGE) */
+	.text-brand {
+		color: #e11d48;
 	}
 
-	.eyebrow-light {
-		@apply inline-flex items-center gap-2
-           text-brand-400 font-normal
-           text-[10px] uppercase tracking-[0.22em] mb-3;
+	.bg-brand {
+		background-color: #e11d48;
 	}
 
-	.section-divider {
-		@apply w-6 h-px bg-brand-500 mb-4;
-	}
-
-	/* ══════════════════════════════════════
-     BADGES — medium + uppercase + tracking
-  ══════════════════════════════════════ */
-
-	.badge {
-		@apply inline-flex items-center gap-1.5
-           text-[10px] font-medium
-           uppercase tracking-[0.14em]
-           px-2.5 py-1 rounded-full;
-	}
-
-	/* ══════════════════════════════════════
-     FORMULAIRE
-  ══════════════════════════════════════ */
-
+	/* INPUT */
 	.input-field {
-		@apply w-full px-4 py-3 rounded-lg
-           border border-slate-200
-           focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
-           outline-none transition-all duration-200
-           text-[#0f172a] placeholder-slate-400 bg-white
-           font-normal;
+		@apply w-full px-4 py-3 rounded-lg border border-slate-200
+		focus:border-[#e11d48] focus:ring-2 focus:ring-[#e11d48]/20
+		bg-white text-[#0f172a];
 	}
 
-	.label {
-		@apply block text-xs font-normal uppercase tracking-[0.14em] text-[#64748b] mb-1.5;
-	}
-
-	/* ══════════════════════════════════════
-     CARTES
-  ══════════════════════════════════════ */
-
+	/* CARD */
 	.card {
-		@apply bg-white rounded-xl shadow-card border border-slate-200
-           overflow-hidden
-           transition-all duration-300
-           hover:shadow-card-hover hover:-translate-y-1;
+		@apply bg-white rounded-xl border border-slate-200 shadow-sm
+		hover:shadow-md transition-all duration-300;
 	}
 
-	.card-dark {
-		@apply bg-slate-800 rounded-xl border border-slate-700
-           overflow-hidden
-           transition-all duration-300
-           hover:border-slate-600 hover:shadow-premium hover:-translate-y-1;
-	}
-
-	/* ══════════════════════════════════════
-     UTILITAIRES TYPOGRAPHIQUES — config centralisée
-     Usage : classe directe dans les composants
-  ══════════════════════════════════════ */
-
-	/* Grand titre (h1) — héroïque, sobre */
-	.ty-display {
-		@apply font-heading font-light tracking-tight leading-[1.05];
-	}
-
-	/* Titre de section (h2) */
-	.ty-heading {
-		@apply font-heading font-normal tracking-tight leading-tight;
-	}
-
-	/* Titre de carte (h3) */
-	.ty-subheading {
-		@apply font-heading font-normal tracking-tight;
-	}
-
-	/* Corps de texte */
-	.ty-body {
-		@apply font-normal text-[#475569] leading-relaxed;
-	}
-
-	/* Texte secondaire / descriptif */
-	.ty-caption {
-		@apply font-light text-[#64748b] leading-relaxed;
-	}
-
-	/* Label / métadonnée */
-	.ty-label {
-		@apply font-light text-[#94a3b8] uppercase tracking-[0.18em] text-[10px];
-	}
-
-	/* Valeur clé (prix, chiffre) */
-	.ty-value {
-		@apply font-medium text-[#0f172a] tracking-tight;
-	}
-
-	/* Numéro de statistique */
-	.ty-stat {
-		@apply font-heading font-normal tracking-tight text-white;
-	}
-
-	.text-gradient {
-		@apply bg-gradient-to-r from-brand-500 to-brand-600 bg-clip-text text-transparent;
+	/* BADGE */
+	.badge {
+		@apply inline-flex items-center text-xs font-medium
+		uppercase tracking-wide px-2 py-1 rounded-full bg-slate-100 text-slate-600;
 	}
 }
 
 /* ══════════════════════════════════════
-   ANIMATION AU SCROLL — AnimateOnScroll
+   UTILITIES
 ══════════════════════════════════════ */
 @layer utilities {
 	.scroll-hidden {
@@ -234,121 +117,106 @@
 	.scroll-visible {
 		opacity: 1;
 		transform: translateY(0);
-		transition:
-			opacity 0.55s ease-out,
-			transform 0.55s ease-out;
+		transition: all 0.5s ease;
 	}
 }
 
 /* ══════════════════════════════════════
-   MOUVEMENT RÉDUIT — prefers-reduced-motion
+   SCROLLBAR
 ══════════════════════════════════════ */
-@media (prefers-reduced-motion: reduce) {
-	.animate-fade-in,
-	.animate-slide-up,
-	.animate-slide-in-right,
-	.animate-marquee {
-		animation: none !important;
-		opacity: 1 !important;
-		transform: none !important;
-	}
-
-	.scroll-visible {
-		transition: none !important;
-	}
-}
-
-/* Barre de défilement sobre */
 ::-webkit-scrollbar {
-	width: 5px;
+	width: 6px;
 }
+
 ::-webkit-scrollbar-track {
 	background: #f1f5f9;
 }
+
 ::-webkit-scrollbar-thumb {
 	background: #e2e8f0;
-	border-radius: 3px;
+	border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
 	background: #cbd5e1;
 }
 
 /* ══════════════════════════════════════
-   ADMIN — THÈME CLAIR
-   Active via data-admin-theme="light" sur la racine AdminLayout
+   ADMIN THEME LIGHT
 ══════════════════════════════════════ */
+
 [data-admin-theme="light"] .bg-dark-950 {
-	background-color: #f1f5f9;
-}
-[data-admin-theme="light"] .bg-dark-900 {
 	background-color: #ffffff;
 }
-[data-admin-theme="light"] .bg-dark-800 {
+
+[data-admin-theme="light"] .bg-dark-900 {
 	background-color: #f8fafc;
 }
+
+[data-admin-theme="light"] .bg-dark-800 {
+	background-color: #f1f5f9;
+}
+
 [data-admin-theme="light"] .bg-dark-700 {
 	background-color: #e2e8f0;
 }
+
 [data-admin-theme="light"] .border-dark-800 {
 	border-color: #e2e8f0;
 }
+
 [data-admin-theme="light"] .border-dark-700 {
 	border-color: #cbd5e1;
 }
-[data-admin-theme="light"] .text-white {
-	color: #0f172a;
-}
+
+/* texte admin */
 [data-admin-theme="light"] .text-dark-300 {
-	color: #334155;
-}
-[data-admin-theme="light"] .text-dark-400 {
 	color: #475569;
 }
+
+[data-admin-theme="light"] .text-dark-400 {
+	color: #334155;
+}
+
 [data-admin-theme="light"] .text-dark-500 {
 	color: #64748b;
 }
+
 [data-admin-theme="light"] .text-dark-600 {
 	color: #94a3b8;
 }
-[data-admin-theme="light"] .placeholder-dark-500::placeholder {
-	color: #94a3b8;
+
+/* TITRES ADMIN (ROSE UNIQUEMENT ICI) */
+[data-admin-theme="light"] h1,
+[data-admin-theme="light"] h2,
+[data-admin-theme="light"] h3 {
+	color: #d63384;
 }
+
+/* ACTIONS (ROUGE) */
+[data-admin-theme="light"] .focus\:border-brand-500:focus {
+	border-color: #e11d48;
+}
+
+[data-admin-theme="light"] .bg-brand-500 {
+	background-color: #e11d48;
+}
+
+/* INPUTS ADMIN */
 [data-admin-theme="light"] input.bg-dark-800,
-[data-admin-theme="light"] select.bg-dark-800,
-[data-admin-theme="light"] textarea.bg-dark-800 {
-	background-color: #f8fafc;
+[data-admin-theme="light"] textarea.bg-dark-800,
+[data-admin-theme="light"] select.bg-dark-800 {
+	background-color: #ffffff;
 	border-color: #cbd5e1;
 	color: #0f172a;
 }
-[data-admin-theme="light"] input.bg-dark-900,
-[data-admin-theme="light"] input.bg-dark-900:focus {
-	background-color: #f8fafc;
-	color: #0f172a;
-}
+
+/* TABLE HOVER */
 [data-admin-theme="light"] tr:hover {
-	background-color: rgba(241, 245, 249, 0.8);
+	background-color: rgba(241, 245, 249, 0.6);
 }
-[data-admin-theme="light"] .focus\:border-brand-500:focus {
-	border-color: #c8102e;
-}
+
+/* BADGE ACCENT ADMIN */
 [data-admin-theme="light"] .bg-dark-600\/20 {
-	background-color: rgba(200, 16, 46, 0.08);
-}
-
-@keyframes marquee {
-	0% {
-		transform: translateX(0%);
-	}
-	100% {
-		transform: translateX(-50%);
-	}
-}
-
-.animate-marquee {
-	animation: marquee 60s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-	.animate-marquee {
-		animation: none;
-	}
+	background-color: rgba(225, 29, 72, 0.08);
 }

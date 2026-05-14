@@ -45,40 +45,52 @@ export function MessageForm({ garageId, vehicleId, onSuccess }: MessageFormProps
       {vehicleId && <input type="hidden" {...register("vehicle_id")} />}
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="Nom *" error={err("name")}>
+        <Field label="Prénom *" error={err("firstname")}>
           <input
-            {...register("name")}
-            placeholder="Jean Dupont"
-            className={inputCls(err("name"))}
+            {...register("firstname")}
+            autoComplete="given-name"
+            placeholder="Jean"
+            className={inputCls(err("firstname"))}
           />
         </Field>
-        <Field label="Email *" error={err("email")}>
+        <Field label="Nom *" error={err("lastname")}>
           <input
-            {...register("email")}
-            type="email"
-            placeholder="jean@exemple.fr"
-            className={inputCls(err("email"))}
+            {...register("lastname")}
+            autoComplete="family-name"
+            placeholder="Dupont"
+            className={inputCls(err("lastname"))}
           />
         </Field>
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Field label="Email *" error={err("email")}>
+          <input
+            {...register("email")}
+            type="email"
+            autoComplete="email"
+            placeholder="jean@exemple.fr"
+            className={inputCls(err("email"))}
+          />
+        </Field>
         <Field label="Téléphone" error={err("phone")}>
           <input
             {...register("phone")}
             type="tel"
+            autoComplete="tel"
             placeholder="06 12 34 56 78"
             className={inputCls(err("phone"))}
           />
         </Field>
-        <Field label="Sujet" error={err("subject")}>
-          <input
-            {...register("subject")}
-            placeholder="Demande de renseignement"
-            className={inputCls(err("subject"))}
-          />
-        </Field>
       </section>
+
+      <Field label="Sujet" error={err("subject")}>
+        <input
+          {...register("subject")}
+          placeholder="Demande de renseignement"
+          className={inputCls(err("subject"))}
+        />
+      </Field>
 
       <Field label="Message *" error={err("message")}>
         <textarea
@@ -88,6 +100,11 @@ export function MessageForm({ garageId, vehicleId, onSuccess }: MessageFormProps
           className={inputCls(err("message"))}
         />
       </Field>
+
+      {/* Honeypot */}
+      <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, overflow: "hidden" }}>
+        <input {...register("website")} type="text" tabIndex={-1} autoComplete="off" />
+      </div>
 
       <div className="flex items-center gap-4 pt-1">
         <button

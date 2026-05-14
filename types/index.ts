@@ -223,14 +223,15 @@ export interface VehicleCategory {
 //  Remplace progressivement le tableau vehicles.images[]
 // ─────────────────────────────────────────────
 export interface VehicleImage {
-  id: string;           // uuid
-  vehicle_id: string;   // FK → vehicles.id
-  garage_id: string;    // FK → garages.id
-  url: string;          // URL Supabase Storage
-  alt?: string;         // texte alternatif SEO
-  sort_order: number;   // 0 = première photo
-  is_primary: boolean;  // true = thumbnail principal
-  created_at?: string;  // ISO 8601
+  id: string;
+  vehicle_id: string;
+  garage_id: string;
+  url: string;
+  storage_path?: string;  // chemin Storage — source de vérité pour signed URLs
+  alt?: string;
+  sort_order: number;
+  is_primary: boolean;
+  created_at?: string;
 }
 
 // ─────────────────────────────────────────────
@@ -306,18 +307,35 @@ export type VehicleUpdateInput = Partial<VehicleCreateInput>;
 //  Message de contact / lead
 //  Mirrors: table "messages"
 // ─────────────────────────────────────────────
+export type MessageStatus = "new" | "in_progress" | "answered" | "archived";
+
 export interface Message {
-  id: string;           // uuid
-  garage_id?: string;   // FK → garages.id (optionnel)
-  vehicle_id?: string;  // FK → vehicles.id (lead depuis fiche VO)
-  name: string;
+  id: string;
+  garage_id?: string;
+  vehicle_id?: string;
+  firstname: string;
+  lastname: string;
+  name: string;         // dérivé : firstname + ' ' + lastname
   email: string;
   phone?: string;
   subject?: string;
   message: string;
-  read_at?: string;     // ISO 8601 — null = non lu
-  status: "new" | "read" | "archived";
-  created_at: string;   // ISO 8601
+  read_at?: string;
+  is_read: boolean;
+  status: MessageStatus;
+  admin_notes?: string;
+  answered_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContactReply {
+  id: string;
+  message_id: string;
+  garage_id?: string;
+  sender_type: "admin" | "client";
+  content: string;
+  created_at: string;
 }
 
 // ─────────────────────────────────────────────
@@ -419,9 +437,11 @@ export interface Banner {
 //  (input formulaire → crée un Message côté serveur)
 // ─────────────────────────────────────────────
 export interface ContactForm {
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
   phone: string;
   subject: string;
   message: string;
+  vehicle_id?: string;
 }

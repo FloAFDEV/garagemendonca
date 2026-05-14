@@ -22,13 +22,15 @@ export default function ContactForm({
   vehicleId?: string;
 }) {
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: vehicule ? "Renseignement véhicule" : "",
-    message: vehicule
+    firstname: "",
+    lastname:  "",
+    email:     "",
+    phone:     "",
+    subject:   vehicule ? "Renseignement véhicule" : "",
+    message:   vehicule
       ? `Bonjour, je suis intéressé(e) par le véhicule : ${vehicule}. Pourriez-vous me recontacter ? Merci.`
       : "",
+    website:   "",  // honeypot — doit rester vide
   });
   const [sent, setSent] = useState(false);
 
@@ -46,11 +48,13 @@ export default function ContactForm({
       {
         garage_id:  GARAGE_ID || undefined,
         vehicle_id: vehicleId ?? undefined,
-        name:       form.name,
+        firstname:  form.firstname,
+        lastname:   form.lastname,
         email:      form.email,
         phone:      form.phone || undefined,
         subject:    form.subject || undefined,
         message:    form.message,
+        website:    form.website || undefined,
       },
       {
         onSuccess: () => setSent(true),
@@ -66,13 +70,13 @@ export default function ContactForm({
         </div>
         <h3 className="ty-subheading text-[#0f172a] text-2xl mb-3">Message envoyé !</h3>
         <p className="text-[#475569] max-w-md mx-auto">
-          Merci pour votre message. Notre équipe vous recontactera dans les plus
+          Merci {form.firstname} ! Notre équipe vous recontactera dans les plus
           brefs délais, généralement sous 24 heures ouvrables.
         </p>
         <button
           onClick={() => {
             setSent(false);
-            setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+            setForm({ firstname: "", lastname: "", email: "", phone: "", subject: "", message: "", website: "" });
           }}
           className="mt-6 text-brand-600 font-normal hover:text-brand-700 transition-colors text-sm"
         >
@@ -89,19 +93,72 @@ export default function ContactForm({
       noValidate
       aria-label="Formulaire de contact"
     >
+      {/* Honeypot — caché visuellement et des lecteurs d'écran */}
+      <div aria-hidden="true" style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, overflow: "hidden" }}>
+        <label htmlFor="website">Ne pas remplir</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.website}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* Prénom / Nom */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label htmlFor="name" className="label">
-            Nom complet <span className="text-brand-600" aria-hidden="true">*</span>
+          <label htmlFor="firstname" className="label">
+            Prénom <span className="text-brand-600" aria-hidden="true">*</span>
           </label>
           <input
-            id="name"
-            name="name"
+            id="firstname"
+            name="firstname"
             type="text"
             required
-            autoComplete="name"
-            placeholder="Jean Dupont"
-            value={form.name}
+            autoComplete="given-name"
+            placeholder="Jean"
+            value={form.firstname}
+            onChange={handleChange}
+            className="input-field"
+            aria-required="true"
+          />
+        </div>
+        <div>
+          <label htmlFor="lastname" className="label">
+            Nom <span className="text-brand-600" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="lastname"
+            name="lastname"
+            type="text"
+            required
+            autoComplete="family-name"
+            placeholder="Dupont"
+            value={form.lastname}
+            onChange={handleChange}
+            className="input-field"
+            aria-required="true"
+          />
+        </div>
+      </div>
+
+      {/* Email / Téléphone */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label htmlFor="email" className="label">
+            Email <span className="text-brand-600" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="jean.dupont@email.com"
+            value={form.email}
             onChange={handleChange}
             className="input-field"
             aria-required="true"
@@ -122,24 +179,7 @@ export default function ContactForm({
         </div>
       </div>
 
-      <div>
-        <label htmlFor="email" className="label">
-          Email <span className="text-brand-600" aria-hidden="true">*</span>
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="jean.dupont@email.com"
-          value={form.email}
-          onChange={handleChange}
-          className="input-field"
-          aria-required="true"
-        />
-      </div>
-
+      {/* Sujet */}
       <div>
         <label htmlFor="subject" className="label">
           Sujet <span className="text-brand-600" aria-hidden="true">*</span>
@@ -160,6 +200,7 @@ export default function ContactForm({
         </select>
       </div>
 
+      {/* Message */}
       <div>
         <label htmlFor="message" className="label">
           Message <span className="text-brand-600" aria-hidden="true">*</span>
@@ -177,6 +218,7 @@ export default function ContactForm({
         />
       </div>
 
+      {/* Consentement RGPD */}
       <div className="flex items-start gap-3">
         <input
           type="checkbox"

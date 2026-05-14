@@ -54,7 +54,7 @@ function MessageRow({ message, garageId }: { message: UIMessage; garageId: strin
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (status: "new" | "read" | "archived") =>
+    mutationFn: (status: "new" | "in_progress" | "answered" | "archived") =>
       updateMessageStatusAction(message.id, garageId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: messageKeys.list(garageId) });
@@ -65,7 +65,7 @@ function MessageRow({ message, garageId }: { message: UIMessage; garageId: strin
     },
   });
 
-  const isNew      = message.status === "new";
+  const isNew      = message.status === "new" || !message.is_read;
   const isArchived = message.status === "archived";
 
   return (
@@ -106,7 +106,7 @@ function MessageRow({ message, garageId }: { message: UIMessage; garageId: strin
       <div className="mt-3 flex flex-wrap gap-2">
         {isNew && (
           <ActionButton
-            onClick={() => mutation.mutate("read")}
+            onClick={() => mutation.mutate("in_progress")}
             disabled={mutation.isPending}
             variant="neutral"
           >

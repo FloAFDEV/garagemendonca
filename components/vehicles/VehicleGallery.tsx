@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
 import type { VehicleImage } from "@/types";
+import { useVehicleImages } from "@/lib/hooks/useVehicleImage";
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -30,6 +31,7 @@ export default function VehicleGallery({
 }: VehicleGalleryProps) {
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
+	const { urls: signedUrls } = useVehicleImages(vehicleImages, images);
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const thumbsRef = useRef<HTMLDivElement>(null);
@@ -79,8 +81,8 @@ export default function VehicleGallery({
 		[activeIdx, scrollTo],
 	);
 	const next = useCallback(
-		() => scrollTo(Math.min(images.length - 1, activeIdx + 1)),
-		[activeIdx, images.length, scrollTo],
+		() => scrollTo(Math.min(signedUrls.length - 1, activeIdx + 1)),
+		[activeIdx, signedUrls.length, scrollTo],
 	);
 
 	/* ── Keyboard (when gallery is focused) ─────────────────── */
@@ -120,23 +122,16 @@ export default function VehicleGallery({
 							"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
 						].join(" ")}
 					>
-						{images.map((src, idx) => (
+						{signedUrls.map((src, idx) => (
 							<div
 								key={src}
 								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
 							>
-								<Image
+								{/* eslint-disable-next-line @next/next/no-img-element */}
+								<img
 									src={src}
-									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${images.length}`}
-									fill
-									className={[
-										"object-cover object-top",
-										"transition-transform duration-700 ease-out",
-										"sm:group-hover:scale-[1.02]",
-									].join(" ")}
-									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw"
-									priority={idx === 0}
-									quality={80}
+									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${signedUrls.length}`}
+									className="w-full h-full object-cover object-top"
 								/>
 							</div>
 						))}
@@ -157,18 +152,18 @@ export default function VehicleGallery({
 					/>
 
 					{/* Compteur photo */}
-					{images.length > 1 && (
+					{signedUrls.length > 1 && (
 						<div
 							className="absolute bottom-3 right-3 bg-black/55 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full pointer-events-none tabular-nums"
 							aria-live="polite"
 							aria-atomic="true"
 						>
-							{activeIdx + 1} / {images.length}
+							{activeIdx + 1} / {signedUrls.length}
 						</div>
 					)}
 
 					{/* Swipe hint — mobile uniquement */}
-					{images.length > 1 && (
+					{signedUrls.length > 1 && (
 						<div
 							className="absolute bottom-3 left-1/2 -translate-x-1/2 sm:hidden pointer-events-none flex items-center gap-1.5 bg-black/45 backdrop-blur-sm rounded-full px-3 py-1"
 							aria-hidden="true"
@@ -194,7 +189,7 @@ export default function VehicleGallery({
 					    Mobile  : toujours visibles, w-11, fond sombre
 					    Desktop : hover uniquement, w-9, fond blanc
 					*/}
-					{images.length > 1 && (
+					{signedUrls.length > 1 && (
 						<>
 							<button
 								type="button"
@@ -246,7 +241,7 @@ export default function VehicleGallery({
 				    Mobile  : scroll horizontal, w-[22vw] fixe, scale-105 actif
 				    Desktop : grid (jusqu'à 6 colonnes)
 				*/}
-				{images.length > 1 && (
+				{signedUrls.length > 1 && (
 					<>
 						{/* Mobile */}
 						<div
@@ -255,7 +250,7 @@ export default function VehicleGallery({
 							role="list"
 							aria-label="Galerie miniatures"
 						>
-							{images.map((src, idx) => (
+							{signedUrls.map((src, idx) => (
 								<button
 									key={src}
 									type="button"
@@ -271,14 +266,11 @@ export default function VehicleGallery({
 											: "border-slate-200 opacity-50 hover:opacity-85 scale-100",
 									].join(" ")}
 								>
-									<Image
+									{/* eslint-disable-next-line @next/next/no-img-element */}
+									<img
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
-										fill
-										className="object-cover object-top"
-										sizes="22vw"
-										loading="lazy"
-										quality={55}
+										className="absolute inset-0 w-full h-full object-cover object-top"
 									/>
 								</button>
 							))}
@@ -288,12 +280,12 @@ export default function VehicleGallery({
 						<div
 							className="hidden sm:grid gap-2"
 							style={{
-								gridTemplateColumns: `repeat(${Math.min(images.length, 6)}, 1fr)`,
+								gridTemplateColumns: `repeat(${Math.min(signedUrls.length, 6)}, 1fr)`,
 							}}
 							role="list"
 							aria-label="Galerie miniatures"
 						>
-							{images.map((src, idx) => (
+							{signedUrls.map((src, idx) => (
 								<button
 									key={src}
 									type="button"
@@ -309,14 +301,11 @@ export default function VehicleGallery({
 											: "border-slate-200 opacity-55 hover:opacity-100 hover:border-slate-300 hover:shadow-sm",
 									].join(" ")}
 								>
-									<Image
+									{/* eslint-disable-next-line @next/next/no-img-element */}
+									<img
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
-										fill
-										className="object-cover object-top"
-										sizes="(max-width: 768px) 22vw, 150px"
-										loading="lazy"
-										quality={55}
+										className="absolute inset-0 w-full h-full object-cover object-top"
 									/>
 									{activeIdx !== idx && (
 										<span className="absolute bottom-1 right-1 text-[9px] text-white bg-black/40 rounded px-1 pointer-events-none">
@@ -333,7 +322,7 @@ export default function VehicleGallery({
 			{/* ── Lightbox via portal ─────────────────────────── */}
 			{lightboxOpen && (
 				<Lightbox
-					images={images}
+					images={signedUrls}
 					initialIndex={activeIdx}
 					vehicleName={vehicleName}
 					onClose={() => setLightboxOpen(false)}

@@ -6,7 +6,9 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"migrate-images": "npx tsx scripts/migrate-images.ts",
+		"migrate-images:dry": "DRY_RUN=true npx tsx scripts/migrate-images.ts"
 	},
 	"dependencies": {
 		"@dnd-kit/core": "^6.3.1",

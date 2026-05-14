@@ -25,8 +25,8 @@ function adminDb(): Q {
   return createSupabaseAdminClient();
 }
 
-// Sélecteur commun : inclut toujours vehicle_images pour alt/order/is_primary
-const SEL_WITH_IMAGES = "*, vehicle_images(id, url, alt, sort_order, is_primary)";
+// Sélecteur commun : inclut vehicle_images avec storage_path pour signed URLs
+const SEL_WITH_IMAGES = "*, vehicle_images(id, url, storage_path, alt, sort_order, is_primary)";
 
 // ─── Filtres pour list() ──────────────────────────────────────────
 

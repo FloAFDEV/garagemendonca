@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
@@ -5,6 +7,7 @@ import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
 import Badge from "@/components/ui/Badge";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
 
 /* ── Options highlights ──────────────────────────────────────────────────────
  * Options les plus "vendantes" à afficher sur la carte, par ordre de priorité.
@@ -61,11 +64,11 @@ export default function VehicleCard({
 	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.color} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
 	const priceLabel = `${vehicle.price.toLocaleString("fr-FR")} euros`;
 
-	// Priorité : thumbnailUrl > first vehicleImage > first images[] URL
-	const imgSrc = vehicle.thumbnailUrl
+	const fallbackSrc = vehicle.thumbnailUrl
 		?? vehicle.vehicleImages?.[0]?.url
 		?? vehicle.images?.[0];
 	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
+	const { url: imgSrc } = useVehicleImage(vehicle.vehicleImages?.[0]?.storage_path, fallbackSrc);
 
 	// Lien : slug SEO si disponible, UUID en fallback
 	const href = `/vehicules/${vehicle.slug ?? vehicle.id}`;
@@ -78,13 +81,11 @@ export default function VehicleCard({
 		>
 			{/* Image */}
 			<div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
-				<Image
+				{/* eslint-disable-next-line @next/next/no-img-element */}
+				<img
 					src={imgSrc}
 					alt={imgAlt}
-					fill
-					priority={priority}
-					className={`object-cover transition-transform duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
-					sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+					className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 				/>
 
 				{/* Overlay Vendu */}

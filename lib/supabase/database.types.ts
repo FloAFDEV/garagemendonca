@@ -19,7 +19,7 @@ export type UserRoleEnum        = "superadmin" | "admin" | "staff";
 export type GaragePlanEnum      = "isolated" | "shared";
 export type FuelTypeEnum        = "Essence" | "Diesel" | "Hybride" | "Électrique" | "GPL" | "Hydrogène";
 export type TransmissionTypeEnum = "Manuelle" | "Automatique";
-export type MessageStatusEnum   = "new" | "read" | "archived";
+export type MessageStatusEnum   = "new" | "in_progress" | "answered" | "read" | "archived";
 export type DisplayPagesEnum    = "all" | "home_only";
 
 // ─────────────────────────────────────────────────────────────────
@@ -187,10 +187,17 @@ export interface VehicleImageRow {
   vehicle_id: string;
   garage_id: string;
   url: string;
+  storage_path: string | null;
   alt: string | null;
   sort_order: number;
   is_primary: boolean;
+  mime_type: string | null;
+  width: number | null;
+  height: number | null;
+  file_size: number | null;
+  hash: string | null;
   created_at: string | null;
+  updated_at: string | null;
 }
 
 export interface ServiceRow {
@@ -244,12 +251,27 @@ export interface MessageRow {
   garage_id: string | null;
   vehicle_id: string | null;
   name: string;
+  firstname: string;
+  lastname: string;
   email: string;
   phone: string | null;
   subject: string | null;
   message: string;
   read_at: string | null;
+  is_read: boolean;
   status: MessageStatusEnum;
+  admin_notes: string | null;
+  answered_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContactReplyRow {
+  id: string;
+  message_id: string;
+  garage_id: string | null;
+  sender_type: "admin" | "client";
+  content: string;
   created_at: string;
 }
 
@@ -283,20 +305,34 @@ export type VehicleInsert = Omit<VehicleRow, "id" | "created_at" | "updated_at">
   external_id?: string | null;
 };
 
-export type VehicleImageInsert = Omit<VehicleImageRow, "id" | "created_at"> & {
+export type VehicleImageInsert = Omit<VehicleImageRow, "id" | "created_at" | "updated_at" | "storage_path" | "alt" | "sort_order" | "is_primary" | "mime_type" | "width" | "height" | "file_size" | "hash"> & {
   id?: string;
+  storage_path?: string | null;
   alt?: string | null;
   sort_order?: number;
   is_primary?: boolean;
+  mime_type?: string | null;
+  width?: number | null;
+  height?: number | null;
+  file_size?: number | null;
+  hash?: string | null;
 };
 
-export type MessageInsert = Omit<MessageRow, "id" | "created_at" | "read_at" | "status"> & {
+export type MessageInsert = Omit<MessageRow, "id" | "created_at" | "updated_at" | "read_at" | "status" | "is_read" | "admin_notes" | "answered_at"> & {
   id?: string;
   phone?: string | null;
   subject?: string | null;
   garage_id?: string | null;
   vehicle_id?: string | null;
   status?: MessageStatusEnum;
+  is_read?: boolean;
+  admin_notes?: string | null;
+  answered_at?: string | null;
+};
+
+export type ContactReplyInsert = Omit<ContactReplyRow, "id" | "created_at"> & {
+  id?: string;
+  garage_id?: string | null;
 };
 
 // ─────────────────────────────────────────────────────────────────
@@ -307,6 +343,7 @@ export type GarageUpdate         = Partial<Omit<GarageRow, "id" | "created_at">>
 export type VehicleUpdate        = Partial<Omit<VehicleRow, "id" | "garage_id" | "created_at">>;
 export type VehicleImageUpdate   = Partial<Omit<VehicleImageRow, "id" | "vehicle_id" | "garage_id" | "created_at">>;
 export type MessageUpdate        = Partial<Omit<MessageRow, "id" | "garage_id" | "vehicle_id" | "created_at">>;
+export type ContactReplyUpdate   = Partial<Omit<ContactReplyRow, "id" | "message_id" | "created_at">>;
 export type VehicleCategoryUpdate = Partial<Omit<VehicleCategoryRow, "id" | "garage_id" | "created_at">>;
 
 // ─────────────────────────────────────────────────────────────────
@@ -355,6 +392,9 @@ export interface Database {
       } & NoRel;
       messages: {
         Row: MessageRow; Insert: MessageInsert; Update: MessageUpdate;
+      } & NoRel;
+      contact_replies: {
+        Row: ContactReplyRow; Insert: ContactReplyInsert; Update: ContactReplyUpdate;
       } & NoRel;
     };
     Views:          Record<string, never>;

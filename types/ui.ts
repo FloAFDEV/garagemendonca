@@ -57,16 +57,32 @@ export interface UIVehicle {
 
 export interface UIMessage {
   id: string;
+  firstname: string;
+  lastname: string;
   name: string;
   email: string;
   phone?: string;
   subject?: string;
   message: string;
-  status: "new" | "read" | "archived";
+  status: "new" | "in_progress" | "answered" | "archived";
   vehicleId?: string;
+  is_read: boolean;
   isUnread: boolean;
-  formattedDate: string; // "26 avr. 2026"
+  admin_notes?: string;
+  answered_at?: string;
+  formattedDate: string;
   created_at: string;
+  updated_at: string;
+  replies?: UIContactReply[];
+}
+
+export interface UIContactReply {
+  id: string;
+  message_id: string;
+  sender_type: "admin" | "client";
+  content: string;
+  created_at: string;
+  formattedDate: string;
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -151,7 +167,7 @@ export interface UIMutationResult {
 //  (ici pour ne pas créer un fichier supplémentaire)
 // ─────────────────────────────────────────────────────────────────
 
-import type { Vehicle, Message, Garage } from "./index";
+import type { Vehicle, Message, Garage, ContactReply } from "./index";
 
 const FR_NUMBER = new Intl.NumberFormat("fr-FR");
 const FR_DATE   = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" });
@@ -189,19 +205,37 @@ export function toUIVehicle(v: Vehicle): UIVehicle {
   };
 }
 
-export function toUIMessage(m: Message): UIMessage {
+export function toUIMessage(m: Message, replies?: ContactReply[]): UIMessage {
   return {
     id:           m.id,
-    name:         m.name,
+    firstname:    m.firstname,
+    lastname:     m.lastname,
+    name:         m.name || `${m.firstname} ${m.lastname}`.trim(),
     email:        m.email,
     phone:        m.phone,
     subject:      m.subject,
     message:      m.message,
-    status:       m.status,
+    status:       (m.status as string) === "read" ? "in_progress" : m.status,
     vehicleId:    m.vehicle_id,
-    isUnread:     m.status === "new",
+    is_read:      m.is_read,
+    isUnread:     !m.is_read,
+    admin_notes:  m.admin_notes,
+    answered_at:  m.answered_at,
     formattedDate: FR_DATE.format(new Date(m.created_at)),
     created_at:   m.created_at,
+    updated_at:   m.updated_at,
+    replies:      replies?.map(toUIContactReply),
+  };
+}
+
+export function toUIContactReply(r: ContactReply): UIContactReply {
+  return {
+    id:           r.id,
+    message_id:   r.message_id,
+    sender_type:  r.sender_type,
+    content:      r.content,
+    created_at:   r.created_at,
+    formattedDate: FR_DATE.format(new Date(r.created_at)),
   };
 }
 

@@ -13,12 +13,11 @@ export function useCreateMessage() {
   return useMutation({
     mutationFn: async (input: MessageCreateInput) => {
       const result = await createMessageAction(input);
-      if ("error" in result) throw result.error;
+      if ("error" in result && result.error) throw result.error;
       return result.data;
     },
 
     onSuccess: (_data, vars) => {
-      // Invalide le compteur non-lus si on connaît le garage
       if (vars.garage_id) {
         queryClient.invalidateQueries({ queryKey: messageKeys.unread(vars.garage_id) });
       }

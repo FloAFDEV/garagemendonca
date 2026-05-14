@@ -32,11 +32,9 @@ const UUID_RE =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 async function getVehicle(slug: string): Promise<Vehicle | null> {
-	// 1. Recherche par slug (chemin normal)
 	const bySlug = await vehicleDb.getBySlug(GARAGE_ID, slug).catch(() => null);
 	if (bySlug) return bySlug;
 
-	// 2. Fallback UUID — compatibilité liens existants
 	if (UUID_RE.test(slug)) {
 		return vehicleDb.getById(slug).catch(() => null);
 	}

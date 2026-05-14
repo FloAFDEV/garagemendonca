@@ -23,14 +23,15 @@ type VehicleRowWithImages = VehicleRow & { vehicle_images?: any[] };
 function mapVehicleImages(raw: unknown[]): VehicleImage[] {
   return (raw as VehicleImage[])
     .map((img) => ({
-      id:         img.id,
-      vehicle_id: img.vehicle_id ?? "",
-      garage_id:  img.garage_id ?? "",
-      url:        img.url,
-      alt:        img.alt ?? undefined,
-      sort_order: img.sort_order ?? 0,
-      is_primary: img.is_primary ?? false,
-      created_at: img.created_at ?? undefined,
+      id:           img.id,
+      vehicle_id:   img.vehicle_id ?? "",
+      garage_id:    img.garage_id ?? "",
+      url:          img.url,
+      storage_path: img.storage_path ?? undefined,
+      alt:          img.alt ?? undefined,
+      sort_order:   img.sort_order ?? 0,
+      is_primary:   img.is_primary ?? false,
+      created_at:   img.created_at ?? undefined,
     }))
     .sort((a, b) => a.sort_order - b.sort_order);
 }

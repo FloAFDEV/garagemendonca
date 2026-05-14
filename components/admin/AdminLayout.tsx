@@ -9,12 +9,12 @@ import {
 	Plus,
 	LogOut,
 	Menu,
-	Bell,
 	Sun,
 	Moon,
 	Wrench,
 	Megaphone,
 	ExternalLink,
+	Inbox,
 } from "lucide-react";
 import clsx from "clsx";
 import { useAdminTheme } from "@/hooks/useAdminTheme";
@@ -33,6 +33,7 @@ const navItems = [
 		label: "Ajouter un véhicule",
 		Icon: Plus,
 	},
+	{ href: "/admin/messages", label: "Messages", Icon: Inbox },
 	{ href: "/admin/services", label: "Services", Icon: Wrench },
 	{ href: "/admin/banniere", label: "Bannière promo", Icon: Megaphone },
 ];
@@ -160,7 +161,11 @@ export default function AdminLayout({
 											className={clsx(
 												isActive
 													? adminUI.navLinkActive
-													: clsx(adminUI.navLink, t.txtMuted, "hover:bg-brand-600 hover:text-white"),
+													: clsx(
+															adminUI.navLink,
+															t.txtMuted,
+															"hover:bg-brand-600 hover:text-white",
+														),
 											)}
 										>
 											<Icon size={17} />
@@ -184,7 +189,12 @@ export default function AdminLayout({
 								href="/"
 								target="_blank"
 								rel="noopener noreferrer"
-								className={clsx(adminUI.navLink, t.txtMuted, t.hoverBg, t.hoverTxt)}
+								className={clsx(
+									adminUI.navLink,
+									t.txtMuted,
+									t.hoverBg,
+									t.hoverTxt,
+								)}
 							>
 								<ExternalLink size={17} />
 								Voir le site
@@ -291,7 +301,9 @@ export default function AdminLayout({
 									"p-2 rounded-xl transition-all duration-200",
 									t.txtMuted,
 									t.hoverBg,
-									isDark ? "hover:text-amber-400" : "hover:text-amber-600",
+									isDark
+										? "hover:text-amber-400"
+										: "hover:text-amber-600",
 									adminUI.focusGhost,
 								)}
 								aria-label={
@@ -306,23 +318,6 @@ export default function AdminLayout({
 								) : (
 									<Moon size={18} />
 								)}
-							</button>
-
-							<button
-								className={clsx(
-									"p-2 rounded-xl transition-colors relative",
-									t.txtMuted,
-									t.hoverBg,
-									t.hoverTxt,
-									adminUI.focusGhost,
-								)}
-								aria-label="Notifications"
-							>
-								<Bell size={18} />
-								<span
-									className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-500 rounded-full"
-									aria-hidden="true"
-								/>
 							</button>
 						</div>
 					</header>

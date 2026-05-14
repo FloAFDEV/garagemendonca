@@ -18,8 +18,15 @@ function adminDb(): Q {
   return createSupabaseAdminClient();
 }
 
+export interface MessageListOptions {
+  status?: MessageStatusEnum | "all";
+  is_read?: boolean;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
+
 export const messageDb = {
-  // Insertion publique — RLS anti-spam (email regex + length > 10)
   async create(row: MessageInsert): Promise<Message> {
     const { data, error } = await anonDb()
       .from("messages").insert(row).select().single();
@@ -27,12 +34,24 @@ export const messageDb = {
     return messageFromDb(data as MessageRow);
   },
 
-  async list(garageId: string, options?: { status?: MessageStatusEnum; limit?: number }): Promise<Message[]> {
+  async list(garageId: string, options?: MessageListOptions): Promise<Message[]> {
     let q = adminDb()
       .from("messages").select("*").eq("garage_id", garageId)
       .order("created_at", { ascending: false });
-    if (options?.status) q = q.eq("status", options.status);
+
+    if (options?.status && options.status !== "all") {
+      q = q.eq("status", options.status);
+    }
+    if (options?.is_read !== undefined) {
+      q = q.eq("is_read", options.is_read);
+    }
+    if (options?.search) {
+      const s = `%${options.search}%`;
+      q = q.or(`firstname.ilike.${s},lastname.ilike.${s},email.ilike.${s},subject.ilike.${s},message.ilike.${s}`);
+    }
     if (options?.limit)  q = q.limit(options.limit);
+    if (options?.offset) q = q.range(options.offset, options.offset + (options.limit ?? 50) - 1);
+
     const { data, error } = await q;
     if (error) throw error;
     return ((data ?? []) as MessageRow[]).map(messageFromDb);
@@ -48,7 +67,7 @@ export const messageDb = {
   async countUnread(garageId: string): Promise<number> {
     const { count, error } = await adminDb()
       .from("messages").select("id", { count: "exact", head: true })
-      .eq("garage_id", garageId).eq("status", "new");
+      .eq("garage_id", garageId).eq("is_read", false);
     if (error) throw error;
     return count ?? 0;
   },
@@ -61,11 +80,23 @@ export const messageDb = {
   },
 
   async markRead(id: string): Promise<Message> {
-    return messageDb.update(id, { status: "read", read_at: new Date().toISOString() });
+    return messageDb.update(id, {
+      is_read: true,
+      read_at: new Date().toISOString(),
+      status:  "in_progress",
+    });
   },
 
   async archive(id: string): Promise<Message> {
     return messageDb.update(id, { status: "archived" });
+  },
+
+  async markAnswered(id: string): Promise<Message> {
+    return messageDb.update(id, {
+      status:      "answered",
+      is_read:     true,
+      answered_at: new Date().toISOString(),
+    });
   },
 
   async delete(id: string): Promise<void> {

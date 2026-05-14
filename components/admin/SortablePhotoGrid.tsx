@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   DndContext,
   closestCenter,
@@ -19,6 +18,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
+import { useVehicleImage, extractStoragePath } from "@/lib/hooks/useVehicleImage";
 
 // ─── Élément draggable ───────────────────────────────────────────
 
@@ -42,8 +42,9 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhot
     zIndex: isDragging ? 10 : undefined,
   };
 
-  // Supabase Storage URLs sont optimisables par next/image ; blob:// ne l'est pas
-  const isRemote = src.startsWith("http");
+  // blob:// = preview local upload ; http = URL Supabase à signer
+  const storagePath = src.startsWith("blob:") ? undefined : extractStoragePath(src) ?? src;
+  const { url: displayUrl } = useVehicleImage(storagePath, src);
 
   return (
     <div
@@ -53,25 +54,13 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhot
         index === 0 ? "ring-2 ring-brand-500" : ""
       }`}
     >
-      {isRemote ? (
-        <Image
-          src={src}
-          alt={`Photo ${index + 1}`}
-          fill
-          sizes="(max-width: 640px) 50vw, 33vw"
-          className="object-cover pointer-events-none"
-          loading={index === 0 ? "eager" : "lazy"}
-          quality={75}
-        />
-      ) : (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={`Photo ${index + 1}`}
-          className="w-full h-full object-cover pointer-events-none"
-          loading={index === 0 ? "eager" : "lazy"}
-        />
-      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={displayUrl ?? src}
+        alt={`Photo ${index + 1}`}
+        className="w-full h-full object-cover pointer-events-none"
+        loading={index === 0 ? "eager" : "lazy"}
+      />
 
       {/* Drag handle */}
       <button
