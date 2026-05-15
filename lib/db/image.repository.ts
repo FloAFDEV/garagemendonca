@@ -27,14 +27,16 @@ function adminDb(): Q {
 
 function rowToImage(row: VehicleImageRow): VehicleImage {
   return {
-    id:         row.id,
-    vehicle_id: row.vehicle_id,
-    garage_id:  row.garage_id,
-    url:        row.url,
-    alt:        row.alt ?? undefined,
-    sort_order: row.sort_order,
-    is_primary: row.is_primary,
-    created_at: row.created_at ?? undefined,
+    id:           row.id,
+    vehicle_id:   row.vehicle_id,
+    garage_id:    row.garage_id,
+    url:          row.url,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    storage_path: (row as any).storage_path ?? undefined,
+    alt:          row.alt ?? undefined,
+    sort_order:   row.sort_order,
+    is_primary:   row.is_primary,
+    created_at:   row.created_at ?? undefined,
   };
 }
 

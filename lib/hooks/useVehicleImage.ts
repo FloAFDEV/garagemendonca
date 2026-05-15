@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
+import { extractStoragePath } from "@/lib/utils/storage";
 import type { VehicleImage } from "@/types";
+
+export { extractStoragePath };
 
 const BUCKET = "vehicle-images";
 const TTL    = 3600;
@@ -20,14 +23,6 @@ function getCached(path: string): string | undefined {
 
 function setCached(path: string, url: string): void {
   cache.set(path, { url, expiresAt: Date.now() + (TTL - MARGIN) * 1000 });
-}
-
-// ─── Util : extrait le storage_path depuis une URL Supabase Storage ─
-// Supporte /object/public/ et /object/sign/, tous buckets confondus
-export function extractStoragePath(urlOrPath: string): string | undefined {
-  if (!urlOrPath.startsWith("http")) return urlOrPath; // déjà un path
-  const m = urlOrPath.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/([^?]+)/);
-  return m?.[1];
 }
 
 // ─── Hook : 1 image ───────────────────────────────────────────────

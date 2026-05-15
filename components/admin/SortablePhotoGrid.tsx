@@ -18,7 +18,8 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import { useVehicleImage, extractStoragePath } from "@/lib/hooks/useVehicleImage";
+import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
+import { extractStoragePath } from "@/lib/utils/storage";
 
 // ─── Élément draggable ───────────────────────────────────────────
 

@@ -1,6 +1,6 @@
 import { bannerRepository } from "@/lib/repositories";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
-import { extractStoragePath } from "@/lib/hooks/useVehicleImage";
+import { extractStoragePath } from "@/lib/utils/storage";
 import PromoBannerClient from "./PromoBannerClient";
 
 async function signBannerImage(imageUrl: string): Promise<string> {

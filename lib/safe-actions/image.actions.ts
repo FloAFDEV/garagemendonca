@@ -2,6 +2,7 @@
 
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { revalidatePath } from "next/cache";
+import { extractStoragePath } from "@/lib/utils/storage";
 
 // ─────────────────────────────────────────────────────────────────
 //  syncVehicleImages
@@ -39,11 +40,12 @@ export async function syncVehicleImages(
   if (imageUrls.length > 0) {
     const altBase = brandModel ? `${brandModel} occasion` : null;
     const rows = imageUrls.map((url, i) => ({
-      vehicle_id: vehicleId,
-      garage_id:  garageId,
+      vehicle_id:   vehicleId,
+      garage_id:    garageId,
       url,
-      sort_order: i,
-      is_primary: i === 0,
+      storage_path: extractStoragePath(url) ?? null,
+      sort_order:   i,
+      is_primary:   i === 0,
       alt: altBase ? `${altBase}${i === 0 ? " — photo principale" : ` — photo ${i + 1}`}` : null,
       mime_type: url.includes(".webp") ? "image/webp" : "image/jpeg",
     }));
