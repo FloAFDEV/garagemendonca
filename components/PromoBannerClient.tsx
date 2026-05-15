@@ -67,19 +67,39 @@ export default function PromoBannerClient({
 			role="banner"
 			aria-live="polite"
 			style={{
-				background: signedImageUrl
-					? `linear-gradient(${banner.bg_color || "#111827"}cc, ${
-							banner.bg_color || "#111827"
-						}cc), url(${signedImageUrl}) center/cover no-repeat`
-					: banner.bg_color || "#111827",
+				backgroundColor: banner.bg_color || "#111827",
 				maxHeight: visible ? "160px" : "0px",
 				opacity: visible ? 1 : 0,
 				overflow: "hidden",
 				transition: "max-height 0.3s ease-out, opacity 0.3s ease-out",
 			}}
-			className="w-full motion-reduce:transition-none"
+			className="relative w-full motion-reduce:transition-none"
 		>
-			<div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+			{/* Background image — absolute, object-cover, no CLS distortion */}
+			{signedImageUrl && (
+				// eslint-disable-next-line @next/next/no-img-element
+				<img
+					src={signedImageUrl}
+					alt=""
+					aria-hidden="true"
+					className="absolute inset-0 w-full h-full object-cover object-center"
+					style={{ mixBlendMode: "multiply", opacity: 0.35 }}
+					loading="eager"
+					decoding="sync"
+				/>
+			)}
+
+			{/* Overlay couleur pour contraste texte */}
+			{signedImageUrl && (
+				<div
+					aria-hidden="true"
+					className="absolute inset-0"
+					style={{ backgroundColor: `${banner.bg_color || "#111827"}99` }}
+				/>
+			)}
+
+			{/* Content */}
+			<div className="relative max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 				<div className="flex-1 text-center">
 					<p className="text-white text-sm font-medium leading-snug">
 						{banner.message}

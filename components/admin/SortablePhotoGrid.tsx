@@ -43,9 +43,12 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhot
     zIndex: isDragging ? 10 : undefined,
   };
 
-  // blob:// = preview local upload ; http = URL Supabase à signer
-  const storagePath = src.startsWith("blob:") ? undefined : extractStoragePath(src) ?? src;
-  const { url: displayUrl } = useSignedImage(storagePath, src);
+  // blob:// = preview local upload — never sign
+  // extractStoragePath: local "/" paths → undefined, Supabase URLs → path segment, plain paths → as-is
+  const storagePath = src.startsWith("blob:") ? undefined : extractStoragePath(src);
+  // Hook only receives a real storage_path — render layer uses raw src as last resort
+  const { url: signedUrl } = useSignedImage(storagePath);
+  const displayUrl = signedUrl ?? (src.startsWith("blob:") ? src : undefined);
 
   return (
     <div

@@ -809,6 +809,7 @@ export default function NewVehiclePage() {
 						<button
 							type="submit"
 							disabled={saveStatus !== "idle"}
+							aria-busy={saveStatus === "saving"}
 							className="btn-primary text-sm py-3 px-6 sm:px-8"
 						>
 							{saveStatus === "saving" ? (

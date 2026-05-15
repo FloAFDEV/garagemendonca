@@ -50,10 +50,12 @@ function getBannerStatus(banner: Partial<Banner>): { label: string; color: strin
 
 function BannerImageUpload({ onUploaded }: { onUploaded: (url: string) => void }) {
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   async function handleFile(file: File) {
     if (!file.type.startsWith("image/")) return;
     setUploading(true);
+    setUploadError(null);
     try {
       const fd = new FormData();
       fd.append("file", file);
@@ -61,25 +63,41 @@ function BannerImageUpload({ onUploaded }: { onUploaded: (url: string) => void }
       fd.append("entityId", "banner");
       fd.append("garageId", process.env.NEXT_PUBLIC_GARAGE_ID ?? "");
       const res = await fetch("/api/upload-image", { method: "POST", body: fd });
-      if (!res.ok) throw new Error("Upload failed");
+      if (!res.ok) throw new Error("Échec de l'upload");
       const { url } = await res.json();
       onUploaded(url);
+    } catch (err) {
+      setUploadError((err as Error).message ?? "Erreur inconnue");
     } finally {
       setUploading(false);
     }
   }
 
   return (
-    <label className={`mt-1 flex items-center gap-3 cursor-pointer w-fit px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors ${uploading ? "opacity-50 pointer-events-none" : "hover:border-brand-500 hover:text-brand-400"}`}>
-      <input
-        type="file"
-        accept="image/*"
-        className="sr-only"
-        onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
-      />
-      {uploading ? <Loader2 size={16} className="animate-spin" /> : <ImagePlus size={16} />}
-      {uploading ? "Téléchargement…" : "Choisir une image"}
-    </label>
+    <div className="space-y-1">
+      <label
+        aria-label="Choisir une image de bannière"
+        className={`mt-1 flex items-center gap-3 cursor-pointer w-fit px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors ${uploading ? "opacity-50 pointer-events-none" : "hover:border-brand-500 hover:text-brand-400"}`}
+      >
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="sr-only"
+          aria-label="Fichier image bannière"
+          disabled={uploading}
+          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
+        />
+        {uploading ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <ImagePlus size={16} aria-hidden="true" />}
+        {uploading ? "Téléchargement…" : "Choisir une image"}
+      </label>
+      {uploadError && (
+        <p role="alert" className="text-xs text-red-400 flex items-center gap-1.5">
+          <AlertCircle size={12} aria-hidden="true" />
+          {uploadError}
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -464,6 +482,7 @@ export default function AdminBannierePage() {
             <button
               type="submit"
               disabled={saveStatus !== "idle"}
+              aria-busy={saveStatus === "saving"}
               className="btn-primary text-sm py-3 px-8"
             >
               {saveStatus === "saving" ? (

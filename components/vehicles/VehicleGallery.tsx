@@ -128,7 +128,7 @@ export default function VehicleGallery({
 					>
 						{displayUrls.map((src, idx) => (
 							<div
-								key={src}
+								key={idx}
 								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
 							>
 								{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -137,14 +137,14 @@ export default function VehicleGallery({
 									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
 									loading={idx === 0 ? "eager" : "lazy"}
 									decoding={idx === 0 ? "sync" : "async"}
-									className={`w-full h-full object-cover object-top transition-opacity duration-300 ${imgsLoading ? "opacity-0" : "opacity-100"}`}
+									className="w-full h-full object-cover object-top"
 								/>
 							</div>
 						))}
 					</div>
 
-					{/* Skeleton pendant le chargement des signed URLs */}
-					{imgsLoading && (
+					{/* Skeleton uniquement si aucune URL disponible */}
+					{imgsLoading && displayUrls.length === 0 && (
 						<div
 							className="absolute inset-0 bg-slate-200 animate-pulse pointer-events-none z-[1]"
 							aria-hidden="true"
@@ -266,7 +266,7 @@ export default function VehicleGallery({
 						>
 							{displayUrls.map((src, idx) => (
 								<button
-									key={src}
+									key={idx}
 									type="button"
 									role="listitem"
 									onClick={() => scrollTo(idx)}
@@ -303,7 +303,7 @@ export default function VehicleGallery({
 						>
 							{displayUrls.map((src, idx) => (
 								<button
-									key={src}
+									key={idx}
 									type="button"
 									role="listitem"
 									onClick={() => scrollTo(idx)}

@@ -3,7 +3,7 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
-import { vehicleRepository } from "@/lib/repositories/vehicleRepository";
+import { vehicleDb } from "@/lib/db/vehicle.repository";
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
@@ -15,20 +15,50 @@ const guarantees = [
 ];
 
 export default async function FeaturedVehicles() {
-	const allFeatured = await vehicleRepository.getFeatured(4, GARAGE_ID || undefined).catch(() => []);
+	const [featured, totalCount] = await Promise.all([
+		vehicleDb.getFeatured(GARAGE_ID, 4).catch(() => []),
+		vehicleDb.countPublic(GARAGE_ID).catch(() => 0),
+	]);
 
-	const displayed = allFeatured.length > 0
-		? allFeatured
-		: await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []).then((vs) =>
-				[...vs].sort((a, b) =>
-					(b.createdAt || "1900-01-01").localeCompare(a.createdAt || "1900-01-01"),
-				).slice(0, 4),
-		  );
-
-	const totalCount = await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []).then((vs) => vs.length);
+	const displayed = featured.length > 0
+		? featured
+		: await vehicleDb.listPaginated(GARAGE_ID, 1, 4).catch(() => []);
 
 	if (displayed.length === 0) {
-		return null;
+		return (
+			<section className="py-20 sm:py-28 bg-white">
+				<Container>
+					<div className="flex flex-col items-center justify-center text-center gap-6 py-12 sm:py-20 max-w-lg mx-auto">
+						<div className="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center">
+							<ShieldCheck size={24} className="text-brand-500" />
+						</div>
+						<div>
+							<h2 className="section-title text-xl sm:text-2xl mb-3">
+								Nouvelles annonces bientôt disponibles
+							</h2>
+							<p className="text-[#64748b] text-sm sm:text-base leading-relaxed">
+								Notre stock se renouvelle régulièrement. Contactez-nous directement pour connaître les véhicules disponibles ou à venir.
+							</p>
+						</div>
+						<div className="flex flex-col sm:flex-row items-center gap-3">
+							<Link
+								href="/contact"
+								className="btn-primary text-sm py-2.5 px-6 inline-flex items-center gap-2 group"
+							>
+								Nous contacter
+								<ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+							</Link>
+							<a
+								href="tel:0532002038"
+								className="btn-secondary text-sm py-2.5 px-6 inline-flex items-center gap-2"
+							>
+								05 32 00 20 38
+							</a>
+						</div>
+					</div>
+				</Container>
+			</section>
+		);
 	}
 
 	return (

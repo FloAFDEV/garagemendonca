@@ -141,6 +141,9 @@ export default function ImageUploadZone({
               <p className={`text-xs mt-1 ${t.txtSubtle}`}>
                 WebP · JPEG · PNG · max 10 Mo · {remaining} photo{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}
               </p>
+              <p className={`text-xs mt-0.5 ${t.txtSubtle}`}>
+                Format paysage recommandé — 16:9 ou 4:3 pour un meilleur rendu.
+              </p>
             </div>
 
             {/* Boutons d'upload */}

@@ -137,14 +137,16 @@ function VehicleThumb({
 	className: string;
 }) {
 	const path = vehicle.vehicleImages?.[0]?.storage_path;
-	const fallback =
+	const legacyUrl =
 		vehicle.thumbnailUrl ??
 		vehicle.vehicleImages?.[0]?.url ??
 		vehicle.images?.[0];
-	const { url } = useSignedImage(path, fallback);
-	if (!url) return <Car size={14} className="text-slate-500" />;
+	const { url: signedUrl } = useSignedImage(path);
+	// Legacy visible immédiatement ; signed URL améliore progressivement
+	const displayUrl = signedUrl ?? legacyUrl;
+	if (!displayUrl) return <Car size={14} className="text-slate-500" />;
 	// eslint-disable-next-line @next/next/no-img-element
-	return <img src={url} alt="" className={className} />;
+	return <img src={displayUrl} alt="" className={className} />;
 }
 
 /* ── Page ───────────────────────────────────────────────────────── */

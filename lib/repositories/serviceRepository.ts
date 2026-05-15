@@ -49,13 +49,13 @@ async function fetchServiceTestimonials(
 
 // ─── Lectures Supabase ───────────────────────────────────────────────────────
 
-async function getAllSupabase(garageId: string): Promise<Service[]> {
-  const { data, error } = await getReadClient()
+async function getAllSupabase(garageId: string, activeOnly = true): Promise<Service[]> {
+  let query = getReadClient()
     .from("services")
     .select(SERVICE_SELECT)
-    .eq("garage_id", garageId)
-    .eq("is_active", true)
-    .order("sort_order");
+    .eq("garage_id", garageId);
+  if (activeOnly) query = query.eq("is_active", true);
+  const { data, error } = await query.order("sort_order");
   if (error) throw error;
 
   const rows = data ?? [];
@@ -87,6 +87,11 @@ const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 export const serviceRepository = {
   getAll: async (): Promise<Service[]> => {
     if (SUPABASE_ENABLED) return getAllSupabase(GARAGE_ID());
+    return [];
+  },
+
+  getAllForAdmin: async (): Promise<Service[]> => {
+    if (SUPABASE_ENABLED) return getAllSupabase(GARAGE_ID(), false);
     return [];
   },
 

@@ -224,6 +224,7 @@ export interface ServiceImageRow {
   service_id: string;
   garage_id: string;
   url: string;
+  storage_path: string | null;
   alt: string | null;
   sort_order: number;
   is_primary: boolean;

@@ -12,20 +12,24 @@ function getPrimaryImage(images: ServiceImage[]): ServiceImage | undefined {
 }
 
 function ServiceImage({ image, title }: { image: ServiceImage; title: string }) {
-	const { url, loading } = useVehicleImage(image.storage_path, image.url, "service-images");
+	// Hook only receives storage_path — never a local URL (would be treated as storage path)
+	const { url: signedUrl, loading } = useVehicleImage(image.storage_path, undefined, "service-images");
+	// Render-layer fallback: signed URL first, then legacy url (local /public or http)
+	const displayUrl = signedUrl ?? image.url ?? undefined;
 	return (
 		<>
-			{loading && (
+			{/* Skeleton uniquement si aucune URL legacy ni signée disponible */}
+			{loading && !displayUrl && (
 				<div className="absolute inset-0 bg-slate-200 animate-pulse" aria-hidden="true" />
 			)}
-			{url && (
+			{displayUrl && (
 				// eslint-disable-next-line @next/next/no-img-element
 				<img
-					src={url}
+					src={displayUrl}
 					alt={image.alt ?? title}
 					loading="eager"
 					decoding="sync"
-					className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
+					className="absolute inset-0 w-full h-full object-cover"
 				/>
 			)}
 		</>

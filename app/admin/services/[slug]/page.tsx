@@ -129,7 +129,8 @@ function ServiceImageCard({
 	onAltChange: (alt: string) => void;
 }) {
 	const t = useAdminTokens();
-	const { url: previewUrl } = useVehicleImage(img.storage_path, img.url, "service-images");
+	const { url: signedUrl } = useVehicleImage(img.storage_path, undefined, "service-images");
+	const previewUrl = signedUrl ?? img.url ?? undefined;
 	return (
 		<div className={clsx("rounded-xl border p-4 space-y-3", t.border, t.surface2)}>
 			<div className="flex items-center justify-between gap-2">
@@ -1118,9 +1119,12 @@ export default function EditServicePage({
 						</div>
 
 						{/* Upload */}
+						<p className={clsx("text-[11px] mt-3", t.txtSubtle)}>
+							Format paysage recommandé (16:9 ou 4:3) — WebP/JPEG/PNG, max 10 Mo.
+						</p>
 						<label
 							className={clsx(
-								"mt-3 flex items-center gap-2 cursor-pointer",
+								"mt-2 flex items-center gap-2 cursor-pointer",
 								adminUI.btnAddItem,
 								uploading && "opacity-50 pointer-events-none",
 							)}
@@ -1134,6 +1138,7 @@ export default function EditServicePage({
 							<input
 								type="file"
 								accept="image/webp,image/jpeg,image/png"
+								capture="environment"
 								className="hidden"
 								onChange={handleImageUpload}
 								disabled={uploading}
@@ -1152,6 +1157,7 @@ export default function EditServicePage({
 						<button
 							type="submit"
 							disabled={saveStatus !== "idle"}
+							aria-busy={saveStatus === "saving"}
 							className="btn-primary text-sm py-3 px-6 sm:px-8"
 						>
 							{saveStatus === "saving" ? (
