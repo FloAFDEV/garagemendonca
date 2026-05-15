@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import Link from "next/link";
 import {
   Save, Loader2, CheckCircle2, AlertCircle, Eye, ToggleLeft, ToggleRight,
-  Megaphone, Calendar, Palette, ExternalLink, ImagePlus, X,
+  Megaphone, Calendar, Palette, ExternalLink, ImagePlus, Camera, X,
 } from "lucide-react";
 import clsx from "clsx";
 import type { Banner } from "@/types";
@@ -48,12 +48,25 @@ function getBannerStatus(banner: Partial<Banner>): { label: string; color: strin
   return { label: "Active", color: adminUI.statusActive };
 }
 
-function BannerImageUpload({ onUploaded }: { onUploaded: (url: string) => void }) {
-  const [uploading, setUploading] = useState(false);
+function BannerImageUpload({
+  onUploaded,
+  onBlobPreview,
+}: {
+  onUploaded: (url: string) => void;
+  onBlobPreview: (blobUrl: string | null) => void;
+}) {
+  const fileInputRef   = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading]     = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   async function handleFile(file: File) {
     if (!file.type.startsWith("image/")) return;
+
+    // Preview immédiat via blob URL — visible avant que Supabase réponde
+    const blobUrl = URL.createObjectURL(file);
+    onBlobPreview(blobUrl);
+
     setUploading(true);
     setUploadError(null);
     try {
@@ -63,34 +76,75 @@ function BannerImageUpload({ onUploaded }: { onUploaded: (url: string) => void }
       fd.append("entityId", "banner");
       fd.append("garageId", process.env.NEXT_PUBLIC_GARAGE_ID ?? "");
       const res = await fetch("/api/upload-image", { method: "POST", body: fd });
-      if (!res.ok) throw new Error("Échec de l'upload");
+      if (!res.ok) throw new Error((await res.json()).error ?? "Échec de l'upload");
       const { url } = await res.json();
       onUploaded(url);
     } catch (err) {
       setUploadError((err as Error).message ?? "Erreur inconnue");
+      onBlobPreview(null); // annuler le preview si erreur
     } finally {
+      URL.revokeObjectURL(blobUrl);
       setUploading(false);
     }
   }
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) handleFile(f);
+    e.target.value = "";
+  };
+
   return (
-    <div className="space-y-1">
-      <label
-        aria-label="Choisir une image de bannière"
-        className={`mt-1 flex items-center gap-3 cursor-pointer w-fit px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors ${uploading ? "opacity-50 pointer-events-none" : "hover:border-brand-500 hover:text-brand-400"}`}
-      >
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="sr-only"
-          aria-label="Fichier image bannière"
+    <div className="space-y-2 mt-1">
+      {/* Inputs cachés — hors de tout bouton (HTML valide) */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        aria-hidden="true"
+        tabIndex={-1}
+        onChange={handleChange}
+      />
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="sr-only"
+        aria-hidden="true"
+        tabIndex={-1}
+        onChange={handleChange}
+      />
+
+      <div className="flex items-center gap-2 flex-wrap">
+        {/* Galerie / fichier — desktop + galerie mobile */}
+        <button
+          type="button"
           disabled={uploading}
-          onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
-        />
-        {uploading ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <ImagePlus size={16} aria-hidden="true" />}
-        {uploading ? "Téléchargement…" : "Choisir une image"}
-      </label>
+          onClick={() => fileInputRef.current?.click()}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors hover:border-brand-500 hover:text-brand-400 disabled:opacity-50 disabled:pointer-events-none"
+        >
+          {uploading ? (
+            <Loader2 size={15} className="animate-spin" aria-hidden="true" />
+          ) : (
+            <ImagePlus size={15} aria-hidden="true" />
+          )}
+          {uploading ? "Téléchargement…" : "Galerie / fichier"}
+        </button>
+
+        {/* Caméra — ouvre directement la caméra arrière sur mobile */}
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => cameraInputRef.current?.click()}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors hover:border-brand-500 hover:text-brand-400 disabled:opacity-50 disabled:pointer-events-none"
+        >
+          <Camera size={15} aria-hidden="true" />
+          Prendre une photo
+        </button>
+      </div>
+
       {uploadError && (
         <p role="alert" className="text-xs text-red-400 flex items-center gap-1.5">
           <AlertCircle size={12} aria-hidden="true" />
@@ -119,6 +173,8 @@ export default function AdminBannierePage() {
   });
 
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  // blob URL temporaire : preview immédiat avant que Supabase ait répondu
+  const [blobPreview, setBlobPreview] = useState<string | null>(null);
 
   useEffect(() => {
     getBannerAction().then((banner) => {
@@ -316,26 +372,54 @@ export default function AdminBannierePage() {
               {/* Image de fond */}
               <div>
                 <label className={labelClass}>Image de fond (optionnel)</label>
-                {form.image_url ? (
+                {/* Affichage : blobUrl (preview immédiat) ?? storedUrl ?? rien */}
+                {(blobPreview ?? form.image_url) ? (
                   <div className="relative mt-1 rounded-xl overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={form.image_url}
+                      src={blobPreview ?? form.image_url!}
                       alt="Preview bannière"
                       className="w-full max-h-40 object-cover"
                       onError={e => (e.currentTarget.style.display = "none")}
                     />
-                    <button
-                      type="button"
-                      onClick={() => set("image_url", "")}
-                      className="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
-                      aria-label="Supprimer l'image"
-                    >
-                      <X size={12} className="text-white" />
-                    </button>
+                    {/* Spinner upload par-dessus le blob preview */}
+                    {blobPreview && !form.image_url && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-xl">
+                        <Loader2 size={24} className="animate-spin text-white" />
+                      </div>
+                    )}
+                    {/* Bouton supprimer — seulement si upload terminé */}
+                    {!blobPreview && (
+                      <button
+                        type="button"
+                        onClick={() => { set("image_url", ""); setBlobPreview(null); }}
+                        className="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
+                        aria-label="Supprimer l'image"
+                      >
+                        <X size={12} className="text-white" />
+                      </button>
+                    )}
                   </div>
                 ) : (
-                  <BannerImageUpload onUploaded={(url) => set("image_url", url)} />
+                  <BannerImageUpload
+                    onUploaded={(url) => {
+                      set("image_url", url);
+                      setBlobPreview(null);
+                    }}
+                    onBlobPreview={setBlobPreview}
+                  />
+                )}
+                {/* Bouton "Remplacer" visible quand une image est déjà chargée */}
+                {form.image_url && !blobPreview && (
+                  <div className="mt-2">
+                    <BannerImageUpload
+                      onUploaded={(url) => {
+                        set("image_url", url);
+                        setBlobPreview(null);
+                      }}
+                      onBlobPreview={setBlobPreview}
+                    />
+                  </div>
                 )}
                 <p className={clsx("text-xs mt-1.5", t.txtSubtle)}>
                   Recommandé : 1920 × 900 px — sera converti en WebP automatiquement.

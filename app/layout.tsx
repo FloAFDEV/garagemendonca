@@ -23,17 +23,14 @@ export const metadata: Metadata = {
 		"contrôle technique",
 		"filtre à particules DPF",
 	],
+	// app/icon.png + app/apple-icon.png auto-détectés par Next.js App Router
 	openGraph: {
 		title: "Garage Auto Mendonca — Spécialiste automobile Drémil-Lafage",
 		description:
 			"Garage auto à Drémil-Lafage (31) depuis 2001. Mécanique, carrosserie, vente VO. Spécialiste japonaises · boîte automatique. Diagnostic en 10 min.",
 		type: "website",
 		locale: "fr_FR",
-	},
-	icons: {
-		icon: "/favicon.ico",
-		shortcut: "/favicon.ico",
-		apple: "/apple-touch-icon.png",
+		images: [{ url: "/images/og-image.webp", width: 1200, height: 630, alt: "Garage Auto Mendonca — Drémil-Lafage" }],
 	},
 };
 

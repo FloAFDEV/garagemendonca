@@ -82,20 +82,23 @@ export default function VehicleCard({
 		>
 			{/* Image */}
 			<div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
-				{/* Skeleton uniquement si aucune URL disponible (ni signée ni legacy) */}
+				{/* Skeleton pendant le chargement de l'URL signée */}
 				{imgLoading && !imgSrc && (
 					<div className="absolute inset-0 bg-slate-200 animate-pulse" aria-hidden="true" />
 				)}
+				{/* Image véhicule — fallback logo GM si aucune URL disponible */}
 				{/* eslint-disable-next-line @next/next/no-img-element */}
-				{imgSrc && (
-					<img
-						src={imgSrc}
-						alt={imgAlt}
-						loading={priority ? "eager" : "lazy"}
-						decoding="async"
-						className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-100 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
-					/>
-				)}
+				<img
+					src={imgSrc ?? "/images/logo-gm.webp"}
+					alt={imgSrc ? imgAlt : "Garage Mendonça"}
+					loading={priority ? "eager" : "lazy"}
+					decoding="async"
+					className={`absolute inset-0 w-full h-full transition-all duration-500 opacity-100 ${
+						imgSrc
+							? `object-cover ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`
+							: "object-contain p-6 bg-[#0d1b34]"
+					}`}
+				/>
 
 				{/* Overlay Vendu */}
 				{vehicle.status === "sold" && (

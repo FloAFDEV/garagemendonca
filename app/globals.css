@@ -67,8 +67,25 @@
 		@apply text-3xl md:text-4xl font-heading font-normal text-[#0f172a];
 	}
 
+	.section-title-light {
+		@apply text-3xl md:text-4xl font-heading font-normal text-white;
+	}
+
 	.section-subtitle {
 		@apply text-[#64748b] text-base mt-4 max-w-2xl leading-relaxed;
+	}
+
+	/* EYEBROW LABEL — petit texte surtitre */
+	.section-divider {
+		@apply w-8 h-0.5 bg-brand-500 mb-4;
+	}
+
+	.eyebrow {
+		@apply inline-flex items-center text-brand-500 text-xs font-medium tracking-widest uppercase mb-3;
+	}
+
+	.eyebrow-light {
+		@apply inline-flex items-center text-brand-400 text-xs font-medium tracking-widest uppercase mb-3;
 	}
 
 	/* TITRE DESIGN (ROSE) — USAGE EXPLICITE UNIQUEMENT */
