@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import HeroParallax from "./HeroParallax";
 import {
 	Phone,
@@ -144,6 +145,20 @@ export default function Hero() {
 						</div>
 					</div>
 				</Container>
+			</div>
+
+			{/* ── Logo GM — badge emblème coin haut droit ─────────────── */}
+			<div className="absolute top-[88px] right-5 sm:top-[96px] sm:right-8 md:top-[108px] md:right-12 z-10 animate-fade-in">
+				<div className="relative w-[72px] h-[72px] sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full ring-2 ring-white/30 shadow-[0_6px_32px_rgba(0,0,0,0.6)] overflow-hidden">
+					<Image
+						src="/images/logo-gm.webp"
+						alt="Logo Garage Mendonça"
+						fill
+						sizes="(max-width: 768px) 80px, 112px"
+						className="object-cover"
+						priority
+					/>
+				</div>
 			</div>
 
 			{/* Badges flottants desktop */}

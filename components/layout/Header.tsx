@@ -90,15 +90,30 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 					{/* Logo */}
 					<Link
 						href="/"
-						className="flex items-center group flex-shrink-0"
+						className="flex items-center gap-3 group flex-shrink-0"
 					>
-						<div className="relative h-[55px] md:h-[60px] w-[180px] md:w-[220px]">
+						{/* Emblème GM circulaire */}
+						<div className={clsx(
+							"relative flex-shrink-0 w-10 h-10 md:w-11 md:h-11 rounded-full overflow-hidden ring-2 transition-all duration-300",
+							isOpaque ? "ring-slate-200 shadow-sm" : "ring-white/30 shadow-md",
+						)}>
+							<Image
+								src="/images/logo-gm.webp"
+								alt=""
+								fill
+								priority
+								sizes="44px"
+								className="object-cover"
+							/>
+						</div>
+						{/* Logo texte */}
+						<div className="relative h-[42px] md:h-[48px] w-[140px] md:w-[175px]">
 							<Image
 								src="/images/logo.webp"
 								alt="Garage Mendonca"
 								fill
 								priority
-								sizes="180px"
+								sizes="175px"
 								className="object-contain object-left"
 							/>
 						</div>
