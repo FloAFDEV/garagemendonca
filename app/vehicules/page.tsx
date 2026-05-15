@@ -72,11 +72,15 @@ export async function generateMetadata({
   return {
     title: listingTitle(1, 1),
     description: desc,
+    robots: { index: true, follow: true },
     alternates: { canonical: "https://www.garagemendonca.com/vehicules" },
     openGraph: {
       title: "Occasions révisées & garanties — Garage Mendonça, Drémil-Lafage",
       description: desc,
+      url: "https://www.garagemendonca.com/vehicules",
       type: "website",
+      siteName: "Garage Mendonça",
+      locale: "fr_FR",
     },
     twitter: { card: "summary_large_image", title: "Voitures d'occasion — Garage Mendonça", description: desc },
   };

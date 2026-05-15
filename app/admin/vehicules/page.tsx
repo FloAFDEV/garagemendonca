@@ -21,7 +21,7 @@ import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import clsx from "clsx";
 import { adminUI } from "@/lib/admin-ui";
-import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
+import { useSignedImage } from "@/lib/hooks/useVehicleImage";
 import {
 	getAdminVehicles,
 	updateVehicleStatus,
@@ -141,7 +141,7 @@ function VehicleThumb({
 		vehicle.thumbnailUrl ??
 		vehicle.vehicleImages?.[0]?.url ??
 		vehicle.images?.[0];
-	const { url } = useVehicleImage(path, fallback);
+	const { url } = useSignedImage(path, fallback);
 	if (!url) return <Car size={14} className="text-slate-500" />;
 	// eslint-disable-next-line @next/next/no-img-element
 	return <img src={url} alt="" className={className} />;

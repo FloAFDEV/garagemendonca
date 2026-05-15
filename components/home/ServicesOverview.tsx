@@ -10,11 +10,6 @@ const iconMap: Record<string, React.ElementType> = {
 	paintbrush: Paintbrush,
 };
 
-const numMap: Record<string, string> = {
-	entretien: "01",
-	mecanique: "02",
-	carrosserie: "03",
-};
 
 const reassuranceItems = [
 	{
@@ -142,7 +137,7 @@ export default async function ServicesOverview() {
 				<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
 					{services.filter((s) => s.is_active).map((service, i) => {
 						const Icon = iconMap[service.icon] ?? Wrench;
-						const num = numMap[service.slug] ?? String(i + 1).padStart(2, "0");
+						const num = String(i + 1).padStart(2, "0");
 						return (
 							<AnimateOnScroll key={service.id} delay={i * 90}>
 								<Link

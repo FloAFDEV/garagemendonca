@@ -47,7 +47,9 @@ const guarantees = [
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
 export default async function ProduitPage() {
-	const allVehicles = await vehicleRepository.getAll(GARAGE_ID || undefined).catch(() => []);
+	const allVehicles = await vehicleRepository
+		.getAll(GARAGE_ID || undefined)
+		.catch(() => []);
 	const featured = allVehicles.filter((v) => v.featured).slice(0, 3);
 	const rest = allVehicles.filter((v) => !v.featured).slice(0, 3);
 	return (
@@ -199,7 +201,9 @@ export default async function ProduitPage() {
 								className="btn-primary text-base px-10 py-4"
 							>
 								<Car size={18} />
-								Voir tous les véhicules ({allVehicles.length}{" "}
+								Voir tous les véhicules ({
+									allVehicles.length
+								}{" "}
 								disponibles)
 							</Link>
 						</div>

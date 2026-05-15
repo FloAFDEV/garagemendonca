@@ -157,27 +157,41 @@ export async function generateMetadata({
 	const vehicle = await getVehicle(slug);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
-	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} €`;
+	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} € | Garage Mendonça`;
 	const desc =
 		vehicle.meta_description ??
-		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, ${vehicle.transmission}. ${vehicle.description.slice(0, 110)}… Garage Mendonca, Drémil-Lafage (31).`;
+		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, boîte ${vehicle.transmission}. Révisé et garanti. Garage Mendonça.`;
 
 	const canonical = `https://www.garagemendonca.com/vehicules/${vehicle.slug ?? vehicle.id}`;
+	const ogImage = `${canonical}/opengraph-image`;
 
 	return {
 		title,
 		description: desc,
+		keywords: [
+			vehicle.brand,
+			vehicle.model,
+			`${vehicle.brand} ${vehicle.model} occasion`,
+			`${vehicle.brand} ${vehicle.model} ${vehicle.year}`,
+			vehicle.fuel,
+			vehicle.transmission,
+		],
+		robots: { index: vehicle.status !== "draft", follow: true },
 		alternates: { canonical },
 		openGraph: {
 			title,
 			description: desc,
 			url: canonical,
 			type: "website",
+			siteName: "Garage Mendonça",
+			locale: "fr_FR",
+			images: [{ url: ogImage, width: 1200, height: 630, alt: `${vehicle.brand} ${vehicle.model} ${vehicle.year}` }],
 		},
 		twitter: {
 			card: "summary_large_image",
 			title,
 			description: desc,
+			images: [ogImage],
 		},
 	};
 }
@@ -203,11 +217,16 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const contactHref = `/contact?vehicule=${encodeURIComponent(vehicleName)}`;
 
 	/* JSON-LD */
+	const vehicleCanonical = `https://www.garagemendonca.com/vehicules/${vehicle.slug ?? vehicle.id}`;
 	const jsonLdCar = {
 		"@context": "https://schema.org",
 		"@type": "Car",
-		name: `${vehicle.brand} ${vehicle.model}`,
+		name: `${vehicle.brand} ${vehicle.model} ${vehicle.year}`,
+		url: vehicleCanonical,
+		description: vehicle.meta_description ?? vehicle.description.slice(0, 200),
+		image: `${vehicleCanonical}/opengraph-image`,
 		brand: { "@type": "Brand", name: vehicle.brand },
+		model: `${vehicle.model}`,
 		modelDate: vehicle.year.toString(),
 		mileageFromOdometer: {
 			"@type": "QuantitativeValue",
@@ -218,14 +237,21 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 		vehicleTransmission: vehicle.transmission,
 		numberOfDoors: vehicle.doors,
 		color: vehicle.color,
+		vehicleEngine: vehicle.power
+			? { "@type": "EngineSpecification", enginePower: { "@type": "QuantitativeValue", value: vehicle.power, unitCode: "BHP" } }
+			: undefined,
 		offers: {
 			"@type": "Offer",
+			url: vehicleCanonical,
 			priceCurrency: "EUR",
 			price: vehicle.price,
 			availability: isAvailable
 				? "https://schema.org/InStock"
 				: "https://schema.org/SoldOut",
-			seller: { "@type": "AutoDealer", name: "Garage Auto Mendonca" },
+			seller: {
+				"@type": "AutoDealer",
+				name: "Garage Auto Mendonça",
+			},
 		},
 	};
 

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
 import type { VehicleImage } from "@/types";
-import { useVehicleImages } from "@/lib/hooks/useVehicleImage";
+import { useSignedImages } from "@/lib/hooks/useVehicleImage";
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -31,7 +31,11 @@ export default function VehicleGallery({
 }: VehicleGalleryProps) {
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
-	const { urls: signedUrls, loading: imgsLoading } = useVehicleImages(vehicleImages, images);
+	const { urls: hookUrls, loading: imgsLoading } = useSignedImages(vehicleImages);
+	// Merge: signed URL (hook) or legacy URL or raw fallback — legacy never enters hook state
+	const displayUrls: string[] = vehicleImages?.length
+		? vehicleImages.map((img, i) => hookUrls[i] ?? img.url ?? images[i]).filter((u): u is string => !!u)
+		: images;
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const thumbsRef = useRef<HTMLDivElement>(null);
@@ -81,8 +85,8 @@ export default function VehicleGallery({
 		[activeIdx, scrollTo],
 	);
 	const next = useCallback(
-		() => scrollTo(Math.min(signedUrls.length - 1, activeIdx + 1)),
-		[activeIdx, signedUrls.length, scrollTo],
+		() => scrollTo(Math.min(displayUrls.length - 1, activeIdx + 1)),
+		[activeIdx, displayUrls.length, scrollTo],
 	);
 
 	/* ── Keyboard (when gallery is focused) ─────────────────── */
@@ -122,7 +126,7 @@ export default function VehicleGallery({
 							"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
 						].join(" ")}
 					>
-						{signedUrls.map((src, idx) => (
+						{displayUrls.map((src, idx) => (
 							<div
 								key={src}
 								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
@@ -130,7 +134,7 @@ export default function VehicleGallery({
 								{/* eslint-disable-next-line @next/next/no-img-element */}
 								<img
 									src={src}
-									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${signedUrls.length}`}
+									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
 									loading={idx === 0 ? "eager" : "lazy"}
 									decoding={idx === 0 ? "sync" : "async"}
 									className={`w-full h-full object-cover object-top transition-opacity duration-300 ${imgsLoading ? "opacity-0" : "opacity-100"}`}
@@ -162,18 +166,18 @@ export default function VehicleGallery({
 					/>
 
 					{/* Compteur photo */}
-					{signedUrls.length > 1 && (
+					{displayUrls.length > 1 && (
 						<div
 							className="absolute bottom-3 right-3 bg-black/55 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full pointer-events-none tabular-nums"
 							aria-live="polite"
 							aria-atomic="true"
 						>
-							{activeIdx + 1} / {signedUrls.length}
+							{activeIdx + 1} / {displayUrls.length}
 						</div>
 					)}
 
 					{/* Swipe hint — mobile uniquement */}
-					{signedUrls.length > 1 && (
+					{displayUrls.length > 1 && (
 						<div
 							className="absolute bottom-3 left-1/2 -translate-x-1/2 sm:hidden pointer-events-none flex items-center gap-1.5 bg-black/45 backdrop-blur-sm rounded-full px-3 py-1"
 							aria-hidden="true"
@@ -199,7 +203,7 @@ export default function VehicleGallery({
 					    Mobile  : toujours visibles, w-11, fond sombre
 					    Desktop : hover uniquement, w-9, fond blanc
 					*/}
-					{signedUrls.length > 1 && (
+					{displayUrls.length > 1 && (
 						<>
 							<button
 								type="button"
@@ -251,7 +255,7 @@ export default function VehicleGallery({
 				    Mobile  : scroll horizontal, w-[22vw] fixe, scale-105 actif
 				    Desktop : grid (jusqu'à 6 colonnes)
 				*/}
-				{signedUrls.length > 1 && (
+				{displayUrls.length > 1 && (
 					<>
 						{/* Mobile */}
 						<div
@@ -260,7 +264,7 @@ export default function VehicleGallery({
 							role="list"
 							aria-label="Galerie miniatures"
 						>
-							{signedUrls.map((src, idx) => (
+							{displayUrls.map((src, idx) => (
 								<button
 									key={src}
 									type="button"
@@ -292,12 +296,12 @@ export default function VehicleGallery({
 						<div
 							className="hidden sm:grid gap-2"
 							style={{
-								gridTemplateColumns: `repeat(${Math.min(signedUrls.length, 6)}, 1fr)`,
+								gridTemplateColumns: `repeat(${Math.min(displayUrls.length, 6)}, 1fr)`,
 							}}
 							role="list"
 							aria-label="Galerie miniatures"
 						>
-							{signedUrls.map((src, idx) => (
+							{displayUrls.map((src, idx) => (
 								<button
 									key={src}
 									type="button"
@@ -336,7 +340,7 @@ export default function VehicleGallery({
 			{/* ── Lightbox via portal ─────────────────────────── */}
 			{lightboxOpen && (
 				<Lightbox
-					images={signedUrls}
+					images={displayUrls}
 					initialIndex={activeIdx}
 					vehicleName={vehicleName}
 					onClose={() => setLightboxOpen(false)}

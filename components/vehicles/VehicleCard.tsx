@@ -7,7 +7,7 @@ import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
 import Badge from "@/components/ui/Badge";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
-import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
+import { useSignedImage } from "@/lib/hooks/useVehicleImage";
 
 /* ── Options highlights ──────────────────────────────────────────────────────
  * Options les plus "vendantes" à afficher sur la carte, par ordre de priorité.
@@ -64,11 +64,12 @@ export default function VehicleCard({
 	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.color} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
 	const priceLabel = `${vehicle.price.toLocaleString("fr-FR")} euros`;
 
-	const fallbackSrc = vehicle.thumbnailUrl
-		?? vehicle.vehicleImages?.[0]?.url
-		?? vehicle.images?.[0];
+	const storagePath = vehicle.vehicleImages?.[0]?.storage_path;
+	// Legacy URL as last resort at render layer only — never passed to hook
+	const legacyUrl = vehicle.vehicleImages?.[0]?.url ?? vehicle.thumbnailUrl ?? vehicle.images?.[0];
 	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
-	const { url: imgSrc, loading: imgLoading } = useVehicleImage(vehicle.vehicleImages?.[0]?.storage_path, fallbackSrc);
+	const { url: signedUrl, loading: imgLoading } = useSignedImage(storagePath);
+	const imgSrc = signedUrl ?? legacyUrl;
 
 	// Lien : slug SEO si disponible, UUID en fallback
 	const href = `/vehicules/${vehicle.slug ?? vehicle.id}`;

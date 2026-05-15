@@ -174,16 +174,16 @@ export const vehicleDb = {
     return brands;
   },
 
-  async listSlugs(garageId: string): Promise<{ slug: string }[]> {
+  async listSlugs(garageId: string): Promise<{ slug: string; updated_at: string | null }[]> {
     const { data, error } = await anonDb()
       .from("vehicles")
-      .select("slug")
+      .select("slug, updated_at")
       .eq("garage_id", garageId)
       .not("slug", "is", null)
       .in("status", ["published", "scheduled", "sold"]);
     if (error) return [];
-    return ((data ?? []) as { slug: string | null }[])
-      .filter((r): r is { slug: string } => r.slug !== null);
+    return ((data ?? []) as { slug: string | null; updated_at: string | null }[])
+      .filter((r): r is { slug: string; updated_at: string | null } => r.slug !== null);
   },
 
   async listAdmin(garageId: string): Promise<Vehicle[]> {

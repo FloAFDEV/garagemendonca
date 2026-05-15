@@ -18,11 +18,14 @@ import {
 	ToggleLeft,
 	ToggleRight,
 	ChevronDown,
+	Upload,
 } from "lucide-react";
 import clsx from "clsx";
 import { serviceRepository } from "@/lib/repositories";
 import { updateServiceAction } from "../actions";
 import { adminUI } from "@/lib/admin-ui";
+import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
+import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
 import type {
 	ServiceStep,
 	ServicePricing,
@@ -107,6 +110,80 @@ function AdminSection({
 	);
 }
 
+// ── Aperçu d'une image service (résolution signed URL) ───────────────────────
+function ServiceImageCard({
+	img,
+	index,
+	labelClass,
+	inputClass,
+	onSetPrimary,
+	onRemove,
+	onAltChange,
+}: {
+	img: ImageDraft;
+	index: number;
+	labelClass: string;
+	inputClass: string;
+	onSetPrimary: () => void;
+	onRemove: () => void;
+	onAltChange: (alt: string) => void;
+}) {
+	const t = useAdminTokens();
+	const { url: previewUrl } = useVehicleImage(img.storage_path, img.url, "service-images");
+	return (
+		<div className={clsx("rounded-xl border p-4 space-y-3", t.border, t.surface2)}>
+			<div className="flex items-center justify-between gap-2">
+				<button
+					type="button"
+					onClick={onSetPrimary}
+					className={clsx(
+						"text-xs px-2 py-1 rounded-lg border transition-colors",
+						img.is_primary
+							? "bg-brand-500/15 text-brand-400 border-brand-500/30"
+							: "border-slate-300/30 opacity-50 hover:opacity-80",
+						t.txtMuted,
+					)}
+				>
+					{img.is_primary ? "★ Principale" : "Rendre principale"}
+				</button>
+				<div className="flex items-center gap-2">
+					<span className={clsx("text-xs", t.txtSubtle)}>Image {index + 1}</span>
+					<button
+						type="button"
+						onClick={onRemove}
+						className="p-1 rounded hover:text-red-400 transition-colors opacity-50 hover:opacity-100"
+					>
+						<Trash2 size={13} />
+					</button>
+				</div>
+			</div>
+			<div>
+				<label className={labelClass}>Texte alternatif</label>
+				<input
+					value={img.alt ?? ""}
+					onChange={(e) => onAltChange(e.target.value)}
+					className={inputClass}
+					placeholder="Description de l'image pour l'accessibilité"
+				/>
+			</div>
+			{previewUrl && (
+				// eslint-disable-next-line @next/next/no-img-element
+				<img
+					src={previewUrl}
+					alt={img.alt ?? "Aperçu"}
+					className="rounded-xl w-full max-h-36 object-cover"
+					onError={(e) => (e.currentTarget.style.display = "none")}
+				/>
+			)}
+			{img.storage_path && (
+				<p className={clsx("text-[10px] font-mono truncate", t.txtSubtle)}>
+					{img.storage_path}
+				</p>
+			)}
+		</div>
+	);
+}
+
 // ── Page principale ───────────────────────────────────────────────────────────
 export default function EditServicePage({
 	params,
@@ -146,6 +223,8 @@ export default function EditServicePage({
 
 	// ── Images ──────────────────────────────────────────────────────────────────
 	const [images, setImages] = useState<ImageDraft[]>([]);
+	const [serviceId, setServiceId] = useState<string>("");
+	const [uploading, setUploading] = useState(false);
 
 	// ── Save status ─────────────────────────────────────────────────────────────
 	const [saveStatus, setSaveStatus] = useState<
@@ -171,6 +250,7 @@ export default function EditServicePage({
 				setFaq(svc.faq ?? []);
 				setTestimonials(svc.testimonials ?? []);
 				setImages(svc.images ?? []);
+				setServiceId(svc.id);
 				setLoadState("ready");
 			})
 			.catch(() => setLoadState("notfound"));
@@ -291,12 +371,41 @@ export default function EditServicePage({
 		);
 
 	// ── Images helpers ──────────────────────────────────────────────────────────
-	const updateImageUrl = (i: number, url: string) =>
-		setImages((p) => p.map((img, j) => (j === i ? { ...img, url } : img)));
 	const updateImageAlt = (i: number, alt: string) =>
 		setImages((p) => p.map((img, j) => (j === i ? { ...img, alt } : img)));
 	const setPrimary = (i: number) =>
 		setImages((p) => p.map((img, j) => ({ ...img, is_primary: j === i })));
+
+	// ── Image upload ─────────────────────────────────────────────────────────────
+	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		e.target.value = "";
+		if (!file || !serviceId) return;
+		setUploading(true);
+		const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+		const ext = file.name.split(".").pop() ?? "webp";
+		const path = `${garageId}/${serviceId}/${Date.now()}.${ext}`;
+		const sb = createSupabaseBrowserClient();
+		const { data, error } = await sb.storage
+			.from("service-images")
+			.upload(path, file, { upsert: true, contentType: file.type });
+		if (error || !data?.path) { setUploading(false); return; }
+		const { data: signed } = await sb.storage
+			.from("service-images")
+			.createSignedUrl(data.path, 3600);
+		const newImg: ImageDraft = {
+			id: crypto.randomUUID(),
+			service_id: serviceId,
+			garage_id: garageId,
+			url: signed?.signedUrl ?? "",
+			storage_path: data.path,
+			alt: "",
+			order: images.length,
+			is_primary: images.length === 0,
+		};
+		setImages((prev) => [...prev, newImg]);
+		setUploading(false);
+	};
 
 	// ── Submit ──────────────────────────────────────────────────────────────────
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -990,102 +1099,46 @@ export default function EditServicePage({
 					{/* ── Images ── */}
 					<AdminSection
 						title="Images"
-						subtitle="Upload Supabase Storage disponible après migration"
+						subtitle={`${images.length} image${images.length > 1 ? "s" : ""} — Supabase Storage`}
 						defaultOpen={false}
 					>
-						<p
-							className={clsx(
-								"text-xs mb-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600",
-							)}
-						>
-							Note : les uploads vers Supabase Storage seront
-							disponibles après migration. Saisir les URLs
-							directement ci-dessous.
-						</p>
 						<div className="space-y-3">
 							{images.map((img, i) => (
-								<div
+								<ServiceImageCard
 									key={img.id}
-									className={clsx(
-										"rounded-xl border p-4 space-y-3",
-										t.border,
-										t.surface2,
-									)}
-								>
-									<div className="flex items-center justify-between gap-2">
-										<div className="flex items-center gap-2">
-											<button
-												type="button"
-												onClick={() => setPrimary(i)}
-												className={clsx(
-													"text-xs px-2 py-1 rounded-lg border transition-colors",
-													img.is_primary
-														? "bg-brand-500/15 text-brand-400 border-brand-500/30"
-														: "border-slate-300/30 opacity-50 hover:opacity-80",
-													t.txtMuted,
-												)}
-											>
-												{img.is_primary
-													? "★ Principale"
-													: "Rendre principale"}
-											</button>
-										</div>
-										<span
-											className={clsx(
-												"text-xs",
-												t.txtSubtle,
-											)}
-										>
-											Image {i + 1}
-										</span>
-									</div>
-									<div>
-										<label className={labelClass}>
-											URL
-										</label>
-										<input
-											value={img.url}
-											onChange={(e) =>
-												updateImageUrl(
-													i,
-													e.target.value,
-												)
-											}
-											className={inputClass}
-											placeholder="/images/entretien.webp ou https://…"
-										/>
-									</div>
-									<div>
-										<label className={labelClass}>
-											Texte alternatif
-										</label>
-										<input
-											value={img.alt ?? ""}
-											onChange={(e) =>
-												updateImageAlt(
-													i,
-													e.target.value,
-												)
-											}
-											className={inputClass}
-											placeholder="Description de l'image pour l'accessibilité"
-										/>
-									</div>
-									{img.url && (
-										// eslint-disable-next-line @next/next/no-img-element
-										<img
-											src={img.url}
-											alt={img.alt ?? "Preview"}
-											className="rounded-xl w-full max-h-36 object-cover"
-											onError={(e) =>
-												(e.currentTarget.style.display =
-													"none")
-											}
-										/>
-									)}
-								</div>
+									img={img}
+									index={i}
+									labelClass={labelClass}
+									inputClass={inputClass}
+									onSetPrimary={() => setPrimary(i)}
+									onRemove={() => setImages((p) => p.filter((_, j) => j !== i))}
+									onAltChange={(alt) => updateImageAlt(i, alt)}
+								/>
 							))}
 						</div>
+
+						{/* Upload */}
+						<label
+							className={clsx(
+								"mt-3 flex items-center gap-2 cursor-pointer",
+								adminUI.btnAddItem,
+								uploading && "opacity-50 pointer-events-none",
+							)}
+						>
+							{uploading ? (
+								<Loader2 size={13} className="animate-spin" />
+							) : (
+								<Upload size={13} />
+							)}
+							{uploading ? "Upload en cours…" : "Ajouter une image"}
+							<input
+								type="file"
+								accept="image/webp,image/jpeg,image/png"
+								className="hidden"
+								onChange={handleImageUpload}
+								disabled={uploading}
+							/>
+						</label>
 					</AdminSection>
 
 					{/* ── Submit ── */}

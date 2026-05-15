@@ -156,7 +156,7 @@ export default function Hero() {
 							</a>
 							<Link
 								href="/contact"
-								className="btn-outline w-full sm:w-auto text-base sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2"
+								className="btn-outline w-full sm:w-auto text-white sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2"
 							>
 								Demander un devis gratuit
 								<ArrowRight size={17} aria-hidden="true" />
@@ -164,7 +164,7 @@ export default function Hero() {
 						</div>
 
 						{/* Compteurs — valeurs statiques, visibles dès le SSR */}
-						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/12 animate-fade-in">
+						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/12 animate-fade-in text-white">
 							{stats.map(({ value, label }) => (
 								<div
 									key={label}

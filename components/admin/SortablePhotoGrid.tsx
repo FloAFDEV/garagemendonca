@@ -18,7 +18,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
+import { useSignedImage } from "@/lib/hooks/useVehicleImage";
 import { extractStoragePath } from "@/lib/utils/storage";
 
 // ─── Élément draggable ───────────────────────────────────────────
@@ -45,7 +45,7 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhot
 
   // blob:// = preview local upload ; http = URL Supabase à signer
   const storagePath = src.startsWith("blob:") ? undefined : extractStoragePath(src) ?? src;
-  const { url: displayUrl } = useVehicleImage(storagePath, src);
+  const { url: displayUrl } = useSignedImage(storagePath, src);
 
   return (
     <div

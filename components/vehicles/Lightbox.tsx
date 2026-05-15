@@ -7,7 +7,6 @@ import {
 	useCallback,
 } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────────
@@ -263,14 +262,11 @@ export default function Lightbox({
 					className="absolute inset-0 will-change-transform"
 					style={{ transformOrigin: "center center", touchAction: "none" }}
 				>
-					<Image
+					{/* eslint-disable-next-line @next/next/no-img-element */}
+					<img
 						src={images[activeIdx]}
 						alt={`${vehicleName} — photo ${activeIdx + 1}`}
-						fill
-						className="object-contain select-none"
-						sizes="100vw"
-						priority
-						quality={85}
+						className="absolute inset-0 w-full h-full object-contain select-none"
 						draggable={false}
 					/>
 				</div>
@@ -315,14 +311,12 @@ export default function Lightbox({
 										: "opacity-40 hover:opacity-70 scale-100",
 								].join(" ")}
 							>
-								<Image
+								{/* eslint-disable-next-line @next/next/no-img-element */}
+								<img
 									src={src}
 									alt=""
-									fill
-									className="object-cover object-top"
-									sizes="80px"
+									className="absolute inset-0 w-full h-full object-cover object-top"
 									loading="lazy"
-									quality={55}
 								/>
 							</button>
 						))}

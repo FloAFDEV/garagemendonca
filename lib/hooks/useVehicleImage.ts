@@ -36,7 +36,8 @@ export function useVehicleImage(
   const cacheKey = effectivePath ? `${bucket}:${effectivePath}` : undefined;
 
   const hit = cacheKey ? getCached(cacheKey) : undefined;
-  const [url, setUrl]         = useState<string | undefined>(hit ?? fallback);
+  // Only use fallback as initial state if we have a derivable storage path
+  const [url, setUrl]         = useState<string | undefined>(effectivePath ? (hit ?? fallback) : undefined);
   const [loading, setLoading] = useState(!hit && !!effectivePath);
   const [error, setError]     = useState(false);
 
@@ -49,7 +50,7 @@ export function useVehicleImage(
       .storage.from(bucket)
       .createSignedUrl(effectivePath, TTL)
       .then(({ data, error: err }) => {
-        if (err || !data?.signedUrl) { setLoading(false); setError(true); return; }
+        if (err || !data?.signedUrl) { setUrl(undefined); setLoading(false); setError(true); return; }
         setCached(cacheKey, data.signedUrl);
         setUrl(data.signedUrl);
         setLoading(false);
@@ -64,18 +65,18 @@ export function useVehicleImage(
 export function useVehicleImages(
   vehicleImages: VehicleImage[] | undefined,
   fallbacks: string[],
-): { urls: string[]; loading: boolean; error: boolean } {
-  // Resolve effective storage path: explicit > extracted from url > none
+): { urls: (string | undefined)[]; loading: boolean; error: boolean } {
+  // Only storage_path is used — legacy url field is never read here
   function getPath(img: VehicleImage): string | undefined {
-    return img.storage_path ?? extractStoragePath(img.url) ?? undefined;
+    return img.storage_path ?? undefined;
   }
 
-  const initial = vehicleImages?.map((img, i) => {
+  const initial: (string | undefined)[] = vehicleImages?.map((img) => {
     const path = getPath(img);
-    return (path ? getCached(path) : undefined) ?? fallbacks[i] ?? img.url;
-  }) ?? fallbacks;
+    return path ? getCached(`${BUCKET}:${path}`) : undefined;
+  }) ?? [];
 
-  const [urls, setUrls]       = useState<string[]>(initial);
+  const [urls, setUrls]       = useState<(string | undefined)[]>(initial);
   const [loading, setLoading] = useState(
     !!vehicleImages?.some((img) => { const p = getPath(img); return p && !getCached(p); }),
   );
@@ -89,11 +90,11 @@ export function useVehicleImages(
     Promise.all(
       vehicleImages.map(async (img, i) => {
         const path = getPath(img);
-        if (!path) return fallbacks[i] ?? img.url;
+        if (!path) return undefined;
         const hit = getCached(path);
         if (hit) return hit;
         const { data, error: err } = await sb.storage.from(BUCKET).createSignedUrl(path, TTL);
-        if (err || !data?.signedUrl) return fallbacks[i] ?? img.url;
+        if (err || !data?.signedUrl) return undefined;
         setCached(path, data.signedUrl);
         return data.signedUrl;
       }),
@@ -105,4 +106,20 @@ export function useVehicleImages(
   }, [vehicleImages]);
 
   return { urls, loading, error };
+}
+
+// ─── Public API ───────────────────────────────────────────────────
+// Aliases without the bucket escape hatch — for vehicle-images callers.
+// ServiceHero uses useVehicleImage directly with "service-images".
+export function useSignedImage(
+  storagePath: string | undefined,
+  fallbackUrl?: string,
+): { url: string | undefined; loading: boolean; error: boolean } {
+  return useVehicleImage(storagePath, fallbackUrl);
+}
+
+export function useSignedImages(
+  vehicleImages: VehicleImage[] | undefined,
+): { urls: (string | undefined)[]; loading: boolean; error: boolean } {
+  return useVehicleImages(vehicleImages, []);
 }
