@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import HeroParallax from "./HeroParallax";
 import {
 	Phone,
 	ArrowRight,
@@ -28,50 +28,11 @@ const stats = [
 export default function Hero() {
 	return (
 		<section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
-			{/*
-			  ─── STRATÉGIE IMAGE ───────────────────────────────────────────────
-			  Règle : sur mobile le texte couvre toute la largeur → on décale
-			  l'image vers la droite pour révéler l'enseigne SANS que le
-			  décalage soit trop fort sur les grands écrans où l'enseigne
-			  se retrouverait derrière le bloc texte.
-
-			  Valeurs calibrées :
-			    < sm  (mobile)          : 72 % → enseigne visible à droite ✓
-			    sm    (tablette 768 px) : 60 % → décalage modéré
-			    md    (≥ 1024 px)       : 20 % → léger décalage, texte protégé
-			    lg+   (desktop)         : 5  % → quasi identique à l'original
-			                                     (prouvé fonctionnel)
-
-			  Solution B – double image (recommandée à terme) :
-			    Quand une version portrait de l'image sera disponible, remplacer
-			    le bloc ci-dessous par :
-
-			    <Image
-			      src="/images/garage-hero-mobile.webp"   ← portrait, enseigne centrée
-			      alt="Atelier du Garage Auto Mendonca"
-			      fill priority
-			      className="sm:hidden object-cover object-center"
-			      sizes="100vw"
-			    />
-			    <Image
-			      src="/images/garage-hero.webp"
-			      alt="Atelier du Garage Auto Mendonca"
-			      fill priority
-			      className="hidden sm:block object-cover object-[20%_center] lg:object-[5%_50%]"
-			      sizes="100vw"
-			    />
-			  ────────────────────────────────────────────────────────────────── */}
-			<div className="absolute inset-0 z-0">
-				<Image
+			{/* Image hero avec parallaxe — client component */}
+			<div className="absolute inset-0 z-0 overflow-hidden">
+				<HeroParallax
 					src="/images/garage-hero.webp"
-					alt="Atelier du Garage Auto Mendonca"
-					fill
-					priority
-					quality={95}
-					placeholder="blur"
 					blurDataURL="data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAACQAwCdASoUAA4APzmEuVOvKKWisAgB4CcJYwCw7CHXM7kTkb4gAP7i1RsqrgFVkvWAc0CH7FmQjgfFK0vcFjfsd5Hf8lO3qB/LQBi85PMkMM7AAAA="
-					className="object-cover object-[72%_center] sm:object-[60%_center] md:object-[20%_center] lg:object-[5%_50%] scale-[1.01]"
-					sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 2560px"
 				/>
 			</div>
 
@@ -81,17 +42,19 @@ export default function Hero() {
 			  Le "to-transparent" laisse l'image s'exprimer sur la droite.
 			  Valeurs identiques à la version originale validée.
 			*/}
+			{/* Gradient L→R : protège la colonne texte gauche sur desktop */}
 			<div
-				className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/40 to-transparent z-1"
+				className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/50 to-black/10 z-1"
 				aria-hidden="true"
 			/>
-			{/*
-			  Couche plate de sécurité : assombrit uniformément l'ensemble,
-			  critique pour la lisibilité du texte sur mobile (plein écran)
-			  et pour éviter que l'enseigne lumineuse ne "transperce" le gradient.
-			*/}
+			{/* Couche plate : sécurité contraste globale */}
 			<div
 				className="absolute inset-0 bg-black/28 z-1"
+				aria-hidden="true"
+			/>
+			{/* Overlay mobile renforcé — couvre toute la largeur sur petit écran */}
+			<div
+				className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent sm:hidden z-1"
 				aria-hidden="true"
 			/>
 
