@@ -148,13 +148,17 @@ export default function Hero() {
 			</div>
 
 			{/* ── Logo GM — badge emblème coin haut droit ─────────────── */}
-			<div className="absolute top-[88px] right-5 sm:top-[96px] sm:right-8 md:top-[108px] md:right-12 z-10 animate-fade-in">
-				<div className="relative w-[72px] h-[72px] sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full ring-2 ring-white/30 shadow-[0_6px_32px_rgba(0,0,0,0.6)] overflow-hidden">
+			{/* Masqué sur mobile pour ne rien cacher ; visible dès sm: */}
+			<div
+				className="absolute top-[96px] right-6 sm:top-[104px] sm:right-8 md:top-[112px] md:right-12 z-10 animate-fade-in hidden sm:block"
+				aria-hidden="true"
+			>
+				<div className="relative sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full ring-2 ring-white/30 shadow-[0_6px_32px_rgba(0,0,0,0.6)] overflow-hidden">
 					<Image
 						src="/images/logo-gm.webp"
-						alt="Logo Garage Mendonça"
+						alt=""
 						fill
-						sizes="(max-width: 768px) 80px, 112px"
+						sizes="(max-width: 1024px) 80px, 112px"
 						className="object-cover"
 						priority
 					/>

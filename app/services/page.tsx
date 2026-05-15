@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
+import GmBadge from "@/components/ui/GmBadge";
 import { serviceRepository, garageRepository } from "@/lib/repositories";
 import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 import ServiceSection from "@/components/services/ServiceSection";
@@ -24,26 +25,31 @@ export default async function ServicesPage() {
 		<MainLayout>
 			{/* ── Hero page ── */}
 			<section className="relative bg-dark-900 overflow-hidden pt-36 pb-20">
-				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[180px] pointer-events-none" />
+				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[180px] pointer-events-none" aria-hidden="true" />
 				<Container className="relative">
-					<div className="inline-flex items-center gap-2 mt-8 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-5">
-						<span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
-						<span className="text-brand-500 text-xs font-medium tracking-wide uppercase">
-							Nos expertises
-						</span>
+					<div className="flex items-start justify-between gap-6">
+						<div className="flex-1 min-w-0">
+							<div className="inline-flex items-center gap-2 mt-8 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-5">
+								<span className="w-1.5 h-1.5 rounded-full bg-brand-500" aria-hidden="true" />
+								<span className="text-brand-500 text-xs font-medium tracking-wide uppercase">
+									Nos expertises
+								</span>
+							</div>
+							<h1 className="ty-heading text-3xl sm:text-4xl lg:text-5xl text-white mb-5">
+								Mécanique, carrosserie &amp; vente
+								<br />
+								<span className="text-brand-400">
+									depuis 2001 à Drémil-Lafage
+								</span>
+							</h1>
+							<p className="text-dark-300 text-base sm:text-lg leading-relaxed max-w-2xl">
+								Mécaniciens qualifiés et continuellement formés,
+								équipements dernière génération. Diagnostic en 10
+								minutes, devis avant toute intervention.
+							</p>
+						</div>
+						<GmBadge size="lg" className="mt-8 hidden sm:block opacity-90" />
 					</div>
-					<h1 className="ty-heading text-3xl sm:text-4xl lg:text-5xl text-white mb-5">
-						Mécanique, carrosserie &amp; vente
-						<br />
-						<span className="text-brand-400">
-							depuis 2001 à Drémil-Lafage
-						</span>
-					</h1>
-					<p className="text-dark-300 text-base sm:text-lg leading-relaxed max-w-2xl">
-						Mécaniciens qualifiés et continuellement formés,
-						équipements dernière génération. Diagnostic en 10
-						minutes, devis avant toute intervention.
-					</p>
 				</Container>
 			</section>
 

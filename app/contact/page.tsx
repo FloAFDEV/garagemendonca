@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
+import GmBadge from "@/components/ui/GmBadge";
 import ContactForm from "@/components/contact/ContactForm";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 
@@ -45,27 +46,30 @@ export default async function ContactPage({ searchParams }: PageProps) {
 					aria-hidden="true"
 				/>
 				<Container className="relative">
-					<div className="max-w-3xl">
-						<div className="flex items-center gap-3 mb-5">
-							<div
-								className="w-8 h-px bg-brand-500"
-								aria-hidden="true"
-							/>
-							<span className="text-brand-400 font-normal text-xs uppercase tracking-caps">
-								Disponibles du lundi au vendredi
-							</span>
+					<div className="flex items-start justify-between gap-6">
+						<div className="flex-1 min-w-0">
+							<div className="flex items-center gap-3 mb-5">
+								<div
+									className="w-8 h-px bg-brand-500"
+									aria-hidden="true"
+								/>
+								<span className="text-brand-400 font-normal text-xs uppercase tracking-caps">
+									Disponibles du lundi au vendredi
+								</span>
+							</div>
+							<h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
+								Contactez-nous —{" "}
+								<span className="text-brand-500">
+									devis gratuit sous 24h
+								</span>
+							</h1>
+							<p className="text-slate-300 text-lg leading-relaxed max-w-2xl">
+								Appelez-nous directement ou envoyez-nous un message.
+								Nous répondons sous 24h et vous proposons un devis
+								gratuit et détaillé.
+							</p>
 						</div>
-						<h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
-							Contactez-nous —{" "}
-							<span className="text-brand-500">
-								devis gratuit sous 24h
-							</span>
-						</h1>
-						<p className="text-slate-300 text-lg leading-relaxed max-w-2xl">
-							Appelez-nous directement ou envoyez-nous un message.
-							Nous répondons sous 24h et vous proposons un devis
-							gratuit et détaillé.
-						</p>
+						<GmBadge size="lg" className="hidden sm:block opacity-90 flex-shrink-0 self-center" />
 					</div>
 				</Container>
 			</section>

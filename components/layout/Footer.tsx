@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, Mail, MapPin, Clock, ExternalLink, Lock } from "lucide-react";
 import Container from "@/components/ui/Container";
 
@@ -39,30 +40,17 @@ export default function Footer() {
 						<Link
 							href="/"
 							className="flex items-center gap-3 mb-5 group"
+							aria-label="Garage Mendonça — retour à l'accueil"
 						>
-							<div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center shadow-brand flex-shrink-0">
-								<svg
-									width="20"
-									height="20"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="white"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
+							<div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-white/15 group-hover:ring-white/30 transition-all shadow-lg">
+								<Image
+									src="/images/logo-gm.webp"
+									alt=""
 									aria-hidden="true"
-								>
-									<path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3" />
-									<rect
-										x="9"
-										y="11"
-										width="14"
-										height="10"
-										rx="2"
-									/>
-									<circle cx="12" cy="21" r="1" />
-									<circle cx="20" cy="21" r="1" />
-								</svg>
+									fill
+									sizes="44px"
+									className="object-cover"
+								/>
 							</div>
 							<div>
 								{/* Nom garage — normal, pas bold */}
