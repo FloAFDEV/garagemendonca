@@ -4,6 +4,9 @@ import SkipToContent from "@/components/ui/SkipToContent";
 import { QueryProvider } from "@/providers/QueryProvider";
 
 export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.garagemendonca.com",
+	),
 	title: {
 		default:
 			"Garage Auto Mendonca — Garagiste Drémil-Lafage (31) — Mécanique, Carrosserie, Vente",

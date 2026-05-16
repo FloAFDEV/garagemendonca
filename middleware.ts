@@ -39,7 +39,7 @@ function buildCsp(): string {
       : `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://challenges.cloudflare.com`,
     // Google Fonts fichiers dans font-src
     `font-src 'self' data: https://fonts.gstatic.com`,
-    `frame-src https://challenges.cloudflare.com`,
+    `frame-src https://challenges.cloudflare.com https://maps.google.com https://www.google.com`,
     `frame-ancestors 'none'`,
     `object-src 'none'`,
     `base-uri 'self'`,
