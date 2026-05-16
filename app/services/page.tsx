@@ -10,6 +10,9 @@ export const metadata: Metadata = {
 	title: "Nos Services",
 	description:
 		"Entretien, réparation mécanique et carrosserie depuis 2001 à Drémil-Lafage. Spécialiste japonaises et boîtes automatiques. Devis gratuit.",
+	alternates: {
+		canonical: "https://www.garagemendonca.com/services",
+	},
 };
 
 export default async function ServicesPage() {

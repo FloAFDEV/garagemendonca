@@ -19,6 +19,9 @@ export const metadata: Metadata = {
 	title: "Véhicules d'occasion — Garage Mendonca",
 	description:
 		"Découvrez nos véhicules d'occasion soigneusement sélectionnés, révisés et garantis. Toutes marques, financement disponible. Garage Mendonca à Drémil-Lafage.",
+	alternates: {
+		canonical: "https://www.garagemendonca.com/produit",
+	},
 };
 
 const guarantees = [

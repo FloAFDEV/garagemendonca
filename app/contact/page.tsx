@@ -10,6 +10,9 @@ export const metadata: Metadata = {
 	title: "Contact et Devis",
 	description:
 		"Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message pour un devis gratuit. Réponse sous 24h.",
+	alternates: {
+		canonical: "https://www.garagemendonca.com/contact",
+	},
 };
 
 function ContactFormWrapper({

@@ -33,4 +33,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.claude/worktrees/confident-goldberg-20eb73
+
+# Claude Code workspace (generated, not source)
+.claude/
