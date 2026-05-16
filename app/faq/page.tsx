@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 	description:
 		"Toutes les réponses à vos questions : garantie, essai, financement, livraison, boîte automatique, documents... Garage Auto Mendonca à Drémil-Lafage (31).",
 	alternates: {
-		canonical: "/faq",
+		canonical: "https://www.garagemendonca.com/faq",
 	},
 	openGraph: {
 		title: "FAQ — Garage Auto Mendonca · Drémil-Lafage",

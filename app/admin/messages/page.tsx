@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { CRMInbox } from "@/components/admin/CRMInbox";
 
@@ -8,7 +9,10 @@ const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 export default function MessagesPage() {
   return (
     <AdminLayout>
-      <CRMInbox garageId={GARAGE_ID} />
+      {/* Suspense requis : CRMInbox utilise useSearchParams() pour le deep link ?id= */}
+      <Suspense fallback={<div className="p-8 text-slate-400 text-sm">Chargement…</div>}>
+        <CRMInbox garageId={GARAGE_ID} />
+      </Suspense>
     </AdminLayout>
   );
 }

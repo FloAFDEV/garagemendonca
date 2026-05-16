@@ -22,6 +22,16 @@ export const metadata: Metadata = {
 	alternates: {
 		canonical: "https://www.garagemendonca.com/produit",
 	},
+	openGraph: {
+		title: "Véhicules d'occasion — Garage Auto Mendonca · Drémil-Lafage",
+		description:
+			"Sélection de véhicules d'occasion révisés et garantis. Japonaises, boîtes automatiques, financement disponible.",
+		type: "website",
+		locale: "fr_FR",
+		url: "https://www.garagemendonca.com/produit",
+		siteName: "Garage Auto Mendonca",
+		images: [{ url: "/images/og-image.webp", width: 1200, height: 630, alt: "Véhicules d'occasion Garage Mendonca" }],
+	},
 };
 
 const guarantees = [

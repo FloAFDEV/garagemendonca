@@ -13,6 +13,16 @@ export const metadata: Metadata = {
 	alternates: {
 		canonical: "https://www.garagemendonca.com/contact",
 	},
+	openGraph: {
+		title: "Contact & Devis — Garage Auto Mendonca · Drémil-Lafage",
+		description:
+			"Appelez le 05 32 00 20 38 ou envoyez un message. Devis gratuit, réponse sous 24h. Spécialiste japonaises et boîtes automatiques.",
+		type: "website",
+		locale: "fr_FR",
+		url: "https://www.garagemendonca.com/contact",
+		siteName: "Garage Auto Mendonca",
+		images: [{ url: "/images/og-image.webp", width: 1200, height: 630, alt: "Garage Auto Mendonca" }],
+	},
 };
 
 function ContactFormWrapper({
