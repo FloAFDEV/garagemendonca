@@ -18,7 +18,11 @@ import type { VehicleCreateInput, VehicleUpdateInput } from "@/lib/validation/ve
 // ─────────────────────────────────────────────────────────────────
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type VehicleRowWithImages = VehicleRow & { vehicle_images?: any[] };
+type VehicleRowWithImages = VehicleRow & {
+  vehicle_images?: any[];
+  description_marketing?: string | null;
+  original_description?: string | null;
+};
 
 function mapVehicleImages(raw: unknown[]): VehicleImage[] {
   return (raw as VehicleImage[])
@@ -61,7 +65,8 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
     color:            row.color,
     doors:            row.doors ?? 5,
     critAir:          row.crit_air ?? undefined,
-    description:      row.description ?? "",
+    description:               row.description ?? "",
+    description_marketing:     row.description_marketing ?? undefined,
     images,
     thumbnailUrl,
     vehicleImages:    joinedImages,

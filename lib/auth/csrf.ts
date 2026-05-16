@@ -18,6 +18,7 @@
  * une couche de défense-en-profondeur.
  */
 
+import "server-only";
 import { headers } from "next/headers";
 
 export class CsrfError extends Error {

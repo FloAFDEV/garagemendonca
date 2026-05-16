@@ -122,8 +122,18 @@ export function buildTokens(isDark: boolean): AdminTokens {
 	};
 }
 
-/* ─── Context ────────────────────────────────────────────────── */
+/* ─── Tokens context ─────────────────────────────────────────── */
 const AdminThemeContext = createContext<AdminTokens>(buildTokens(true));
 
 export const AdminThemeProvider = AdminThemeContext.Provider;
 export const useAdminTokens = () => useContext(AdminThemeContext);
+
+/* ─── Actions context (toggle) ───────────────────────────────── */
+interface AdminThemeActions {
+	toggleTheme: () => void;
+}
+const AdminThemeActionsContext = createContext<AdminThemeActions>({
+	toggleTheme: () => {},
+});
+export const AdminThemeActionsProvider = AdminThemeActionsContext.Provider;
+export const useAdminThemeActions = () => useContext(AdminThemeActionsContext);

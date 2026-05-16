@@ -66,7 +66,8 @@ function toDbRow(input: VehicleUpdateInput): Record<string, unknown> {
 	if (input.price !== undefined)            row.price = input.price;
 	if (input.color !== undefined)            row.color = input.color;
 	if (input.doors !== undefined)            row.doors = input.doors;
-	if (input.description !== undefined)      row.description = input.description;
+	if (input.description !== undefined)             row.description = input.description;
+	if (input.description_marketing !== undefined)   row.description_marketing = input.description_marketing;
 	if (input.images !== undefined)           row.images = input.images;
 	if (input.status !== undefined)           row.status = input.status;
 	if (input.published_at !== undefined)     row.published_at = input.published_at;

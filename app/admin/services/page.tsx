@@ -7,8 +7,7 @@ import Link from "next/link";
 import { Pencil, Eye, ToggleLeft, ToggleRight, Wrench, Settings, Paintbrush, Plus, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import clsx from "clsx";
 import type { Service } from "@/types";
-import { serviceRepository } from "@/lib/repositories";
-import { updateServiceAction, deleteServiceAction, reorderServicesAction } from "./actions";
+import { getServicesForAdminAction, updateServiceAction, deleteServiceAction, reorderServicesAction } from "./actions";
 import { adminUI } from "@/lib/admin-ui";
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -24,7 +23,7 @@ export default function AdminServicesPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    serviceRepository.getAllForAdmin().then(setServices).catch(console.error);
+    getServicesForAdminAction().then(setServices).catch(console.error);
   }, []);
 
   const toggleActive = async (service: Service) => {

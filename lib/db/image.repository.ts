@@ -6,20 +6,15 @@
  * setPrimary() exécute deux updates séquentiels pour respecter la contrainte.
  */
 
-import { createBrowserClient } from "@supabase/ssr";
 import type { VehicleImageRow, VehicleImageInsert, VehicleImageUpdate } from "@/lib/supabase/database.types";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
+import { getReadClient } from "@/lib/supabase/readClient";
 import type { VehicleImage } from "@/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Q = any;
 
-function anonDb(): Q {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
-}
+const anonDb = (): Q => getReadClient();
 
 function adminDb(): Q {
   return createSupabaseAdminClient();

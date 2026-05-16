@@ -300,7 +300,7 @@ export default function NewVehiclePage() {
 			price: +form.price,
 			color: form.color,
 			doors: +form.doors,
-			description: form.description,
+			description_marketing: form.description,
 			images: httpImages,
 			status: form.vehicleStatus as Vehicle["status"],
 			published_at: form.published_at || undefined,

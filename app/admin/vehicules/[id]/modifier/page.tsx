@@ -67,7 +67,7 @@ interface VehicleForm {
 	price: string;
 	color: string;
 	doors: string;
-	description: string;
+	description: string; // = description_marketing en base (texte propre sans liste d'options)
 	status: string;
 	published_at: string;
 	featured: boolean;
@@ -217,9 +217,18 @@ export default function EditVehiclePage({
 			setVehicleLabel(`${vehicle.brand} ${vehicle.model} · ${vehicle.year} · #${vehicle.id}`);
 			setExtraFeatures(vehicle.features ?? {});
 
-			// Auto-extraction des équipements depuis la description
-			const { detectedOptions, remainingText } = parseDescriptionToOptions(vehicle.description ?? "");
-			const mergedOptions = { ...vehicle.options ?? {}, ...detectedOptions };
+			// Si description_marketing est déjà peuplée (backfill fait), on l'utilise.
+			// Sinon on parse description brute pour extraire les options à la volée.
+			let displayDescription: string;
+			let mergedOptions: VehicleOptions;
+			if (vehicle.description_marketing != null) {
+				displayDescription = vehicle.description_marketing;
+				mergedOptions = { ...(vehicle.options ?? {}) };
+			} else {
+				const { detectedOptions, remainingText } = parseDescriptionToOptions(vehicle.description ?? "");
+				displayDescription = remainingText;
+				mergedOptions = { ...(vehicle.options ?? {}), ...detectedOptions };
+			}
 
 			setForm({
 				brand: vehicle.brand,
@@ -234,7 +243,7 @@ export default function EditVehiclePage({
 				price: vehicle.price.toString(),
 				color: vehicle.color,
 				doors: vehicle.doors.toString(),
-				description: remainingText,
+				description: displayDescription,
 				status: vehicle.status ?? "draft",
 				published_at: vehicle.published_at ?? "",
 				featured: vehicle.featured ?? false,
@@ -343,7 +352,7 @@ export default function EditVehiclePage({
 			price: +form.price,
 			color: form.color,
 			doors: +form.doors,
-			description: form.description,
+			description_marketing: form.description,
 			images: httpImages,
 			status: form.status as Vehicle["status"],
 			published_at: form.published_at || undefined,

@@ -8,6 +8,7 @@
  * des Server Components ou des Server Actions uniquement.
  */
 
+import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { AppError } from "@/lib/errors/supabaseErrorParser";

@@ -6,7 +6,18 @@ import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { requireAdminForGarage } from "@/lib/auth/getSession";
 import { assertSameOrigin } from "@/lib/auth/csrf";
 import { logAudit } from "@/lib/audit/logAction";
+import { serviceRepository } from "@/lib/repositories/serviceRepository";
 import type { Service } from "@/types";
+
+/* ── Reads (remplacent les appels directs du repository depuis les Client Components) ── */
+
+export async function getServicesForAdminAction(): Promise<Service[]> {
+  return serviceRepository.getAllForAdmin();
+}
+
+export async function getServiceBySlugAction(slug: string): Promise<Service | null> {
+  return serviceRepository.getBySlug(slug);
+}
 
 async function assertAdmin() {
   await assertSameOrigin();

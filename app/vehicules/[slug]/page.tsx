@@ -223,7 +223,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 		"@type": "Car",
 		name: `${vehicle.brand} ${vehicle.model} ${vehicle.year}`,
 		url: vehicleCanonical,
-		description: vehicle.meta_description ?? vehicle.description.slice(0, 200),
+		description: vehicle.meta_description ?? (vehicle.description_marketing ?? vehicle.description ?? "").slice(0, 200),
 		image: `${vehicleCanonical}/opengraph-image`,
 		brand: { "@type": "Brand", name: vehicle.brand },
 		model: `${vehicle.model}`,
@@ -362,7 +362,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									Description du véhicule
 								</h2>
 								<DescriptionRenderer
-									text={vehicle.description}
+									text={vehicle.description_marketing ?? vehicle.description ?? ""}
 								/>
 								<div className="mt-8 pt-8 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
 									{[

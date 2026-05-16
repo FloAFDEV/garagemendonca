@@ -32,7 +32,7 @@ export interface UIVehicle {
   color: string;
   doors: number;
   power: number;
-  description: string;
+  description: string; // description_marketing ?? description (résolu dans toUIVehicle)
   slug?: string;
   thumbnailUrl?: string;
   images: string[];
@@ -185,7 +185,7 @@ export function toUIVehicle(v: Vehicle): UIVehicle {
     color:            v.color,
     doors:            v.doors,
     power:            v.power,
-    description:      v.description,
+    description:      v.description_marketing ?? v.description ?? "",
     slug:             v.slug,
     thumbnailUrl:     v.thumbnailUrl,
     images:           v.images,

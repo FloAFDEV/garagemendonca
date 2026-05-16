@@ -17,8 +17,7 @@ import {
 	Inbox,
 } from "lucide-react";
 import clsx from "clsx";
-import { useAdminTheme } from "@/hooks/useAdminTheme";
-import { AdminThemeProvider, buildTokens } from "@/contexts/AdminThemeContext";
+import { useAdminTokens, useAdminThemeActions } from "@/contexts/AdminThemeContext";
 import { adminUI } from "@/lib/admin-ui";
 import { useUser } from "@/lib/auth/useUser";
 import { signOutAction } from "@/lib/auth/actions";
@@ -47,25 +46,23 @@ export default function AdminLayout({
 }) {
 	const pathname = usePathname();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const { theme, toggleTheme, mounted } = useAdminTheme();
+	const t = useAdminTokens();
+	const { toggleTheme } = useAdminThemeActions();
 	const { user } = useUser();
 
-	/* Avoid flash of wrong theme — render dark until hydrated */
-	const isDark = !mounted || theme === "dark";
-	const t = buildTokens(isDark);
+	const isDark = t.isDark;
 
 	/* ── Tokens de thème ─────────────────────────────────────── */
-	const bg = isDark ? "bg-dark-950" : "bg-slate-100";
-	const surface = isDark ? "bg-dark-900" : "bg-white";
-	const surface2 = isDark ? "bg-dark-800" : "bg-slate-50";
-	const border = isDark ? "border-dark-800" : "border-slate-200";
+	const bg      = isDark ? "bg-dark-950"    : "bg-slate-100";
+	const surface  = isDark ? "bg-dark-900"   : "bg-white";
+	const surface2 = isDark ? "bg-dark-800"   : "bg-slate-50";
+	const border   = isDark ? "border-dark-800" : "border-slate-200";
 
 	return (
-		<AdminThemeProvider value={t}>
-			<div
-				className={clsx("min-h-screen flex", bg)}
-				data-admin-theme={mounted ? theme : "dark"}
-			>
+		<div
+			className={clsx("min-h-screen flex", bg)}
+			data-admin-theme={isDark ? "dark" : "light"}
+		>
 				{/* Sidebar overlay (mobile) */}
 				{sidebarOpen && (
 					<div
@@ -331,6 +328,5 @@ export default function AdminLayout({
 					<main className="flex-1 p-4 md:p-6">{children}</main>
 				</div>
 			</div>
-		</AdminThemeProvider>
 	);
 }

@@ -21,8 +21,7 @@ import {
 	Upload,
 } from "lucide-react";
 import clsx from "clsx";
-import { serviceRepository } from "@/lib/repositories";
-import { updateServiceAction } from "../actions";
+import { getServiceBySlugAction, updateServiceAction } from "../actions";
 import { adminUI } from "@/lib/admin-ui";
 import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
 import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
@@ -234,8 +233,7 @@ export default function EditServicePage({
 
 	// ── Chargement initial depuis Supabase ──────────────────────────────────────
 	useEffect(() => {
-		serviceRepository
-			.getBySlug(slug)
+		getServiceBySlugAction(slug)
 			.then((svc) => {
 				if (!svc) {
 					setLoadState("notfound");

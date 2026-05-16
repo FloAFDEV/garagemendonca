@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { getUser, getUserRole } from "@/lib/auth/getSession";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { logSecurityEvent } from "@/lib/security/logEvent";
+import AdminThemeRoot from "@/components/admin/AdminThemeRoot";
 
 export const metadata: Metadata = {
   robots: {
@@ -47,5 +48,5 @@ export default async function AdminRootLayout({
     }
   }
 
-  return <>{children}</>;
+  return <AdminThemeRoot>{children}</AdminThemeRoot>;
 }

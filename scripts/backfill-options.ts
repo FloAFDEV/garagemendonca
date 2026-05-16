@@ -12,7 +12,7 @@
  *   - DRY_RUN=true pour prévisualiser sans écrire
  *
  * Rollback :
- *   UPDATE vehicles SET description = original_description, options = '{}' WHERE original_description IS NOT NULL;
+ *   UPDATE vehicles SET description_marketing = NULL, options = '{}' WHERE original_description IS NOT NULL;
  *
  * Usage :
  *   npx tsx scripts/backfill-options.ts
@@ -134,7 +134,7 @@ async function main() {
   // ── Récupérer les véhicules ───────────────────────────────────
   let query = db
     .from("vehicles")
-    .select("id, description, original_description, options")
+    .select("id, description, original_description, description_marketing, options")
     .eq("garage_id", GARAGE_ID)
     .not("description", "is", null);
 
@@ -197,9 +197,9 @@ async function main() {
         }
 
         const patch: Record<string, unknown> = {
-          options:     mergedOptions,
-          description: cleanedDescription,
-          updated_at:  new Date().toISOString(),
+          options:                 mergedOptions,
+          description_marketing:  cleanedDescription,
+          updated_at:             new Date().toISOString(),
         };
 
         // Sauvegarder original_description seulement si pas déjà fait
@@ -236,7 +236,7 @@ async function main() {
   } else {
     console.log("\n✅ Backfill terminé.\n");
     console.log("   Rollback possible avec :");
-    console.log("   UPDATE vehicles SET description = original_description, options = '{}'\n   WHERE original_description IS NOT NULL;\n");
+    console.log("   UPDATE vehicles SET description_marketing = NULL, options = '{}'\n   WHERE original_description IS NOT NULL;\n");
   }
 }
 

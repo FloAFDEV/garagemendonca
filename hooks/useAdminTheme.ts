@@ -43,9 +43,12 @@ export function useAdminTheme() {
 	}, [theme, setTheme]);
 
 	useEffect(() => {
+		// Réconcilie l'état React (initialisé côté serveur = "dark")
+		// avec la valeur réelle de localStorage (lue côté client).
+		const stored = readStored();
+		setThemeState(stored);
+		applyTheme(stored);
 		setMounted(true);
-		// Applique le thème initial au DOM (au cas où le script anti-FOUC aurait raté)
-		applyTheme(theme);
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// Synchronisation cross-onglets via l'événement "storage"

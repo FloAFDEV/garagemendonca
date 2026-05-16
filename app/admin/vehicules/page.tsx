@@ -330,19 +330,20 @@ export default function AdminVehiclesPage() {
 						className={clsx(
 							"flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-colors",
 							showFilters || hasActiveFilters
-								? "bg-brand-600 text-white border-brand-600"
+								? "bg-brand-600 text-white border-brand-600 hover:bg-brand-700"
 								: clsx(
 										t.surface,
 										t.border,
 										t.txtMuted,
 										t.hoverBgStrong,
+										t.hoverTxt,
 									),
 						)}
 					>
 						<SlidersHorizontal size={15} />
 						<span className="hidden sm:inline">Filtres</span>
 						{hasActiveFilters && (
-							<span className="w-5 h-5 rounded-full text-brand-600 text-[10px] flex items-center justify-center font-medium">
+							<span className="w-5 h-5 rounded-full bg-white/20 text-white text-[10px] flex items-center justify-center font-medium">
 								{
 									[
 										filterBrand,
@@ -748,8 +749,7 @@ export default function AdminVehiclesPage() {
 											<div>
 												<div
 													className={clsx(
-														"font-normal text-pink-700 text-md flex items-center gap-1.5",
-														t.txt,
+														"font-normal text-brand-500 text-sm flex items-center gap-1.5",
 													)}
 												>
 													{vehicle.featured && (

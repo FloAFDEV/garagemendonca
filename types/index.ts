@@ -263,7 +263,8 @@ export interface Vehicle {
   mileage: number;
   fuel: "Essence" | "Diesel" | "Hybride" | "Électrique" | "GPL" | "Hydrogène";
   price: number;
-  description: string;
+  description?: string;
+  description_marketing?: string; // texte narratif propre (sans liste d'options)
   images: string[];
   thumbnailUrl?: string;  // image principale mise en cache (Supabase Storage)
   transmission: "Manuelle" | "Automatique";

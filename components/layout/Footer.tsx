@@ -14,6 +14,7 @@ const footerLinks = {
 		{ href: "/vehicules", label: "Occasions" },
 		{ href: "/produit", label: "Notre offre VO" },
 		{ href: "/contact", label: "Contact & Devis" },
+		{ href: "/faq", label: "FAQ" },
 	],
 };
 
