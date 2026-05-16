@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { SIMPLE_REDIRECTS } from "./redirects-legacy";
 
 const nextConfig: NextConfig = {
 	images: {
@@ -26,6 +27,12 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
+
+  async redirects() {
+    // Vehicle URLs with + (details-...) are handled by middleware.ts
+    // (path-to-regexp cannot parse literal + in source patterns)
+    return [...SIMPLE_REDIRECTS];
+  },
 
   async headers() {
     return [
