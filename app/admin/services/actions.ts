@@ -3,13 +3,24 @@
 import { revalidatePath } from "next/cache";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
+import { requireAdminForGarage } from "@/lib/auth/getSession";
+import { assertSameOrigin } from "@/lib/auth/csrf";
+import { logAudit } from "@/lib/audit/logAction";
 import type { Service } from "@/types";
+
+async function assertAdmin() {
+  await assertSameOrigin();
+  const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+  const err = await requireAdminForGarage(garageId);
+  if (err) throw new Error(err.message);
+}
 
 export async function createServiceAction(
   data: Pick<Service, "title" | "short_description" | "long_description" | "features" | "icon"> & { slug: string },
 ): Promise<{ ok: boolean; slug?: string; error?: string }> {
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour créer un service");
+    await assertAdmin();
     const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
     const db = createSupabaseAdminClient();
 
@@ -31,6 +42,7 @@ export async function createServiceAction(
 
     revalidatePath("/services");
     revalidatePath("/admin/services");
+    await logAudit({ action: "create", resourceType: "service", resourceId: row.slug as string });
     return { ok: true, slug: row.slug as string };
   } catch (e) {
     return { ok: false, error: String(e) };
@@ -42,6 +54,7 @@ export async function deleteServiceAction(
 ): Promise<{ ok: boolean; error?: string }> {
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour supprimer un service");
+    await assertAdmin();
     const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
     const db = createSupabaseAdminClient();
 
@@ -54,6 +67,7 @@ export async function deleteServiceAction(
 
     revalidatePath("/services");
     revalidatePath("/admin/services");
+    await logAudit({ action: "delete", resourceType: "service", resourceId: slug });
     return { ok: true };
   } catch (e) {
     return { ok: false, error: String(e) };
@@ -65,6 +79,7 @@ export async function reorderServicesAction(
 ): Promise<{ ok: boolean; error?: string }> {
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis");
+    await assertAdmin();
     const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
     const db = createSupabaseAdminClient();
 
@@ -91,6 +106,7 @@ export async function updateServiceAction(
 ): Promise<{ ok: boolean; error?: string }> {
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour modifier un service");
+    await assertAdmin();
     const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
     const db = createSupabaseAdminClient();
 

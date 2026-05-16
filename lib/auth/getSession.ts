@@ -13,11 +13,20 @@ import { cookies } from "next/headers";
 import type { AppError } from "@/lib/errors/supabaseErrorParser";
 import type { UserRoleEnum } from "@/lib/supabase/database.types";
 
-// ─── Client SSR (lit les cookies de session) ──────────────────────
+// ── Cookie options sécurisées ─────────────────────────────────────────
+// Supabase SSR définit HttpOnly:true et Secure:true (HTTPS) par défaut.
+// On rend ces options explicites et on ajoute SameSite=Lax.
+const secureCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  path: "/",
+};
+
+// ── Client SSR (lit les cookies de session) ──────────────────────────
 
 async function createAuthClient() {
   const cookieStore = await cookies();
-  // Pas de générique Database (incompatibilité postgrest-js v12).
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -26,7 +35,10 @@ async function createAuthClient() {
         getAll: () => cookieStore.getAll(),
         setAll: (toSet) => {
           toSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
+            cookieStore.set(name, value, {
+              ...secureCookieOptions,
+              ...options,
+            }),
           );
         },
       },
@@ -40,7 +52,10 @@ async function createAuthClient() {
 
 export async function getSession() {
   const supabase = await createAuthClient();
-  const { data: { session }, error } = await supabase.auth.getSession();
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
   if (error) return null;
   return session;
 }
@@ -51,7 +66,10 @@ export async function getSession() {
 
 export async function getUser() {
   const supabase = await createAuthClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
   if (error || !user) return null;
   return user;
 }
@@ -60,7 +78,9 @@ export async function getUser() {
 //  getUserRole — rôle de l'utilisateur dans un garage
 // ─────────────────────────────────────────────────────────────────
 
-export async function getUserRole(garageId: string): Promise<UserRoleEnum | null> {
+export async function getUserRole(
+  garageId: string,
+): Promise<UserRoleEnum | null> {
   const user = await getUser();
   if (!user) return null;
 
@@ -79,11 +99,19 @@ export async function getUserRole(garageId: string): Promise<UserRoleEnum | null
 //  Gardes d'autorisation — retournent AppError | null
 // ─────────────────────────────────────────────────────────────────
 
-const FORBIDDEN: AppError = { code: "FORBIDDEN", message: "Action non autorisée." };
-const UNAUTHENTICATED: AppError = { code: "UNAUTHORIZED", message: "Vous devez être connecté." };
+const FORBIDDEN: AppError = {
+  code: "FORBIDDEN",
+  message: "Action non autorisée.",
+};
+const UNAUTHENTICATED: AppError = {
+  code: "UNAUTHORIZED",
+  message: "Vous devez être connecté.",
+};
 
 /** Vérifie que l'utilisateur est admin ou superadmin du garage. */
-export async function requireAdminForGarage(garageId: string): Promise<AppError | null> {
+export async function requireAdminForGarage(
+  garageId: string,
+): Promise<AppError | null> {
   const user = await getUser();
   if (!user) return UNAUTHENTICATED;
 
@@ -94,7 +122,9 @@ export async function requireAdminForGarage(garageId: string): Promise<AppError 
 }
 
 /** Vérifie que l'utilisateur est membre (staff+) du garage. */
-export async function requireMemberOfGarage(garageId: string): Promise<AppError | null> {
+export async function requireMemberOfGarage(
+  garageId: string,
+): Promise<AppError | null> {
   const user = await getUser();
   if (!user) return UNAUTHENTICATED;
 

@@ -3,8 +3,18 @@
 import { revalidatePath } from "next/cache";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
+import { requireAdminForGarage } from "@/lib/auth/getSession";
+import { assertSameOrigin } from "@/lib/auth/csrf";
+import { logAudit } from "@/lib/audit/logAction";
 import { mapBanner } from "@/lib/supabase/mappers";
 import type { Banner } from "@/types";
+
+async function assertAdmin() {
+  await assertSameOrigin();
+  const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+  const err = await requireAdminForGarage(garageId);
+  if (err) throw new Error(err.message);
+}
 
 export async function getBannerAction(): Promise<Banner | null> {
   if (!SUPABASE_ENABLED) return null;
@@ -24,6 +34,7 @@ export async function upsertBannerAction(
 ): Promise<{ ok: boolean; error?: string }> {
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour modifier la bannière");
+    await assertAdmin();
     const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
     const db = createSupabaseAdminClient();
     const payload = {
@@ -43,6 +54,7 @@ export async function upsertBannerAction(
     revalidatePath("/services");
     revalidatePath("/contact");
     revalidatePath("/admin/banniere");
+    await logAudit({ action: "update", resourceType: "banner" });
     return { ok: true };
   } catch (e) {
     return { ok: false, error: String(e) };

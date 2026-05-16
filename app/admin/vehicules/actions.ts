@@ -5,8 +5,17 @@ import { revalidatePath } from "next/cache";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { vehicleFromDb } from "@/lib/mappers/vehicle.mapper";
+import { requireAdminForGarage } from "@/lib/auth/getSession";
+import { assertSameOrigin } from "@/lib/auth/csrf";
+import { logAudit } from "@/lib/audit/logAction";
 
 const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+
+async function assertAdmin() {
+	await assertSameOrigin();
+	const err = await requireAdminForGarage(GARAGE_ID());
+	if (err) throw new Error(err.message);
+}
 
 /* ── Admin reads (service-role, bypasse RLS) ─────────────────── */
 
@@ -78,6 +87,7 @@ function toDbRow(input: VehicleUpdateInput): Record<string, unknown> {
 
 export async function updateVehicleStatus(id: string, status: VehicleStatus) {
 	if (!SUPABASE_ENABLED) throw new Error("[updateVehicleStatus] Supabase requis");
+	await assertAdmin();
 	const db = createSupabaseAdminClient();
 	const { error } = await db
 		.from("vehicles")
@@ -89,17 +99,20 @@ export async function updateVehicleStatus(id: string, status: VehicleStatus) {
 		.eq("id", id);
 	if (error) throw error;
 	revalidateAll(id);
+	await logAudit({ action: "update", resourceType: "vehicle", resourceId: id, details: { status } });
 }
 
 /* ── Update ──────────────────────────────────────────────────── */
 
 export async function saveVehicle(id: string, input: VehicleUpdateInput) {
 	if (!SUPABASE_ENABLED) throw new Error("[saveVehicle] Supabase requis");
+	await assertAdmin();
 	const db = createSupabaseAdminClient();
 	const row = { ...toDbRow(input), updated_at: new Date().toISOString() };
 	const { error } = await db.from("vehicles").update(row).eq("id", id);
 	if (error) throw error;
 	revalidateAll(id);
+	await logAudit({ action: "update", resourceType: "vehicle", resourceId: id });
 }
 
 /* ── Create ──────────────────────────────────────────────────── */
@@ -108,6 +121,7 @@ export async function createVehicleAction(
 	input: VehicleCreateInput & { id?: string },
 ): Promise<{ id: string }> {
 	if (!SUPABASE_ENABLED) throw new Error("[createVehicleAction] Supabase requis");
+	await assertAdmin();
 	const db = createSupabaseAdminClient();
 	const row = {
 		...toDbRow(input),
@@ -123,6 +137,7 @@ export async function createVehicleAction(
 		.single();
 	if (error) throw error;
 	revalidateAll(data.id);
+	await logAudit({ action: "create", resourceType: "vehicle", resourceId: data.id });
 	return { id: data.id };
 }
 
@@ -130,8 +145,10 @@ export async function createVehicleAction(
 
 export async function deleteVehicleAction(id: string): Promise<void> {
 	if (!SUPABASE_ENABLED) throw new Error("[deleteVehicleAction] Supabase requis");
+	await assertAdmin();
 	const db = createSupabaseAdminClient();
 	const { error } = await db.from("vehicles").delete().eq("id", id);
 	if (error) throw error;
 	revalidateAll(id);
+	await logAudit({ action: "delete", resourceType: "vehicle", resourceId: id });
 }

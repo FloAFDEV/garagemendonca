@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
+import { getUser } from "@/lib/auth/getSession";
 
 // ─── Règles de traitement par type ───────────────────────────────
 
@@ -15,6 +16,11 @@ type UploadType = keyof typeof UPLOAD_CONFIGS;
 // ─── POST /api/upload-image ───────────────────────────────────────
 
 export async function POST(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  }
+
   let formData: FormData;
   try {
     formData = await request.formData();

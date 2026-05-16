@@ -20,6 +20,8 @@ import clsx from "clsx";
 import { useAdminTheme } from "@/hooks/useAdminTheme";
 import { AdminThemeProvider, buildTokens } from "@/contexts/AdminThemeContext";
 import { adminUI } from "@/lib/admin-ui";
+import { useUser } from "@/lib/auth/useUser";
+import { signOutAction } from "@/lib/auth/actions";
 
 const navItems = [
 	{
@@ -46,6 +48,7 @@ export default function AdminLayout({
 	const pathname = usePathname();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const { theme, toggleTheme, mounted } = useAdminTheme();
+	const { user } = useUser();
 
 	/* Avoid flash of wrong theme — render dark until hydrated */
 	const isDark = !mounted || theme === "dark";
@@ -212,7 +215,7 @@ export default function AdminLayout({
 						>
 							<div className="w-9 h-9 bg-brand-600/20 rounded-xl flex items-center justify-center flex-shrink-0">
 								<span className="text-brand-400 font-medium text-sm">
-									A
+									{user?.email?.[0]?.toUpperCase() ?? "A"}
 								</span>
 							</div>
 							<div className="flex-1 min-w-0">
@@ -230,20 +233,22 @@ export default function AdminLayout({
 										t.txtSubtle,
 									)}
 								>
-									admin@garagemendonca.com
+									{user?.email ?? "—"}
 								</div>
 							</div>
-							<Link
-								href="/admin/login"
-								className={clsx(
-									"p-1 rounded-lg transition-colors hover:text-red-600 dark:hover:text-red-400",
-									adminUI.txtSecondary,
-									adminUI.focusDanger,
-								)}
-								title="Déconnexion"
-							>
-								<LogOut size={15} />
-							</Link>
+							<form action={signOutAction}>
+								<button
+									type="submit"
+									className={clsx(
+										"p-1 rounded-lg transition-colors hover:text-red-600 dark:hover:text-red-400",
+										adminUI.txtSecondary,
+										adminUI.focusDanger,
+									)}
+									title="Déconnexion"
+								>
+									<LogOut size={15} />
+								</button>
+							</form>
 						</div>
 					</div>
 				</aside>
