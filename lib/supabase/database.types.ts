@@ -164,6 +164,7 @@ export interface VehicleRow {
   doors: number | null;
   crit_air: string | null;
   description: string | null;
+  original_description?: string | null;
   images: string[];
   thumbnail_url: string | null;
   status: VehicleStatusEnum;
