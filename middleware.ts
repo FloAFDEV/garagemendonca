@@ -1,7 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { VEHICLE_PATH_MAP } from "./redirects-legacy";
+// VEHICLE_PATH_MAP retiré du bundle Edge — géré par app/api/lr/[slug]/route.ts
+// via rewrite next.config.ts (supprime le warning "Serializing big strings")
 
 // ── CSP ────────────────────────────────────────────────────────────────
 //
@@ -124,19 +125,6 @@ export async function middleware(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
-
-  // ── Redirections 301 legacy (URLs avec + incompatibles next.config.ts) ─────
-  // Les paths /details-{marque}+{modele}+...html du site legacy sont gérés ici
-  // car path-to-regexp (utilisé par next.config redirects) ne peut pas parser
-  // les + littéraux dans les source patterns.
-  if (pathname.startsWith("/details-")) {
-    const destination = VEHICLE_PATH_MAP[pathname];
-    if (destination) {
-      return NextResponse.redirect(new URL(destination, request.url), {
-        status: 301,
-      });
-    }
-  }
 
   // Routes admin et login : pas d'indexation, pas de cache
   if (pathname.startsWith("/admin") || pathname === "/login") {

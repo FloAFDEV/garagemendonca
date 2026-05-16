@@ -29,9 +29,20 @@ const nextConfig: NextConfig = {
 	},
 
   async redirects() {
-    // Vehicle URLs with + (details-...) are handled by middleware.ts
-    // (path-to-regexp cannot parse literal + in source patterns)
     return [...SIMPLE_REDIRECTS];
+  },
+
+  async rewrites() {
+    return [
+      {
+        // Les URLs legacy véhicules (/details-{marque}+{modele}+...html) ne peuvent pas
+        // être gérées dans redirects() car path-to-regexp interprète + comme quantificateur.
+        // Solution : rewrite vers un route handler qui fait le 301, sans passer par
+        // le middleware Edge Runtime (évite de sérialiser le VEHICLE_PATH_MAP dans le bundle Edge).
+        source: "/:slug(details-[^/]+)",
+        destination: "/api/lr/:slug",
+      },
+    ];
   },
 
   async headers() {

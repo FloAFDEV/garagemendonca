@@ -30,6 +30,8 @@ const SEL_WITH_IMAGES = "*, vehicle_images(id, url, storage_path, alt, sort_orde
 
 // ─── Filtres pour list() ──────────────────────────────────────────
 
+export type VehicleSortBy = "created_at" | "price_asc" | "price_desc" | "mileage_asc" | "year_desc";
+
 export interface VehicleListFilters {
   status?:       VehicleRow["status"];
   brand?:        string;        // filtre interne (single brand, ilike)
@@ -44,6 +46,7 @@ export interface VehicleListFilters {
   maxMileage?:   number;
   category?:     string;
   featured?:     boolean;
+  sortBy?:       VehicleSortBy; // tri catalogue public
   limit?:        number;
   offset?:       number;
 }
@@ -57,7 +60,7 @@ function normalizeSearch(s: string): string {
     .trim();
 }
 
-/** Applique les filtres publics communs (brands, search, fuel, transmission, km, price). */
+/** Applique les filtres publics communs (brands, search, fuel, transmission, km, price, year). */
 function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "offset">): Q {
   if (filters.brands?.length) {
     q = q.in("brand", filters.brands);
@@ -67,7 +70,10 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
 
   if (filters.fuel)         q = q.eq("fuel", filters.fuel);
   if (filters.transmission) q = q.eq("transmission", filters.transmission);
+  if (filters.minPrice)     q = q.gte("price", filters.minPrice);
   if (filters.maxPrice)     q = q.lte("price", filters.maxPrice);
+  if (filters.minYear)      q = q.gte("year", filters.minYear);
+  if (filters.maxYear)      q = q.lte("year", filters.maxYear);
   if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
 
   if (filters.search) {
@@ -82,6 +88,17 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
   }
 
   return q;
+}
+
+/** Applique la clause ORDER BY selon le tri demandé. */
+function applySort(q: Q, sortBy: VehicleSortBy | undefined): Q {
+  switch (sortBy) {
+    case "price_asc":   return q.order("price", { ascending: true });
+    case "price_desc":  return q.order("price", { ascending: false });
+    case "mileage_asc": return q.order("mileage", { ascending: true });
+    case "year_desc":   return q.order("year", { ascending: false });
+    default:            return q.order("created_at", { ascending: false }); // plus récent
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -243,8 +260,8 @@ export const vehicleDb = {
       .in("status", ["published", "scheduled", "sold"]);
 
     q = applyPublicFilters(q, filters);
-
-    q = q.order("created_at", { ascending: false }).range(offset, offset + perPage - 1);
+    q = applySort(q, filters.sortBy);
+    q = q.range(offset, offset + perPage - 1);
 
     const { data, error } = await q;
     if (error) throw error;
