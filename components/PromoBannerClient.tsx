@@ -40,6 +40,15 @@ export default function PromoBannerClient({
 	useEffect(() => {
 		setMounted(true);
 
+		// ── Vérification dates côté client (toujours fraîche, pas de cache) ──
+		const now = new Date();
+		if (banner.scheduled_start && new Date(banner.scheduled_start) > now) return;
+		if (banner.scheduled_end   && new Date(banner.scheduled_end)   < now) return;
+
+		// ── Vérification pages d'affichage ──
+		if (banner.display_pages === "home_only" && window.location.pathname !== "/") return;
+
+		// ── Dismissal sessionStorage ──
 		if (banner.is_dismissible) {
 			try {
 				if (sessionStorage.getItem(DISMISS_KEY) === banner.id) return;
@@ -56,7 +65,13 @@ export default function PromoBannerClient({
 			const t = setTimeout(() => setVisible(true), 60);
 			return () => clearTimeout(t);
 		}
-	}, [banner.id, banner.is_dismissible]);
+	}, [
+		banner.id,
+		banner.is_dismissible,
+		banner.scheduled_start,
+		banner.scheduled_end,
+		banner.display_pages,
+	]);
 
 	const dismiss = () => {
 		setVisible(false);

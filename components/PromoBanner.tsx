@@ -16,9 +16,10 @@ export default async function PromoBanner() {
   const banner = await bannerRepository.get();
   if (!banner || !banner.is_active) return null;
 
-  const now = new Date();
-  if (banner.scheduled_start && new Date(banner.scheduled_start) > now) return null;
-  if (banner.scheduled_end && new Date(banner.scheduled_end) < now) return null;
+  // Les vérifications de dates et display_pages sont gérées côté client
+  // (PromoBannerClient) pour éviter le problème de cache Next.js :
+  // ce Server Component est mis en cache et "now" ne changerait pas
+  // tant qu'un revalidatePath n'est pas déclenché.
 
   const signedImageUrl = banner.image_url
     ? await signBannerImage(banner.image_url)

@@ -1,0 +1,11 @@
+{
+  // ── Deno : activer uniquement pour les Edge Functions Supabase ──
+  // Sans cette config, VS Code utilise le serveur TypeScript Node.js
+  // qui ne comprend pas les imports URL (https://esm.sh/…)
+  "deno.enablePaths": ["supabase/functions"],
+  "deno.importMap": "./supabase/functions/import_map.json",
+
+  // ── TypeScript Node.js : exclure le dossier Deno ──
+  // Évite que le TS server Node signale des erreurs sur les fichiers Deno
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false
+}
