@@ -137,7 +137,7 @@ export default function VehicleGallery({
 									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
 									loading={idx === 0 ? "eager" : "lazy"}
 									decoding={idx === 0 ? "sync" : "async"}
-									className="w-full h-full object-cover object-top"
+									className="w-full h-full object-cover object-center"
 								/>
 							</div>
 						))}
@@ -284,7 +284,7 @@ export default function VehicleGallery({
 									<img
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
-										className="absolute inset-0 w-full h-full object-cover object-top"
+										className="absolute inset-0 w-full h-full object-cover object-center"
 									loading="lazy"
 									decoding="async"
 									/>
@@ -321,7 +321,7 @@ export default function VehicleGallery({
 									<img
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
-										className="absolute inset-0 w-full h-full object-cover object-top"
+										className="absolute inset-0 w-full h-full object-cover object-center"
 									loading="lazy"
 									decoding="async"
 									/>
