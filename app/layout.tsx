@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SkipToContent from "@/components/ui/SkipToContent";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
 import CookieBanner from "@/components/cookies/CookieBanner";
-import CookieSettingsModal from "@/components/cookies/CookieSettingsModal";
+import CookieLayer from "@/components/cookies/CookieLayer";
 import Analytics from "@/components/analytics/Analytics";
 import { GOOGLE_CONSENT_INIT_SCRIPT } from "@/lib/consent/googleConsent";
 
@@ -40,6 +40,19 @@ export const metadata: Metadata = {
 		locale: "fr_FR",
 		images: [{ url: "/images/og-image.webp", width: 1200, height: 630, alt: "Garage Auto Mendonca — Drémil-Lafage" }],
 	},
+};
+
+/**
+ * Viewport — séparé de metadata (Next.js 15 requirement).
+ *
+ * viewportFit: "cover" est OBLIGATOIRE pour que env(safe-area-inset-bottom)
+ * fonctionne sur iPhone (home indicator / Dynamic Island).
+ * Sans ce flag, env(safe-area-inset-bottom) = 0 même sur iPhone avec notch.
+ */
+export const viewport: Viewport = {
+	width:        "device-width",
+	initialScale: 1,
+	viewportFit:  "cover", // prérequis safe-area-inset-* iOS
 };
 
 const jsonLd = {
@@ -121,17 +134,38 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="fr" suppressHydrationWarning data-scroll-behavior="smooth">
+			{/*
+			 * Ordre des scripts dans <head> — NE PAS réordonner.
+			 *
+			 * ① Anti-FOUC (thème admin)
+			 *    → doit s'exécuter avant tout paint pour éviter le flash
+			 *    → lit localStorage, aucun réseau
+			 *
+			 * ② Google Consent Mode v2 init
+			 *    → DOIT précéder tout chargement de GTM / GA4
+			 *    → pose les signaux "denied" sur dataLayer
+			 *    → GTM lira ces valeurs à son chargement
+			 *    → aucun appel réseau (setup dataLayer uniquement)
+			 *
+			 * ③ JSON-LD SEO
+			 *    → non bloquant, ordre peu importe mais ici par convention
+			 *
+			 * Les scripts GTM/GA4 sont chargés par Analytics.tsx
+			 * avec strategy="afterInteractive" UNIQUEMENT après consentement.
+			 * Ils s'exécutent donc APRÈS ①②③ et après l'hydration React.
+			 */}
 			<head>
-				{/* Anti-FOUC : applique le thème admin avant tout paint */}
+				{/* ① Anti-FOUC : thème admin avant tout paint */}
 				<script
 					dangerouslySetInnerHTML={{
 						__html: `(function(){try{var t=localStorage.getItem('admin-theme')||'dark';document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})();`,
 					}}
 				/>
-				{/* Google Consent Mode v2 — doit être avant tout tag GTM/GA */}
+				{/* ② Google Consent Mode v2 — AVANT tout tag GTM/GA */}
 				<script
 					dangerouslySetInnerHTML={{ __html: GOOGLE_CONSENT_INIT_SCRIPT }}
 				/>
+				{/* ③ JSON-LD SEO */}
 				<script
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -143,7 +177,7 @@ export default function RootLayout({
 					<CookieConsentProvider>
 						{children}
 						<CookieBanner />
-						<CookieSettingsModal />
+						<CookieLayer />
 						<Analytics />
 					</CookieConsentProvider>
 				</QueryProvider>

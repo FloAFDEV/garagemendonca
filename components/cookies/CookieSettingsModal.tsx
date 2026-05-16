@@ -33,8 +33,8 @@ function Toggle({
         "relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent",
         "transition-colors duration-200 ease-in-out",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2",
-        checked   ? "bg-brand-500" : "bg-slate-200",
-        disabled  ? "cursor-not-allowed opacity-60" : "cursor-pointer",
+        checked  ? "bg-brand-500" : "bg-slate-200",
+        disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
       )}
     >
       <span
@@ -90,29 +90,47 @@ const CATEGORIES: CategoryDef[] = [
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
 export default function CookieSettingsModal() {
-  const { consent, isSettingsOpen }                      = useConsentState();
-  const { closeSettings, acceptAll, rejectAll, saveCustom } = useConsentActions();
+  const { consent, isSettingsOpen }                            = useConsentState();
+  const { closeSettings, acceptAll, rejectAll, saveCustom }    = useConsentActions();
 
-  // État local des toggles — modifiable sans valider immédiatement
+  // État local des toggles — modifiable avant validation
   const [localAnalytics, setLocalAnalytics] = useState(consent.analytics);
   const [localMarketing, setLocalMarketing] = useState(consent.marketing);
 
   // Description dépliable
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  // Refs pour focus trap
+  // Refs accessibilité
   const overlayRef    = useRef<HTMLDivElement>(null);
   const modalRef      = useRef<HTMLDivElement>(null);
   const firstFocusRef = useRef<HTMLButtonElement>(null);
 
-  // Sync état local + focus à l'ouverture
+  /**
+   * prevFocusRef : mémorise l'élément focalisé avant l'ouverture du modal.
+   * WCAG 2.4.3 : le focus DOIT retourner à l'élément déclencheur à la fermeture.
+   */
+  const prevFocusRef = useRef<HTMLElement | null>(null);
+
+  // Sync toggles + focus management à chaque changement d'état ouverture
   useEffect(() => {
     if (isSettingsOpen) {
+      // Mémoriser l'élément actif pour restauration à la fermeture
+      prevFocusRef.current = document.activeElement as HTMLElement;
+
       setLocalAnalytics(consent.analytics);
       setLocalMarketing(consent.marketing);
       setExpanded(null);
+
       // requestAnimationFrame : attend que le DOM soit peint avant le focus
       requestAnimationFrame(() => firstFocusRef.current?.focus());
+    } else {
+      // Restaurer le focus vers l'élément déclencheur (WCAG 2.4.3)
+      if (prevFocusRef.current) {
+        requestAnimationFrame(() => {
+          prevFocusRef.current?.focus();
+          prevFocusRef.current = null;
+        });
+      }
     }
   }, [isSettingsOpen, consent.analytics, consent.marketing]);
 
@@ -129,12 +147,13 @@ export default function CookieSettingsModal() {
         return;
       }
 
-      // Focus trap : cycle Tab/Shift+Tab dans le modal
+      // Focus trap : cycle Tab/Shift+Tab dans le panel du modal
       if (e.key === "Tab" && modalRef.current) {
         const focusable = modalRef.current.querySelectorAll<HTMLElement>(
           'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
         if (!focusable.length) return;
+
         const first = focusable[0];
         const last  = focusable[focusable.length - 1];
 
@@ -171,10 +190,12 @@ export default function CookieSettingsModal() {
 
   return (
     /*
-     * Overlay — fond semi-transparent + positionnement.
-     * PAS de role="dialog" ici : l'overlay inclut le backdrop, qui ne fait
+     * Overlay — positionnement + fond semi-transparent.
+     * z-[60] : au-dessus de la bannière (z-[55]) et du header (z-50).
+     *
+     * PAS de role="dialog" ici : l'overlay inclut le backdrop qui ne fait
      * pas partie du contenu du dialog. WCAG APG Dialog Pattern :
-     * role="dialog" doit être sur le conteneur du CONTENU uniquement.
+     * role="dialog" doit être exclusivement sur le conteneur du CONTENU.
      */
     <div
       ref={overlayRef}
@@ -191,8 +212,9 @@ export default function CookieSettingsModal() {
 
       {/*
        * Panel — seul élément portant role="dialog".
-       * aria-modal="true" indique aux AT de ne pas naviguer hors du dialog.
-       * aria-labelledby référence le titre visible (h2#modal-title).
+       * aria-modal="true"         → AT ne navigue pas hors du dialog
+       * aria-labelledby           → annonce le titre h2 visible
+       * max-h-[90dvh]             → dvh (dynamic viewport height) = iOS keyboard safe
        */}
       <div
         ref={modalRef}
@@ -206,7 +228,7 @@ export default function CookieSettingsModal() {
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 flex-shrink-0">
           <div>
             <h2
               id="cookie-modal-title"
@@ -233,15 +255,13 @@ export default function CookieSettingsModal() {
           </button>
         </div>
 
-        {/* Catégories */}
+        {/* Catégories — scrollable */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
           {CATEGORIES.map(({ id, Icon, title, description, required }) => {
             const isChecked =
-              id === "necessary"
-                ? true
-                : id === "analytics"
-                  ? localAnalytics
-                  : localMarketing;
+              id === "necessary" ? true :
+              id === "analytics" ? localAnalytics :
+              localMarketing;
             const isExpanded = expanded === id;
 
             return (
@@ -291,7 +311,7 @@ export default function CookieSettingsModal() {
                     id={`toggle-${id}`}
                     label={`${isChecked ? "Désactiver" : "Activer"} ${title}`}
                     checked={isChecked}
-                    disabled={required}
+                    disabled={!!required}
                     onChange={(v) => {
                       if (id === "analytics") setLocalAnalytics(v);
                       if (id === "marketing") setLocalMarketing(v);
@@ -314,7 +334,7 @@ export default function CookieSettingsModal() {
             );
           })}
 
-          {/* Info légale */}
+          {/* Info légale CNIL */}
           <p className="text-[11px] text-slate-400 leading-relaxed pt-1">
             Votre choix est enregistré pour 6 mois. Vous pouvez le modifier à
             tout moment via le lien &quot;Gérer mes cookies&quot; en bas de page.
@@ -322,8 +342,8 @@ export default function CookieSettingsModal() {
           </p>
         </div>
 
-        {/* Actions */}
-        <div className="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2.5">
+        {/* Actions — fixed dans le panel */}
+        <div className="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row gap-2.5 flex-shrink-0">
           <button
             type="button"
             onClick={rejectAll}

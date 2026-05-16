@@ -3,34 +3,35 @@
  * ─────────────────────────────────────────────────────────────────────────
  * Source de vérité pour le stockage du consentement RGPD.
  *
- * Choix de stockage : COOKIE (pas localStorage)
- *  → peut être lu côté serveur (Server Components, middleware)
+ * Stockage : cookie (pas localStorage)
+ *  → lisible côté serveur (Server Components, middleware)
  *  → survit aux navigations cross-page sans hydratation JS
- *  → compatible `SameSite=Lax; Secure` pour la sécurité
- *  → Max-Age déclaratif = expiration garantie sans code JS côté client
+ *  → compatible SameSite=Lax; Secure
+ *  → Max-Age déclaratif = expiration garantie sans JS côté client
  *
- * Versioning : cookieConsent_v1
- *  → en cas d'évolution des catégories, incrémenter CONSENT_VERSION
- *  → l'ancien cookie sera ignoré et la bannière réaffichée
+ * Versioning : CONSENT_VERSION = 1
+ *  → stocker dans le payload JSON (pas dans le nom du cookie)
+ *  → incrémenter ici quand les catégories évoluent
+ *  → l'ancien cookie est invalidé et la bannière réaffichée automatiquement
  */
 
-export const CONSENT_COOKIE_KEY  = "cookieConsent_v1" as const;
+export const CONSENT_COOKIE_KEY  = "cookieConsent" as const;
 export const CONSENT_VERSION      = 1;
-export const CONSENT_MAX_AGE_SEC  = 60 * 60 * 24 * 180; // 180 jours ≈ 6 mois
+export const CONSENT_MAX_AGE_SEC  = 60 * 60 * 24 * 180; // 180 jours = 6 mois (CNIL max)
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ConsentState {
-  /** Version du schéma — pour invalider les anciens consentements */
-  version: number;
-  /** Toujours true — cookies techniques Supabase, Next.js */
-  necessary: true;
-  /** Google Analytics, mesure d'audience anonymisée */
-  analytics: boolean;
-  /** Google Ads, remarketing, pixels Meta */
-  marketing: boolean;
+  /** Version du schéma — invalide les anciens consentements si incrémenté */
+  version:      number;
+  /** Toujours true — cookies techniques Supabase, Next.js, session */
+  necessary:    true;
+  /** Google Analytics 4, mesure d'audience anonymisée */
+  analytics:    boolean;
+  /** Google Ads, remarketing, pixels publicitaires */
+  marketing:    boolean;
   /** ISO 8601 — horodatage légal du consentement */
-  timestamp: string;
+  timestamp:    string;
   /** false = bannière jamais interagie ; true = choix effectué */
   consentGiven: boolean;
 }
@@ -49,8 +50,8 @@ export const DEFAULT_CONSENT: ConsentState = {
 
 /**
  * Lit le consentement depuis document.cookie.
- * Retourne `null` si absent, malformé ou version différente.
- * Appelable uniquement côté client (typeof document !== "undefined").
+ * Retourne `null` si absent, malformé, ou version différente.
+ * Client-side uniquement.
  */
 export function readConsentCookie(): ConsentState | null {
   if (typeof document === "undefined") return null;
@@ -63,7 +64,7 @@ export function readConsentCookie(): ConsentState | null {
     const raw    = decodeURIComponent(match.split("=").slice(1).join("="));
     const parsed = JSON.parse(raw) as ConsentState;
 
-    // Invalide si version différente → force réaffichage de la bannière
+    // Version différente → force réaffichage de la bannière
     if (parsed.version !== CONSENT_VERSION) return null;
 
     return parsed;
@@ -76,13 +77,20 @@ export function readConsentCookie(): ConsentState | null {
 
 /**
  * Persiste le consentement dans document.cookie.
- * `Secure` uniquement en HTTPS (localhost reste fonctionnel).
+ *
+ * Format correct :
+ *   cookieConsent=<json>; Max-Age=15552000; Path=/; SameSite=Lax; Secure
+ *
+ * FIX : "Secure" sans le "; " préfixé pour éviter le double séparateur
+ *       dans le .join("; ") → "SameSite=Lax; ; Secure" était le bug.
  */
 export function writeConsentCookie(state: ConsentState): void {
   if (typeof document === "undefined") return;
 
-  const value  = encodeURIComponent(JSON.stringify(state));
-  const secure = location.protocol === "https:" ? "; Secure" : "";
+  const value = encodeURIComponent(JSON.stringify(state));
+
+  // "Secure" (sans "; " préfixé) — le .join("; ") ci-dessous ajoute le séparateur
+  const secure = location.protocol === "https:" ? "Secure" : "";
 
   document.cookie = [
     `${CONSENT_COOKIE_KEY}=${value}`,
@@ -91,12 +99,13 @@ export function writeConsentCookie(state: ConsentState): void {
     "SameSite=Lax",
     secure,
   ]
-    .filter(Boolean)
+    .filter(Boolean) // supprime "" (Secure absent en HTTP/localhost)
     .join("; ");
 }
 
-// ─── Suppression (tests / reset) ──────────────────────────────────────────────
+// ─── Suppression ──────────────────────────────────────────────────────────────
 
+/** Efface le cookie de consentement (tests, reset RGPD) */
 export function clearConsentCookie(): void {
   if (typeof document === "undefined") return;
   document.cookie = `${CONSENT_COOKIE_KEY}=; Max-Age=0; Path=/`;

@@ -24,19 +24,53 @@ function buildCsp(): string {
 
   const isDev = process.env.NODE_ENV === "development";
 
+  // ── Domaines Google Analytics / GTM ──────────────────────────────────────
+  //
+  // Inclus inconditionnellement : si GA/GTM ne sont pas configurés, Analytics.tsx
+  // retourne null et aucune requête n'est émise. Lister ces domaines ne crée pas
+  // de risque — c'est simplement une permission non utilisée.
+  //
+  // Détail des domaines requis pour GA4 + GTM :
+  //   script-src  : www.googletagmanager.com (chargement gtm.js / gtag.js)
+  //   connect-src : www.google-analytics.com (hits GA4)
+  //                 analytics.google.com     (endpoint GA4 moderne)
+  //                 stats.g.doubleclick.net  (DoubleClick / Google Ads)
+  //                 www.googletagmanager.com (config GTM)
+  //   img-src     : www.google-analytics.com (pixel beacon fallback noscript)
+  //
+  // Note CSP future — pour passer de 'unsafe-inline' à une CSP stricte :
+  //   Option A — Nonce par requête :
+  //     middleware génère un nonce → inclut 'nonce-{nonce}' dans script-src
+  //     RootLayout lit le nonce via headers() (async Server Component)
+  //     → pages deviennent dynamiques (perd le cache Vercel Edge)
+  //   Option B — Hash statique (recommandé pour ce projet) :
+  //     Calculer SHA-256 de GOOGLE_CONSENT_INIT_SCRIPT et du script anti-FOUC
+  //     (tous deux statiques/immuables) → ajouter 'sha256-{hash}' dans script-src
+  //     → pages restent statiques et cachables
+  //     Exemple : crypto.subtle.digest('SHA-256', encoder.encode(script))
+  //
+  const googleScriptSrc  = "https://www.googletagmanager.com";
+  const googleConnectSrc = [
+    "https://www.google-analytics.com",
+    "https://analytics.google.com",
+    "https://stats.g.doubleclick.net",
+    "https://www.googletagmanager.com",
+  ].join(" ");
+  const googleImgSrc = "https://www.google-analytics.com";
+
   const directives = [
     `default-src 'self'`,
     // Dev : unsafe-eval requis pour webpack HMR / React Refresh
     isDev
-      ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com`
-      : `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com`,
+      ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${googleScriptSrc} https://challenges.cloudflare.com`
+      : `script-src 'self' 'unsafe-inline' ${googleScriptSrc} https://challenges.cloudflare.com`,
     // Google Fonts CSS dans style-src
     `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
-    `img-src 'self' blob: data: https://${supabaseHost} https://www.garagemendonca.com https://images.unsplash.com https://upload.wikimedia.org`,
+    `img-src 'self' blob: data: ${googleImgSrc} https://${supabaseHost} https://www.garagemendonca.com https://images.unsplash.com https://upload.wikimedia.org`,
     // Dev : websocket HMR sur localhost + Supabase Realtime
     isDev
-      ? `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://challenges.cloudflare.com ws://localhost:* http://localhost:*`
-      : `connect-src 'self' https://${supabaseHost} wss://${supabaseHost} https://challenges.cloudflare.com`,
+      ? `connect-src 'self' ${googleConnectSrc} https://${supabaseHost} wss://${supabaseHost} https://challenges.cloudflare.com ws://localhost:* http://localhost:*`
+      : `connect-src 'self' ${googleConnectSrc} https://${supabaseHost} wss://${supabaseHost} https://challenges.cloudflare.com`,
     // Google Fonts fichiers dans font-src
     `font-src 'self' data: https://fonts.gstatic.com`,
     `frame-src https://challenges.cloudflare.com https://maps.google.com https://www.google.com`,
