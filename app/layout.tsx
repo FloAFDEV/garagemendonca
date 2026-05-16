@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SkipToContent from "@/components/ui/SkipToContent";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
+import CookieBanner from "@/components/cookies/CookieBanner";
+import CookieSettingsModal from "@/components/cookies/CookieSettingsModal";
+import Analytics from "@/components/analytics/Analytics";
+import { GOOGLE_CONSENT_INIT_SCRIPT } from "@/lib/consent/googleConsent";
 
 export const metadata: Metadata = {
 	metadataBase: new URL(
@@ -123,6 +128,10 @@ export default function RootLayout({
 						__html: `(function(){try{var t=localStorage.getItem('admin-theme')||'dark';document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})();`,
 					}}
 				/>
+				{/* Google Consent Mode v2 — doit être avant tout tag GTM/GA */}
+				<script
+					dangerouslySetInnerHTML={{ __html: GOOGLE_CONSENT_INIT_SCRIPT }}
+				/>
 				<script
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -130,7 +139,14 @@ export default function RootLayout({
 			</head>
 			<body>
 				<SkipToContent />
-				<QueryProvider>{children}</QueryProvider>
+				<QueryProvider>
+					<CookieConsentProvider>
+						{children}
+						<CookieBanner />
+						<CookieSettingsModal />
+						<Analytics />
+					</CookieConsentProvider>
+				</QueryProvider>
 			</body>
 		</html>
 	);

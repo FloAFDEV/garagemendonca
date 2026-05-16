@@ -1,7 +1,16 @@
+/**
+ * Footer — Server Component
+ * ─────────────────────────────────────────────────────────────────────────
+ * Délibérément PAS "use client" : tout le markup est statique.
+ * Seul le bouton "Gérer mes cookies" est interactif → extrait dans
+ * CookieSettingsButton ("use client" minimal, jamais re-render).
+ */
+
 import Link from "next/link";
 import Image from "next/image";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 import Container from "@/components/ui/Container";
+import CookieSettingsButton from "@/components/cookies/CookieSettingsButton";
 
 const footerLinks = {
 	services: [
@@ -54,7 +63,6 @@ export default function Footer() {
 								/>
 							</div>
 							<div>
-								{/* Nom garage — normal, pas bold */}
 								<div className="ty-subheading text-white text-base leading-tight">
 									Garage Mendonca
 								</div>
@@ -154,7 +162,6 @@ export default function Footer() {
 									className="text-brand-500 flex-shrink-0"
 									aria-hidden="true"
 								/>
-								{/* Numéro = valeur → font-medium */}
 								<a
 									href="tel:0532002038"
 									className="font-medium text-slate-300 hover:text-brand-400 transition-colors"
@@ -219,7 +226,7 @@ export default function Footer() {
 							href="tel:0532002038"
 							className="inline-flex items-center gap-2 btn-primary text-sm py-3 w-full justify-center"
 						>
-							<Phone size={14} />
+							<Phone size={14} aria-hidden="true" />
 							Nous contacter
 						</a>
 					</div>
@@ -253,6 +260,8 @@ export default function Footer() {
 						>
 							Confidentialité
 						</Link>
+						{/* Seul élément interactif → micro composant client isolé */}
+						<CookieSettingsButton />
 						<span className="text-slate-800">NAF 4520A</span>
 					</div>
 				</Container>
