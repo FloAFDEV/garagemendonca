@@ -15,6 +15,7 @@ import {
 	Megaphone,
 	ExternalLink,
 	Inbox,
+	Clock,
 } from "lucide-react";
 import clsx from "clsx";
 import { useAdminTokens, useAdminThemeActions } from "@/contexts/AdminThemeContext";
@@ -37,6 +38,7 @@ const navItems = [
 	{ href: "/admin/messages", label: "Messages", Icon: Inbox },
 	{ href: "/admin/services", label: "Services", Icon: Wrench },
 	{ href: "/admin/banniere", label: "Bannière promo", Icon: Megaphone },
+	{ href: "/admin/horaires", label: "Horaires", Icon: Clock },
 ];
 
 export default function AdminLayout({

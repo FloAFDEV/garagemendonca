@@ -1,7 +1,8 @@
 /**
- * Footer — Server Component
+ * Footer — Async Server Component
  * ─────────────────────────────────────────────────────────────────────────
- * Délibérément PAS "use client" : tout le markup est statique.
+ * Charge les horaires depuis la DB (Supabase). Fallback sur les horaires
+ * par défaut si Supabase n'est pas configuré.
  * Seul le bouton "Gérer mes cookies" est interactif → extrait dans
  * CookieSettingsButton ("use client" minimal, jamais re-render).
  */
@@ -11,6 +12,49 @@ import Image from "next/image";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 import Container from "@/components/ui/Container";
 import CookieSettingsButton from "@/components/cookies/CookieSettingsButton";
+import { garageRepository } from "@/lib/repositories";
+import type { GarageOpeningHours, GarageDay } from "@/types";
+
+const ACTIVE_GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+
+const DAYS_ORDER: GarageDay[] = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+const DAY_LABELS: Record<GarageDay, string> = {
+  lundi: "Lundi", mardi: "Mardi", mercredi: "Mercredi", jeudi: "Jeudi",
+  vendredi: "Vendredi", samedi: "Samedi", dimanche: "Dimanche",
+};
+
+function buildHoursRows(oh: GarageOpeningHours): { day: string; time: string }[] {
+  // Groupe les jours consécutifs avec les mêmes horaires
+  type Segment = { days: GarageDay[]; open: string | null; close: string | null };
+  const segments: Segment[] = [];
+
+  for (const day of DAYS_ORDER) {
+    const h = oh[day];
+    const open  = h?.open  ?? null;
+    const close = h?.close ?? null;
+    const last  = segments[segments.length - 1];
+    if (last && last.open === open && last.close === close) {
+      last.days.push(day);
+    } else {
+      segments.push({ days: [day], open, close });
+    }
+  }
+
+  return segments.map(({ days, open, close }) => {
+    const label =
+      days.length === 1
+        ? DAY_LABELS[days[0]]
+        : `${DAY_LABELS[days[0]]} – ${DAY_LABELS[days[days.length - 1]]}`;
+    const time = open && close ? `${open.replace(":", "h")} / ${close.replace(":", "h")}` : "Fermé";
+    return { day: label, time };
+  });
+}
+
+const FALLBACK_HOURS = [
+  { day: "Lun – Jeu", time: "08h–12h / 14h–19h" },
+  { day: "Vendredi",  time: "08h–12h / 14h–18h" },
+  { day: "Sam – Dim", time: "Fermé" },
+];
 
 const footerLinks = {
 	services: [
@@ -27,13 +71,12 @@ const footerLinks = {
 	],
 };
 
-const hours = [
-	{ day: "Lun – Jeu", time: "08h–12h / 14h–19h" },
-	{ day: "Vendredi", time: "08h–12h / 14h–18h" },
-	{ day: "Sam – Dim", time: "Fermé" },
-];
-
-export default function Footer() {
+export default async function Footer() {
+	// Chargement dynamique des horaires (fallback si Supabase indisponible)
+	const garage = await garageRepository.getById(ACTIVE_GARAGE_ID).catch(() => null);
+	const hours = garage?.opening_hours
+		? buildHoursRows(garage.opening_hours)
+		: FALLBACK_HOURS;
 	return (
 		<footer className="bg-slate-900 text-slate-300">
 			{/* Bande accent top */}

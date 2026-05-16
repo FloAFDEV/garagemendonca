@@ -18,6 +18,7 @@ import {
 	AdminThemeProvider,
 	AdminThemeActionsProvider,
 } from "@/contexts/AdminThemeContext";
+import SessionGuard from "@/components/admin/SessionGuard";
 
 export default function AdminThemeRoot({
 	children,
@@ -31,6 +32,7 @@ export default function AdminThemeRoot({
 	return (
 		<AdminThemeActionsProvider value={{ toggleTheme }}>
 			<AdminThemeProvider value={tokens}>
+				<SessionGuard />
 				{children}
 			</AdminThemeProvider>
 		</AdminThemeActionsProvider>

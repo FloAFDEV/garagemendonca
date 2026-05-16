@@ -19,7 +19,8 @@ export type AuditResource =
   | "service"
   | "banner"
   | "session"
-  | "message";
+  | "message"
+  | "garage";
 
 export interface AuditParams {
   action: AuditAction;
