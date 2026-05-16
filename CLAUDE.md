@@ -100,6 +100,38 @@ Schémas Zod dans `lib/validation/` (`vehicle.schema.ts`, `garage.schema.ts`, et
 - **SSR** (`lib/auth/getSession.ts`) — auth côté serveur, lit les cookies de session
 - Le générique `Database` n'est pas utilisé sur le query builder (incompatibilité postgrest-js v12) — la sécurité de type passe par les mappers et les schémas Zod.
 
+## Supabase — Migrations SQL : règle GRANT obligatoire
+
+> **Changement critique en vigueur à partir d'octobre 2026.**
+> Supabase arrête l'exposition automatique des nouvelles tables `public` à la Data API.
+> Créer une table sans GRANT → `{ "code": "42501", "message": "permission denied for table ..." }`
+
+**Toute nouvelle migration créant une table DOIT inclure les trois blocs suivants**, sans exception :
+
+```sql
+-- 1. TABLE
+CREATE TABLE IF NOT EXISTS public.example (
+  id        uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  garage_id uuid NOT NULL REFERENCES public.garages(id) ON DELETE CASCADE,
+  -- colonnes métier…
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- 2. RLS (toujours activer)
+ALTER TABLE public.example ENABLE ROW LEVEL SECURITY;
+
+-- 3. GRANTS (obligatoires — adapter anon selon exposition publique ou non)
+GRANT SELECT                         ON public.example TO anon;          -- supprimer si données non publiques
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.example TO authenticated; -- limité par RLS
+GRANT ALL                            ON public.example TO service_role;  -- Edge Functions / scripts admin
+```
+
+**Règles :**
+- `service_role` doit **toujours** recevoir `GRANT ALL` — sans ça les Edge Functions et `supabaseAdminClient` cassent.
+- `anon` reçoit `GRANT SELECT` uniquement pour les données publiques (catalogue, témoignages, galerie…). Pour les données internes (messages, leads, replies), **ne pas granter `anon`**.
+- Les tables existantes (créées avant octobre 2026) ne sont pas impactées immédiatement — mais `017_grant_service_role_and_missing_tables.sql` les a toutes patchées préventivement.
+- Le template complet est dans `supabase/MIGRATION_TEMPLATE.sql`.
+
 ## 🧠 Domaine métier — Garage Mendonça
 
 Ce projet est une plateforme web pour un garage automobile spécialisé dans :

@@ -314,6 +314,7 @@ export interface Message {
   id: string;
   garage_id?: string;
   vehicle_id?: string;
+  vehicleName?: string; // enrichi par JOIN vehicles(brand, model, year) dans messageDb.list()
   firstname: string;
   lastname: string;
   name: string;         // dérivé : firstname + ' ' + lastname

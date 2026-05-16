@@ -5,6 +5,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehicleGallery from "@/components/vehicles/VehicleGallery";
 import VehicleCard from "@/components/vehicles/VehicleCard";
+import VehicleContactForm from "@/components/vehicles/VehicleContactForm";
 import GarageAddressBlock from "@/components/layout/GarageAddressBlock";
 import Image from "next/image";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
@@ -214,7 +215,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 	const isAvailable = vehicle.status !== "sold";
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
-	const contactHref = `/contact?vehicule=${encodeURIComponent(vehicleName)}`;
+	const vehicleLabel = `${vehicleName} · ${vehicle.price.toLocaleString("fr-FR")} €`;
 
 	/* JSON-LD */
 	const vehicleCanonical = `https://www.garagemendonca.com/vehicules/${vehicle.slug ?? vehicle.id}`;
@@ -498,13 +499,13 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									>
 										<Phone size={18} /> 05 32 00 20 38
 									</a>
-									<Link
-										href={contactHref}
+									{/* Scroll vers le formulaire inline en bas de page */}
+									<a
+										href="#contact-vehicule"
 										className="btn-secondary w-full justify-center py-4 text-sm border-2 border-brand-500 text-brand-600 bg-transparent hover:bg-brand-50"
 									>
-										<MessageSquare size={17} /> Envoyer un
-										message
-									</Link>
+										<MessageSquare size={17} /> Envoyer un message
+									</a>
 								</div>
 
 								<ul className="mt-8 space-y-4">
@@ -532,6 +533,36 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							<GarageAddressBlock />
 						</aside>
 					</div>
+
+					{/* ── Formulaire de contact inline ─────────────────────────── */}
+					<section
+						id="contact-vehicule"
+						className="mt-24 border-t border-slate-100 pt-16 scroll-mt-24"
+					>
+						<div className="max-w-2xl mx-auto">
+							<div className="mb-8 text-center">
+								<div className="inline-flex items-center gap-2 bg-brand-50 border border-brand-100 rounded-full px-4 py-1.5 text-brand-600 text-xs font-medium mb-4">
+									<MessageSquare size={13} />
+									Demande d&apos;information
+								</div>
+								<h2 className="ty-heading text-[#0f172a] text-3xl mb-3">
+									Intéressé par ce véhicule ?
+								</h2>
+								<p className="text-slate-500 text-base">
+									Envoyez-nous un message — nous vous répondons sous 24 h.
+								</p>
+							</div>
+							<div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+								<VehicleContactForm
+									vehicleId={vehicle.id}
+									vehicleName={vehicleName}
+									vehicleLabel={vehicleLabel}
+									garageId={GARAGE_ID}
+									isAvailable={isAvailable}
+								/>
+							</div>
+						</div>
+					</section>
 
 					{/* Véhicules similaires */}
 					{relatedVehicles.length > 0 && (
@@ -570,9 +601,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 				>
 					<Phone size={18} />
 				</a>
-				<Link href={contactHref} className="btn-secondary py-3.5 px-4">
+				<a href="#contact-vehicule" className="btn-secondary py-3.5 px-4">
 					<MessageSquare size={18} />
-				</Link>
+				</a>
 			</div>
 		</MainLayout>
 	);

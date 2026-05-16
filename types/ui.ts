@@ -66,6 +66,7 @@ export interface UIMessage {
   message: string;
   status: "new" | "in_progress" | "answered" | "archived";
   vehicleId?: string;
+  vehicleName?: string; // "Toyota Yaris 2019" — présent si message lié à un véhicule
   is_read: boolean;
   isUnread: boolean;
   admin_notes?: string;
@@ -217,6 +218,7 @@ export function toUIMessage(m: Message, replies?: ContactReply[]): UIMessage {
     message:      m.message,
     status:       (m.status as string) === "read" ? "in_progress" : m.status,
     vehicleId:    m.vehicle_id,
+    vehicleName:  m.vehicleName,
     is_read:      m.is_read,
     isUnread:     !m.is_read,
     admin_notes:  m.admin_notes,

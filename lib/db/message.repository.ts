@@ -14,11 +14,13 @@ function adminDb(): Q {
 }
 
 export interface MessageListOptions {
-  status?: MessageStatusEnum | "all";
-  is_read?: boolean;
-  search?: string;
-  limit?: number;
-  offset?: number;
+  status?:     MessageStatusEnum | "all";
+  is_read?:    boolean;
+  search?:     string;
+  vehicle_id?: string;        // filtre par véhicule spécifique
+  has_vehicle?: boolean;      // true = uniquement les messages avec vehicle_id
+  limit?:      number;
+  offset?:     number;
 }
 
 export const messageDb = {
@@ -30,8 +32,11 @@ export const messageDb = {
   },
 
   async list(garageId: string, options?: MessageListOptions): Promise<Message[]> {
+    // JOIN vehicles pour récupérer brand/model/year dans un seul appel
     let q = adminDb()
-      .from("messages").select("*").eq("garage_id", garageId)
+      .from("messages")
+      .select("*, vehicles(brand, model, year)")
+      .eq("garage_id", garageId)
       .order("created_at", { ascending: false });
 
     if (options?.status && options.status !== "all") {
@@ -39,6 +44,12 @@ export const messageDb = {
     }
     if (options?.is_read !== undefined) {
       q = q.eq("is_read", options.is_read);
+    }
+    if (options?.vehicle_id) {
+      q = q.eq("vehicle_id", options.vehicle_id);
+    }
+    if (options?.has_vehicle) {
+      q = q.not("vehicle_id", "is", null);
     }
     if (options?.search) {
       const s = `%${options.search}%`;
@@ -49,14 +60,19 @@ export const messageDb = {
 
     const { data, error } = await q;
     if (error) throw error;
-    return ((data ?? []) as MessageRow[]).map(messageFromDb);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return ((data ?? []) as any[]).map(messageFromDb);
   },
 
   async getById(id: string): Promise<Message | null> {
     const { data, error } = await adminDb()
-      .from("messages").select("*").eq("id", id).maybeSingle();
+      .from("messages")
+      .select("*, vehicles(brand, model, year)")
+      .eq("id", id)
+      .maybeSingle();
     if (error) throw error;
-    return data ? messageFromDb(data as MessageRow) : null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return data ? messageFromDb(data as any) : null;
   },
 
   async countUnread(garageId: string): Promise<number> {

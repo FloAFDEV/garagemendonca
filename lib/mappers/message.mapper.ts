@@ -4,13 +4,28 @@ import type { MessageCreateInput, MessageUpdateInput, ReplyCreateInput } from "@
 
 // ─── DB → Domaine ─────────────────────────────────────────────────
 
-export function messageFromDb(row: MessageRow): Message {
+// Données véhicule enrichies via JOIN dans messageDb.list() / getById()
+interface VehicleJoin {
+  brand: string;
+  model: string;
+  year:  number;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function messageFromDb(row: (MessageRow & { vehicles?: VehicleJoin | null }) | Record<string, any>): Message {
   const firstname = row.firstname || row.name?.split(" ")[0] || "";
   const lastname  = row.lastname  || row.name?.split(" ").slice(1).join(" ") || "";
+
+  const vehicle   = (row.vehicles ?? null) as VehicleJoin | null;
+  const vehicleName = vehicle
+    ? `${vehicle.brand} ${vehicle.model} ${vehicle.year}`
+    : undefined;
+
   return {
     id:           row.id,
     garage_id:    row.garage_id  ?? undefined,
     vehicle_id:   row.vehicle_id ?? undefined,
+    vehicleName,
     firstname,
     lastname,
     name:         row.name || `${firstname} ${lastname}`.trim(),

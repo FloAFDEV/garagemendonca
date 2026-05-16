@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBrowserClient } from "@supabase/ssr";
 import {
@@ -182,6 +183,16 @@ function MessageListItem({
 							{message.subject ?? "Sans sujet"}
 						</span>
 					</div>
+
+					{/* Véhicule concerné — visible directement dans la liste */}
+					{message.vehicleName && (
+						<div className="flex items-center gap-1 mb-1">
+							<Car size={11} className="text-brand-400 flex-shrink-0" />
+							<span className="text-xs text-brand-400 truncate font-medium">
+								{message.vehicleName}
+							</span>
+						</div>
+					)}
 
 					<p className="text-xs text-slate-500 truncate leading-relaxed">
 						{message.message}
@@ -381,9 +392,9 @@ function MessageDetail({
 						{message.formattedDate}
 					</span>
 					{message.vehicleId && (
-						<span className="flex items-center gap-1 text-brand-400">
+						<span className="flex items-center gap-1 text-brand-400 bg-brand-950/30 px-2 py-0.5 rounded-md border border-brand-800/40">
 							<Car size={12} />
-							Véhicule lié
+							{message.vehicleName ?? "Véhicule lié"}
 						</span>
 					)}
 					{message.subject && (
@@ -585,11 +596,16 @@ interface CRMInboxProps {
 }
 
 export function CRMInbox({ garageId }: CRMInboxProps) {
+	const searchParams  = useSearchParams();
 	const [filter, setFilter] = useState<
 		"all" | "new" | "in_progress" | "answered" | "archived"
 	>("all");
-	const [search, setSearch] = useState("");
-	const [selectedId, setSelectedId] = useState<string | null>(null);
+	const [search,      setSearch]      = useState("");
+	const [vehicleOnly, setVehicleOnly] = useState(false);
+	// Initialise la sélection depuis ?id= (lien direct depuis email de notification)
+	const [selectedId, setSelectedId]   = useState<string | null>(
+		searchParams.get("id"),
+	);
 	const qc = useQueryClient();
 
 	// Liste messages
@@ -647,19 +663,20 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		(m) => !m.is_read && m.status !== "archived",
 	).length;
 
-	// Filtrer côté client pour la recherche temps réel
-	const displayed = search
-		? messages.filter((m) => {
-				const q = search.toLowerCase();
-				return (
-					m.firstname.toLowerCase().includes(q) ||
-					m.lastname.toLowerCase().includes(q) ||
-					m.email.toLowerCase().includes(q) ||
-					m.subject?.toLowerCase().includes(q) ||
-					m.message.toLowerCase().includes(q)
-				);
-			})
-		: messages;
+	// Filtrer côté client (recherche temps réel + filtre véhicule)
+	const displayed = messages.filter((m) => {
+		if (vehicleOnly && !m.vehicleId) return false;
+		if (!search) return true;
+		const q = search.toLowerCase();
+		return (
+			m.firstname.toLowerCase().includes(q) ||
+			m.lastname.toLowerCase().includes(q) ||
+			m.email.toLowerCase().includes(q) ||
+			m.subject?.toLowerCase().includes(q) ||
+			m.message.toLowerCase().includes(q) ||
+			(m.vehicleName?.toLowerCase().includes(q) ?? false)
+		);
+	});
 
 	return (
 		<div className="flex h-[calc(100vh-80px)] bg-dark-950 rounded-xl overflow-hidden border border-dark-800">
@@ -716,7 +733,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 						)}
 					</div>
 
-					{/* Filtres */}
+					{/* Filtres statut */}
 					<div className="flex gap-1 flex-wrap">
 						{FILTERS.map((f) => (
 							<button
@@ -733,6 +750,20 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 							</button>
 						))}
 					</div>
+
+					{/* Filtre véhicule */}
+					<button
+						onClick={() => setVehicleOnly((v) => !v)}
+						className={clsx(
+							"flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors",
+							vehicleOnly
+								? "bg-brand-600/20 border-brand-500 text-brand-300"
+								: "bg-dark-800 border-dark-700 text-slate-500 hover:text-slate-300 hover:border-dark-600",
+						)}
+					>
+						<Car size={12} />
+						Avec véhicule
+					</button>
 				</div>
 
 				{/* Liste */}
