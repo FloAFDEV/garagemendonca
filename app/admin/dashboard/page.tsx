@@ -50,7 +50,7 @@ export default function DashboardPage() {
 		<AdminLayout>
 			<div className="space-y-6">
 				{/* Welcome */}
-				<div className="flex items-center justify-between">
+				<div className="flex flex-wrap items-center justify-between gap-3">
 					<div>
 						<h2
 							className={clsx(
@@ -67,12 +67,12 @@ export default function DashboardPage() {
 					<Link
 						href="/admin/vehicules/nouveau"
 						className={clsx(
-							"btn-primary text-sm",
+							"btn-primary text-sm shrink-0",
 							t.txtMuted,
 							"hover:text-gray-100 text-gray-300 dark:text-gray-200 hover:bg-brand-500",
 						)}
 					>
-						<Plus size={16} />
+						<Plus size={16} aria-hidden="true" />
 						Ajouter un véhicule
 					</Link>
 				</div>

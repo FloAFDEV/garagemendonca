@@ -140,23 +140,42 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // ── Helper : redirige en préservant les cookies de session ─────
+  // Critique : si Supabase a refreshé les tokens pendant getUser()
+  // (setAll appelé), les nouveaux cookies sont sur supabaseResponse.
+  // Les copier sur la réponse de redirection évite de les perdre et
+  // empêche une boucle de refresh à chaque requête suivante.
+  function redirectWithSession(destination: string | URL): NextResponse {
+    const url = typeof destination === "string"
+      ? new URL(destination, request.url)
+      : destination;
+    const res = NextResponse.redirect(url);
+    supabaseResponse.cookies.getAll().forEach((cookie) => {
+      res.cookies.set(cookie.name, cookie.value);
+    });
+    return res;
+  }
+
   // Rediriger l'ancienne URL /admin/login vers /login
   if (pathname === "/admin/login") {
-    return NextResponse.redirect(
-      new URL(user ? "/admin/dashboard" : "/login", request.url),
-    );
+    return redirectWithSession(user ? "/admin/dashboard" : "/login");
   }
 
   // Protéger toutes les routes /admin/*
   if (pathname.startsWith("/admin") && !user) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
-    return NextResponse.redirect(loginUrl);
+    return redirectWithSession(loginUrl);
   }
 
-  // Rediriger les utilisateurs déjà connectés qui arrivent sur /login
-  if (pathname === "/login" && user) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  // Rediriger les utilisateurs connectés qui arrivent sur /login —
+  // SAUF si un paramètre `error` est présent (ex: ?error=unauthorized
+  // émis par le layout admin quand le rôle est insuffisant).
+  // Sans cette exception : /login?error=unauthorized → /admin/dashboard
+  // → layout détecte mauvais rôle → /login?error=unauthorized → boucle.
+  const hasAuthError = request.nextUrl.searchParams.has("error");
+  if (pathname === "/login" && user && !hasAuthError) {
+    return redirectWithSession("/admin/dashboard");
   }
 
   return supabaseResponse;

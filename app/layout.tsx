@@ -115,7 +115,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="fr" suppressHydrationWarning>
+		<html lang="fr" suppressHydrationWarning data-scroll-behavior="smooth">
 			<head>
 				{/* Anti-FOUC : applique le thème admin avant tout paint */}
 				<script

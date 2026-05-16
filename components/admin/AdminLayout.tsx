@@ -239,14 +239,14 @@ export default function AdminLayout({
 							<form action={signOutAction}>
 								<button
 									type="submit"
+									aria-label="Se déconnecter"
 									className={clsx(
 										"p-1 rounded-lg transition-colors hover:text-red-600 dark:hover:text-red-400",
 										adminUI.txtSecondary,
 										adminUI.focusDanger,
 									)}
-									title="Déconnexion"
 								>
-									<LogOut size={15} />
+									<LogOut size={15} aria-hidden="true" />
 								</button>
 							</form>
 						</div>
@@ -328,7 +328,7 @@ export default function AdminLayout({
 					</header>
 
 					{/* Page content */}
-					<main className="flex-1 p-6">{children}</main>
+					<main className="flex-1 p-4 md:p-6">{children}</main>
 				</div>
 			</div>
 		</AdminThemeProvider>

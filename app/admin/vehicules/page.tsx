@@ -79,6 +79,9 @@ function StatusSelect({
 		<div className="relative">
 			<button
 				onClick={() => setOpen((v) => !v)}
+				aria-haspopup="listbox"
+				aria-expanded={open}
+				aria-label={`Statut : ${cfg.label}`}
 				className={clsx(
 					cfg.className,
 					"flex items-center gap-1.5 transition-opacity hover:opacity-80",
@@ -86,7 +89,7 @@ function StatusSelect({
 				)}
 			>
 				{cfg.label}
-				<ChevronDown size={11} />
+				<ChevronDown size={11} aria-hidden="true" />
 			</button>
 			{open && (
 				<>
@@ -627,13 +630,12 @@ export default function AdminVehiclesPage() {
 										<Link
 											href={`/vehicules/${vehicle.id}`}
 											target="_blank"
-											title="Prévisualiser"
 											className={clsx(
 												actionBtn,
 												t.hoverTxt,
 											)}
 										>
-											<Eye size={13} /> Voir
+											<Eye size={13} aria-hidden="true" /> Voir
 										</Link>
 										<Link
 											href={`/admin/vehicules/${vehicle.id}/modifier`}
@@ -642,7 +644,7 @@ export default function AdminVehiclesPage() {
 												"hover:text-blue-500",
 											)}
 										>
-											<Pencil size={13} /> Modifier
+											<Pencil size={13} aria-hidden="true" /> Modifier
 										</Link>
 										{deleteConfirm === vehicle.id ? (
 											<div className="flex-1 flex items-center gap-1">
@@ -680,7 +682,7 @@ export default function AdminVehiclesPage() {
 													"hover:text-red-500",
 												)}
 											>
-												<Trash2 size={13} /> Supprimer
+												<Trash2 size={13} aria-hidden="true" /> Supprimer
 											</button>
 										)}
 									</div>
@@ -864,27 +866,27 @@ export default function AdminVehiclesPage() {
 												<Link
 													href={`/vehicules/${vehicle.id}`}
 													target="_blank"
+													aria-label={`Prévisualiser ${vehicle.brand} ${vehicle.model}`}
 													className={clsx(
 														"p-2 rounded-lg transition-colors",
 														t.txtMuted,
 														t.hoverBgStrong,
 														t.hoverTxt,
 													)}
-													title="Prévisualiser"
 												>
-													<Eye size={15} />
+													<Eye size={15} aria-hidden="true" />
 												</Link>
 												<Link
 													href={`/admin/vehicules/${vehicle.id}/modifier`}
+													aria-label={`Modifier ${vehicle.brand} ${vehicle.model}`}
 													className={clsx(
 														"p-2 rounded-lg transition-colors",
 														t.txtMuted,
 														t.hoverBgStrong,
 														"hover:text-blue-500",
 													)}
-													title="Modifier"
 												>
-													<Pencil size={15} />
+													<Pencil size={15} aria-hidden="true" />
 												</Link>
 												{deleteConfirm ===
 												vehicle.id ? (
@@ -921,15 +923,15 @@ export default function AdminVehiclesPage() {
 																vehicle.id,
 															)
 														}
+														aria-label={`Supprimer ${vehicle.brand} ${vehicle.model}`}
 														className={clsx(
 															"p-2 rounded-lg transition-colors",
 															t.txtMuted,
 															t.hoverBgStrong,
 															"hover:text-red-500",
 														)}
-														title="Supprimer"
 													>
-														<Trash2 size={15} />
+														<Trash2 size={15} aria-hidden="true" />
 													</button>
 												)}
 											</div>

@@ -155,6 +155,7 @@ export default function LoginPage() {
               src="/images/logo-gm.webp"
               alt="Garage Mendonça"
               fill
+              sizes="80px"
               className="object-contain drop-shadow-xl"
               priority
             />

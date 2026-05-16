@@ -12,6 +12,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { AppError } from "@/lib/errors/supabaseErrorParser";
 import type { UserRoleEnum } from "@/lib/supabase/database.types";
+import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 
 // ── Cookie options sécurisées ─────────────────────────────────────────
 // Supabase SSR définit HttpOnly:true et Secure:true (HTTPS) par défaut.
@@ -84,8 +85,10 @@ export async function getUserRole(
   const user = await getUser();
   if (!user) return null;
 
-  const supabase = await createAuthClient();
-  const { data } = await supabase
+  // Service role : bypass RLS pour la lecture du rôle.
+  // Sécurisé car getUser() a déjà validé l'authentification,
+  // et la requête filtre explicitement sur user_id = user.id.
+  const { data } = await createSupabaseAdminClient()
     .from("garage_users")
     .select("role")
     .eq("garage_id", garageId)
@@ -139,8 +142,7 @@ export async function requireSuperAdmin(): Promise<AppError | null> {
   const user = await getUser();
   if (!user) return UNAUTHENTICATED;
 
-  const supabase = await createAuthClient();
-  const { data } = await supabase
+  const { data } = await createSupabaseAdminClient()
     .from("garage_users")
     .select("role")
     .eq("user_id", user.id)
