@@ -3,7 +3,8 @@
 import { useState, use, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
-import { getAdminVehicleById, saveVehicle } from "@/app/admin/vehicules/actions";
+import { getAdminVehicleById, saveVehicle, getFeaturedCount } from "@/app/admin/vehicules/actions";
+import { MAX_FEATURED_VEHICLES as MAX_FEATURED } from "@/lib/config/vehicles";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
 import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
@@ -210,6 +211,11 @@ export default function EditVehiclePage({
 	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
 		"idle",
 	);
+	const [featuredCount, setFeaturedCount] = useState<number>(0);
+
+	useEffect(() => {
+		getFeaturedCount().then(setFeaturedCount).catch(() => {});
+	}, []);
 
 	useEffect(() => {
 		getAdminVehicleById(id).then((vehicle) => {
@@ -488,25 +494,41 @@ export default function EditVehiclePage({
 								</div>
 							)}
 						</div>
-						<div
-							className={`flex items-center gap-3 mt-5 pt-5 border-t ${t.border}`}
-						>
-							<input
-								id="featured-edit"
-								name="featured"
-								type="checkbox"
-								checked={form.featured}
-								onChange={handleChange}
-								className="w-4 h-4 accent-brand-500 cursor-pointer"
-							/>
-							<label
-								htmlFor="featured-edit"
-								className={`text-sm ${t.txtMuted} cursor-pointer select-none flex items-center gap-1.5`}
-							>
-								<Star size={13} className="text-amber-400" />
-								Mettre en avant sur la page d&apos;accueil
-							</label>
-						</div>
+						{/* ── Mise en avant (max 4) ────────────────────────── */}
+						{(() => {
+							const atMax = featuredCount >= MAX_FEATURED && !form.featured;
+							return (
+								<div className={`mt-5 pt-5 border-t ${t.border}`}>
+									<div className="flex items-center gap-3">
+										<input
+											id="featured-edit"
+											name="featured"
+											type="checkbox"
+											checked={form.featured}
+											onChange={handleChange}
+											disabled={atMax}
+											className="w-4 h-4 accent-brand-500 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+										/>
+										<label
+											htmlFor="featured-edit"
+											className={`text-sm cursor-pointer select-none flex items-center gap-1.5 ${atMax ? "opacity-40 cursor-not-allowed" : t.txtMuted}`}
+										>
+											<Star size={13} className="text-amber-400" />
+											Mettre en avant sur la page d&apos;accueil
+											<span className={`ml-1 text-xs px-1.5 py-0.5 rounded-full font-medium ${featuredCount >= MAX_FEATURED ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-500"}`}>
+												{featuredCount}/{MAX_FEATURED}
+											</span>
+										</label>
+									</div>
+									{atMax && (
+										<p className="mt-2 ml-7 text-xs text-amber-600 flex items-center gap-1.5">
+											<Star size={11} className="flex-shrink-0" />
+											Maximum atteint — retirez une annonce mise en avant pour en ajouter une autre.
+										</p>
+									)}
+								</div>
+							);
+						})()}
 					</div>
 
 					{/* ── Informations générales ─────────────────────────── */}

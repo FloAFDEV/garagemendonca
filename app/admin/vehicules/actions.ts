@@ -32,6 +32,19 @@ export async function getAdminVehicles(): Promise<Vehicle[]> {
 	return (data ?? []).map((row) => vehicleFromDb(row as any));
 }
 
+/** Compte les véhicules actuellement mis en avant (pour le garde-fou admin) */
+export async function getFeaturedCount(): Promise<number> {
+	if (!SUPABASE_ENABLED) return 0;
+	const db = createSupabaseAdminClient();
+	const { count, error } = await db
+		.from("vehicles")
+		.select("id", { count: "exact", head: true })
+		.eq("garage_id", GARAGE_ID())
+		.eq("featured", true);
+	if (error) return 0;
+	return count ?? 0;
+}
+
 export async function getAdminVehicleById(id: string): Promise<Vehicle | null> {
 	if (!SUPABASE_ENABLED) throw new Error("[getAdminVehicleById] Supabase requis");
 	const db = createSupabaseAdminClient();
