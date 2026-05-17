@@ -1,9 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Send, CheckCircle2, Loader2 } from "lucide-react";
+import { z } from "zod";
+import { Send, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
 import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
+
+// ─── Schéma de validation client-side ────────────────────────────────────────
+const schema = z.object({
+  firstname: z.string().min(2, "Prénom requis (2 min)").max(100).trim(),
+  lastname:  z.string().min(2, "Nom requis (2 min)").max(100).trim(),
+  email:     z.string().email("Email invalide").max(254).toLowerCase().trim(),
+  phone:     z.string().max(20).optional(),
+  subject:   z.string().min(1, "Veuillez sélectionner un sujet").max(200),
+  message:   z.string().min(10, "Message trop court (10 min)").max(3000),
+  website:   z.string().max(0, "Spam détecté").optional(),
+});
+
+type FormErrors = Partial<Record<keyof z.infer<typeof schema>, string>>;
 
 const subjects = [
   "Demande de devis réparation",
@@ -32,6 +46,7 @@ export default function ContactForm({
     website:   "",  // honeypot — doit rester vide
   });
   const [sent, setSent] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
 
   const { mutate, isPending, isError } = useCreateMessage();
 
@@ -43,17 +58,49 @@ export default function ContactForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setFieldErrors({});
+
+    // ── Guard : garage_id doit être configuré ──────────────────────────────
+    // GARAGE_ID est la constante build-time NEXT_PUBLIC_GARAGE_ID.
+    // Si elle est vide (env var absente), le message serait sauvé sans garage_id
+    // → invisible dans le dashboard admin et notification Edge Function cassée.
+    if (!GARAGE_ID) {
+      console.error("[ContactForm] NEXT_PUBLIC_GARAGE_ID non configuré — envoi bloqué.");
+      setFieldErrors({ message: "Erreur de configuration. Contactez-nous par téléphone." });
+      return;
+    }
+
+    // ── Validation Zod client-side ─────────────────────────────────────────
+    const parsed = schema.safeParse({
+      firstname: form.firstname,
+      lastname:  form.lastname,
+      email:     form.email,
+      phone:     form.phone  || undefined,
+      subject:   form.subject,
+      message:   form.message,
+      website:   form.website || undefined,
+    });
+
+    if (!parsed.success) {
+      const errs: FormErrors = {};
+      for (const [field, issues] of Object.entries(parsed.error.flatten().fieldErrors)) {
+        errs[field as keyof FormErrors] = issues?.[0];
+      }
+      setFieldErrors(errs);
+      return;
+    }
+
     mutate(
       {
-        garage_id:  GARAGE_ID || undefined,
+        garage_id:  GARAGE_ID,
         vehicle_id: vehicleId ?? undefined,
-        firstname:  form.firstname,
-        lastname:   form.lastname,
-        email:      form.email,
-        phone:      form.phone || undefined,
-        subject:    form.subject || undefined,
-        message:    form.message,
-        website:    form.website || undefined,
+        firstname:  parsed.data.firstname,
+        lastname:   parsed.data.lastname,
+        email:      parsed.data.email,
+        phone:      parsed.data.phone || undefined,
+        subject:    parsed.data.subject,
+        message:    parsed.data.message,
+        website:    parsed.data.website,
       },
       {
         onSuccess: () => setSent(true),
@@ -116,14 +163,19 @@ export default function ContactForm({
             id="firstname"
             name="firstname"
             type="text"
-            required
             autoComplete="given-name"
             placeholder="Jean"
             value={form.firstname}
             onChange={handleChange}
-            className="input-field"
+            className={`input-field ${fieldErrors.firstname ? "border-red-300 focus:ring-red-200" : ""}`}
             aria-required="true"
+            aria-invalid={!!fieldErrors.firstname}
           />
+          {fieldErrors.firstname && (
+            <p className="mt-1 text-xs text-red-600 flex items-center gap-1" role="alert">
+              <AlertCircle size={12} aria-hidden="true" /> {fieldErrors.firstname}
+            </p>
+          )}
         </div>
         <div>
           <label htmlFor="lastname" className="label">
@@ -133,14 +185,19 @@ export default function ContactForm({
             id="lastname"
             name="lastname"
             type="text"
-            required
             autoComplete="family-name"
             placeholder="Dupont"
             value={form.lastname}
             onChange={handleChange}
-            className="input-field"
+            className={`input-field ${fieldErrors.lastname ? "border-red-300 focus:ring-red-200" : ""}`}
             aria-required="true"
+            aria-invalid={!!fieldErrors.lastname}
           />
+          {fieldErrors.lastname && (
+            <p className="mt-1 text-xs text-red-600 flex items-center gap-1" role="alert">
+              <AlertCircle size={12} aria-hidden="true" /> {fieldErrors.lastname}
+            </p>
+          )}
         </div>
       </div>
 
@@ -154,14 +211,19 @@ export default function ContactForm({
             id="email"
             name="email"
             type="email"
-            required
             autoComplete="email"
             placeholder="jean.dupont@email.com"
             value={form.email}
             onChange={handleChange}
-            className="input-field"
+            className={`input-field ${fieldErrors.email ? "border-red-300 focus:ring-red-200" : ""}`}
             aria-required="true"
+            aria-invalid={!!fieldErrors.email}
           />
+          {fieldErrors.email && (
+            <p className="mt-1 text-xs text-red-600 flex items-center gap-1" role="alert">
+              <AlertCircle size={12} aria-hidden="true" /> {fieldErrors.email}
+            </p>
+          )}
         </div>
         <div>
           <label htmlFor="phone" className="label">Téléphone</label>
@@ -186,17 +248,22 @@ export default function ContactForm({
         <select
           id="subject"
           name="subject"
-          required
           value={form.subject}
           onChange={handleChange}
-          className="input-field"
+          className={`input-field ${fieldErrors.subject ? "border-red-300 focus:ring-red-200" : ""}`}
           aria-required="true"
+          aria-invalid={!!fieldErrors.subject}
         >
           <option value="">Sélectionnez un sujet…</option>
           {subjects.map((s) => (
             <option key={s} value={s}>{s}</option>
           ))}
         </select>
+        {fieldErrors.subject && (
+          <p className="mt-1 text-xs text-red-600 flex items-center gap-1" role="alert">
+            <AlertCircle size={12} aria-hidden="true" /> {fieldErrors.subject}
+          </p>
+        )}
       </div>
 
       {/* Message */}
@@ -207,14 +274,19 @@ export default function ContactForm({
         <textarea
           id="message"
           name="message"
-          required
           rows={5}
           placeholder="Décrivez votre demande…"
           value={form.message}
           onChange={handleChange}
-          className="input-field resize-none"
+          className={`input-field resize-none ${fieldErrors.message ? "border-red-300 focus:ring-red-200" : ""}`}
           aria-required="true"
+          aria-invalid={!!fieldErrors.message}
         />
+        {fieldErrors.message && (
+          <p className="mt-1 text-xs text-red-600 flex items-center gap-1" role="alert">
+            <AlertCircle size={12} aria-hidden="true" /> {fieldErrors.message}
+          </p>
+        )}
       </div>
 
       {/* Consentement RGPD */}
@@ -236,9 +308,19 @@ export default function ContactForm({
       </div>
 
       {isError && (
-        <p className="text-sm text-red-600" role="alert">
-          Une erreur est survenue. Vérifiez votre email et réessayez.
-        </p>
+        <div
+          role="alert"
+          className="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 rounded-xl"
+        >
+          <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
+          <p className="text-sm text-red-700 leading-snug">
+            L&apos;envoi a échoué. Vérifiez votre connexion et réessayez, ou appelez-nous
+            directement au{" "}
+            <a href="tel:0532002038" className="font-semibold underline">
+              05 32 00 20 38
+            </a>.
+          </p>
+        </div>
       )}
 
       <button

@@ -51,7 +51,6 @@ export default function VehicleContactForm({
 }: VehicleContactFormProps) {
   const [success, setSuccess] = useState(false);
   const [errors,  setErrors]  = useState<FormErrors>({});
-  const [submitting, setSubmitting] = useState(false);
   const mutation = useCreateMessage();
 
   const defaultMessage = isAvailable
@@ -61,11 +60,10 @@ export default function VehicleContactForm({
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrors({});
-    setSubmitting(true);
 
     const data = Object.fromEntries(new FormData(e.currentTarget));
 
-    // Validation Zod
+    // Validation Zod client-side — évite un aller-retour serveur pour les erreurs de saisie
     const parsed = schema.safeParse(data);
     if (!parsed.success) {
       const fieldErrors: FormErrors = {};
@@ -73,7 +71,6 @@ export default function VehicleContactForm({
         fieldErrors[field as keyof FormErrors] = issues?.[0];
       }
       setErrors(fieldErrors);
-      setSubmitting(false);
       return;
     }
 
@@ -90,8 +87,10 @@ export default function VehicleContactForm({
         website:    parsed.data.website,
       });
       setSuccess(true);
-    } finally {
-      setSubmitting(false);
+    } catch {
+      // L'erreur est déjà gérée par useCreateMessage.onError (toast).
+      // Ce catch vide est intentionnel : sans lui, mutateAsync re-throw après onError
+      // → "Uncaught (in promise)" dans la console même si le toast s'est affiché.
     }
   }
 
@@ -210,13 +209,27 @@ export default function VehicleContactForm({
         )}
       </div>
 
+      {/* Erreur serveur — affichée uniquement si la mutation a échoué (hors erreurs Zod) */}
+      {mutation.isError && (
+        <div
+          role="alert"
+          className="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 rounded-xl"
+        >
+          <AlertCircle size={16} className="text-red-500 mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-red-700 leading-snug">
+            L&apos;envoi a échoué. Vérifiez votre connexion et réessayez, ou appelez-nous
+            directement au <a href="tel:0532002038" className="font-semibold underline">05 32 00 20 38</a>.
+          </p>
+        </div>
+      )}
+
       {/* Submit */}
       <button
         type="submit"
-        disabled={submitting}
+        disabled={mutation.isPending}
         className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition-colors shadow-sm"
       >
-        {submitting ? (
+        {mutation.isPending ? (
           <>
             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Envoi en cours…
