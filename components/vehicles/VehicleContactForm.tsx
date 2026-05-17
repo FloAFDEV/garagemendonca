@@ -76,8 +76,10 @@ export default function VehicleContactForm({
 
     try {
       await mutation.mutateAsync({
-        garage_id:  garageId,
-        vehicle_id: vehicleId,
+        // garageId peut être "" si NEXT_PUBLIC_GARAGE_ID est absent.
+        // Zod .uuid().optional() accepte undefined mais rejette "" → on normalise.
+        garage_id:  garageId  || undefined,
+        vehicle_id: vehicleId || undefined,
         subject:    `Renseignement — ${vehicleName}`,
         firstname:  parsed.data.firstname,
         lastname:   parsed.data.lastname,

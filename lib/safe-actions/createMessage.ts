@@ -35,7 +35,19 @@ export async function createMessageAction(
   // 3. Validation Zod
   const parsed = messageCreateSchema.safeParse(rawInput);
   if (!parsed.success) {
-    return { error: parsed.error.format() };
+    // Normaliser ZodFormattedError → AppError pour que extractGlobalError()
+    // dans useCreateMessage puisse afficher un message lisible dans le toast.
+    // ZodFormattedError brut { _errors:[], garage_id:{...} } n'a pas de .message
+    // → extractGlobalError retourne null → toast affiche le fallback générique.
+    const firstIssue = parsed.error.issues[0];
+    const fieldLabel  = firstIssue?.path.join(".") ?? "champ";
+    const humanMsg    = firstIssue?.message ?? "Données invalides";
+    return {
+      error: {
+        message: `${humanMsg} (${fieldLabel})`,
+        code:    "VALIDATION_ERROR",
+      } satisfies import("@/lib/errors/supabaseErrorParser").AppError,
+    };
   }
 
   // 4. Insert DB

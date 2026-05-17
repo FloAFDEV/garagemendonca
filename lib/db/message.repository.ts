@@ -25,7 +25,12 @@ export interface MessageListOptions {
 
 export const messageDb = {
   async create(row: MessageInsert): Promise<Message> {
-    const { data, error } = await anonDb()
+    // Utilise adminDb() (service_role) pour contourner le problème RLS SELECT :
+    // anonDb() n'a pas de SELECT policy sur messages → INSERT.select().single()
+    // retourne 0 lignes (PGRST116) même si l'INSERT réussit.
+    // La validation sécurité (Zod, honeypot, rate-limit) est faite en amont
+    // dans createMessageAction — la RLS INSERT policy est donc redondante ici.
+    const { data, error } = await adminDb()
       .from("messages").insert(row).select().single();
     if (error) throw error;
     return messageFromDb(data as MessageRow);
