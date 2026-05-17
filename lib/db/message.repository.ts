@@ -25,9 +25,6 @@ export interface MessageListOptions {
 
 export const messageDb = {
   async create(row: MessageInsert): Promise<Message> {
-    // [TRACE] LOG TEMPORAIRE — supprimer après debug
-    console.log("[GARAGE_ID][STEP_7_supabase_insert] garage_id =", JSON.stringify(row.garage_id), "| row keys:", Object.keys(row));
-
     // Utilise adminDb() (service_role) pour contourner le problème RLS SELECT :
     // anonDb() n'a pas de SELECT policy sur messages → INSERT.select().single()
     // retourne 0 lignes (PGRST116) même si l'INSERT réussit.

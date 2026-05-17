@@ -8,12 +8,12 @@ import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 // ─── Schéma de validation client-side ────────────────────────────────────────
 const schema = z.object({
-  firstname: z.string().min(2, "Prénom requis (2 min)").max(100).trim(),
-  lastname:  z.string().min(2, "Nom requis (2 min)").max(100).trim(),
+  firstname: z.string().min(2, "Prénom requis (2 caractères minimum)").max(100).trim(),
+  lastname:  z.string().min(2, "Nom requis (2 caractères minimum)").max(100).trim(),
   email:     z.string().email("Email invalide").max(254).toLowerCase().trim(),
   phone:     z.string().max(20).optional(),
   subject:   z.string().min(1, "Veuillez sélectionner un sujet").max(200),
-  message:   z.string().min(10, "Message trop court (10 min)").max(3000),
+  message:   z.string().min(10, "Message trop court (10 caractères minimum)").max(3000),
   website:   z.string().max(0, "Spam détecté").optional(),
 });
 
@@ -60,9 +60,6 @@ export default function ContactForm({
     e.preventDefault();
     setFieldErrors({});
 
-    // [TRACE] LOG TEMPORAIRE — supprimer après debug
-    console.log("[GARAGE_ID][STEP_3_ContactForm] GARAGE_ID =", JSON.stringify(GARAGE_ID), "| type:", typeof GARAGE_ID, "| length:", GARAGE_ID?.length);
-
     // ── Guard : garage_id doit être configuré ──────────────────────────────
     // GARAGE_ID est la constante build-time NEXT_PUBLIC_GARAGE_ID.
     // Si elle est vide (env var absente), le message serait sauvé sans garage_id
@@ -92,9 +89,6 @@ export default function ContactForm({
       setFieldErrors(errs);
       return;
     }
-
-    // [TRACE] LOG TEMPORAIRE — supprimer après debug
-    console.log("[GARAGE_ID][STEP_4_ContactForm_mutate_payload] garage_id =", JSON.stringify(GARAGE_ID));
 
     mutate(
       {

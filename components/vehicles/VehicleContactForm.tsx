@@ -20,11 +20,11 @@ import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
 // ─── Schéma de validation ────────────────────────────────────────────────────
 
 const schema = z.object({
-  firstname: z.string().min(2, "Prénom requis (2 min)").max(100).trim(),
-  lastname:  z.string().min(2, "Nom requis (2 min)").max(100).trim(),
+  firstname: z.string().min(2, "Prénom requis (2 caractères minimum)").max(100).trim(),
+  lastname:  z.string().min(2, "Nom requis (2 caractères minimum)").max(100).trim(),
   email:     z.string().email("Email invalide").max(254).toLowerCase().trim(),
   phone:     z.string().max(20).optional(),
-  message:   z.string().min(10, "Message trop court (10 min)").max(3000),
+  message:   z.string().min(10, "Message trop court (10 caractères minimum)").max(3000),
   website:   z.string().max(0, "Spam détecté").optional(),
 });
 
@@ -49,9 +49,6 @@ export default function VehicleContactForm({
   garageId,
   isAvailable,
 }: VehicleContactFormProps) {
-  // [TRACE] LOG TEMPORAIRE — supprimer après debug
-  console.log("[GARAGE_ID][STEP_3_props_garageId]", JSON.stringify(garageId), "| type:", typeof garageId, "| length:", garageId?.length);
-
   const [success, setSuccess] = useState(false);
   const [errors,  setErrors]  = useState<FormErrors>({});
   const mutation = useCreateMessage();
@@ -77,15 +74,9 @@ export default function VehicleContactForm({
       return;
     }
 
-    // [TRACE] LOG TEMPORAIRE — supprimer après debug
-    const garageIdForPayload = garageId || undefined;
-    console.log("[GARAGE_ID][STEP_4_mutateAsync_payload] garageId =", JSON.stringify(garageId), "| normalisé =", JSON.stringify(garageIdForPayload));
-
     try {
       await mutation.mutateAsync({
-        // garageId peut être "" si NEXT_PUBLIC_GARAGE_ID est absent.
-        // Zod .uuid().optional() accepte undefined mais rejette "" → on normalise.
-        garage_id:  garageIdForPayload,
+        garage_id:  garageId || undefined,
         vehicle_id: vehicleId || undefined,
         subject:    `Renseignement — ${vehicleName}`,
         firstname:  parsed.data.firstname,

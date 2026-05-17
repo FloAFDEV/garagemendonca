@@ -5,8 +5,13 @@ export const MESSAGE_STATUSES = ["new", "in_progress", "answered", "archived"] a
 export type MessageStatusInput = typeof MESSAGE_STATUSES[number];
 
 // ─── Création d'un message (formulaire contact public) ─────────────
+// z.string().uuid() de Zod v4 exige les bits de version [1-8] et de variant [89abAB]
+// (RFC-4122 strict). L'ID de garage 00000000-…-000000000001 (non-RFC-4122) est rejeté.
+// On valide uniquement le format 8-4-4-4-12 hex, la contrainte FK Supabase fait le reste.
+const uuidLike = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
+
 export const messageCreateSchema = z.object({
-  garage_id:  z.string().uuid("garage_id requis").optional(),
+  garage_id:  z.string().regex(uuidLike, "garage_id invalide").optional(),
   vehicle_id: z.string().uuid().optional(),
   firstname:  z.string().min(2, "Prénom requis (2 caractères min)").max(100).trim(),
   lastname:   z.string().min(2, "Nom requis (2 caractères min)").max(100).trim(),
@@ -28,8 +33,8 @@ export const messageUpdateSchema = z.object({
 
 // ─── Réponse admin → client ───────────────────────────────────────
 export const replyCreateSchema = z.object({
-  message_id:  z.string().uuid(),
-  garage_id:   z.string().uuid().optional(),
+  message_id:  z.string().regex(uuidLike),
+  garage_id:   z.string().regex(uuidLike).optional(),
   sender_type: z.enum(["admin", "client"]),
   content:     z.string().min(5, "Réponse trop courte").max(5000),
 });

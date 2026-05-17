@@ -12,8 +12,6 @@ export function useCreateMessage() {
 
   return useMutation({
     mutationFn: async (input: MessageCreateInput) => {
-      // [TRACE] LOG TEMPORAIRE — supprimer après debug
-      console.log("[GARAGE_ID][STEP_5_createMessageAction_input] garage_id =", JSON.stringify(input.garage_id), "| full input keys:", Object.keys(input));
       const result = await createMessageAction(input);
       if ("error" in result && result.error) throw result.error;
       return result.data;

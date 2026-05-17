@@ -21,8 +21,6 @@
 /** Constante build-time — réservée aux Client Components. */
 export const ACTIVE_GARAGE_ID =
 	process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
-// [TRACE] LOG TEMPORAIRE — supprimer après debug
-console.log("[GARAGE_ID][STEP_1_CONSTANT] NEXT_PUBLIC_GARAGE_ID =", JSON.stringify(process.env.NEXT_PUBLIC_GARAGE_ID), "| ACTIVE_GARAGE_ID =", JSON.stringify(ACTIVE_GARAGE_ID));
 
 /**
  * Résout l'identifiant du garage actif dans un contexte serveur.
@@ -32,8 +30,5 @@ console.log("[GARAGE_ID][STEP_1_CONSTANT] NEXT_PUBLIC_GARAGE_ID =", JSON.stringi
  * (sous-domaine, JWT, slug) sans modifier les callsites.
  */
 export function getActiveGarageId(): string {
-	const value = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
-	// [TRACE] LOG TEMPORAIRE — supprimer après debug
-	console.log("[GARAGE_ID][STEP_2_getActiveGarageId] env =", JSON.stringify(process.env.NEXT_PUBLIC_GARAGE_ID), "| return =", JSON.stringify(value));
-	return value;
+	return process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 }
