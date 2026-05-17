@@ -60,6 +60,9 @@ export default function ContactForm({
     e.preventDefault();
     setFieldErrors({});
 
+    // [TRACE] LOG TEMPORAIRE — supprimer après debug
+    console.log("[GARAGE_ID][STEP_3_ContactForm] GARAGE_ID =", JSON.stringify(GARAGE_ID), "| type:", typeof GARAGE_ID, "| length:", GARAGE_ID?.length);
+
     // ── Guard : garage_id doit être configuré ──────────────────────────────
     // GARAGE_ID est la constante build-time NEXT_PUBLIC_GARAGE_ID.
     // Si elle est vide (env var absente), le message serait sauvé sans garage_id
@@ -89,6 +92,9 @@ export default function ContactForm({
       setFieldErrors(errs);
       return;
     }
+
+    // [TRACE] LOG TEMPORAIRE — supprimer après debug
+    console.log("[GARAGE_ID][STEP_4_ContactForm_mutate_payload] garage_id =", JSON.stringify(GARAGE_ID));
 
     mutate(
       {

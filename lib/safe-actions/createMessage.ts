@@ -18,6 +18,10 @@ type CreateMessageResult =
 export async function createMessageAction(
   rawInput: unknown,
 ): Promise<CreateMessageResult> {
+  // [TRACE] LOG TEMPORAIRE — supprimer après debug
+  const _rawForLog = rawInput as Record<string, unknown>;
+  console.log("[GARAGE_ID][STEP_6_createMessageAction_received] garage_id =", JSON.stringify(_rawForLog?.garage_id), "| type:", typeof _rawForLog?.garage_id);
+
   // 1. Anti-spam honeypot
   const input = rawInput as Record<string, unknown>;
   if (typeof input?.website === "string" && input.website.length > 0) {

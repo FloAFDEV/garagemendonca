@@ -49,6 +49,9 @@ export default function VehicleContactForm({
   garageId,
   isAvailable,
 }: VehicleContactFormProps) {
+  // [TRACE] LOG TEMPORAIRE — supprimer après debug
+  console.log("[GARAGE_ID][STEP_3_props_garageId]", JSON.stringify(garageId), "| type:", typeof garageId, "| length:", garageId?.length);
+
   const [success, setSuccess] = useState(false);
   const [errors,  setErrors]  = useState<FormErrors>({});
   const mutation = useCreateMessage();
@@ -74,11 +77,15 @@ export default function VehicleContactForm({
       return;
     }
 
+    // [TRACE] LOG TEMPORAIRE — supprimer après debug
+    const garageIdForPayload = garageId || undefined;
+    console.log("[GARAGE_ID][STEP_4_mutateAsync_payload] garageId =", JSON.stringify(garageId), "| normalisé =", JSON.stringify(garageIdForPayload));
+
     try {
       await mutation.mutateAsync({
         // garageId peut être "" si NEXT_PUBLIC_GARAGE_ID est absent.
         // Zod .uuid().optional() accepte undefined mais rejette "" → on normalise.
-        garage_id:  garageId  || undefined,
+        garage_id:  garageIdForPayload,
         vehicle_id: vehicleId || undefined,
         subject:    `Renseignement — ${vehicleName}`,
         firstname:  parsed.data.firstname,
