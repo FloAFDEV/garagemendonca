@@ -6,11 +6,11 @@ import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import Link from "next/link";
 import {
   Save, Loader2, CheckCircle2, AlertCircle, Eye, ToggleLeft, ToggleRight,
-  Megaphone, Calendar, Palette, ExternalLink, ImagePlus, Camera, X,
+  Megaphone, Calendar, Palette, ExternalLink, ImagePlus, Camera, X, ArrowRight,
 } from "lucide-react";
 import clsx from "clsx";
 import type { Banner } from "@/types";
-import { upsertBannerAction, getBannerAction } from "./actions";
+import { upsertBannerAction, getBannerAction, getSignedBannerImageAction } from "./actions";
 import { adminUI } from "@/lib/admin-ui";
 import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 
@@ -56,6 +56,7 @@ function BannerImageUpload({
   onUploaded: (url: string) => void;
   onBlobPreview: (blobUrl: string | null) => void;
 }) {
+  const t = useAdminTokens();
   const fileInputRef   = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading]     = useState(false);
@@ -124,7 +125,7 @@ function BannerImageUpload({
           type="button"
           disabled={uploading}
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors hover:border-brand-500 hover:text-brand-400 disabled:opacity-50 disabled:pointer-events-none"
+          className={clsx("flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors hover:border-brand-500 hover:text-brand-400 disabled:opacity-50 disabled:pointer-events-none", t.txtMuted, t.borderMuted)}
         >
           {uploading ? (
             <Loader2 size={15} className="animate-spin" aria-hidden="true" />
@@ -139,7 +140,7 @@ function BannerImageUpload({
           type="button"
           disabled={uploading}
           onClick={() => cameraInputRef.current?.click()}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors hover:border-brand-500 hover:text-brand-400 disabled:opacity-50 disabled:pointer-events-none"
+          className={clsx("flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed text-sm transition-colors hover:border-brand-500 hover:text-brand-400 disabled:opacity-50 disabled:pointer-events-none", t.txtMuted, t.borderMuted)}
         >
           <Camera size={15} aria-hidden="true" />
           Prendre une photo
@@ -152,6 +153,98 @@ function BannerImageUpload({
           {uploadError}
         </p>
       )}
+    </div>
+  );
+}
+
+function BannerPreview({
+  form,
+  imageUrl,
+}: {
+  form: Partial<Banner>;
+  imageUrl?: string | null;
+}) {
+  const t = useAdminTokens();
+  const hasContent = !!(form.message || form.sub_message || form.cta_label);
+
+  return (
+    <div className={t.sectionCard}>
+      <h3 className={clsx("font-heading font-normal mb-4 tracking-widest text-sm flex items-center gap-2", t.txt)}>
+        <Eye size={14} className="text-brand-400" />
+        Aperçu
+        {!form.is_active && (
+          <span className={clsx("text-xs font-normal ml-1", t.txtSubtle)}>(bannière désactivée)</span>
+        )}
+      </h3>
+
+      {/* Rendu fidèle de la bannière */}
+      <div
+        className="relative w-full overflow-hidden rounded-xl"
+        style={{ backgroundColor: form.bg_color || "#111827" }}
+      >
+        {/* Fond image atténué */}
+        {imageUrl && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageUrl}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+              style={{ opacity: 0.35 }}
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{ backgroundColor: `${form.bg_color || "#111827"}88` }}
+            />
+          </>
+        )}
+
+        {/* Bouton × simulé */}
+        {form.is_dismissible && (
+          <div
+            aria-hidden="true"
+            className="absolute top-1/2 -translate-y-1/2 right-3 z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white/15 text-white"
+          >
+            <X size={11} />
+          </div>
+        )}
+
+        {/* Contenu centré */}
+        <div className="relative px-10 py-3 flex items-center justify-center gap-3 min-h-[56px]">
+          {/* Icône image */}
+          {imageUrl && (
+            <div className="flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-lg overflow-hidden ring-1 ring-white/20 shadow">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imageUrl} alt="" aria-hidden="true" className="w-full h-full object-cover" />
+            </div>
+          )}
+
+          {/* Textes */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 min-w-0">
+            <p className="text-sm font-bold text-white leading-tight whitespace-nowrap">
+              {form.message || <span className="opacity-30 italic font-normal">Message principal…</span>}
+            </p>
+            {form.sub_message && (
+              <span className="text-white/70 text-xs hidden sm:inline">—&nbsp;{form.sub_message}</span>
+            )}
+          </div>
+
+          {/* CTA */}
+          {form.cta_label && (
+            <span className="flex-shrink-0 inline-flex items-center gap-1 border border-white/40 text-white text-xs font-semibold px-3 py-1 rounded-lg whitespace-nowrap">
+              {form.cta_label}
+              <ArrowRight size={10} aria-hidden="true" />
+            </span>
+          )}
+
+          {/* Placeholder si vide */}
+          {!hasContent && !imageUrl && (
+            <p className="text-white/30 text-xs italic">Remplissez les champs ci-dessous pour voir l&apos;aperçu</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -176,9 +269,11 @@ export default function AdminBannierePage() {
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   // blob URL temporaire : preview immédiat avant que Supabase ait répondu
   const [blobPreview, setBlobPreview] = useState<string | null>(null);
+  // URL signée pour afficher l'image existante (bucket privé)
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    getBannerAction().then((banner) => {
+    getBannerAction().then(async (banner) => {
       if (!banner) return;
       setForm({
         id: banner.id,
@@ -194,6 +289,10 @@ export default function AdminBannierePage() {
         display_pages: banner.display_pages ?? "all",
         is_dismissible: banner.is_dismissible ?? true,
       });
+      if (banner.image_url) {
+        const signed = await getSignedBannerImageAction(banner.image_url);
+        setSignedUrl(signed);
+      }
     });
   }, []);
 
@@ -252,6 +351,9 @@ export default function AdminBannierePage() {
           </Link>
         </div>
 
+        {/* ── Aperçu en direct ──────────────────────────────────── */}
+        <BannerPreview form={form} imageUrl={blobPreview ?? signedUrl} />
+
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
           {/* Toggle actif + statut */}
           <div className={clsx(sectionClass, "flex items-center justify-between gap-4")}>
@@ -287,7 +389,7 @@ export default function AdminBannierePage() {
                 t.txt,
               )}
             >
-              <Megaphone size={16} />
+              <Megaphone size={16} className="text-brand-400" />
               Message
             </h3>
             <div className="space-y-5">
@@ -333,7 +435,7 @@ export default function AdminBannierePage() {
                 t.txt,
               )}
             >
-              <Palette size={16} />
+              <Palette size={16} className="text-brand-400" />
               Apparence
             </h3>
             <div className="space-y-5">
@@ -373,12 +475,12 @@ export default function AdminBannierePage() {
               {/* Image de fond */}
               <div>
                 <label className={labelClass}>Image de fond (optionnel)</label>
-                {/* Affichage : blobUrl (preview immédiat) ?? storedUrl ?? rien */}
-                {(blobPreview ?? form.image_url) ? (
+                {/* Affichage : blobUrl (preview immédiat) ?? signedUrl (existant) ?? rien */}
+                {(blobPreview ?? signedUrl ?? form.image_url) ? (
                   <div className="relative mt-1 rounded-xl overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={blobPreview ?? form.image_url!}
+                      src={blobPreview ?? signedUrl ?? form.image_url!}
                       alt="Preview bannière"
                       className="w-full max-h-40 object-cover"
                       onError={e => (e.currentTarget.style.display = "none")}
@@ -393,7 +495,7 @@ export default function AdminBannierePage() {
                     {!blobPreview && (
                       <button
                         type="button"
-                        onClick={() => { set("image_url", ""); setBlobPreview(null); }}
+                        onClick={() => { set("image_url", ""); setBlobPreview(null); setSignedUrl(null); }}
                         className="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
                         aria-label="Supprimer l'image"
                       >
@@ -406,6 +508,7 @@ export default function AdminBannierePage() {
                     onUploaded={(url) => {
                       set("image_url", url);
                       setBlobPreview(null);
+                      getSignedBannerImageAction(url).then(setSignedUrl);
                     }}
                     onBlobPreview={setBlobPreview}
                   />
@@ -417,6 +520,7 @@ export default function AdminBannierePage() {
                       onUploaded={(url) => {
                         set("image_url", url);
                         setBlobPreview(null);
+                        getSignedBannerImageAction(url).then(setSignedUrl);
                       }}
                       onBlobPreview={setBlobPreview}
                     />
@@ -437,7 +541,7 @@ export default function AdminBannierePage() {
                 t.txt,
               )}
             >
-              <ExternalLink size={16} />
+              <ExternalLink size={16} className="text-brand-400" />
               Bouton d&apos;action (CTA, optionnel)
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -470,7 +574,7 @@ export default function AdminBannierePage() {
                 t.txt,
               )}
             >
-              <Calendar size={16} />
+              <Calendar size={16} className="text-brand-400" />
               Programmation (optionnel)
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

@@ -8,6 +8,7 @@ import { assertSameOrigin } from "@/lib/auth/csrf";
 import { logAudit } from "@/lib/audit/logAction";
 import { mapBanner } from "@/lib/supabase/mappers";
 import { getActiveGarageId } from "@/lib/config/garage";
+import { extractStoragePath } from "@/lib/utils/storage";
 import type { Banner } from "@/types";
 
 async function assertAdmin() {
@@ -15,6 +16,16 @@ async function assertAdmin() {
   const garageId = getActiveGarageId();
   const err = await requireAdminForGarage(garageId);
   if (err) throw new Error(err.message);
+}
+
+export async function getSignedBannerImageAction(imageUrl: string): Promise<string> {
+  if (!SUPABASE_ENABLED) return imageUrl;
+  const path = extractStoragePath(imageUrl);
+  if (!path) return imageUrl;
+  const { data } = await createSupabaseAdminClient()
+    .storage.from("banner-images")
+    .createSignedUrl(path, 3600);
+  return data?.signedUrl ?? imageUrl;
 }
 
 export async function getBannerAction(): Promise<Banner | null> {

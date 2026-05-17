@@ -64,7 +64,7 @@ export function buildTokens(isDark: boolean): AdminTokens {
 	const inputBg        = isDark ? "bg-dark-800"          : "bg-white";
 	const inputBorder    = isDark ? "border-dark-700"       : "border-slate-300";
 	const inputText      = isDark ? "text-white"            : "text-slate-900";
-	const inputPH        = isDark ? "placeholder-dark-500"  : "placeholder-slate-400";
+	const inputPH        = isDark ? "placeholder-dark-400"  : "placeholder-slate-400";
 	const surface        = isDark ? "bg-dark-900"           : "bg-white";
 	const border         = isDark ? "border-dark-800"       : "border-slate-200";
 	const txtMuted       = isDark ? "text-dark-400"         : "text-slate-600"; // AA: 5.9:1 ✅
@@ -101,7 +101,7 @@ export function buildTokens(isDark: boolean): AdminTokens {
 			inputBg, inputBorder, inputText, inputPH,
 		].join(" "),
 		labelClass: `block text-sm font-medium mb-2 ${labelTxt}`,
-		sectionCard: `rounded-2xl border p-5 sm:p-6 ${surface} ${border}`,
+		sectionCard: `rounded-2xl border p-5 sm:p-6 ${surface} ${isDark ? "border-dark-700" : "border-slate-200"}`,
 		/* Table */
 		tableRowHover:         isDark ? "hover:bg-dark-800/50"    : "hover:bg-slate-50",
 		/* Dropdown */

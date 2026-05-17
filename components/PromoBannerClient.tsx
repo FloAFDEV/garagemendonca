@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import type { Banner } from "@/types";
 import Link from "next/link";
 import { X, ArrowRight } from "lucide-react";
-
-const DISMISS_KEY = "promo_banner_dismissed";
 
 /*
   ─── Centered Spotlight ──────────────────────────────────────
@@ -39,6 +38,7 @@ export default function PromoBannerClient({
 	// car le nombre de hooks appelés variait entre les renders.
 	const [visible, setVisible] = useState(false);
 	const [mounted, setMounted] = useState(false);
+	const pathname = usePathname();
 
 	useEffect(() => {
 		// Guard : banner peut être null (type défensif) — ne rien faire
@@ -52,14 +52,11 @@ export default function PromoBannerClient({
 		if (banner.scheduled_end   && new Date(banner.scheduled_end)   < now) return;
 
 		// ── Vérification pages d'affichage ──
-		if (banner.display_pages === "home_only" && window.location.pathname !== "/") return;
+		if (banner.display_pages === "home_only" && pathname !== "/") return;
 
-		// ── Dismissal sessionStorage ──
-		if (banner.is_dismissible) {
-			try {
-				if (sessionStorage.getItem(DISMISS_KEY) === banner.id) return;
-			} catch { /* ignore */ }
-		}
+		// Le dismiss est volontairement en mémoire uniquement (pas de sessionStorage) :
+		// la bannière réapparaît à chaque refresh et à chaque changement de page.
+		// L'utilisateur doit la fermer explicitement sur chaque chargement.
 
 		const prefersReduced = window.matchMedia(
 			"(prefers-reduced-motion: reduce)",
@@ -77,13 +74,13 @@ export default function PromoBannerClient({
 		banner?.scheduled_start,
 		banner?.scheduled_end,
 		banner?.display_pages,
+		pathname,
 	]);
 
 	const dismiss = () => {
 		setVisible(false);
-		try {
-			if (banner?.is_dismissible) sessionStorage.setItem(DISMISS_KEY, banner.id);
-		} catch { /* ignore */ }
+		// Pas de persistance — le dismiss est in-memory uniquement.
+		// Refresh ou navigation → la bannière réapparaît.
 	};
 
 	// Rendu null si aucune bannière ou avant montage client
