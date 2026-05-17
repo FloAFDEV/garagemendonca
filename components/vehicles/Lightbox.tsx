@@ -300,7 +300,7 @@ export default function Lightbox({
 					<div className="flex items-center gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 						{images.map((src, idx) => (
 							<button
-								key={idx}
+								key={`lb-thumb-${idx}-${src}`}
 								onClick={() => goTo(idx)}
 								aria-label={`Photo ${idx + 1}`}
 								className={[

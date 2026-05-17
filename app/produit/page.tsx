@@ -35,6 +35,9 @@ export const metadata: Metadata = {
 	},
 };
 
+// Constante module-level : évite de créer un nouveau tableau à chaque render
+const FIVE_STARS = [0, 1, 2, 3, 4] as const;
+
 const guarantees = [
 	{
 		Icon: ShieldCheck,
@@ -298,7 +301,7 @@ export default async function ProduitPage() {
 									className="flex gap-0.5 mb-3"
 									aria-label="5 étoiles sur 5"
 								>
-									{[...Array(5)].map((_, i) => (
+									{FIVE_STARS.map((i) => (
 										<Star
 											key={i}
 											size={14}

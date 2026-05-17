@@ -128,7 +128,7 @@ export default function VehicleGallery({
 					>
 						{displayUrls.map((src, idx) => (
 							<div
-								key={idx}
+								key={`slide-${idx}-${src}`}
 								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
 							>
 								{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -266,7 +266,7 @@ export default function VehicleGallery({
 						>
 							{displayUrls.map((src, idx) => (
 								<button
-									key={idx}
+									key={`thumb-mobile-${idx}-${src}`}
 									type="button"
 									role="listitem"
 									onClick={() => scrollTo(idx)}
@@ -303,7 +303,7 @@ export default function VehicleGallery({
 						>
 							{displayUrls.map((src, idx) => (
 								<button
-									key={idx}
+									key={`thumb-desktop-${idx}-${src}`}
 									type="button"
 									role="listitem"
 									onClick={() => scrollTo(idx)}

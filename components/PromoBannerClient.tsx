@@ -32,12 +32,18 @@ export default function PromoBannerClient({
 	banner?: Banner | null;
 	signedImageUrl?: string;
 }) {
-	if (!banner) return null;
-
+	// ── Hooks TOUJOURS appelés en premier — Rules of Hooks ─────────────────
+	// Ne jamais placer de return conditionnel avant useState/useEffect.
+	// L'ancien `if (!banner) return null` placé ici causait l'erreur React :
+	// "The children should not have changed if we pass in the same set"
+	// car le nombre de hooks appelés variait entre les renders.
 	const [visible, setVisible] = useState(false);
 	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
+		// Guard : banner peut être null (type défensif) — ne rien faire
+		if (!banner) return;
+
 		setMounted(true);
 
 		// ── Vérification dates côté client (toujours fraîche, pas de cache) ──
@@ -66,21 +72,22 @@ export default function PromoBannerClient({
 			return () => clearTimeout(t);
 		}
 	}, [
-		banner.id,
-		banner.is_dismissible,
-		banner.scheduled_start,
-		banner.scheduled_end,
-		banner.display_pages,
+		banner?.id,
+		banner?.is_dismissible,
+		banner?.scheduled_start,
+		banner?.scheduled_end,
+		banner?.display_pages,
 	]);
 
 	const dismiss = () => {
 		setVisible(false);
 		try {
-			if (banner.is_dismissible) sessionStorage.setItem(DISMISS_KEY, banner.id);
+			if (banner?.is_dismissible) sessionStorage.setItem(DISMISS_KEY, banner.id);
 		} catch { /* ignore */ }
 	};
 
-	if (!mounted) return null;
+	// Rendu null si aucune bannière ou avant montage client
+	if (!banner || !mounted) return null;
 
 	return (
 		<div

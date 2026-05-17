@@ -113,17 +113,23 @@ export default function Analytics() {
     updateGoogleConsent(consent);
   }, [consent.analytics, consent.marketing, consent.consentGiven]);
 
-  // Aucun provider configuré → rien à charger
+  // Aucun provider configuré → rien à charger (stable : constante build-time)
   if (STRATEGY === "none") return null;
 
-  // Scripts trackants bloqués jusqu'au consentement analytics
-  // Consent Mode "update" envoyé par le useEffect ci-dessus même en cas de refus
-  if (!consent.analytics) return null;
-
+  // ── Toujours retourner le même fragment container ─────────────────────────
+  //
+  // NE PAS utiliser `if (!consent.analytics) return null;` ici.
+  // Basculer entre null et <></> change la structure des enfants dans l'arbre
+  // React, ce qui déclenche l'erreur de réconciliation :
+  // "The children should not have changed if we pass in the same set."
+  //
+  // Solution : retourner toujours <></> (container stable), et conditionner
+  // le chargement des scripts DANS le fragment via l'opérateur &&.
+  // Quand consent.analytics=false, le fragment est vide mais stable.
   return (
     <>
       {/* ── Stratégie GTM (recommandée) ───────────────────────────────────── */}
-      {STRATEGY === "gtm" && (
+      {consent.analytics && STRATEGY === "gtm" && (
         <Script
           id="gtm"
           strategy="afterInteractive"
@@ -142,38 +148,25 @@ f.parentNode.insertBefore(j,f);
       )}
 
       {/* ── Stratégie GA4 direct (fallback sans GTM) ─────────────────────── */}
-      {STRATEGY === "ga4" && (
-        <>
-          {/*
-           * Charge la librairie gtag.js depuis Google.
-           * strategy="afterInteractive" : exécuté après l'hydration React,
-           * donc toujours après le Consent Mode default (script HEAD).
-           */}
-          <Script
-            id="ga4-lib"
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          />
-          {/*
-           * Configure GA4.
-           * gtag('js', new Date()) : initialise le timestamp de session GA4
-           *   → requis uniquement dans le mode GA4 standalone (sans GTM).
-           *   Ne PAS inclure dans le script Consent Mode init.
-           * gtag('config', ...) : lie les hits au measurement ID.
-           * Note : anonymize_ip est obsolète en GA4 (activé par défaut).
-           */}
-          <Script
-            id="ga4-config"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
+      {consent.analytics && STRATEGY === "ga4" && (
+        <Script
+          id="ga4-lib"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+        />
+      )}
+      {consent.analytics && STRATEGY === "ga4" && (
+        <Script
+          id="ga4-config"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 gtag('js',new Date());
 gtag('config','${GA_ID}');`.trim(),
-            }}
-          />
-        </>
+          }}
+        />
       )}
     </>
   );
