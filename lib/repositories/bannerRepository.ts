@@ -1,6 +1,7 @@
 import type { Banner } from "@/types";
 import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapBanner } from "@/lib/supabase/mappers";
+import { getActiveGarageId } from "@/lib/config/garage";
 
 async function getActiveSupabase(garageId: string): Promise<Banner | null> {
   const { data, error } = await getReadClient()
@@ -17,7 +18,7 @@ async function getActiveSupabase(garageId: string): Promise<Banner | null> {
 export const bannerRepository = {
   get: async (): Promise<Banner | null> => {
     if (SUPABASE_ENABLED) {
-      const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
+      const garageId = getActiveGarageId();
       if (!garageId) return null;
       return getActiveSupabase(garageId);
     }

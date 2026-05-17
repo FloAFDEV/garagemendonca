@@ -7,18 +7,19 @@ import { requireAdminForGarage } from "@/lib/auth/getSession";
 import { assertSameOrigin } from "@/lib/auth/csrf";
 import { logAudit } from "@/lib/audit/logAction";
 import { mapBanner } from "@/lib/supabase/mappers";
+import { getActiveGarageId } from "@/lib/config/garage";
 import type { Banner } from "@/types";
 
 async function assertAdmin() {
   await assertSameOrigin();
-  const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+  const garageId = getActiveGarageId();
   const err = await requireAdminForGarage(garageId);
   if (err) throw new Error(err.message);
 }
 
 export async function getBannerAction(): Promise<Banner | null> {
   if (!SUPABASE_ENABLED) return null;
-  const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+  const garageId = getActiveGarageId();
   const { data } = await createSupabaseAdminClient()
     .from("banners")
     .select("*")
@@ -35,7 +36,7 @@ export async function upsertBannerAction(
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour modifier la bannière");
     await assertAdmin();
-    const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+    const garageId = getActiveGarageId();
     const db = createSupabaseAdminClient();
     const payload = {
       ...data,

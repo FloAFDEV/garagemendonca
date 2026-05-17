@@ -18,6 +18,7 @@ import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { parseDescriptionToOptions } from "@/lib/utils/parse-description-options";
 import ImageUploadZone from "@/components/admin/ImageUploadZone";
 import { syncVehicleImages } from "@/lib/safe-actions/image.actions";
+import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 
 // ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
 
@@ -374,7 +375,7 @@ export default function EditVehiclePage({
 		// Sync vehicle_images table
 		await syncVehicleImages(
 			id,
-			process.env.NEXT_PUBLIC_GARAGE_ID ?? "",
+			ACTIVE_GARAGE_ID,
 			httpImages,
 			`${form.brand} ${form.model}`,
 		);

@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { Send, CheckCircle2, Loader2 } from "lucide-react";
 import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
-
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 const subjects = [
   "Demande de devis réparation",

@@ -13,9 +13,10 @@ import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 import Container from "@/components/ui/Container";
 import CookieSettingsButton from "@/components/cookies/CookieSettingsButton";
 import { garageRepository } from "@/lib/repositories";
+import { getActiveGarageId } from "@/lib/config/garage";
 import type { GarageOpeningHours, GarageDay } from "@/types";
 
-const ACTIVE_GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const ACTIVE_GARAGE_ID = getActiveGarageId();
 
 const DAYS_ORDER: GarageDay[] = [
 	"lundi",

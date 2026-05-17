@@ -6,6 +6,7 @@ import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { requireAdminForGarage } from "@/lib/auth/getSession";
 import { assertSameOrigin } from "@/lib/auth/csrf";
 import { logAudit } from "@/lib/audit/logAction";
+import { getActiveGarageId } from "@/lib/config/garage";
 import { serviceRepository } from "@/lib/repositories/serviceRepository";
 import type { Service } from "@/types";
 
@@ -21,7 +22,7 @@ export async function getServiceBySlugAction(slug: string): Promise<Service | nu
 
 async function assertAdmin() {
   await assertSameOrigin();
-  const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+  const garageId = getActiveGarageId();
   const err = await requireAdminForGarage(garageId);
   if (err) throw new Error(err.message);
 }
@@ -32,7 +33,7 @@ export async function createServiceAction(
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour créer un service");
     await assertAdmin();
-    const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+    const garageId = getActiveGarageId();
     const db = createSupabaseAdminClient();
 
     const { data: row, error } = await db
@@ -66,7 +67,7 @@ export async function deleteServiceAction(
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour supprimer un service");
     await assertAdmin();
-    const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+    const garageId = getActiveGarageId();
     const db = createSupabaseAdminClient();
 
     const { error } = await db
@@ -91,7 +92,7 @@ export async function reorderServicesAction(
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis");
     await assertAdmin();
-    const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+    const garageId = getActiveGarageId();
     const db = createSupabaseAdminClient();
 
     await Promise.all(
@@ -118,7 +119,7 @@ export async function updateServiceAction(
   try {
     if (!SUPABASE_ENABLED) throw new Error("Supabase requis pour modifier un service");
     await assertAdmin();
-    const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+    const garageId = getActiveGarageId();
     const db = createSupabaseAdminClient();
 
     // ── Core fields ────────────────────────────────────────────────

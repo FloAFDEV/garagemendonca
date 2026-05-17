@@ -9,8 +9,7 @@ import {
   fetchFeaturedVehiclesAction,
 } from "@/lib/safe-actions/fetchVehicles";
 import type { UIVehicle, UIVehicleFilters } from "@/types/ui";
-
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 // ─── Catalogue public ─────────────────────────────────────────────
 

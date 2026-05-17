@@ -4,6 +4,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import VehicleCard from "@/components/vehicles/VehicleCard";
+import { getActiveGarageId } from "@/lib/config/garage";
 import {
 	Car,
 	ShieldCheck,
@@ -57,7 +58,7 @@ const guarantees = [
 	},
 ];
 
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const GARAGE_ID = getActiveGarageId();
 const BASE_URL = "https://www.garagemendonca.com";
 
 export default async function ProduitPage() {

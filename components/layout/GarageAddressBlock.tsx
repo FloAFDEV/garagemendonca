@@ -1,8 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import { fetchGarageByIdAction } from "@/lib/safe-actions/fetchGarage";
+import { getActiveGarageId } from "@/lib/config/garage";
 import type { GarageOpeningHours } from "@/types";
 
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const GARAGE_ID = getActiveGarageId();
 
 // Jours d'ouverture triés
 const DAY_ORDER = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"] as const;

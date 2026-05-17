@@ -3,8 +3,7 @@
 import { Suspense } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { CRMInbox } from "@/components/admin/CRMInbox";
-
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 export default function MessagesPage() {
   return (

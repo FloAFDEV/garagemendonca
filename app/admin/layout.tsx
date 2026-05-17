@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { getUser, getUserRole } from "@/lib/auth/getSession";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { logSecurityEvent } from "@/lib/security/logEvent";
+import { getActiveGarageId } from "@/lib/config/garage";
 import AdminThemeRoot from "@/components/admin/AdminThemeRoot";
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default async function AdminRootLayout({
       redirect("/login");
     }
 
-    const garageId = process.env.NEXT_PUBLIC_GARAGE_ID;
+    const garageId = getActiveGarageId();
     if (garageId) {
       const role = await getUserRole(garageId);
       if (role !== "admin" && role !== "superadmin") {

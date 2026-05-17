@@ -6,8 +6,7 @@ import { useVehiclesAdmin } from "@/lib/queries/useVehicles";
 import { Car, TrendingUp, Mail, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
-
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 /* ─────────────────────────────────────────────────────────────────────
  * DashboardContent — rendu DANS AdminLayout → reçoit les bons tokens

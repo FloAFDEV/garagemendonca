@@ -4,8 +4,9 @@ import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { getActiveGarageId } from "@/lib/config/garage";
 
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const GARAGE_ID = getActiveGarageId();
 
 const guarantees = [
 	"Garantie 6 à 12 mois km illimités",

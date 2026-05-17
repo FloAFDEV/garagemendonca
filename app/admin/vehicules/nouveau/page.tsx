@@ -15,6 +15,7 @@ import Link from "next/link";
 import ImageUploadZone from "@/components/admin/ImageUploadZone";
 import { syncVehicleImages } from "@/lib/safe-actions/image.actions";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
+import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 
 // ── Static data (marques/modèles → @/lib/brandsModels) ──────────────────
@@ -322,7 +323,7 @@ export default function NewVehiclePage() {
 		if (httpImages.length > 0) {
 			await syncVehicleImages(
 				vehicleIdRef.current,
-				process.env.NEXT_PUBLIC_GARAGE_ID ?? "",
+				ACTIVE_GARAGE_ID,
 				httpImages,
 				`${form.brand} ${form.model}`,
 			);

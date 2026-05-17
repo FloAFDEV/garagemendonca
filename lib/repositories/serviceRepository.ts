@@ -12,6 +12,7 @@
 import type { Service } from "@/types";
 import { SUPABASE_ENABLED, getReadClient } from "@/lib/supabase/readClient";
 import { mapService } from "@/lib/supabase/mappers";
+import { getActiveGarageId } from "@/lib/config/garage";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function mapServiceFromDB(row: any, images: any[] = []): Service {
@@ -82,21 +83,19 @@ async function getBySlugSupabase(slug: string, garageId: string): Promise<Servic
 
 // ─── Repository public ───────────────────────────────────────────────────────
 
-const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
-
 export const serviceRepository = {
   getAll: async (): Promise<Service[]> => {
-    if (SUPABASE_ENABLED) return getAllSupabase(GARAGE_ID());
+    if (SUPABASE_ENABLED) return getAllSupabase(getActiveGarageId());
     return [];
   },
 
   getAllForAdmin: async (): Promise<Service[]> => {
-    if (SUPABASE_ENABLED) return getAllSupabase(GARAGE_ID(), false);
+    if (SUPABASE_ENABLED) return getAllSupabase(getActiveGarageId(), false);
     return [];
   },
 
   getBySlug: async (slug: string): Promise<Service | null> => {
-    if (SUPABASE_ENABLED) return getBySlugSupabase(slug, GARAGE_ID());
+    if (SUPABASE_ENABLED) return getBySlugSupabase(slug, getActiveGarageId());
     return null;
   },
 

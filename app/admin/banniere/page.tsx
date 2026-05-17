@@ -12,6 +12,7 @@ import clsx from "clsx";
 import type { Banner } from "@/types";
 import { upsertBannerAction, getBannerAction } from "./actions";
 import { adminUI } from "@/lib/admin-ui";
+import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 
 function toDatetimeLocal(iso: string | null | undefined): string {
   if (!iso) return "";
@@ -74,7 +75,7 @@ function BannerImageUpload({
       fd.append("file", file);
       fd.append("type", "banner");
       fd.append("entityId", "banner");
-      fd.append("garageId", process.env.NEXT_PUBLIC_GARAGE_ID ?? "");
+      fd.append("garageId", ACTIVE_GARAGE_ID);
       const res = await fetch("/api/upload-image", { method: "POST", body: fd });
       if (!res.ok) throw new Error((await res.json()).error ?? "Échec de l'upload");
       const { url } = await res.json();

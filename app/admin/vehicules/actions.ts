@@ -8,12 +8,11 @@ import { vehicleFromDb } from "@/lib/mappers/vehicle.mapper";
 import { requireAdminForGarage } from "@/lib/auth/getSession";
 import { assertSameOrigin } from "@/lib/auth/csrf";
 import { logAudit } from "@/lib/audit/logAction";
-
-const GARAGE_ID = () => process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+import { getActiveGarageId } from "@/lib/config/garage";
 
 async function assertAdmin() {
 	await assertSameOrigin();
-	const err = await requireAdminForGarage(GARAGE_ID());
+	const err = await requireAdminForGarage(getActiveGarageId());
 	if (err) throw new Error(err.message);
 }
 
@@ -25,7 +24,7 @@ export async function getAdminVehicles(): Promise<Vehicle[]> {
 	const { data, error } = await db
 		.from("vehicles")
 		.select("*, vehicle_images(id, url, storage_path, alt, sort_order, is_primary)")
-		.eq("garage_id", GARAGE_ID())
+		.eq("garage_id", getActiveGarageId())
 		.order("created_at", { ascending: false });
 	if (error) throw error;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,7 +38,7 @@ export async function getFeaturedCount(): Promise<number> {
 	const { count, error } = await db
 		.from("vehicles")
 		.select("id", { count: "exact", head: true })
-		.eq("garage_id", GARAGE_ID())
+		.eq("garage_id", getActiveGarageId())
 		.eq("featured", true);
 	if (error) return 0;
 	return count ?? 0;
@@ -139,7 +138,7 @@ export async function createVehicleAction(
 	const db = createSupabaseAdminClient();
 	const row = {
 		...toDbRow(input),
-		garage_id: input.garageId ?? GARAGE_ID(),
+		garage_id: input.garageId ?? getActiveGarageId(),
 		...(input.id ? { id: input.id } : {}),
 		created_at: new Date().toISOString(),
 		updated_at: new Date().toISOString(),

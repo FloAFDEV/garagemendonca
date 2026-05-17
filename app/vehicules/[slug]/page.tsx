@@ -21,9 +21,10 @@ import {
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
+import { getActiveGarageId } from "@/lib/config/garage";
 import type { Vehicle } from "@/types";
 
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const GARAGE_ID = getActiveGarageId();
 
 // UUID v4 pattern — pour le fallback getById si le slug ressemble à un UUID
 const UUID_RE =

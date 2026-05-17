@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { getActiveGarageId } from "@/lib/config/garage";
 
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const GARAGE_ID = getActiveGarageId();
 
 export const runtime = "nodejs";
 export const alt = "Garage Mendonça — annonce véhicule";

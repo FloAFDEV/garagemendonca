@@ -12,6 +12,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { getUser } from "@/lib/auth/getSession";
 import { headers } from "next/headers";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
+import { getActiveGarageId } from "@/lib/config/garage";
 
 export type AuditAction = "create" | "update" | "delete" | "login" | "logout";
 export type AuditResource =
@@ -43,7 +44,7 @@ export async function logAudit(params: AuditParams): Promise<void> {
     await createSupabaseAdminClient()
       .from("admin_audit_logs")
       .insert({
-        garage_id: process.env.NEXT_PUBLIC_GARAGE_ID ?? null,
+        garage_id: getActiveGarageId() || null,
         user_id: user?.id ?? null,
         user_email: user?.email ?? "unknown",
         action: params.action,

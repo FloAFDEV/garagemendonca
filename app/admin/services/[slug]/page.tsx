@@ -25,6 +25,7 @@ import { getServiceBySlugAction, updateServiceAction } from "../actions";
 import { adminUI } from "@/lib/admin-ui";
 import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
 import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
+import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 import type {
 	ServiceStep,
 	ServicePricing,
@@ -381,7 +382,7 @@ export default function EditServicePage({
 		e.target.value = "";
 		if (!file || !serviceId) return;
 		setUploading(true);
-		const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+		const garageId = ACTIVE_GARAGE_ID;
 		const ext = file.name.split(".").pop() ?? "webp";
 		const path = `${garageId}/${serviceId}/${Date.now()}.${ext}`;
 		const sb = createSupabaseBrowserClient();

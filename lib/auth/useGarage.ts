@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
 import { useUser } from "./useUser";
+import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 import type { UserRoleEnum } from "@/lib/supabase/database.types";
 
 interface UseGarageReturn {
@@ -27,7 +28,7 @@ export function useGarage(): UseGarageReturn {
   const [role,    setRole]    = useState<UserRoleEnum | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const garageId = process.env.NEXT_PUBLIC_GARAGE_ID ?? null;
+  const garageId = ACTIVE_GARAGE_ID || null;
 
   useEffect(() => {
     if (userLoading) return;

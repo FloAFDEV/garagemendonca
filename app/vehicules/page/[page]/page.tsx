@@ -21,8 +21,9 @@ import {
   VEHICLES_PER_PAGE,
 } from "@/lib/vehicles/pagination";
 import { ChevronLeft, ChevronRight, ShieldCheck, ClipboardCheck, Wrench, BookOpen } from "lucide-react";
+import { getActiveGarageId } from "@/lib/config/garage";
 
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const GARAGE_ID = getActiveGarageId();
 
 // ─────────────────────────────────────────────────────────────────
 //  Types

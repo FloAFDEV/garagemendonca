@@ -3,8 +3,7 @@
 import { useRef, useState, useCallback } from "react";
 import { Camera, Images, Upload, X, Loader2, AlertCircle } from "lucide-react";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 // ─── Types ────────────────────────────────────────────────────────
 

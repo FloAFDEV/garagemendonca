@@ -29,6 +29,7 @@ import {
   BookOpen,
   ShieldCheck,
 } from "lucide-react";
+import { getActiveGarageId } from "@/lib/config/garage";
 
 // ─── JSON-LD ─────────────────────────────────────────────────────
 
@@ -53,7 +54,7 @@ function buildItemListJsonLd(
   };
 }
 
-const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const GARAGE_ID = getActiveGarageId();
 
 // ─── Types ───────────────────────────────────────────────────────
 

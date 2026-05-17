@@ -16,6 +16,7 @@
 
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
+import { getActiveGarageId } from "@/lib/config/garage";
 
 export type SecurityEventType =
   | "login_failed"
@@ -46,7 +47,7 @@ export async function logSecurityEvent(
         ip_address: params.ip ?? null,
         user_email: params.userEmail ?? null,
         user_id: params.userId ?? null,
-        garage_id: process.env.NEXT_PUBLIC_GARAGE_ID ?? null,
+        garage_id: getActiveGarageId() || null,
         details: params.details ?? null,
       });
   } catch {
