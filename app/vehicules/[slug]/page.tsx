@@ -5,7 +5,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehicleGallery from "@/components/vehicles/VehicleGallery";
 import VehicleCard from "@/components/vehicles/VehicleCard";
-import VehicleContactForm from "@/components/vehicles/VehicleContactForm";
+import VehicleContactFormLazy from "@/components/vehicles/VehicleContactFormLazy";
 import GarageAddressBlock from "@/components/layout/GarageAddressBlock";
 import Image from "next/image";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
@@ -553,7 +553,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</p>
 							</div>
 							<div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
-								<VehicleContactForm
+								<VehicleContactFormLazy
 									vehicleId={vehicle.id}
 									vehicleName={vehicleName}
 									vehicleLabel={vehicleLabel}
