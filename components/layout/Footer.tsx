@@ -17,43 +17,65 @@ import type { GarageOpeningHours, GarageDay } from "@/types";
 
 const ACTIVE_GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
 
-const DAYS_ORDER: GarageDay[] = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+const DAYS_ORDER: GarageDay[] = [
+	"lundi",
+	"mardi",
+	"mercredi",
+	"jeudi",
+	"vendredi",
+	"samedi",
+	"dimanche",
+];
 const DAY_LABELS: Record<GarageDay, string> = {
-  lundi: "Lundi", mardi: "Mardi", mercredi: "Mercredi", jeudi: "Jeudi",
-  vendredi: "Vendredi", samedi: "Samedi", dimanche: "Dimanche",
+	lundi: "Lundi",
+	mardi: "Mardi",
+	mercredi: "Mercredi",
+	jeudi: "Jeudi",
+	vendredi: "Vendredi",
+	samedi: "Samedi",
+	dimanche: "Dimanche",
 };
 
-function buildHoursRows(oh: GarageOpeningHours): { day: string; time: string }[] {
-  // Groupe les jours consécutifs avec les mêmes horaires
-  type Segment = { days: GarageDay[]; open: string | null; close: string | null };
-  const segments: Segment[] = [];
+function buildHoursRows(
+	oh: GarageOpeningHours,
+): { day: string; time: string }[] {
+	// Groupe les jours consécutifs avec les mêmes horaires
+	type Segment = {
+		days: GarageDay[];
+		open: string | null;
+		close: string | null;
+	};
+	const segments: Segment[] = [];
 
-  for (const day of DAYS_ORDER) {
-    const h = oh[day];
-    const open  = h?.open  ?? null;
-    const close = h?.close ?? null;
-    const last  = segments[segments.length - 1];
-    if (last && last.open === open && last.close === close) {
-      last.days.push(day);
-    } else {
-      segments.push({ days: [day], open, close });
-    }
-  }
+	for (const day of DAYS_ORDER) {
+		const h = oh[day];
+		const open = h?.open ?? null;
+		const close = h?.close ?? null;
+		const last = segments[segments.length - 1];
+		if (last && last.open === open && last.close === close) {
+			last.days.push(day);
+		} else {
+			segments.push({ days: [day], open, close });
+		}
+	}
 
-  return segments.map(({ days, open, close }) => {
-    const label =
-      days.length === 1
-        ? DAY_LABELS[days[0]]
-        : `${DAY_LABELS[days[0]]} – ${DAY_LABELS[days[days.length - 1]]}`;
-    const time = open && close ? `${open.replace(":", "h")} / ${close.replace(":", "h")}` : "Fermé";
-    return { day: label, time };
-  });
+	return segments.map(({ days, open, close }) => {
+		const label =
+			days.length === 1
+				? DAY_LABELS[days[0]]
+				: `${DAY_LABELS[days[0]]} – ${DAY_LABELS[days[days.length - 1]]}`;
+		const time =
+			open && close
+				? `${open.replace(":", "h")} / ${close.replace(":", "h")}`
+				: "Fermé";
+		return { day: label, time };
+	});
 }
 
 const FALLBACK_HOURS = [
-  { day: "Lun – Jeu", time: "08h–12h / 14h–19h" },
-  { day: "Vendredi",  time: "08h–12h / 14h–18h" },
-  { day: "Sam – Dim", time: "Fermé" },
+	{ day: "Lun – Jeu", time: "08h–12h / 14h–19h" },
+	{ day: "Vendredi", time: "08h–12h / 14h–18h" },
+	{ day: "Sam – Dim", time: "Fermé" },
 ];
 
 const footerLinks = {
@@ -73,7 +95,9 @@ const footerLinks = {
 
 export default async function Footer() {
 	// Chargement dynamique des horaires (fallback si Supabase indisponible)
-	const garage = await garageRepository.getById(ACTIVE_GARAGE_ID).catch(() => null);
+	const garage = await garageRepository
+		.getById(ACTIVE_GARAGE_ID)
+		.catch(() => null);
 	const hours = garage?.opening_hours
 		? buildHoursRows(garage.opening_hours)
 		: FALLBACK_HOURS;
@@ -281,8 +305,7 @@ export default async function Footer() {
 				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-400">
 					<p>
 						© {new Date().getFullYear()} Garage Auto Mendonca · SARL
-						· SIRET 449 948 975 00023 · RCS Toulouse · Capital 7 700
-						€
+						· SIRET 449 948 975 00023 · RCS Toulouse ·
 					</p>
 					<div className="flex items-center gap-5">
 						<Link
