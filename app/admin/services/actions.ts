@@ -95,7 +95,7 @@ export async function reorderServicesAction(
     const garageId = getActiveGarageId();
     const db = createSupabaseAdminClient();
 
-    await Promise.all(
+    const results = await Promise.all(
       slugsInOrder.map((slug, i) =>
         db.from("services")
           .update({ sort_order: i + 1 })
@@ -103,6 +103,9 @@ export async function reorderServicesAction(
           .eq("garage_id", garageId),
       ),
     );
+    // Vérifier les erreurs individuelles — Promise.all résout même si chaque update échoue
+    const firstErr = results.find((r) => r.error)?.error;
+    if (firstErr) throw firstErr;
 
     revalidatePath("/services");
     revalidatePath("/admin/services");

@@ -55,10 +55,15 @@ export async function syncVehicleImages(
   }
 
   // Met aussi à jour vehicles.images[] (légacy — fallback)
-  await db
+  // Erreur non-bloquante : vehicle_images est la source de vérité.
+  // On log mais on ne throw pas pour ne pas masquer le succès de l'opération principale.
+  const { error: legacyErr } = await db
     .from("vehicles")
     .update({ images: imageUrls, thumbnail_url: imageUrls[0] ?? null })
     .eq("id", vehicleId);
+  if (legacyErr) {
+    console.warn("[syncVehicleImages] legacy vehicles.images update failed:", legacyErr.message);
+  }
 
   revalidatePath("/vehicules");
   revalidatePath(`/vehicules/${vehicleId}`);
