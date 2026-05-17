@@ -43,8 +43,8 @@ const config: Config = {
 				},
 			},
 			fontFamily: {
-				sans: ["Inter", "system-ui", "sans-serif"],
-				heading: ["Manrope", "system-ui", "sans-serif"],
+				sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+				heading: ["var(--font-manrope)", "system-ui", "sans-serif"],
 			},
 			/**
 			 * Échelle typographique — Garage Mendonca

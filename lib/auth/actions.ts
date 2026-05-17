@@ -150,6 +150,29 @@ export async function signInAction(
   redirect(destination);
 }
 
+/**
+ * Envoie un email de reset mot de passe via Supabase.
+ * Retourne un objet { error? } pour permettre l'affichage côté client.
+ */
+export async function resetPasswordAction(
+  email: string,
+): Promise<{ error?: string }> {
+  if (!email?.trim()) return { error: "Email requis." };
+
+  const supabase = await createActionClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.garagemendonca.com"}/admin/reset-password`,
+  });
+
+  if (error) {
+    // Ne pas révéler si l'email existe ou non (sécurité)
+    console.error("[resetPasswordAction]", error.message);
+  }
+
+  // Toujours retourner succès pour éviter l'énumération d'emails
+  return {};
+}
+
 export async function signOutAction(): Promise<void> {
   const supabase = await createActionClient();
 

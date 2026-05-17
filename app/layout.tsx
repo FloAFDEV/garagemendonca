@@ -1,5 +1,26 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
+
+/**
+ * next/font/google — auto-hosted, zero external request, élimine le render-blocking.
+ * `variable` injecte des CSS custom props (--font-inter, --font-manrope)
+ * que Tailwind utilise via fontFamily dans tailwind.config.ts.
+ * `display: "swap"` évite le FOIT (flash invisible text) pendant le chargement.
+ */
+const inter = Inter({
+	subsets: ["latin"],
+	weight: ["300", "400", "500"],
+	variable: "--font-inter",
+	display: "swap",
+});
+
+const manrope = Manrope({
+	subsets: ["latin"],
+	weight: ["300", "400", "500", "600"],
+	variable: "--font-manrope",
+	display: "swap",
+});
 import SkipToContent from "@/components/ui/SkipToContent";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
@@ -73,8 +94,8 @@ const jsonLd = {
 	},
 	geo: {
 		"@type": "GeoCoordinates",
-		latitude: 43.6039,
-		longitude: 1.5842,
+		latitude: 43.5690,
+		longitude: 1.5900,
 	},
 	openingHoursSpecification: [
 		{
@@ -133,7 +154,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="fr" suppressHydrationWarning data-scroll-behavior="smooth">
+		<html lang="fr" suppressHydrationWarning data-scroll-behavior="smooth" className={`${inter.variable} ${manrope.variable}`}>
 			{/*
 			 * Ordre des scripts dans <head> — NE PAS réordonner.
 			 *

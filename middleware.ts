@@ -66,8 +66,8 @@ function buildCsp(): string {
     isDev
       ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${googleScriptSrc} https://challenges.cloudflare.com`
       : `script-src 'self' 'unsafe-inline' ${googleScriptSrc} https://challenges.cloudflare.com`,
-    // Google Fonts CSS dans style-src
-    `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+    // next/font auto-host les polices — fonts.googleapis.com n'est plus requis
+    `style-src 'self' 'unsafe-inline'`,
     `img-src 'self' blob: data: ${googleImgSrc} https://${supabaseHost} https://www.garagemendonca.com https://images.unsplash.com https://upload.wikimedia.org`,
     // Dev : websocket HMR sur localhost + Supabase Realtime
     isDev
