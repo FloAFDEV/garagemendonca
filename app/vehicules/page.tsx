@@ -211,7 +211,11 @@ export default async function VehiculesPage({
         <Container>
           {/* Filtres */}
           <Suspense>
-            <VehicleFiltersBar totalCount={totalCount} availableBrands={availableBrands} />
+            <VehicleFiltersBar
+              totalCount={totalCount}
+              availableBrands={availableBrands}
+              currentYear={new Date().getFullYear()}
+            />
           </Suspense>
 
           {vehicles.length > 0 ? (

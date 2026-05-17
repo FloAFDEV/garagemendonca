@@ -46,8 +46,10 @@ const PRICE_MIN_OPTIONS = [
   { label: "≥ 15 000 €", value: "15000" },
 ];
 
-const CURRENT_YEAR = new Date().getFullYear();
-const YEAR_OPTIONS = Array.from({ length: 20 }, (_, i) => CURRENT_YEAR - i);
+/** Généré côté serveur et passé en prop — pas de calcul côté client */
+function buildYearOptions(currentYear: number) {
+  return Array.from({ length: 20 }, (_, i) => currentYear - i);
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
@@ -190,11 +192,13 @@ function MoreFiltersPanel({
   minYear,
   maxYear,
   minPrice,
+  yearOptions,
   onUpdate,
 }: {
   minYear: string;
   maxYear: string;
   minPrice: string;
+  yearOptions: number[];
   onUpdate: (vals: Record<string, string>) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -245,7 +249,7 @@ function MoreFiltersPanel({
                 aria-label="Année minimum"
               >
                 <option value="">De…</option>
-                {YEAR_OPTIONS.slice().reverse().map((y) => (
+                {yearOptions.slice().reverse().map((y) => (
                   <option key={y} value={y}>{y}</option>
                 ))}
               </select>
@@ -256,7 +260,7 @@ function MoreFiltersPanel({
                 aria-label="Année maximum"
               >
                 <option value="">À…</option>
-                {YEAR_OPTIONS.map((y) => (
+                {yearOptions.map((y) => (
                   <option key={y} value={y}>{y}</option>
                 ))}
               </select>
@@ -299,10 +303,14 @@ function MoreFiltersPanel({
 export default function VehicleFiltersBar({
   totalCount,
   availableBrands,
+  currentYear,
 }: {
   totalCount: number;
   availableBrands: string[];
+  currentYear: number;
 }) {
+  const YEAR_OPTIONS = buildYearOptions(currentYear);
+
   const router      = useRouter();
   const searchParams = useSearchParams();
 
@@ -464,6 +472,7 @@ export default function VehicleFiltersBar({
           minYear={minYear}
           maxYear={maxYear}
           minPrice={minPrice}
+          yearOptions={YEAR_OPTIONS}
           onUpdate={(vals) => pushFilters(vals)}
         />
 

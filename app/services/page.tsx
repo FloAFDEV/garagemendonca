@@ -34,8 +34,41 @@ export default async function ServicesPage() {
 	const activeServices = allServices.filter((s) => s.is_active);
 	const phone = garage?.phone ?? "05 32 00 20 38";
 
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "AutoRepair",
+		name: "Garage Auto Mendonca",
+		url: "https://www.garagemendonca.com/services",
+		telephone: "+33532002038",
+		address: {
+			"@type": "PostalAddress",
+			streetAddress: "6 Avenue de la Mouyssaguese",
+			addressLocality: "Drémil-Lafage",
+			postalCode: "31280",
+			addressCountry: "FR",
+		},
+		hasOfferCatalog: {
+			"@type": "OfferCatalog",
+			name: "Nos services",
+			itemListElement: activeServices.map((s, i) => ({
+				"@type": "ListItem",
+				position: i + 1,
+				item: {
+					"@type": "Service",
+					name: s.title,
+					description: s.short_description,
+					provider: { "@type": "AutoRepair", name: "Garage Auto Mendonca" },
+				},
+			})),
+		},
+	};
+
 	return (
 		<MainLayout>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+			/>
 			{/* ── Hero page ── */}
 			<section className="relative bg-dark-900 overflow-hidden pt-36 pb-20">
 				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[180px] pointer-events-none" aria-hidden="true" />

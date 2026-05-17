@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
-import { vehicleRepository } from "@/lib/repositories/vehicleRepository";
+import { vehicleDb } from "@/lib/db/vehicle.repository";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import {
 	Car,
@@ -58,15 +58,35 @@ const guarantees = [
 ];
 
 const GARAGE_ID = process.env.NEXT_PUBLIC_GARAGE_ID ?? "";
+const BASE_URL = "https://www.garagemendonca.com";
 
 export default async function ProduitPage() {
-	const allVehicles = await vehicleRepository
-		.getAll(GARAGE_ID || undefined)
-		.catch(() => []);
-	const featured = allVehicles.filter((v) => v.featured).slice(0, 3);
-	const rest = allVehicles.filter((v) => !v.featured).slice(0, 3);
+	const [featured, allRecent] = await Promise.all([
+		vehicleDb.getFeatured(GARAGE_ID, 3).catch(() => []),
+		vehicleDb.listPaginated(GARAGE_ID, 1, 6, {}).catch(() => []),
+	]);
+	const rest = allRecent.filter((v) => !v.featured).slice(0, 3);
+
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "ItemList",
+		name: "Véhicules d'occasion — Garage Mendonça",
+		description: "Sélection de véhicules d'occasion révisés et garantis",
+		url: `${BASE_URL}/produit`,
+		itemListElement: [...featured, ...rest].map((v, i) => ({
+			"@type": "ListItem",
+			position: i + 1,
+			url: `${BASE_URL}/vehicules/${v.slug ?? v.id}`,
+			name: `${v.brand} ${v.model} ${v.year}`,
+		})),
+	};
+
 	return (
 		<MainLayout>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+			/>
 			{/* ── Hero ── */}
 			<section className="relative bg-[#0f172a] pt-36 pb-24 overflow-hidden">
 				<div
@@ -214,10 +234,7 @@ export default async function ProduitPage() {
 								className="btn-primary text-base px-10 py-4"
 							>
 								<Car size={18} />
-								Voir tous les véhicules ({
-									allVehicles.length
-								}{" "}
-								disponibles)
+								Voir tous les véhicules
 							</Link>
 						</div>
 					</Container>

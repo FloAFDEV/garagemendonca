@@ -20,6 +20,8 @@ export const metadata: Metadata = {
 			"Garantie, financement, essai, reprise, boîte automatique... Retrouvez toutes les réponses à vos questions avant d'acheter ou faire entretenir votre véhicule.",
 		type: "website",
 		locale: "fr_FR",
+		url: "https://www.garagemendonca.com/faq",
+		siteName: "Garage Auto Mendonca",
 		images: [
 			{
 				url: "/images/og-image.webp",

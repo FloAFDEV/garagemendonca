@@ -6,7 +6,6 @@
  */
 
 import type {
-  Vehicle,
   Service,
   ServiceImage,
   ServiceStep,
@@ -16,41 +15,6 @@ import type {
   Banner,
   VehicleCategory,
 } from "@/types";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function mapVehicle(row: any): Vehicle {
-  return {
-    id: row.id,
-    garageId: row.garage_id,
-    brand: row.brand,
-    model: row.model,
-    year: row.year,
-    mileage: row.mileage,
-    fuel: row.fuel,
-    transmission: row.transmission,
-    power: row.power,
-    price: row.price,
-    color: row.color,
-    doors: row.doors,
-    critAir: row.crit_air ?? undefined,
-    description: row.description ?? "",
-    images: row.images ?? [],
-    thumbnailUrl: row.thumbnail_url ?? undefined,
-    status: row.status,
-    published_at: row.published_at ?? undefined,
-    sold_at: row.sold_at ?? undefined,
-    featured: row.featured ?? false,
-    featuredOrder: row.featured_order ?? undefined,
-    categories: row.categories ?? [],
-    slug:             row.slug ?? undefined,
-    meta_description: row.meta_description ?? undefined,
-    features: row.features ?? {},
-    options: row.options ?? {},
-    export_leboncoin: row.export_leboncoin ?? undefined,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-  };
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapServiceImage(img: any): ServiceImage {

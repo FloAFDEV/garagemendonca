@@ -34,6 +34,48 @@ function ContactFormWrapper({
 	return <ContactForm vehicule={vehicule} />;
 }
 
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": ["AutoRepair", "AutoDealer"],
+	name: "Garage Auto Mendonca",
+	url: "https://www.garagemendonca.com",
+	telephone: "+33532002038",
+	email: "contact@garagemendonca.com",
+	address: {
+		"@type": "PostalAddress",
+		streetAddress: "6 Avenue de la Mouyssaguese",
+		addressLocality: "Drémil-Lafage",
+		postalCode: "31280",
+		addressCountry: "FR",
+	},
+	geo: {
+		"@type": "GeoCoordinates",
+		latitude: 43.5757,
+		longitude: 1.5918,
+	},
+	openingHoursSpecification: [
+		{
+			"@type": "OpeningHoursSpecification",
+			dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+			opens: "08:00",
+			closes: "19:00",
+		},
+		{
+			"@type": "OpeningHoursSpecification",
+			dayOfWeek: ["Friday"],
+			opens: "08:00",
+			closes: "18:00",
+		},
+	],
+	contactPoint: {
+		"@type": "ContactPoint",
+		telephone: "+33532002038",
+		contactType: "customer service",
+		areaServed: "FR",
+		availableLanguage: "French",
+	},
+};
+
 const hours = [
 	{ day: "Lundi", time: "08h00–12h00 / 14h00–19h00", open: true },
 	{ day: "Mardi", time: "08h00–12h00 / 14h00–19h00", open: true },
@@ -52,6 +94,10 @@ export default async function ContactPage({ searchParams }: PageProps) {
 	const params = await searchParams;
 	return (
 		<MainLayout>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+			/>
 			{/* ── Hero ── */}
 			<section className="bg-[#0f172a] pt-36 pb-20 relative overflow-hidden">
 				<div

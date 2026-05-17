@@ -65,7 +65,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
       title: listingTitle(page, meta.totalPages),
       description: listingDescription(page, totalCount),
     },
-    robots: { index: true, follow: true },
+    robots: { index: page === 1, follow: true },
   };
 }
 
@@ -246,7 +246,11 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
         <Container>
           {/* Filtres (client component, besoin de Suspense pour useSearchParams) */}
           <Suspense>
-            <VehicleFiltersBar totalCount={totalCount} availableBrands={availableBrands} />
+            <VehicleFiltersBar
+              totalCount={totalCount}
+              availableBrands={availableBrands}
+              currentYear={new Date().getFullYear()}
+            />
           </Suspense>
 
           {vehicles.length > 0 ? (
