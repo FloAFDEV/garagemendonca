@@ -585,7 +585,7 @@ export default function AdminVehiclesPage() {
 													t.txtSubtle,
 												)}
 											>
-												{vehicle.year} · {vehicle.color}{" "}
+												{vehicle.year}{vehicle.color ? ` · ${vehicle.color}` : ""}{" "}
 												· {vehicle.transmission}
 											</p>
 										</div>
@@ -780,8 +780,7 @@ export default function AdminVehiclesPage() {
 														t.txtSubtle,
 													)}
 												>
-													{vehicle.color} ·{" "}
-													{vehicle.transmission} ·{" "}
+													{vehicle.color ? `${vehicle.color} · ` : ""}{vehicle.transmission} ·{" "}
 													{vehicle.year}
 												</div>
 												{vehicle.status ===
