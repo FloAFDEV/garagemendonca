@@ -222,11 +222,17 @@ export default async function VehiculesPage({
           {vehicles.length > 0 ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                {vehicles.map((vehicle, i) => (
-                  <AnimateOnScroll key={vehicle.id} delay={i * 60}>
-                    <VehicleCard vehicle={vehicle} priority={i < 4} />
-                  </AnimateOnScroll>
-                ))}
+                {vehicles.map((vehicle, i) =>
+                  // Les 4 premières cartes sont above-the-fold : pas d'AnimateOnScroll
+                  // (évite opacity:0 SSR qui exclut ces éléments du calcul LCP)
+                  i < 4 ? (
+                    <VehicleCard key={vehicle.id} vehicle={vehicle} priority />
+                  ) : (
+                    <AnimateOnScroll key={vehicle.id} delay={(i - 4) * 60}>
+                      <VehicleCard vehicle={vehicle} />
+                    </AnimateOnScroll>
+                  )
+                )}
               </div>
 
               <PaginationNav meta={meta} filterQuery={filterQuery} />

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import ReactDOM from "react-dom";
 import HeroParallax from "./HeroParallax";
 import {
 	Phone,
@@ -27,6 +28,13 @@ const stats = [
 ];
 
 export default function Hero() {
+	// Preload côté serveur : le browser scanner découvre l'image avant JS
+	ReactDOM.preload("/images/garage-hero.webp", {
+		as: "image",
+		fetchPriority: "high",
+		type: "image/webp",
+	});
+
 	return (
 		<section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
 			{/* Image hero avec parallaxe — client component */}

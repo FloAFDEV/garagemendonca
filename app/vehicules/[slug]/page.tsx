@@ -26,6 +26,10 @@ import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
 
+// Revalidation ISR : pages pré-buildées rafraîchies toutes les heures.
+// Garantit que prix, statut et contenu sont à jour sans redeploiement complet.
+export const revalidate = 3600;
+
 // UUID v4 pattern — pour le fallback getById si le slug ressemble à un UUID
 const UUID_RE =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
