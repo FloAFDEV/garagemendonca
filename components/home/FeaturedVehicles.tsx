@@ -27,7 +27,7 @@ export default async function FeaturedVehicles() {
 
 	if (displayed.length === 0) {
 		return (
-			<section className="py-20 sm:py-28 bg-white">
+			<section className="py-16 sm:py-24 lg:py-28 bg-white">
 				<Container>
 					<div className="flex flex-col items-center justify-center text-center gap-6 py-12 sm:py-20 max-w-lg mx-auto">
 						<div className="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center">
@@ -63,18 +63,30 @@ export default async function FeaturedVehicles() {
 	}
 
 	return (
-		<section className="py-20 sm:py-28 bg-white">
+		<section className="py-16 sm:py-24 lg:py-28 bg-white">
 			<Container>
 				{/* ── Header ── */}
 				<AnimateOnScroll>
-					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-10 sm:mb-14">
-						<div>
+					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-5 sm:mb-10 lg:mb-14">
+						<div className="flex-1">
 							<div className="section-divider" />
 							<span className="eyebrow">Derniers arrivages</span>
-							<h2 className="section-title text-2xl sm:text-3xl md:text-4xl">
-								Nos dernières occasions
-							</h2>
-							<p className="section-subtitle mt-2 sm:mt-3 max-w-full sm:max-w-lg text-sm sm:text-base leading-relaxed">
+							{/* Titre + CTA "Voir tout" alignés sur mobile */}
+							<div className="flex items-center justify-between gap-4">
+								<h2 className="section-title text-2xl sm:text-3xl md:text-4xl">
+									Nos dernières occasions
+								</h2>
+								<Link
+									href="/vehicules"
+									className="sm:hidden flex-shrink-0 inline-flex items-center gap-1 text-brand-600 text-sm font-medium whitespace-nowrap"
+									aria-label={`Voir les ${totalCount} véhicules disponibles`}
+								>
+									Voir tout
+									<ArrowRight size={14} aria-hidden="true" />
+								</Link>
+							</div>
+							{/* Sous-titre masqué sur mobile — le titre seul suffit */}
+							<p className="hidden sm:block section-subtitle mt-3 max-w-lg text-sm sm:text-base leading-relaxed">
 								Fraîchement entrées en stock, révisées et
 								garanties 6 à 12 mois, kilométrage illimité.
 								Boîte automatique, prêtes à prendre la route.
@@ -83,13 +95,36 @@ export default async function FeaturedVehicles() {
 					</div>
 				</AnimateOnScroll>
 
-				{/* ── Grid ── */}
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
+				{/* ── Mobile : Carousel horizontal scroll-snap ── */}
+				<div
+					className="sm:hidden -mx-4 overflow-x-auto flex gap-3 px-4 pb-4 mb-6
+					           [scroll-snap-type:x_mandatory]
+					           [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+					role="list"
+					aria-label="Véhicules à la une"
+				>
 					{displayed.map((vehicle, i) => (
-						<AnimateOnScroll key={vehicle.id} delay={i * 80}>
+						<div
+							key={vehicle.id}
+							role="listitem"
+							className="flex-shrink-0 w-[78vw] [scroll-snap-align:start]"
+						>
 							<VehicleCard vehicle={vehicle} priority={i === 0} />
-						</AnimateOnScroll>
+						</div>
 					))}
+				</div>
+
+				{/* ── Desktop : Grille ── */}
+				<div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
+					{displayed.map((vehicle, i) =>
+						i === 0 ? (
+							<VehicleCard key={vehicle.id} vehicle={vehicle} priority />
+						) : (
+							<AnimateOnScroll key={vehicle.id} delay={i * 80}>
+								<VehicleCard vehicle={vehicle} />
+							</AnimateOnScroll>
+						)
+					)}
 				</div>
 
 				{/* ── Bannière garanties ── */}
