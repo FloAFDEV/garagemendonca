@@ -3,7 +3,8 @@ import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getActiveGarageId } from "@/lib/config/garage";
 
-const BASE_URL = "https://www.garagemendonca.com";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.garagemendonca.com";
 const GARAGE_ID = getActiveGarageId();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
