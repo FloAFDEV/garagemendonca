@@ -73,6 +73,7 @@ interface VehicleForm {
 	status: string;
 	published_at: string;
 	featured: boolean;
+	display_order: string;
 	garantie: string;
 	options: VehicleOptions;
 }
@@ -203,6 +204,7 @@ export default function EditVehiclePage({
 		status: "draft",
 		published_at: "",
 		featured: false,
+		display_order: "",
 		garantie: "",
 		options: {},
 	});
@@ -254,6 +256,7 @@ export default function EditVehiclePage({
 				status: vehicle.status ?? "draft",
 				published_at: vehicle.published_at ?? "",
 				featured: vehicle.featured ?? false,
+				display_order: vehicle.displayOrder?.toString() ?? "",
 				garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? String(vehicle.features!["Garantie"][0]) : String(vehicle.features?.["Garantie"] ?? "")) || "",
 				options: mergedOptions,
 			});
@@ -364,6 +367,7 @@ export default function EditVehiclePage({
 			status: form.status as Vehicle["status"],
 			published_at: form.published_at || undefined,
 			featured: form.featured,
+			displayOrder: form.display_order ? +form.display_order : undefined,
 			critAir: form.critAir || undefined,
 			options: form.options,
 			features: {
@@ -495,41 +499,62 @@ export default function EditVehiclePage({
 								</div>
 							)}
 						</div>
-						{/* ── Mise en avant (max 4) ────────────────────────── */}
-						{(() => {
-							const atMax = featuredCount >= MAX_FEATURED && !form.featured;
-							return (
-								<div className={`mt-5 pt-5 border-t ${t.border}`}>
-									<div className="flex items-center gap-3">
-										<input
-											id="featured-edit"
-											name="featured"
-											type="checkbox"
-											checked={form.featured}
-											onChange={handleChange}
-											disabled={atMax}
-											className="w-4 h-4 accent-brand-500 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-										/>
-										<label
-											htmlFor="featured-edit"
-											className={`text-sm cursor-pointer select-none flex items-center gap-1.5 ${atMax ? "opacity-40 cursor-not-allowed" : t.txtMuted}`}
-										>
-											<Star size={13} className="text-amber-400" />
-											Mettre en avant sur la page d&apos;accueil
-											<span className={`ml-1 text-xs px-1.5 py-0.5 rounded-full font-medium ${featuredCount >= MAX_FEATURED ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-500"}`}>
-												{featuredCount}/{MAX_FEATURED}
-											</span>
-										</label>
+						{/* ── Ordre d'affichage + Mise en avant ───────────── */}
+						<div className={`mt-5 pt-5 border-t ${t.border} space-y-4`}>
+							{/* Ordre d'affichage */}
+							<div>
+								<label htmlFor="display_order-edit" className={`block text-xs font-medium mb-1.5 ${t.txtMuted}`}>
+									Ordre d&apos;affichage
+								</label>
+								<input
+									id="display_order-edit"
+									name="display_order"
+									type="number"
+									min={1}
+									max={9999}
+									value={form.display_order}
+									onChange={handleChange}
+									placeholder="Ex : 1 (vide = aucune priorité)"
+									className={`${inputClass} w-32`}
+								/>
+								<p className={`mt-1 text-xs ${t.txtSubtle}`}>1 = affiché en premier. Laisser vide pour ordre automatique.</p>
+							</div>
+							{/* Mise en avant (max 4) */}
+							{(() => {
+								const atMax = featuredCount >= MAX_FEATURED && !form.featured;
+								return (
+									<div>
+										<div className="flex items-center gap-3">
+											<input
+												id="featured-edit"
+												name="featured"
+												type="checkbox"
+												checked={form.featured}
+												onChange={handleChange}
+												disabled={atMax}
+												className="w-4 h-4 accent-brand-500 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+											/>
+											<label
+												htmlFor="featured-edit"
+												className={`text-sm cursor-pointer select-none flex items-center gap-1.5 ${atMax ? "opacity-40 cursor-not-allowed" : t.txtMuted}`}
+											>
+												<Star size={13} className="text-amber-400" />
+												Mettre en avant sur la page d&apos;accueil
+												<span className={`ml-1 text-xs px-1.5 py-0.5 rounded-full font-medium ${featuredCount >= MAX_FEATURED ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-500"}`}>
+													{featuredCount}/{MAX_FEATURED}
+												</span>
+											</label>
+										</div>
+										{atMax && (
+											<p className="mt-2 ml-7 text-xs text-amber-600 flex items-center gap-1.5">
+												<Star size={11} className="flex-shrink-0" />
+												Maximum atteint — retirez une annonce mise en avant pour en ajouter une autre.
+											</p>
+										)}
 									</div>
-									{atMax && (
-										<p className="mt-2 ml-7 text-xs text-amber-600 flex items-center gap-1.5">
-											<Star size={11} className="flex-shrink-0" />
-											Maximum atteint — retirez une annonce mise en avant pour en ajouter une autre.
-										</p>
-									)}
-								</div>
-							);
-						})()}
+								);
+							})()}
+						</div>
 					</div>
 
 					{/* ── Informations générales ─────────────────────────── */}

@@ -90,14 +90,22 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
   return q;
 }
 
-/** Applique la clause ORDER BY selon le tri demandé. */
+/** Tri par défaut : display_order ASC NULLS LAST → featured DESC → created_at DESC */
+function applyDefaultSort(q: Q): Q {
+  return q
+    .order("display_order", { ascending: true,  nullsFirst: false })
+    .order("featured",      { ascending: false })
+    .order("created_at",    { ascending: false });
+}
+
+/** Applique la clause ORDER BY selon le tri demandé (catalogue public). */
 function applySort(q: Q, sortBy: VehicleSortBy | undefined): Q {
   switch (sortBy) {
-    case "price_asc":   return q.order("price", { ascending: true });
-    case "price_desc":  return q.order("price", { ascending: false });
-    case "mileage_asc": return q.order("mileage", { ascending: true });
-    case "year_desc":   return q.order("year", { ascending: false });
-    default:            return q.order("created_at", { ascending: false }); // plus récent
+    case "price_asc":   return q.order("price",    { ascending: true });
+    case "price_desc":  return q.order("price",    { ascending: false });
+    case "mileage_asc": return q.order("mileage",  { ascending: true });
+    case "year_desc":   return q.order("year",     { ascending: false });
+    default:            return applyDefaultSort(q);
   }
 }
 
@@ -123,7 +131,7 @@ export const vehicleDb = {
     if (filters.limit)        q = q.limit(filters.limit);
     if (filters.offset)       q = q.range(filters.offset, filters.offset + (filters.limit ?? 20) - 1);
 
-    q = q.order("created_at", { ascending: false });
+    q = applyDefaultSort(q);
 
     const { data, error } = await q;
     if (error) throw error;
@@ -149,7 +157,9 @@ export const vehicleDb = {
       .from("vehicles").select(SEL_WITH_IMAGES)
       .eq("garage_id", garageId).eq("featured", true)
       .in("status", ["published", "sold"])
-      .order("featured_order", { ascending: true, nullsFirst: false })
+      .order("featured_order",  { ascending: true, nullsFirst: false })
+      .order("display_order",   { ascending: true, nullsFirst: false })
+      .order("created_at",      { ascending: false })
       .limit(limit);
     if (error) throw error;
     return ((data ?? []) as VehicleRow[]).map(vehicleFromDb);
@@ -166,13 +176,15 @@ export const vehicleDb = {
   async getRelated(vehicleId: string, garageId: string, limit = 3): Promise<Vehicle[]> {
     const current = await vehicleDb.getById(vehicleId);
     if (!current) return [];
-    const { data, error } = await anonDb()
+    let q = anonDb()
       .from("vehicles").select(SEL_WITH_IMAGES)
       .eq("garage_id", garageId)
       .neq("id", vehicleId)
       .in("status", ["published", "scheduled", "sold"])
       .or(`fuel.eq.${current.fuel},brand.ilike.${current.brand}`)
       .limit(limit);
+    q = applyDefaultSort(q);
+    const { data, error } = await q;
     if (error) return [];
     return ((data ?? []) as VehicleRow[]).map(vehicleFromDb);
   },
@@ -204,9 +216,10 @@ export const vehicleDb = {
   },
 
   async listAdmin(garageId: string): Promise<Vehicle[]> {
-    const { data, error } = await adminDb()
-      .from("vehicles").select(SEL_WITH_IMAGES).eq("garage_id", garageId)
-      .order("created_at", { ascending: false });
+    let q = adminDb()
+      .from("vehicles").select(SEL_WITH_IMAGES).eq("garage_id", garageId);
+    q = applyDefaultSort(q);
+    const { data, error } = await q;
     if (error) throw error;
     return ((data ?? []) as VehicleRow[]).map(vehicleFromDb);
   },
