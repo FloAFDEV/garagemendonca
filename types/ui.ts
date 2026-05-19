@@ -29,7 +29,7 @@ export interface UIVehicle {
   mileage: number;
   fuel: "Essence" | "Diesel" | "Hybride" | "Électrique" | "GPL" | "Hydrogène";
   transmission: "Manuelle" | "Automatique";
-  color: string;
+  color: string | null;
   doors: number;
   power: number;
   description: string; // description_marketing ?? description (résolu dans toUIVehicle)
