@@ -146,7 +146,7 @@ export default function VehicleCard({
 							{vehicle.brand} {vehicle.model}
 						</h3>
 						<p className="text-[#64748b] text-xs mt-0.5">
-							{vehicle.color} · {vehicle.year}
+							{vehicle.color}
 						</p>
 					</div>
 				</div>
@@ -185,9 +185,9 @@ export default function VehicleCard({
 					</div>
 				</div>
 
-				{/* Badges */}
+				{/* Badges — carburant masqué sur mobile (déjà dans la grille specs) */}
 				<div className="flex items-center gap-1.5 flex-wrap mb-3">
-					<Badge variant={fuelVariants[vehicle.fuel] ?? "gray"}>
+					<Badge variant={fuelVariants[vehicle.fuel] ?? "gray"} className="hidden sm:inline-flex">
 						{vehicle.fuel}
 					</Badge>
 					<Badge variant="gray">{vehicle.transmission}</Badge>
@@ -201,21 +201,29 @@ export default function VehicleCard({
 						(k) => vehicle.options![k] === true,
 					);
 					if (hits.length === 0) return null;
-					const shown = hits.slice(0, 4);
-					const rest  = hits.length - shown.length;
+					const shown       = hits.slice(0, 4);
+					const desktopRest = hits.length - shown.length;
+					const mobileRest  = hits.length - 2;
 					return (
 						<>
-							{shown.map((k) => (
+							{shown.map((k, idx) => (
 								<span
 									key={k}
-									className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5"
+									className={`text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5${idx >= 2 ? " hidden sm:inline-flex" : ""}`}
 								>
 									{HIGHLIGHT_LABELS[k]}
 								</span>
 							))}
-							{rest > 0 && (
-								<span className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
-									+{rest}
+							{/* Badge +N desktop */}
+							{desktopRest > 0 && (
+								<span className="hidden sm:inline text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+									+{desktopRest}
+								</span>
+							)}
+							{/* Badge +N mobile — inclut les options 3+ non affichées */}
+							{mobileRest > 0 && (
+								<span className="sm:hidden text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+									+{mobileRest}
 								</span>
 							)}
 						</>
@@ -236,7 +244,8 @@ export default function VehicleCard({
 							Vendue
 						</div>
 					) : (
-						<div className="w-full bg-brand-500/90 group-hover:bg-brand-600/95 text-white font-semibold text-sm py-3 rounded-lg flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-0.5 hover:scale-105">
+						/* Masqué sur mobile : la carte entière est un lien */
+						<div className="hidden sm:flex w-full bg-brand-500/90 group-hover:bg-brand-600/95 text-white font-semibold text-sm py-3 rounded-lg items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-0.5 hover:scale-105">
 							Voir le véhicule
 							<ArrowRight
 								size={14}

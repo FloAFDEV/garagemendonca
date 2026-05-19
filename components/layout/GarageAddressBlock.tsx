@@ -65,7 +65,7 @@ export default async function GarageAddressBlock() {
     : "Lun–Jeu 8h–19h · Ven 8h–18h";
 
   return (
-    <div className="bg-[#0f172a] rounded-3xl p-8 text-white shadow-2xl overflow-hidden relative group">
+    <div className="bg-[#0f172a] rounded-3xl p-5 sm:p-8 text-white shadow-2xl overflow-hidden relative group">
       <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform">
         <ArrowLeft size={80} className="rotate-135" />
       </div>
