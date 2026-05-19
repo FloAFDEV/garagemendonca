@@ -26,6 +26,8 @@ export const metadata: Metadata = {
 			"Votre garage de confiance depuis 2001 — mécanique, carrosserie, vente VO. Spécialiste japonaises & boîte automatique. Drémil-Lafage (31).",
 		url: "https://www.garagemendonca.com",
 		type: "website",
+		locale: "fr_FR",
+		siteName: "Garage Auto Mendonca",
 	},
 };
 

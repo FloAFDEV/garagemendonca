@@ -92,6 +92,8 @@ export default function VehicleCard({
 					src={imgSrc ?? "/images/logo-gm.webp"}
 					alt={imgSrc ? imgAlt : "Garage Mendonça"}
 					loading={priority ? "eager" : "lazy"}
+					// eslint-disable-next-line react/no-unknown-property
+					fetchPriority={priority ? "high" : "auto"}
 					decoding="async"
 					className={`absolute inset-0 w-full h-full transition-all duration-500 opacity-100 ${
 						imgSrc

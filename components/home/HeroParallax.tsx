@@ -74,6 +74,8 @@ export default function HeroParallax({
 			alt=""
 			aria-hidden="true"
 			loading="eager"
+			// eslint-disable-next-line react/no-unknown-property
+			fetchPriority="high"
 			decoding="async"
 			style={{
 				position: "absolute",
