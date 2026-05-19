@@ -122,9 +122,9 @@ export default function VehicleOptionsDisplay({ options }: Props) {
 	if (activeCategories.length === 0 && !options.autres_options) return null;
 
 	return (
-		<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-8 md:p-10">
+		<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-10">
 			{/* En-tête section */}
-			<div className="flex items-start justify-between gap-4 mb-8">
+			<div className="flex items-start justify-between gap-4 mb-5 sm:mb-8">
 				<h2 className="ty-subheading text-[#0f172a] text-xl">
 					Équipements &amp; Options
 				</h2>

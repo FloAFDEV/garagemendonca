@@ -269,7 +269,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			/>
 
 			<div className="bg-[#f8fafc] min-h-screen">
-				<Container className="pt-28 pb-28 sm:pb-12 mt-8">
+				<Container className="pt-24 sm:pt-28 pb-28 sm:pb-12">
 					{/* ── Navigation ── */}
 					<nav aria-label="Fil d'Ariane" className="mb-3">
 						<ol className="flex items-center gap-2 text-xs text-[#64748b]">
@@ -291,7 +291,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								</Link>
 							</li>
 							<li aria-hidden="true">/</li>
-							<li className="text-[#0f172a] font-medium truncate max-w-[200px]">
+							<li className="text-[#0f172a] font-medium truncate max-w-[120px] sm:max-w-[200px]">
 								{vehicleName}
 							</li>
 						</ol>
@@ -339,7 +339,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										{isAvailable ? "Disponible" : "Vendue"}
 									</span>
 								</div>
-								<h1 className="ty-heading text-[#0f172a] text-3xl md:text-4xl leading-tight">
+								<h1 className="ty-heading text-[#0f172a] text-2xl sm:text-3xl md:text-4xl leading-tight">
 									{vehicle.brand} {vehicle.model}
 									{vehicle.features?.["Finition"] && (
 										<span className="text-slate-400 font-medium text-xl ml-2">
@@ -353,7 +353,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					</div>
 
 					{/* ── Layout principal ── */}
-					<div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10 items-start relative">
+					<div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 sm:gap-8 lg:gap-10 items-start relative">
 						{/* ════ Colonne gauche ════ */}
 						<div className="space-y-10 min-w-0">
 							<VehicleGallery
@@ -363,8 +363,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							/>
 
 							{/* Description & Confiance */}
-							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-8 md:p-10">
-								<h2 className="ty-subheading text-[#0f172a] text-xl mb-6">
+							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-10">
+								<h2 className="ty-subheading text-[#0f172a] text-xl mb-5 sm:mb-6">
 									Description du véhicule
 								</h2>
 								<DescriptionRenderer
@@ -403,12 +403,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							{vehicle.features && (
 								<div className="space-y-12">
 									{/* Fiche Technique */}
-									<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-10">
-										<h2 className="ty-heading text-[#0f172a] text-2xl mb-10 flex items-center gap-4 text-center sm:text-left">
+									<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 sm:p-6 md:p-10">
+										<h2 className="ty-heading text-[#0f172a] text-xl sm:text-2xl mb-6 sm:mb-10 flex items-center gap-4 text-center sm:text-left">
 											Fiche Technique{" "}
 											<div className="h-px flex-1 bg-slate-100" />
 										</h2>
-										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-8">
+										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 sm:gap-x-12 gap-y-5 sm:gap-y-8">
 											{[
 												{
 													label: "Année",
@@ -469,7 +469,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						{/* ════ Colonne droite STICKY ════ */}
 						<aside className="lg:sticky lg:top-[120px] space-y-6 self-start h-fit">
 							{/* Carte Prix & CTA */}
-							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-8">
+							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-5 sm:p-8">
 								<div className="mb-6 pb-6 border-b border-slate-100">
 									<div className="mt-4 m-4 flex items-center gap-2">
 										{BRAND_LOGO_MAP[vehicle.brand] && (
@@ -488,7 +488,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										{vehicle.brand} {vehicle.model}{" "}
 										{vehicle.year}
 									</div>
-									<div className="ty-value font-heading text-4xl">
+									<div className="ty-value font-heading text-3xl sm:text-4xl">
 										{vehicle.price.toLocaleString("fr-FR")}{" "}
 										€
 									</div>
@@ -550,7 +550,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									<MessageSquare size={13} />
 									Demande d&apos;information
 								</div>
-								<h2 className="ty-heading text-[#0f172a] text-3xl mb-3">
+								<h2 className="ty-heading text-[#0f172a] text-2xl sm:text-3xl mb-3">
 									Intéressé par ce véhicule ?
 								</h2>
 								<p className="text-slate-500 text-base">
@@ -583,7 +583,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									Voir tout le stock
 								</Link>
 							</div>
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
 								{relatedVehicles.map((v) => (
 									<VehicleCard key={v.id} vehicle={v} />
 								))}
@@ -594,7 +594,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			</div>
 
 			{/* CTA Mobile Sticky */}
-			<div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-200 px-6 py-4 flex items-center gap-4 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
+			<div
+				className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 sm:px-6 pt-3 flex items-center gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]"
+				style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+			>
 				<div className="flex-1">
 					<p className="ty-value font-heading text-2xl leading-none">
 						{vehicle.price.toLocaleString("fr-FR")} €

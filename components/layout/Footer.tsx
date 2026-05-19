@@ -111,8 +111,8 @@ export default async function Footer() {
 			/>
 
 			{/* Corps principal */}
-			<Container className="py-16">
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+			<Container className="py-10 md:py-16">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
 					{/* Colonne 1 — Marque */}
 					<div className="lg:col-span-1">
 						<Link

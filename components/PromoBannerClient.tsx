@@ -91,7 +91,7 @@ export default function PromoBannerClient({
 			role="banner"
 			aria-live="polite"
 			style={{
-				maxHeight: visible ? "80px" : "0px",
+				maxHeight: visible ? "120px" : "0px",
 				opacity: visible ? 1 : 0,
 				overflow: "hidden",
 				transition: "max-height 0.35s ease-out, opacity 0.3s ease-out",
@@ -137,7 +137,7 @@ export default function PromoBannerClient({
 				)}
 
 				{/* ── Contenu centré ───────────────────────────────── */}
-				<div className="relative max-w-5xl mx-auto px-4 sm:px-12 py-3 flex items-center justify-center gap-4 sm:gap-5 min-h-[68px]">
+				<div className="relative max-w-5xl mx-auto px-3 sm:px-8 md:px-12 py-3 flex items-center justify-center gap-3 sm:gap-5">
 
 					{/* Image — icône illustration à gauche, carrée arrondie */}
 					{signedImageUrl && (
@@ -161,7 +161,7 @@ export default function PromoBannerClient({
 								{banner.message}
 							</p>
 							{banner.sub_message && (
-								<span className="hidden sm:inline text-white/70 text-xs sm:text-sm font-normal leading-tight">
+								<span className="text-white/70 text-xs font-normal leading-tight line-clamp-1">
 									—&nbsp;{banner.sub_message}
 								</span>
 							)}
@@ -171,7 +171,7 @@ export default function PromoBannerClient({
 						{banner.cta_label && banner.cta_url && (
 							<Link
 								href={banner.cta_url}
-								className="flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1.5 border border-white/40 hover:border-white hover:bg-white/10 active:bg-white/20 text-white text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all whitespace-nowrap"
+								className="flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1.5 border border-white/40 hover:border-white hover:bg-white/10 active:bg-white/20 text-white text-xs font-semibold px-3 py-2 sm:py-1.5 rounded-lg transition-all whitespace-nowrap"
 							>
 								{banner.cta_label}
 								<ArrowRight size={11} aria-hidden="true" />

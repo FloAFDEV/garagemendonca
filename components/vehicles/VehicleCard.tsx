@@ -208,13 +208,13 @@ export default function VehicleCard({
 							{shown.map((k) => (
 								<span
 									key={k}
-									className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5"
+									className="text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5"
 								>
 									{HIGHLIGHT_LABELS[k]}
 								</span>
 							))}
 							{rest > 0 && (
-								<span className="text-[10px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+								<span className="text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
 									+{rest}
 								</span>
 							)}
