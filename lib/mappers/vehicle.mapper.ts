@@ -8,6 +8,7 @@
 import type { Vehicle, VehicleFeatures, VehicleOptions, VehicleImage } from "@/types";
 import type { VehicleRow, VehicleInsert, VehicleUpdate } from "@/lib/supabase/database.types";
 import type { VehicleCreateInput, VehicleUpdateInput } from "@/lib/validation/vehicle.schema";
+import { getVehiclePublicUrl } from "@/lib/utils/vehicle-images";
 
 // ─────────────────────────────────────────────────────────────────
 //  DB → Domaine
@@ -46,10 +47,17 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
       ? mapVehicleImages(row.vehicle_images)
       : undefined;
 
-  // Si vehicle_images jointes, elles deviennent la source canonique des URLs
-  const images       = joinedImages ? joinedImages.map((i) => i.url) : (row.images ?? []);
+  // Si vehicle_images jointes, elles deviennent la source canonique des URLs.
+  // storage_path → URL publique (bucket public, synchrone, sans round-trip).
+  const images = joinedImages
+    ? joinedImages.map((i) =>
+        i.storage_path ? getVehiclePublicUrl(i.storage_path) : i.url,
+      )
+    : (row.images ?? []);
   const primaryImage = joinedImages?.find((i) => i.is_primary) ?? joinedImages?.[0];
-  const thumbnailUrl = primaryImage?.url ?? row.thumbnail_url ?? undefined;
+  const thumbnailUrl = primaryImage?.storage_path
+    ? getVehiclePublicUrl(primaryImage.storage_path)
+    : (primaryImage?.url ?? row.thumbnail_url ?? undefined);
 
   return {
     id:               row.id,

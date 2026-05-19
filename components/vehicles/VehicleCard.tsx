@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
@@ -7,7 +5,6 @@ import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
 import Badge from "@/components/ui/Badge";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
-import { useSignedImage } from "@/lib/hooks/useVehicleImage";
 
 /* ── Options highlights ──────────────────────────────────────────────────────
  * Options les plus "vendantes" à afficher sur la carte, par ordre de priorité.
@@ -64,12 +61,8 @@ export default function VehicleCard({
 	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.color} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
 	const priceLabel = `${vehicle.price.toLocaleString("fr-FR")} euros`;
 
-	const storagePath = vehicle.vehicleImages?.[0]?.storage_path;
-	// Legacy URL as last resort at render layer only — never passed to hook
-	const legacyUrl = vehicle.vehicleImages?.[0]?.url ?? vehicle.thumbnailUrl ?? vehicle.images?.[0];
 	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
-	const { url: signedUrl, loading: imgLoading } = useSignedImage(storagePath);
-	const imgSrc = signedUrl ?? legacyUrl;
+	const imgSrc = vehicle.thumbnailUrl;
 
 	// Lien : slug SEO si disponible, UUID en fallback
 	const href = `/vehicules/${vehicle.slug ?? vehicle.id}`;
@@ -82,25 +75,23 @@ export default function VehicleCard({
 		>
 			{/* Image */}
 			<div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
-				{/* Skeleton pendant le chargement de l'URL signée */}
-				{imgLoading && !imgSrc && (
-					<div className="absolute inset-0 bg-slate-200 animate-pulse" aria-hidden="true" />
+				{imgSrc ? (
+					<Image
+						src={imgSrc}
+						alt={imgAlt}
+						fill
+						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+						className={`object-cover transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
+						priority={priority}
+					/>
+				) : (
+					<Image
+						src="/images/logo-gm.webp"
+						alt="Garage Mendonça"
+						fill
+						className="object-contain p-6 bg-[#0d1b34]"
+					/>
 				)}
-				{/* Image véhicule — fallback logo GM si aucune URL disponible */}
-				{/* eslint-disable-next-line @next/next/no-img-element */}
-				<img
-					src={imgSrc ?? "/images/logo-gm.webp"}
-					alt={imgSrc ? imgAlt : "Garage Mendonça"}
-					loading={priority ? "eager" : "lazy"}
-					// eslint-disable-next-line react/no-unknown-property
-					fetchPriority={priority ? "high" : "auto"}
-					decoding="async"
-					className={`absolute inset-0 w-full h-full transition-all duration-500 opacity-100 ${
-						imgSrc
-							? `object-cover ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`
-							: "object-contain p-6 bg-[#0d1b34]"
-					}`}
-				/>
 
 				{/* Overlay Vendu */}
 				{vehicle.status === "sold" && (
