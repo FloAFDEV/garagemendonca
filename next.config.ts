@@ -29,7 +29,14 @@ const nextConfig: NextConfig = {
 	},
 
   async redirects() {
-    return [...SIMPLE_REDIRECTS];
+    return [
+      {
+        source: "/vehicules/page/1",
+        destination: "/vehicules",
+        permanent: true,
+      },
+      ...SIMPLE_REDIRECTS,
+    ];
   },
 
   async rewrites() {
