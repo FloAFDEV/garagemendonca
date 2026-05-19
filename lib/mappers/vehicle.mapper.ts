@@ -9,6 +9,7 @@ import type { Vehicle, VehicleFeatures, VehicleOptions, VehicleImage } from "@/t
 import type { VehicleRow, VehicleInsert, VehicleUpdate } from "@/lib/supabase/database.types";
 import type { VehicleCreateInput, VehicleUpdateInput } from "@/lib/validation/vehicle.schema";
 import { getVehiclePublicUrl } from "@/lib/utils/vehicle-images";
+import { isColorUnknown } from "@/lib/utils/detectVehicleColor";
 
 // ─────────────────────────────────────────────────────────────────
 //  DB → Domaine
@@ -70,7 +71,7 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
     transmission:     row.transmission,
     power:            row.power ?? 0,
     price:            row.price,
-    color:            row.color,
+    color:            isColorUnknown(row.color) ? null : (row.color ?? null),
     doors:            row.doors ?? 5,
     critAir:          row.crit_air ?? undefined,
     description:               row.description ?? "",

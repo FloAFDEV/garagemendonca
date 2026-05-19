@@ -21,7 +21,6 @@ import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import clsx from "clsx";
 import { adminUI } from "@/lib/admin-ui";
-import { useSignedImage } from "@/lib/hooks/useVehicleImage";
 import {
 	getAdminVehicles,
 	updateVehicleStatus,
@@ -131,7 +130,7 @@ function StatusSelect({
 	);
 }
 
-/* ── Thumbnail signée ───────────────────────────────────────────── */
+/* ── Thumbnail — URL publique directe (bucket public) ─────────── */
 function VehicleThumb({
 	vehicle,
 	className,
@@ -139,14 +138,10 @@ function VehicleThumb({
 	vehicle: Vehicle;
 	className: string;
 }) {
-	const path = vehicle.vehicleImages?.[0]?.storage_path;
-	const legacyUrl =
+	const displayUrl =
 		vehicle.thumbnailUrl ??
 		vehicle.vehicleImages?.[0]?.url ??
 		vehicle.images?.[0];
-	const { url: signedUrl } = useSignedImage(path);
-	// Legacy visible immédiatement ; signed URL améliore progressivement
-	const displayUrl = signedUrl ?? legacyUrl;
 	if (!displayUrl) return <Car size={14} className="text-slate-500" />;
 	// eslint-disable-next-line @next/next/no-img-element
 	return <img src={displayUrl} alt="" className={className} />;
@@ -585,7 +580,7 @@ export default function AdminVehiclesPage() {
 													t.txtSubtle,
 												)}
 											>
-												{vehicle.year} · {vehicle.color}{" "}
+												{vehicle.year}{vehicle.color ? ` · ${vehicle.color}` : ""}{" "}
 												· {vehicle.transmission}
 											</p>
 										</div>
@@ -780,8 +775,7 @@ export default function AdminVehiclesPage() {
 														t.txtSubtle,
 													)}
 												>
-													{vehicle.color} ·{" "}
-													{vehicle.transmission} ·{" "}
+													{vehicle.color ? `${vehicle.color} · ` : ""}{vehicle.transmission} ·{" "}
 													{vehicle.year}
 												</div>
 												{vehicle.status ===

@@ -269,7 +269,7 @@ export interface Vehicle {
   thumbnailUrl?: string;  // image principale mise en cache (Supabase Storage)
   transmission: "Manuelle" | "Automatique";
   power: number;
-  color: string;
+  color: string | null;
   doors: number;
   critAir?: string;
   // Statut métier

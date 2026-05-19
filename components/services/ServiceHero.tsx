@@ -1,6 +1,5 @@
-"use client";
-
-import { useVehicleImage } from "@/lib/hooks/useVehicleImage";
+import Image from "next/image";
+import { getStoragePublicUrl } from "@/lib/utils/storage";
 import type { Service, ServiceImage } from "@/types";
 
 interface Props {
@@ -11,45 +10,32 @@ function getPrimaryImage(images: ServiceImage[]): ServiceImage | undefined {
 	return images.find((i) => i.is_primary) ?? images[0];
 }
 
-function ServiceImage({ image, title }: { image: ServiceImage; title: string }) {
-	// Hook only receives storage_path — never a local URL (would be treated as storage path)
-	const { url: signedUrl, loading } = useVehicleImage(image.storage_path, undefined, "service-images");
-	// Render-layer fallback: signed URL first, then legacy url (local /public or http)
-	const displayUrl = signedUrl ?? image.url ?? undefined;
-	return (
-		<>
-			{/* Skeleton uniquement si aucune URL legacy ni signée disponible */}
-			{loading && !displayUrl && (
-				<div className="absolute inset-0 bg-slate-200 animate-pulse" aria-hidden="true" />
-			)}
-			{displayUrl && (
-				// eslint-disable-next-line @next/next/no-img-element
-				<img
-					src={displayUrl}
-					alt={image.alt ?? title}
-					loading="eager"
-					decoding="sync"
-					className="absolute inset-0 w-full h-full object-cover"
-				/>
-			)}
-		</>
-	);
+// service-images est un bucket public (migration 013) — URL directe, pas de signed URL
+function getImageUrl(image: ServiceImage): string | undefined {
+	if (image.storage_path) return getStoragePublicUrl("service-images", image.storage_path);
+	return image.url ?? undefined;
 }
 
 export default function ServiceHero({ service }: Props) {
 	const primary = getPrimaryImage(service.images);
+	const imageUrl = primary ? getImageUrl(primary) : undefined;
 
 	return (
 		<div id={service.slug} className="scroll-mt-28">
 			{/* Image principale */}
-			{primary && (
+			{imageUrl && (
 				<div className="relative w-full h-64 sm:h-80 rounded-xl overflow-hidden">
-					<ServiceImage image={primary} title={service.title} />
+					<Image
+						src={imageUrl}
+						alt={primary?.alt ?? service.title}
+						fill
+						sizes="(min-width: 1024px) 66vw, 100vw"
+						className="object-cover"
+						priority
+					/>
 
-					{/* Overlay dégradé léger */}
 					<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-					{/* Badge "Expertise depuis 2001" */}
 					<div className="absolute top-4 left-4">
 						<span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-slate-700 text-[11px] font-medium px-3 py-1.5 rounded-full shadow-sm">
 							<span className="w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0" />
