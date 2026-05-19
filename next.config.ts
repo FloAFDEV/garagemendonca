@@ -4,7 +4,6 @@ import { SIMPLE_REDIRECTS } from "./redirects-simple";
 const nextConfig: NextConfig = {
 	images: {
 		formats: ["image/avif", "image/webp"],
-		qualities: [55, 75, 80, 85, 90, 95],
 		minimumCacheTTL: 2592000, // 30 jours
 		remotePatterns: [
 			{
@@ -69,6 +68,27 @@ const nextConfig: NextConfig = {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
           },
+        ],
+      },
+      {
+        // Assets statiques Next.js — immuables (hash dans le nom de fichier)
+        source: "/_next/static/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        // Images publiques statiques (/images/, /icons/, /fonts/)
+        source: "/(images|icons|fonts)/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        // Pages ISR véhicules — CDN cache 60 s, revalidation en arrière-plan
+        source: "/vehicules/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=60, stale-while-revalidate=3600" },
         ],
       },
       {

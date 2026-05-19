@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
 import type { VehicleImage } from "@/types";
-import { useSignedImages } from "@/lib/hooks/useVehicleImage";
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -19,10 +18,8 @@ interface VehicleGalleryProps {
 /* ─────────────────────────────────────────────────────────────
    VehicleGallery
    – Scroll-snap slider (inertie + snap natifs CSS)
-   – activeIdx synchronisé sur scrollLeft via rAF
-   – Flèches : toujours visibles mobile / hover desktop
-   – Thumbnails : scroll horizontal mobile / grid desktop
-   – Lightbox via portal (Lightbox.tsx)
+   – Images URLs déjà calculées côté serveur (bucket public) — pas de signed URLs
+   – next/image pour optimisation AVIF/WebP + LCP priority sur la 1ère image
 ───────────────────────────────────────────────────────────── */
 export default function VehicleGallery({
 	images,
@@ -31,11 +28,10 @@ export default function VehicleGallery({
 }: VehicleGalleryProps) {
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
-	const { urls: hookUrls, loading: imgsLoading } = useSignedImages(vehicleImages);
-	// Merge: signed URL (hook) or legacy URL or raw fallback — legacy never enters hook state
-	const displayUrls: string[] = vehicleImages?.length
-		? vehicleImages.map((img, i) => hookUrls[i] ?? img.url ?? images[i]).filter((u): u is string => !!u)
-		: images;
+
+	// URLs publiques déjà calculées server-side (mapper vehicleFromDb)
+	// vehicleImages utilisé uniquement pour les alt texts SEO
+	const displayUrls = images;
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const thumbsRef = useRef<HTMLDivElement>(null);
@@ -89,22 +85,20 @@ export default function VehicleGallery({
 		[activeIdx, displayUrls.length, scrollTo],
 	);
 
-	/* ── Keyboard (when gallery is focused) ─────────────────── */
+	/* ── Keyboard ───────────────────────────────────────────── */
 	const handleKeyDown = (e: React.KeyboardEvent) => {
 		if (e.key === "ArrowLeft") prev();
 		if (e.key === "ArrowRight") next();
 		if (e.key === "Enter" || e.key === " ") setLightboxOpen(true);
 	};
 
+	if (displayUrls.length === 0) return null;
+
 	/* ─────────────────────────────────────────────────────── */
 	return (
 		<>
 			<div className="space-y-3 -mx-4 sm:mx-0">
 				{/* ── SLIDER ─────────────────────────────────────── */}
-				{/*
-				  Outer div : sizing + overflow:hidden (clips rounded corners)
-				  Inner div : scroll container (jamais overflow:hidden)
-				*/}
 				<div
 					className={[
 						"relative group bg-slate-100",
@@ -131,25 +125,18 @@ export default function VehicleGallery({
 								key={`slide-${idx}-${src}`}
 								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
 							>
-								{/* eslint-disable-next-line @next/next/no-img-element */}
-								<img
+								<Image
 									src={src}
 									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
+									fill
+									sizes="(min-width: 1024px) calc(100vw - 460px), 100vw"
+									className="object-cover object-center"
+									priority={idx === 0}
 									loading={idx === 0 ? "eager" : "lazy"}
-									decoding={idx === 0 ? "sync" : "async"}
-									className="w-full h-full object-cover object-center"
 								/>
 							</div>
 						))}
 					</div>
-
-					{/* Skeleton uniquement si aucune URL disponible */}
-					{imgsLoading && displayUrls.length === 0 && (
-						<div
-							className="absolute inset-0 bg-slate-200 animate-pulse pointer-events-none z-[1]"
-							aria-hidden="true"
-						/>
-					)}
 
 					{/* Gradient overlay */}
 					<div
@@ -199,18 +186,12 @@ export default function VehicleGallery({
 						</span>
 					</div>
 
-					{/* ── Navigation arrows ────────────────────────────
-					    Mobile  : toujours visibles, w-11, fond sombre
-					    Desktop : hover uniquement, w-9, fond blanc
-					*/}
+					{/* ── Navigation arrows ── */}
 					{displayUrls.length > 1 && (
 						<>
 							<button
 								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									prev();
-								}}
+								onClick={(e) => { e.stopPropagation(); prev(); }}
 								className={[
 									"absolute left-3 top-1/2 -translate-y-1/2 z-10",
 									"flex items-center justify-center rounded-full transition-all active:scale-95",
@@ -220,18 +201,11 @@ export default function VehicleGallery({
 								].join(" ")}
 								aria-label="Photo précédente"
 							>
-								<ChevronLeft
-									size={22}
-									className="text-white sm:text-slate-900"
-									aria-hidden="true"
-								/>
+								<ChevronLeft size={22} className="text-white sm:text-slate-900" aria-hidden="true" />
 							</button>
 							<button
 								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									next();
-								}}
+								onClick={(e) => { e.stopPropagation(); next(); }}
 								className={[
 									"absolute right-3 top-1/2 -translate-y-1/2 z-10",
 									"flex items-center justify-center rounded-full transition-all active:scale-95",
@@ -241,20 +215,13 @@ export default function VehicleGallery({
 								].join(" ")}
 								aria-label="Photo suivante"
 							>
-								<ChevronRight
-									size={22}
-									className="text-white sm:text-slate-900"
-									aria-hidden="true"
-								/>
+								<ChevronRight size={22} className="text-white sm:text-slate-900" aria-hidden="true" />
 							</button>
 						</>
 					)}
 				</div>
 
-				{/* ── THUMBNAILS ──────────────────────────────────────
-				    Mobile  : scroll horizontal, w-[22vw] fixe, scale-105 actif
-				    Desktop : grid (jusqu'à 6 colonnes)
-				*/}
+				{/* ── THUMBNAILS ─────────────────────────────────── */}
 				{displayUrls.length > 1 && (
 					<>
 						{/* Mobile */}
@@ -266,7 +233,7 @@ export default function VehicleGallery({
 						>
 							{displayUrls.map((src, idx) => (
 								<button
-									key={`thumb-mobile-${idx}-${src}`}
+									key={`thumb-mobile-${idx}`}
 									type="button"
 									role="listitem"
 									onClick={() => scrollTo(idx)}
@@ -280,13 +247,12 @@ export default function VehicleGallery({
 											: "border-slate-200 opacity-50 hover:opacity-85 scale-100",
 									].join(" ")}
 								>
-									{/* eslint-disable-next-line @next/next/no-img-element */}
-									<img
+									<Image
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
-										className="absolute inset-0 w-full h-full object-cover object-center"
-									loading="lazy"
-									decoding="async"
+										fill
+										sizes="22vw"
+										className="object-cover object-center"
 									/>
 								</button>
 							))}
@@ -295,15 +261,13 @@ export default function VehicleGallery({
 						{/* Desktop */}
 						<div
 							className="hidden sm:grid gap-2"
-							style={{
-								gridTemplateColumns: `repeat(${Math.min(displayUrls.length, 6)}, 1fr)`,
-							}}
+							style={{ gridTemplateColumns: `repeat(${Math.min(displayUrls.length, 6)}, 1fr)` }}
 							role="list"
 							aria-label="Galerie miniatures"
 						>
 							{displayUrls.map((src, idx) => (
 								<button
-									key={`thumb-desktop-${idx}-${src}`}
+									key={`thumb-desktop-${idx}`}
 									type="button"
 									role="listitem"
 									onClick={() => scrollTo(idx)}
@@ -317,13 +281,12 @@ export default function VehicleGallery({
 											: "border-slate-200 opacity-55 hover:opacity-100 hover:border-slate-300 hover:shadow-sm",
 									].join(" ")}
 								>
-									{/* eslint-disable-next-line @next/next/no-img-element */}
-									<img
+									<Image
 										src={src}
 										alt={`${vehicleName} — photo ${idx + 1}`}
-										className="absolute inset-0 w-full h-full object-cover object-center"
-									loading="lazy"
-									decoding="async"
+										fill
+										sizes="(min-width: 1024px) 130px, 120px"
+										className="object-cover object-center"
 									/>
 									{activeIdx !== idx && (
 										<span className="absolute bottom-1 right-1 text-[9px] text-white bg-black/40 rounded px-1 pointer-events-none">
