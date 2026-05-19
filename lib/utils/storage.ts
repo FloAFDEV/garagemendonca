@@ -11,3 +11,8 @@ export function extractStoragePath(urlOrPath: string): string | undefined {
   const m = urlOrPath.match(/\/storage\/v1\/object\/(?:public|sign)\/[^/]+\/([^?]+)/);
   return m?.[1];
 }
+
+export function getStoragePublicUrl(bucket: string, storagePath: string): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  return `${url}/storage/v1/object/public/${bucket}/${storagePath}`;
+}
