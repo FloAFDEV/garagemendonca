@@ -238,6 +238,7 @@ export interface BannerRow {
   message: string;
   sub_message: string | null;
   image_url: string | null;
+  image_storage_path: string | null;
   cta_label: string | null;
   cta_url: string | null;
   bg_color: string;

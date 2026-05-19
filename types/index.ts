@@ -425,6 +425,7 @@ export interface Banner {
   message: string;
   sub_message?: string;
   image_url?: string;
+  image_storage_path?: string;
   cta_label?: string;
   cta_url?: string;
   bg_color: string;         // hex : "#DC2626"

@@ -95,6 +95,7 @@ export function mapBanner(row: any): Banner {
     message: row.message,
     sub_message: row.sub_message ?? undefined,
     image_url: row.image_url ?? undefined,
+    image_storage_path: row.image_storage_path ?? undefined,
     cta_label: row.cta_label ?? undefined,
     cta_url: row.cta_url ?? undefined,
     bg_color: row.bg_color,

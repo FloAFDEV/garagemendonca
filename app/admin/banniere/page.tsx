@@ -10,7 +10,8 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import type { Banner } from "@/types";
-import { upsertBannerAction, getBannerAction, getSignedBannerImageAction } from "./actions";
+import { upsertBannerAction, getBannerAction } from "./actions";
+import { getStoragePublicUrl } from "@/lib/utils/storage";
 import { adminUI } from "@/lib/admin-ui";
 import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 
@@ -53,7 +54,7 @@ function BannerImageUpload({
   onUploaded,
   onBlobPreview,
 }: {
-  onUploaded: (url: string) => void;
+  onUploaded: (url: string, storagePath: string) => void;
   onBlobPreview: (blobUrl: string | null) => void;
 }) {
   const t = useAdminTokens();
@@ -79,8 +80,8 @@ function BannerImageUpload({
       fd.append("garageId", ACTIVE_GARAGE_ID);
       const res = await fetch("/api/upload-image", { method: "POST", body: fd });
       if (!res.ok) throw new Error((await res.json()).error ?? "Échec de l'upload");
-      const { url } = await res.json();
-      onUploaded(url);
+      const { url, storagePath } = await res.json();
+      onUploaded(url, storagePath ?? "");
     } catch (err) {
       setUploadError((err as Error).message ?? "Erreur inconnue");
       onBlobPreview(null); // annuler le preview si erreur
@@ -257,6 +258,7 @@ export default function AdminBannierePage() {
     message: "",
     sub_message: "",
     image_url: "",
+    image_storage_path: "",
     cta_label: "",
     cta_url: "",
     bg_color: "#DC2626",
@@ -269,11 +271,9 @@ export default function AdminBannierePage() {
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   // blob URL temporaire : preview immédiat avant que Supabase ait répondu
   const [blobPreview, setBlobPreview] = useState<string | null>(null);
-  // URL signée pour afficher l'image existante (bucket privé)
-  const [signedUrl, setSignedUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    getBannerAction().then(async (banner) => {
+    getBannerAction().then((banner) => {
       if (!banner) return;
       setForm({
         id: banner.id,
@@ -281,6 +281,7 @@ export default function AdminBannierePage() {
         message: banner.message ?? "",
         sub_message: banner.sub_message ?? "",
         image_url: banner.image_url ?? "",
+        image_storage_path: banner.image_storage_path ?? "",
         cta_label: banner.cta_label ?? "",
         cta_url: banner.cta_url ?? "",
         bg_color: banner.bg_color ?? "#DC2626",
@@ -289,10 +290,6 @@ export default function AdminBannierePage() {
         display_pages: banner.display_pages ?? "all",
         is_dismissible: banner.is_dismissible ?? true,
       });
-      if (banner.image_url) {
-        const signed = await getSignedBannerImageAction(banner.image_url);
-        setSignedUrl(signed);
-      }
     });
   }, []);
 
@@ -319,6 +316,11 @@ export default function AdminBannierePage() {
   const inputClass = t.inputClass;
   const labelClass = t.labelClass;
   const sectionClass = t.sectionCard;
+
+  // URL publique calculée depuis image_storage_path (bucket public)
+  const persistedImageUrl = form.image_storage_path
+    ? getStoragePublicUrl("banner-images", form.image_storage_path)
+    : form.image_url || undefined;
 
   const status = getBannerStatus(form);
   const isLive = isBannerLive(form);
@@ -352,7 +354,7 @@ export default function AdminBannierePage() {
         </div>
 
         {/* ── Aperçu en direct ──────────────────────────────────── */}
-        <BannerPreview form={form} imageUrl={blobPreview ?? signedUrl} />
+        <BannerPreview form={form} imageUrl={blobPreview ?? persistedImageUrl} />
 
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
           {/* Toggle actif + statut */}
@@ -475,18 +477,18 @@ export default function AdminBannierePage() {
               {/* Image de fond */}
               <div>
                 <label className={labelClass}>Image de fond (optionnel)</label>
-                {/* Affichage : blobUrl (preview immédiat) ?? signedUrl (existant) ?? rien */}
-                {(blobPreview ?? signedUrl ?? form.image_url) ? (
+                {/* Affichage : blobUrl (preview immédiat) ?? URL publique (existant) ?? rien */}
+                {(blobPreview ?? persistedImageUrl) ? (
                   <div className="relative mt-1 rounded-xl overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={blobPreview ?? signedUrl ?? form.image_url!}
+                      src={blobPreview ?? persistedImageUrl!}
                       alt="Preview bannière"
                       className="w-full max-h-40 object-cover"
                       onError={e => (e.currentTarget.style.display = "none")}
                     />
                     {/* Spinner upload par-dessus le blob preview */}
-                    {blobPreview && !form.image_url && (
+                    {blobPreview && !form.image_storage_path && (
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-xl">
                         <Loader2 size={24} className="animate-spin text-white" />
                       </div>
@@ -495,7 +497,7 @@ export default function AdminBannierePage() {
                     {!blobPreview && (
                       <button
                         type="button"
-                        onClick={() => { set("image_url", ""); setBlobPreview(null); setSignedUrl(null); }}
+                        onClick={() => { set("image_url", ""); set("image_storage_path", ""); setBlobPreview(null); }}
                         className="absolute top-2 right-2 w-7 h-7 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors"
                         aria-label="Supprimer l'image"
                       >
@@ -505,22 +507,22 @@ export default function AdminBannierePage() {
                   </div>
                 ) : (
                   <BannerImageUpload
-                    onUploaded={(url) => {
+                    onUploaded={(url, storagePath) => {
                       set("image_url", url);
+                      set("image_storage_path", storagePath);
                       setBlobPreview(null);
-                      getSignedBannerImageAction(url).then(setSignedUrl);
                     }}
                     onBlobPreview={setBlobPreview}
                   />
                 )}
                 {/* Bouton "Remplacer" visible quand une image est déjà chargée */}
-                {form.image_url && !blobPreview && (
+                {(form.image_storage_path || form.image_url) && !blobPreview && (
                   <div className="mt-2">
                     <BannerImageUpload
-                      onUploaded={(url) => {
+                      onUploaded={(url, storagePath) => {
                         set("image_url", url);
+                        set("image_storage_path", storagePath);
                         setBlobPreview(null);
-                        getSignedBannerImageAction(url).then(setSignedUrl);
                       }}
                       onBlobPreview={setBlobPreview}
                     />
