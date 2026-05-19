@@ -58,7 +58,8 @@ export default function VehicleCard({
 	vehicle,
 	priority = false,
 }: VehicleCardProps) {
-	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.color} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
+	const colorLabel = vehicle.color ?? "";
+	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year}${colorLabel ? ` — ${colorLabel}` : ""} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
 	const priceLabel = `${vehicle.price.toLocaleString("fr-FR")} euros`;
 
 	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
@@ -145,9 +146,11 @@ export default function VehicleCard({
 						<h3 className="ty-subheading text-[#0f172a] text-base leading-tight">
 							{vehicle.brand} {vehicle.model}
 						</h3>
+						{colorLabel && (
 						<p className="text-[#64748b] text-xs mt-0.5">
-							{vehicle.color}
+							{colorLabel}
 						</p>
+					)}
 					</div>
 				</div>
 

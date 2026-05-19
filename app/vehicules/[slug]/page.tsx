@@ -22,6 +22,8 @@ import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
+import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
+import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
@@ -42,112 +44,6 @@ async function getVehicle(slug: string): Promise<Vehicle | null> {
 		return vehicleDb.getById(slug).catch(() => null);
 	}
 	return null;
-}
-
-/* ─────────── carnet d'entretien parser ─────────── */
-const CARNET_LINE_RE = /^\s*-?\s*(\d{2}\/\d{2}\/\d{4})\s*:\s*([\d\s]+km)\s*$/;
-
-type DescSegment =
-	| { kind: "text"; text: string }
-	| { kind: "carnet"; rows: Array<{ date: string; km: string }> };
-
-function parseDescription(raw: string): DescSegment[] {
-	const lines = raw.split("\n");
-	const segments: DescSegment[] = [];
-	let textLines: string[] = [];
-	let carnetRows: Array<{ date: string; km: string }> = [];
-
-	const flushText = () => {
-		if (textLines.length) {
-			segments.push({ kind: "text", text: textLines.join("\n") });
-			textLines = [];
-		}
-	};
-	const flushCarnet = () => {
-		if (carnetRows.length) {
-			segments.push({ kind: "carnet", rows: carnetRows });
-			carnetRows = [];
-		}
-	};
-
-	for (const line of lines) {
-		const m = line.match(CARNET_LINE_RE);
-		if (m) {
-			flushText();
-			carnetRows.push({ date: m[1], km: m[2].trim() });
-		} else {
-			flushCarnet();
-			textLines.push(line);
-		}
-	}
-	flushCarnet();
-	flushText();
-	return segments;
-}
-
-function DescriptionRenderer({ text }: { text: string }) {
-	const segments = parseDescription(text);
-	const hasCarnet = segments.some((s) => s.kind === "carnet");
-
-	if (!hasCarnet) {
-		return (
-			<p className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line">
-				{text}
-			</p>
-		);
-	}
-
-	return (
-		<div className="space-y-4">
-			{segments.map((seg, i) => {
-				if (seg.kind === "text") {
-					if (!seg.text.trim()) return null;
-					return (
-						<p
-							key={i}
-							className="text-slate-600 leading-relaxed text-[15px] whitespace-pre-line"
-						>
-							{seg.text}
-						</p>
-					);
-				}
-				return (
-					<div
-						key={i}
-						className="overflow-x-auto rounded-xl border border-slate-100"
-					>
-						<table className="w-full text-sm">
-							<thead>
-								<tr className="bg-slate-50 border-b border-slate-100">
-									<th className="text-left py-2.5 px-4 text-[10px] uppercase tracking-widest font-medium text-slate-400">
-										Date
-									</th>
-									<th className="text-left py-2.5 px-4 text-[10px] uppercase tracking-widest font-medium text-slate-400">
-										Kilométrage
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{seg.rows.map((row) => (
-									<tr
-										key={row.date}
-										className="border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors"
-									>
-										<td className="py-2.5 px-4 text-slate-600">
-											{row.date}
-										</td>
-										<td className="py-2.5 px-4 text-slate-700 font-medium">
-											{row.km}
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
-				);
-			})}
-		</div>
-	);
 }
 
 /* ─────────── types ─────────── */
@@ -214,9 +110,16 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const vehicle = await getVehicle(slug);
 	if (!vehicle) notFound();
 
-	const relatedVehicles = await vehicleDb
-		.getRelated(vehicle.id, GARAGE_ID, 3)
-		.catch(() => []);
+	const [relatedVehicles, detectedColor] = await Promise.all([
+		vehicleDb.getRelated(vehicle.id, GARAGE_ID, 3).catch(() => []),
+		isColorUnknown(vehicle.color) && vehicle.thumbnailUrl
+			? detectDominantColor(vehicle.thumbnailUrl)
+			: Promise.resolve(null),
+	]);
+
+	const displayColor = !isColorUnknown(vehicle.color)
+		? vehicle.color!
+		: (detectedColor ?? null);
 
 	const isAvailable = vehicle.status !== "sold";
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
@@ -242,7 +145,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 		fuelType: vehicle.fuel,
 		vehicleTransmission: vehicle.transmission,
 		numberOfDoors: vehicle.doors,
-		color: vehicle.color,
+		color: displayColor ?? undefined,
 		vehicleEngine: vehicle.power
 			? { "@type": "EngineSpecification", enginePower: { "@type": "QuantitativeValue", value: vehicle.power, unitCode: "BHP" } }
 			: undefined,
@@ -367,7 +270,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								<h2 className="ty-subheading text-[#0f172a] text-xl mb-5 sm:mb-6">
 									Description du véhicule
 								</h2>
-								<DescriptionRenderer
+								<FormatVehicleDescription
 									text={vehicle.description_marketing ?? vehicle.description ?? ""}
 								/>
 								<div className="mt-8 pt-8 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -430,10 +333,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 													label: "Puissance",
 													value: `${vehicle.power} ch`,
 												},
-												{
-													label: "Teinte",
-													value: vehicle.color,
-												},
+												...(displayColor
+													? [{ label: "Teinte", value: displayColor }]
+													: []),
 												{
 													label: "Portes",
 													value: `${vehicle.doors} portes`,

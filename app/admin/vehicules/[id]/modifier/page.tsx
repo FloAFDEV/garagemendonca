@@ -248,7 +248,7 @@ export default function EditVehiclePage({
 				power: vehicle.power.toString(),
 				critAir: vehicle.critAir ?? "",
 				price: vehicle.price.toString(),
-				color: vehicle.color,
+				color: vehicle.color ?? "",
 				doors: vehicle.doors.toString(),
 				description: displayDescription,
 				status: vehicle.status ?? "draft",

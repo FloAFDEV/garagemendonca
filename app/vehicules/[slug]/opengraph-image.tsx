@@ -119,7 +119,7 @@ export default async function OgImage({
 							marginBottom: 40,
 						}}
 					>
-						{vehicle.year} · {vehicle.color}
+						{vehicle.year}{vehicle.color ? ` · ${vehicle.color}` : ""}
 					</div>
 
 					{/* Specs row */}
