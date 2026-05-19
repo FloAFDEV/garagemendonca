@@ -36,3 +36,7 @@ next-env.d.ts
 
 # Claude Code workspace (generated, not source)
 .claude/
+
+# Scripts one-shot — données LBC temporaires (ne jamais versionner les données réelles)
+scripts/lbc-listings.json
+scripts/lbc-debug.html

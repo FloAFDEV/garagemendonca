@@ -90,11 +90,11 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
   return q;
 }
 
-/** Tri par défaut : featured DESC → display_order ASC NULLS LAST → created_at DESC */
+/** Tri par défaut : display_order ASC NULLS LAST → featured DESC → created_at DESC */
 function applyDefaultSort(q: Q): Q {
   return q
+    .order("display_order", { ascending: true,  nullsFirst: false })
     .order("featured",      { ascending: false })
-    .order("display_order", { ascending: true, nullsFirst: false })
     .order("created_at",    { ascending: false });
 }
 
