@@ -161,8 +161,26 @@ export async function deleteVehicleAction(id: string): Promise<void> {
 	if (!SUPABASE_ENABLED) throw new Error("[deleteVehicleAction] Supabase requis");
 	await assertAdmin();
 	const db = createSupabaseAdminClient();
+
+	// 1. Récupérer les storage_paths AVANT que le CASCADE les supprime
+	const { data: images } = await db
+		.from("vehicle_images")
+		.select("storage_path")
+		.eq("vehicle_id", id)
+		.not("storage_path", "is", null);
+
+	// 2. Supprimer le véhicule (CASCADE supprime automatiquement vehicle_images en DB)
 	const { error } = await db.from("vehicles").delete().eq("id", id);
 	if (error) throw error;
+
+	// 3. Nettoyer les fichiers Storage (fire-and-forget — ne bloque pas si Storage KO)
+	const paths = (images ?? []).map((r) => r.storage_path as string).filter(Boolean);
+	if (paths.length > 0) {
+		await db.storage.from("vehicle-images").remove(paths).catch((err) =>
+			console.error("[deleteVehicleAction] Storage cleanup failed:", err),
+		);
+	}
+
 	revalidateAll(id);
 	await logAudit({ action: "delete", resourceType: "vehicle", resourceId: id });
 }
