@@ -13,7 +13,7 @@ import type { Vehicle } from "@/types";
 import { Save, ArrowLeft, CheckCircle2, Loader2, AlertCircle, Star, Eye } from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
-import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+import { BRAND_LOGO_MAP, getLogoSrc } from "@/lib/brandLogos";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { parseDescriptionToOptions } from "@/lib/utils/parse-description-options";
 import ImageUploadZone from "@/components/admin/ImageUploadZone";
@@ -99,6 +99,7 @@ function Combobox({
 	required,
 	id,
 	logoMap,
+	freeInput = false,
 }: {
 	value: string;
 	onChange: (v: string) => void;
@@ -108,26 +109,33 @@ function Combobox({
 	error?: string;
 	required?: boolean;
 	id?: string;
-	/** Si fourni, affiche le logo de marque dans la liste et dans l'input */
 	logoMap?: Record<string, string>;
+	freeInput?: boolean;
 }) {
 	const t = useAdminTokens();
 	const [open, setOpen] = useState(false);
 	const filtered = value
-		? suggestions.filter((s) =>
-				s.toLowerCase().includes(value.toLowerCase()),
-			)
+		? suggestions.filter((s) => s.toLowerCase().includes(value.toLowerCase()))
 		: suggestions;
+
+	const exactMatch = suggestions.some(
+		(s) => s.toLowerCase() === value.toLowerCase(),
+	);
+	const showFreeOption = freeInput && value.trim() && !exactMatch;
+	const hasLogo = !!logoMap && !!value;
 
 	return (
 		<div className="relative">
+			{hasLogo && (
+				<span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none z-10 flex items-center justify-center">
+					{/* eslint-disable-next-line @next/next/no-img-element */}
+					<img src={getLogoSrc(value)} alt="" aria-hidden className="max-w-full max-h-full object-contain" />
+				</span>
+			)}
 			<input
 				id={id}
 				value={value}
-				onChange={(e) => {
-					onChange(e.target.value);
-					setOpen(true);
-				}}
+				onChange={(e) => { onChange(e.target.value); setOpen(true); }}
 				onFocus={() => setOpen(true)}
 				onBlur={() => setTimeout(() => setOpen(false), 160)}
 				placeholder={placeholder}
@@ -135,30 +143,40 @@ function Combobox({
 				autoComplete="off"
 				className={
 					inputClass +
+					(hasLogo ? " pl-10" : "") +
 					(error ? " border-red-500 focus:border-red-500" : "")
 				}
 			/>
-			{open && filtered.length > 0 && (
-				<div
-					className={`absolute left-0 top-full mt-1 w-full z-50 ${t.dropdownBg} border ${t.dropdownBorder} rounded-xl shadow-2xl overflow-hidden max-h-52 overflow-y-auto`}
-				>
-					{filtered.slice(0, 10).map((s) => (
+			{open && (filtered.length > 0 || showFreeOption) && (
+				<div className={`absolute left-0 top-full mt-1 w-full z-50 ${t.dropdownBg} border ${t.dropdownBorder} rounded-xl shadow-2xl overflow-hidden max-h-52 overflow-y-auto`}>
+					{filtered.slice(0, 14).map((s) => (
 						<button
 							key={s}
 							type="button"
-							onMouseDown={() => {
-								onChange(s);
-								setOpen(false);
-							}}
-							className={`w-full text-left px-3 py-2.5 text-sm transition-colors ${t.dropdownItemHover} ${
-								s === value
-									? `${t.txt} bg-brand-500/10 font-medium`
-									: t.dropdownItemTxt
+							onMouseDown={() => { onChange(s); setOpen(false); }}
+							className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-2.5 ${t.dropdownItemHover} ${
+								s === value ? `${t.txt} bg-brand-500/10 font-medium` : t.dropdownItemTxt
 							}`}
 						>
+							{logoMap ? (
+								<span className="w-6 h-5 flex-shrink-0 flex items-center justify-center">
+									{/* eslint-disable-next-line @next/next/no-img-element */}
+									<img src={getLogoSrc(s)} alt="" aria-hidden className="max-w-full max-h-full object-contain" />
+								</span>
+							) : null}
 							{s}
 						</button>
 					))}
+					{showFreeOption && (
+						<button
+							type="button"
+							onMouseDown={() => { onChange(value.trim()); setOpen(false); }}
+							className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-1.5 border-t ${t.dropdownBorder} ${t.dropdownItemHover} text-brand-400`}
+						>
+							<span className="text-xs">↵</span>
+							Utiliser &laquo;&nbsp;{value.trim()}&nbsp;&raquo;
+						</button>
+					)}
 				</div>
 			)}
 			{error && (
@@ -591,6 +609,7 @@ export default function EditVehiclePage({
 									error={errors.model}
 									required
 									id="model-edit"
+									freeInput
 								/>
 							</div>
 							<div>

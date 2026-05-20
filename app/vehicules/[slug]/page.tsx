@@ -8,7 +8,7 @@ import VehicleCard from "@/components/vehicles/VehicleCard";
 import VehicleContactFormLazy from "@/components/vehicles/VehicleContactFormLazy";
 import GarageAddressBlock from "@/components/layout/GarageAddressBlock";
 import Image from "next/image";
-import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+import { getLogoSrc } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
 import BackToListingButton from "@/components/vehicles/BackToListingButton";
 import {
@@ -205,17 +205,15 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					{/* ── En-tête ── */}
 					<div className="flex flex-wrap items-start justify-between gap-4 mb-8">
 						<div className="flex items-start gap-4">
-							{BRAND_LOGO_MAP[vehicle.brand] && (
-								<div className="w-16 h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-2 flex items-center justify-center">
-									<Image
-										src={BRAND_LOGO_MAP[vehicle.brand]}
-										alt={vehicle.brand}
-										width={48}
-										height={48}
-										className="object-contain"
-									/>
-								</div>
-							)}
+							<div className="w-16 h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-2 flex items-center justify-center">
+								<Image
+									src={getLogoSrc(vehicle.brand)}
+									alt={vehicle.brand}
+									width={48}
+									height={48}
+									className="object-contain"
+								/>
+							</div>
 							<div>
 								<div className="flex items-center gap-2 mb-2">
 									{vehicle.featured && (
@@ -368,19 +366,13 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-5 sm:p-8">
 								<div className="mb-6 pb-6 border-b border-slate-100">
 									<div className="mt-4 m-4 flex items-center gap-2">
-										{BRAND_LOGO_MAP[vehicle.brand] && (
-											<Image
-												src={
-													BRAND_LOGO_MAP[
-														vehicle.brand
-													]
-												}
-												alt={vehicle.brand}
-												width={50}
-												height={50}
-												className="object-contain border rounded-md p-1 bg-white"
-											/>
-										)}
+										<Image
+										src={getLogoSrc(vehicle.brand)}
+										alt={vehicle.brand}
+										width={50}
+										height={50}
+										className="object-contain border rounded-md p-1 bg-white"
+									/>
 										{vehicle.brand} {vehicle.model}{" "}
 										{vehicle.year}
 									</div>
