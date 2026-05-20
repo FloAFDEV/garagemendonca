@@ -73,7 +73,6 @@ interface VehicleForm {
 	vehicleStatus: string;
 	published_at: string;
 	featured: boolean;
-	display_order: string;
 	options: VehicleOptions;
 	finition: string;
 	critAir: string;
@@ -106,7 +105,6 @@ const emptyForm: VehicleForm = {
 	vehicleStatus: "draft",
 	published_at: "",
 	featured: false,
-	display_order: "",
 	options: {},
 	finition: "",
 	critAir: "",
@@ -314,7 +312,6 @@ export default function NewVehiclePage() {
 			status: form.vehicleStatus as Vehicle["status"],
 			published_at: form.published_at || undefined,
 			featured: form.featured,
-			displayOrder: form.display_order ? +form.display_order : undefined,
 			options: form.options,
 			critAir: form.critAir || undefined,
 			features: {
@@ -752,26 +749,8 @@ export default function NewVehiclePage() {
 								</select>
 							</div>
 						</div>
-						{/* ── Ordre d'affichage + Mise en avant ───────────── */}
+						{/* ── Mise en avant ───────────────────────────────── */}
 						<div className={`mt-5 pt-5 border-t ${t.border} space-y-4`}>
-							{/* Ordre d'affichage */}
-							<div>
-								<label htmlFor="display_order-new" className={`block text-xs font-medium mb-1.5 ${t.txtMuted}`}>
-									Ordre d&apos;affichage
-								</label>
-								<input
-									id="display_order-new"
-									name="display_order"
-									type="number"
-									min={1}
-									max={9999}
-									value={form.display_order}
-									onChange={handleChange}
-									placeholder="Ex : 1 (vide = aucune priorité)"
-									className={`${inputClass} w-32`}
-								/>
-								<p className={`mt-1 text-xs ${t.txtSubtle}`}>1 = affiché en premier. Laisser vide pour ordre automatique.</p>
-							</div>
 							{/* Mise en avant (max 4) */}
 							{(() => {
 								const atMax = featuredCount >= MAX_FEATURED && !form.featured;

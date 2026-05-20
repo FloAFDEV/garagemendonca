@@ -172,7 +172,6 @@ export interface VehicleRow {
   sold_at: string | null;
   featured: boolean;
   featured_order: number | null;
-  display_order: number | null;
   categories: string[];
   features: DbVehicleFeatures;
   options: DbVehicleOptions;
@@ -300,7 +299,6 @@ export type VehicleInsert = Omit<VehicleRow, "id" | "created_at" | "updated_at">
   sold_at?: string | null;
   featured?: boolean;
   featured_order?: number | null;
-  display_order?: number | null;
   categories?: string[];
   features?: DbVehicleFeatures;
   options?: DbVehicleOptions;

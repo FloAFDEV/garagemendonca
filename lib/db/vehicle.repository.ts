@@ -90,12 +90,11 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
   return q;
 }
 
-/** Tri par défaut : display_order ASC NULLS LAST → featured DESC → created_at DESC */
+/** Tri par défaut : featured DESC → created_at DESC */
 function applyDefaultSort(q: Q): Q {
   return q
-    .order("display_order", { ascending: true,  nullsFirst: false })
-    .order("featured",      { ascending: false })
-    .order("created_at",    { ascending: false });
+    .order("featured",   { ascending: false })
+    .order("created_at", { ascending: false });
 }
 
 /** Applique la clause ORDER BY selon le tri demandé (catalogue public). */
@@ -158,7 +157,6 @@ export const vehicleDb = {
       .eq("garage_id", garageId).eq("featured", true)
       .in("status", ["published", "sold"])
       .order("featured_order",  { ascending: true, nullsFirst: false })
-      .order("display_order",   { ascending: true, nullsFirst: false })
       .order("created_at",      { ascending: false })
       .limit(limit);
     if (error) throw error;

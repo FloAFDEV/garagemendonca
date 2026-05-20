@@ -279,7 +279,6 @@ export interface Vehicle {
   // Mise en avant
   featured?: boolean;
   featuredOrder?: number; // position parmi les "à la une" (1 = premier)
-  displayOrder?: number;  // ordre d'affichage manuel (1 = premier)
   // Classification dynamique — slugs des VehicleCategory de ce garage
   categories?: string[];  // Mirrors: vehicles.categories TEXT[]
   // ── SEO ──────────────────────────────────────────────────────
