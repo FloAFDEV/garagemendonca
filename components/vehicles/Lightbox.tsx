@@ -316,7 +316,7 @@ export default function Lightbox({
 									src={src}
 									alt=""
 									className="absolute inset-0 w-full h-full object-cover object-top"
-									loading="lazy"
+									loading="eager"
 								/>
 							</button>
 						))}
