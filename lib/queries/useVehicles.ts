@@ -8,7 +8,9 @@ import {
   fetchVehiclesAdminAction,
   fetchFeaturedVehiclesAction,
 } from "@/lib/safe-actions/fetchVehicles";
+import { getAdminVehicles } from "@/app/admin/vehicules/actions";
 import type { UIVehicle, UIVehicleFilters } from "@/types/ui";
+import type { Vehicle } from "@/types";
 import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 // ─── Catalogue public ─────────────────────────────────────────────
@@ -19,6 +21,20 @@ export function useVehicles(filters?: UIVehicleFilters) {
     queryFn:   () => fetchVehiclesAction(GARAGE_ID, filters),
     staleTime: STALE_TIMES.PUBLIC,
     gcTime:    GC_TIMES.PUBLIC,
+    enabled:   !!GARAGE_ID,
+  });
+}
+
+// ─── Liste admin complète (Vehicle[] — page véhicules admin) ────────
+// Utilise React Query pour éviter un re-fetch complet à chaque navigation.
+// Les données sont servies depuis le cache (staleTime 30s) au retour sur la page.
+
+export function useAdminVehiclesList() {
+  return useQuery<Vehicle[]>({
+    queryKey:  ["vehicles", "admin-list", GARAGE_ID],
+    queryFn:   getAdminVehicles,
+    staleTime: STALE_TIMES.ADMIN,   // 30s — données fraîches en background
+    gcTime:    GC_TIMES.ADMIN,      // 2min — cache conservé après navigation
     enabled:   !!GARAGE_ID,
   });
 }
