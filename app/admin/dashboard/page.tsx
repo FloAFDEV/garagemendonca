@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useVehiclesAdmin } from "@/lib/queries/useVehicles";
+import { useUser } from "@/lib/auth/useUser";
+import ProfileWidget from "@/components/admin/ProfileWidget";
 import { Car, TrendingUp, Mail, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
@@ -14,6 +17,13 @@ import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 function DashboardContent() {
 	const t = useAdminTokens();
 	const { data: vehicles = [] } = useVehiclesAdmin(GARAGE_ID);
+	const { user } = useUser();
+	const [firstName, setFirstName] = useState<string | null>(null);
+
+	const displayName =
+		firstName ??
+		(user?.user_metadata?.first_name as string | undefined) ??
+		"";
 
 	const stockCount     = vehicles.filter((v) => v.status !== "sold").length;
 	const soldCount      = vehicles.filter((v) => v.status === "sold").length;
@@ -52,7 +62,7 @@ function DashboardContent() {
 			<div className="flex flex-wrap items-center justify-between gap-3">
 				<div>
 					<h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>
-						Bonjour
+						Bonjour{displayName ? ` ${displayName}` : ""}
 					</h2>
 					<p className={clsx("mt-1 text-sm", t.txtMuted)}>
 						Gestion des annonces
@@ -162,27 +172,38 @@ function DashboardContent() {
 					</div>
 				</div>
 
-				{/* Messagerie */}
-				<div
-					className={clsx(
-						"rounded-2xl border p-6 flex flex-col items-center justify-center gap-4 text-center",
-						t.surface,
-						t.border,
-					)}
-				>
-					<Mail size={28} className={t.txtMuted} aria-hidden="true" />
-					<div>
-						<p className={clsx("font-normal text-sm", t.txt)}>Messagerie</p>
-						<p className={clsx("text-xs mt-1", t.txtSubtle)}>
-							Consultez les demandes de contact
-						</p>
-					</div>
-					<Link
-						href="/admin/messages"
-						className="btn-secondary text-xs py-2 px-4"
+				{/* Colonne latérale */}
+				<div className="flex flex-col gap-5">
+					{/* Messagerie */}
+					<div
+						className={clsx(
+							"rounded-2xl border p-6 flex flex-col items-center justify-center gap-4 text-center",
+							t.surface,
+							t.border,
+						)}
 					>
-						Voir les messages
-					</Link>
+						<Mail size={28} className={t.txtMuted} aria-hidden="true" />
+						<div>
+							<p className={clsx("font-normal text-sm", t.txt)}>Messagerie</p>
+							<p className={clsx("text-xs mt-1", t.txtSubtle)}>
+								Consultez les demandes de contact
+							</p>
+						</div>
+						<Link
+							href="/admin/messages"
+							className="btn-secondary text-xs py-2 px-4"
+						>
+							Voir les messages
+						</Link>
+					</div>
+
+					{/* Profil */}
+					{user && (
+						<ProfileWidget
+							user={user}
+							onUpdate={(name) => setFirstName(name)}
+						/>
+					)}
 				</div>
 			</div>
 		</div>
