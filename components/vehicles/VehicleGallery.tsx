@@ -132,7 +132,7 @@ export default function VehicleGallery({
 									sizes="(min-width: 1024px) calc(100vw - 460px), 100vw"
 									className="object-cover object-center"
 									priority={idx === 0}
-									loading={idx === 0 ? "eager" : "lazy"}
+									loading="eager"
 								/>
 							</div>
 						))}
