@@ -133,7 +133,6 @@ export default function VehicleGallery({
 									className="object-cover object-center"
 									priority={idx === 0}
 									loading="eager"
-									unoptimized
 								/>
 							</div>
 						))}
@@ -255,7 +254,6 @@ export default function VehicleGallery({
 										sizes="22vw"
 										className="object-cover object-center"
 										loading="eager"
-										unoptimized
 									/>
 								</button>
 							))}
@@ -291,7 +289,6 @@ export default function VehicleGallery({
 										sizes="(min-width: 1024px) 130px, 120px"
 										className="object-cover object-center"
 										loading="eager"
-										unoptimized
 									/>
 									{activeIdx !== idx && (
 										<span className="absolute bottom-1 right-1 text-[9px] text-white bg-black/40 rounded px-1 pointer-events-none">
