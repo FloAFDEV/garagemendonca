@@ -11,6 +11,7 @@ import GmBadge from "@/components/ui/GmBadge";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
+import { FilterStatePreserver } from "@/components/vehicles/FilterStatePreserver";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
 import {
@@ -212,6 +213,7 @@ export default async function VehiculesPage({
         <Container>
           {/* Filtres */}
           <Suspense>
+            <FilterStatePreserver />
             <VehicleFiltersBar
               totalCount={totalCount}
               availableBrands={availableBrands}

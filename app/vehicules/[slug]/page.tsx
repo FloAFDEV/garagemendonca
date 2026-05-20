@@ -10,8 +10,8 @@ import GarageAddressBlock from "@/components/layout/GarageAddressBlock";
 import Image from "next/image";
 import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
+import BackToListingButton from "@/components/vehicles/BackToListingButton";
 import {
-	ArrowLeft,
 	Phone,
 	MessageSquare,
 	CheckCircle2,
@@ -200,13 +200,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						</ol>
 					</nav>
 
-					<Link
-						href="/vehicules"
-						className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-6 text-sm font-medium"
-					>
-						<ArrowLeft size={15} aria-hidden="true" />
-						Retour aux annonces
-					</Link>
+					<BackToListingButton className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-6 text-sm font-medium" />
 
 					{/* ── En-tête ── */}
 					<div className="flex flex-wrap items-start justify-between gap-4 mb-8">
