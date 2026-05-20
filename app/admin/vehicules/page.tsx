@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
+import { useAdminVehiclesList } from "@/lib/queries/useVehicles";
 import { Vehicle, VehicleStatus } from "@/types";
 import {
 	Plus,
@@ -23,7 +24,6 @@ import Badge from "@/components/ui/Badge";
 import clsx from "clsx";
 import { adminUI } from "@/lib/admin-ui";
 import {
-	getAdminVehicles,
 	updateVehicleStatus,
 	deleteVehicleAction,
 } from "./actions";
@@ -151,8 +151,11 @@ function VehicleThumb({
 /* ── Page ───────────────────────────────────────────────────────── */
 export default function AdminVehiclesPage() {
 	const router = useRouter();
-	const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-	const [loading, setLoading] = useState(true);
+	const { data: fetchedVehicles = [], isLoading, isFetching } = useAdminVehiclesList();
+	const [localVehicles, setLocalVehicles] = useState<Vehicle[] | null>(null);
+	const loading = isLoading;
+	// localVehicles sert aux optimistic updates (delete/status) sans perdre le cache RQ
+	const vehicles = localVehicles ?? fetchedVehicles;
 	const [search, setSearch] = useState("");
 	const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 	const [filterBrand, setFilterBrand] = useState("");
@@ -163,13 +166,6 @@ export default function AdminVehiclesPage() {
 	const [page, setPage] = useState(1);
 	const [showFilters, setShowFilters] = useState(false);
 	const t = useAdminTokens();
-
-	useEffect(() => {
-		getAdminVehicles()
-			.then(setVehicles)
-			.catch(console.error)
-			.finally(() => setLoading(false));
-	}, []);
 
 	const navigateToVehicle = useCallback(
 		(id: string) => router.push(`/admin/vehicules/${id}/modifier`),
@@ -243,14 +239,14 @@ export default function AdminVehiclesPage() {
 	);
 
 	const handleDelete = (id: string) => {
-		setVehicles((prev) => prev.filter((v) => v.id !== id));
+		setLocalVehicles((prev) => (prev ?? fetchedVehicles).filter((v) => v.id !== id));
 		setDeleteConfirm(null);
 		deleteVehicleAction(id).catch(console.error);
 	};
 
 	const handleStatusChange = (id: string, status: VehicleStatus) => {
-		setVehicles((prev) =>
-			prev.map((v) =>
+		setLocalVehicles((prev) =>
+			(prev ?? fetchedVehicles).map((v) =>
 				v.id === id
 					? {
 							...v,

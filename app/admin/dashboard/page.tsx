@@ -141,11 +141,13 @@ function DashboardContent() {
 					</div>
 					<div className="space-y-3">
 						{vehicles.slice(0, 5).map((v) => (
-							<div
+							<Link
 								key={v.id}
+								href={`/admin/vehicules/${v.id}/modifier`}
 								className={clsx(
-									"flex items-center justify-between py-3 border-b last:border-0",
+									"flex items-center justify-between py-3 border-b last:border-0 rounded-lg px-2 -mx-2 transition-colors group/row",
 									t.border,
+									t.tableRowHover,
 								)}
 							>
 								<div>
@@ -156,18 +158,17 @@ function DashboardContent() {
 										{v.year} · {v.mileage.toLocaleString("fr-FR")} km · {v.fuel}
 									</div>
 								</div>
-								<div className="flex items-center gap-4">
+								<div className="flex items-center gap-3">
 									<span className="font-heading font-medium text-brand-500">
 										{v.price.toLocaleString("fr-FR")} €
 									</span>
-									<Link
-										href="/admin/vehicules"
-										className={clsx("transition-colors", t.txtSubtle, t.hoverTxt)}
-									>
-										<ArrowRight size={14} />
-									</Link>
+									<ArrowRight
+										size={14}
+										className={clsx("transition-colors flex-shrink-0", t.txtSubtle, "group-hover/row:text-brand-500")}
+										aria-hidden="true"
+									/>
 								</div>
-							</div>
+							</Link>
 						))}
 					</div>
 				</div>
