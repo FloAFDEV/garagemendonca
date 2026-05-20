@@ -57,6 +57,27 @@ export default function SessionGuard() {
     }, IDLE_MS);
   }, [signOut]);
 
+  // Vérifie la validité de la session Supabase côté client.
+  // Déclenché quand l'onglet redevient visible (ex : retour après longue absence).
+  // Les timers d'inactivité sont suspendus par le navigateur sur les onglets
+  // en arrière-plan → cette vérification couvre le cas où le token a expiré
+  // pendant que l'onglet était caché.
+  const checkSessionOnFocus = useCallback(async () => {
+    if (document.visibilityState !== "visible") return;
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    );
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast.error("Session expirée — reconnexion requise", {
+        id: "session-expiry-logout",
+        duration: 4_000,
+      });
+      void signOut();
+    }
+  }, [signOut]);
+
   useEffect(() => {
     // Ne rien faire si Supabase n'est pas configuré
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return;
@@ -65,14 +86,16 @@ export default function SessionGuard() {
     for (const ev of EVENTS) {
       window.addEventListener(ev, resetTimers, { passive: true });
     }
+    document.addEventListener("visibilitychange", checkSessionOnFocus);
     return () => {
       if (idleRef.current)  clearTimeout(idleRef.current);
       if (warnRef.current)  clearTimeout(warnRef.current);
       for (const ev of EVENTS) {
         window.removeEventListener(ev, resetTimers);
       }
+      document.removeEventListener("visibilitychange", checkSessionOnFocus);
     };
-  }, [resetTimers]);
+  }, [resetTimers, checkSessionOnFocus]);
 
   return null; // Aucun markup — composant de logique pure
 }

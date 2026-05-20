@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { Vehicle, VehicleStatus } from "@/types";
@@ -149,7 +150,9 @@ function VehicleThumb({
 
 /* ── Page ───────────────────────────────────────────────────────── */
 export default function AdminVehiclesPage() {
+	const router = useRouter();
 	const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+	const [loading, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
 	const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 	const [filterBrand, setFilterBrand] = useState("");
@@ -162,8 +165,16 @@ export default function AdminVehiclesPage() {
 	const t = useAdminTokens();
 
 	useEffect(() => {
-		getAdminVehicles().then(setVehicles).catch(console.error);
+		getAdminVehicles()
+			.then(setVehicles)
+			.catch(console.error)
+			.finally(() => setLoading(false));
 	}, []);
+
+	const navigateToVehicle = useCallback(
+		(id: string) => router.push(`/admin/vehicules/${id}/modifier`),
+		[router],
+	);
 
 	// Reset page when any filter/search changes
 	useEffect(() => {
@@ -514,7 +525,21 @@ export default function AdminVehiclesPage() {
 
 				{/* ── Mobile cards ────────────────────────────────── */}
 				<div className="md:hidden space-y-3">
-					{paginated.length === 0 ? (
+					{loading ? (
+						Array.from({ length: 4 }).map((_, i) => (
+							<div key={i} className={clsx("rounded-2xl border overflow-hidden animate-pulse", t.surface, t.border)}>
+								<div className={clsx("w-full h-36", t.isDark ? "bg-dark-800" : "bg-slate-100")} />
+								<div className="p-4 space-y-2.5">
+									<div className={clsx("h-4 rounded-lg w-2/3", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
+									<div className={clsx("h-3 rounded-lg w-1/2", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
+									<div className="flex gap-2">
+										<div className={clsx("h-6 rounded-xl w-16", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
+										<div className={clsx("h-6 rounded-xl w-20", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
+									</div>
+								</div>
+							</div>
+						))
+					) : paginated.length === 0 ? (
 						<div className="text-center py-16">
 							<Car
 								size={40}
@@ -528,8 +553,12 @@ export default function AdminVehiclesPage() {
 						paginated.map((vehicle) => (
 							<div
 								key={vehicle.id}
+								role="button"
+								tabIndex={0}
+								onClick={() => navigateToVehicle(vehicle.id)}
+								onKeyDown={(e) => e.key === "Enter" && navigateToVehicle(vehicle.id)}
 								className={clsx(
-									"rounded-2xl border overflow-hidden",
+									"rounded-2xl border overflow-hidden cursor-pointer transition-shadow hover:shadow-lg focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none",
 									t.surface,
 									t.border,
 								)}
@@ -618,6 +647,7 @@ export default function AdminVehiclesPage() {
 										/>
 									</div>
 									<div
+										onClick={(e) => e.stopPropagation()}
 										className={clsx(
 											"flex items-center gap-2 pt-1 border-t",
 											t.border,
@@ -723,11 +753,26 @@ export default function AdminVehiclesPage() {
 								</tr>
 							</thead>
 							<tbody>
-								{paginated.map((vehicle) => (
+								{loading ? (
+									Array.from({ length: 6 }).map((_, i) => (
+										<tr key={i} className={clsx("border-b last:border-0 animate-pulse", t.border)}>
+											<td className="px-3 py-3"><div className={clsx("w-12 h-10 rounded-lg", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-5 py-4"><div className={clsx("h-4 rounded-lg w-40 mb-1.5", t.isDark ? "bg-dark-800" : "bg-slate-200")} /><div className={clsx("h-3 rounded-lg w-28", t.isDark ? "bg-dark-700" : "bg-slate-100")} /></td>
+											<td className="px-5 py-4"><div className={clsx("h-4 rounded-lg w-16", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-5 py-4"><div className={clsx("h-4 rounded-lg w-20", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-5 py-4"><div className={clsx("h-6 rounded-xl w-24", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-5 py-4"><div className={clsx("h-3 rounded-lg w-16", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-5 py-4"><div className={clsx("h-8 rounded-lg w-20", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+										</tr>
+									))
+								) : paginated.map((vehicle) => (
 									<tr
 										key={vehicle.id}
+										tabIndex={0}
+										onClick={() => navigateToVehicle(vehicle.id)}
+										onKeyDown={(e) => e.key === "Enter" && navigateToVehicle(vehicle.id)}
 										className={clsx(
-											"border-b last:border-0 transition-colors",
+											"border-b last:border-0 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-500",
 											t.border,
 											t.tableRowHover,
 										)}
@@ -827,7 +872,7 @@ export default function AdminVehiclesPage() {
 												€
 											</span>
 										</td>
-										<td className="px-5 py-4">
+										<td className="px-5 py-4" onClick={(e) => e.stopPropagation()}>
 											<StatusSelect
 												vehicleId={vehicle.id}
 												current={
@@ -855,7 +900,7 @@ export default function AdminVehiclesPage() {
 													)
 												: "—"}
 										</td>
-										<td className="px-5 py-4">
+										<td className="px-5 py-4" onClick={(e) => e.stopPropagation()}>
 											<div className="flex items-center gap-1">
 												<Link
 													href={`/vehicules/${vehicle.id}`}
@@ -932,7 +977,7 @@ export default function AdminVehiclesPage() {
 										</td>
 									</tr>
 								))}
-								{paginated.length === 0 && (
+								{!loading && paginated.length === 0 && (
 									<tr>
 										<td
 											colSpan={7}
