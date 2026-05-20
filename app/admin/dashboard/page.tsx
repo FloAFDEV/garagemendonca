@@ -147,26 +147,41 @@ function DashboardContent() {
 								key={v.id}
 								href={`/admin/vehicules/${v.id}/modifier`}
 								className={clsx(
-									"flex items-center justify-between py-3 border-b last:border-0 rounded-lg px-2 -mx-2 transition-colors group/row",
+									"flex items-center gap-3 py-3 border-b last:border-0 rounded-lg px-2 -mx-2 transition-colors group/row",
 									t.border,
 									t.tableRowHover,
 								)}
 							>
-								<div>
-									<div className={clsx("font-medium text-sm", t.txt)}>
+								{/* Thumbnail */}
+								<div className="w-12 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-700 flex items-center justify-center">
+									{(v.thumbnailUrl ?? v.images?.[0]) ? (
+										// eslint-disable-next-line @next/next/no-img-element
+										<img
+											src={v.thumbnailUrl ?? v.images[0]}
+											alt=""
+											className="w-full h-full object-cover"
+										/>
+									) : (
+										<Car size={14} className={t.txtFaint} aria-hidden="true" />
+									)}
+								</div>
+								{/* Info */}
+								<div className="flex-1 min-w-0">
+									<div className={clsx("font-medium text-sm truncate", t.txt)}>
 										{v.brand} {v.model}
 									</div>
-									<div className={clsx("text-xs mt-0.5", t.txtSubtle)}>
+									<div className={clsx("text-xs mt-0.5 truncate", t.txtSubtle)}>
 										{v.year} · {v.mileage.toLocaleString("fr-FR")} km · {v.fuel}
+										{v.color ? ` · ${v.color}` : ""}
 									</div>
 								</div>
-								<div className="flex items-center gap-3">
-									<span className="font-heading font-medium text-brand-500">
+								<div className="flex items-center gap-2 flex-shrink-0">
+									<span className="font-heading font-medium text-brand-500 text-sm">
 										{v.price.toLocaleString("fr-FR")} €
 									</span>
 									<ArrowRight
 										size={14}
-										className={clsx("transition-colors flex-shrink-0", t.txtSubtle, "group-hover/row:text-brand-500")}
+										className={clsx("transition-colors", t.txtSubtle, "group-hover/row:text-brand-500")}
 										aria-hidden="true"
 									/>
 								</div>
