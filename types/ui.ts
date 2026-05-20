@@ -42,6 +42,7 @@ export interface UIVehicle {
   options?: VehicleOptions;
   critAir?: string;
   meta_description?: string;
+  createdAt?: string;
   // Champs computés (remplis par toUIVehicle())
   label: string;           // "Peugeot 208 GTi 2021"
   formattedPrice: string;  // "24 900 €"
@@ -196,6 +197,7 @@ export function toUIVehicle(v: Vehicle): UIVehicle {
     options:          v.options,
     critAir:          v.critAir,
     meta_description: v.meta_description,
+    createdAt:        v.createdAt,
     // Computed
     label:            `${v.brand} ${v.model} ${v.year}`,
     formattedPrice:   `${FR_NUMBER.format(v.price)} €`,

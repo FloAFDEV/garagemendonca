@@ -138,7 +138,13 @@ function DashboardContent() {
 						</Link>
 					</div>
 					<div className="space-y-3">
-						{vehicles.slice(0, 5).map((v) => (
+						{[...vehicles]
+							.sort((a, b) =>
+								new Date(b.createdAt ?? 0).getTime() -
+								new Date(a.createdAt ?? 0).getTime()
+							)
+							.slice(0, 5)
+							.map((v) => (
 							<Link
 								key={v.id}
 								href={`/admin/vehicules/${v.id}/modifier`}
@@ -171,16 +177,25 @@ function DashboardContent() {
 										{v.color ? ` · ${v.color}` : ""}
 									</div>
 								</div>
-								<div className="flex items-center gap-2 flex-shrink-0">
+								<div className="flex flex-col items-end gap-0.5 flex-shrink-0">
 									<span className="font-heading font-medium text-brand-500 text-sm">
 										{v.price.toLocaleString("fr-FR")} €
 									</span>
-									<ArrowRight
-										size={14}
-										className={clsx("transition-colors", t.txtSubtle, "group-hover/row:text-brand-500")}
-										aria-hidden="true"
-									/>
+									{v.createdAt && (
+										<span className={clsx("text-[10px]", t.txtSubtle)}>
+											{new Date(v.createdAt).toLocaleDateString("fr-FR", {
+												day: "2-digit",
+												month: "2-digit",
+												year: "2-digit",
+											})}
+										</span>
+									)}
 								</div>
+								<ArrowRight
+									size={14}
+									className={clsx("transition-colors flex-shrink-0", t.txtSubtle, "group-hover/row:text-brand-500")}
+									aria-hidden="true"
+								/>
 							</Link>
 						))}
 					</div>
