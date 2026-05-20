@@ -227,7 +227,7 @@ export default function EditVehiclePage({
 
 	const [images, setImages] = useState<string[]>([]);
 	const [errors, setErrors] = useState<FormErrors>({});
-	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">(
 		"idle",
 	);
 	const [featuredCount, setFeaturedCount] = useState<number>(0);
@@ -349,11 +349,10 @@ export default function EditVehiclePage({
 			e.year = `Année invalide (1980–${new Date().getFullYear()})`;
 		if (form.mileage === "" || parseInt(form.mileage) < 0)
 			e.mileage = "Kilométrage invalide";
-		if (!form.power || parseInt(form.power) <= 0)
-			e.power = "Puissance requise";
+		if (form.power === "" || isNaN(parseInt(form.power)) || parseInt(form.power) < 0)
+			e.power = "Puissance invalide";
 		if (!form.price || parseInt(form.price) <= 0)
 			e.price = "Prix requis et supérieur à 0";
-		if (!form.color.trim()) e.color = "La couleur est requise";
 		return e;
 	}
 
@@ -364,6 +363,13 @@ export default function EditVehiclePage({
 		const errs = validate();
 		if (Object.keys(errs).length > 0) {
 			setErrors(errs);
+			// Scroll vers le haut pour que les erreurs soient visibles
+			const firstErrorKey = Object.keys(errs)[0];
+			requestAnimationFrame(() => {
+				const el = firstErrorKey ? document.getElementById(firstErrorKey) ?? document.getElementById(`${firstErrorKey}-edit`) : null;
+				if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+				else window.scrollTo({ top: 0, behavior: "smooth" });
+			});
 			return;
 		}
 		setSaveStatus("saving");
@@ -403,7 +409,8 @@ export default function EditVehiclePage({
 			setTimeout(() => router.push("/admin/vehicules"), 1200);
 		} catch (err) {
 			console.error("[handleSubmit] save error:", err);
-			setSaveStatus("idle");
+			setSaveStatus("error");
+			setTimeout(() => setSaveStatus("idle"), 4000);
 		}
 	};
 
@@ -909,39 +916,52 @@ export default function EditVehiclePage({
 					</div>
 
 					{/* ── Submit ─────────────────────────────────────────── */}
-					<div className="flex items-center justify-between gap-4 pt-2 pb-8">
-						<Link
-							href="/admin/vehicules"
-							className="btn-secondary text-sm"
-						>
-							Annuler
-						</Link>
-						<button
-							type="submit"
-							disabled={saveStatus !== "idle"}
-							aria-busy={saveStatus === "saving"}
-							className="btn-primary text-sm py-3 px-6 sm:px-8"
-						>
-							{saveStatus === "saving" ? (
-								<>
-									<Loader2
-										size={16}
-										className="animate-spin"
-									/>
-									Enregistrement…
-								</>
-							) : saveStatus === "saved" ? (
-								<>
-									<CheckCircle2 size={16} />
-									Enregistré !
-								</>
-							) : (
-								<>
-									<Save size={16} />
-									Enregistrer les modifications
-								</>
-							)}
-						</button>
+					<div className="flex flex-col gap-3 pt-2 pb-8">
+						{saveStatus === "error" && (
+							<p className="text-sm text-red-400 flex items-center gap-1.5">
+								<AlertCircle size={14} />
+								Erreur lors de la sauvegarde — vérifiez votre connexion et réessayez.
+							</p>
+						)}
+						<div className="flex items-center justify-between gap-4">
+							<Link
+								href="/admin/vehicules"
+								className="btn-secondary text-sm"
+							>
+								Annuler
+							</Link>
+							<button
+								type="submit"
+								disabled={saveStatus === "saving" || saveStatus === "saved"}
+								aria-busy={saveStatus === "saving"}
+								className={`btn-primary text-sm py-3 px-6 sm:px-8 ${saveStatus === "error" ? "!bg-red-600 hover:!bg-red-700" : ""}`}
+							>
+								{saveStatus === "saving" ? (
+									<>
+										<Loader2
+											size={16}
+											className="animate-spin"
+										/>
+										Enregistrement…
+									</>
+								) : saveStatus === "saved" ? (
+									<>
+										<CheckCircle2 size={16} />
+										Enregistré !
+									</>
+								) : saveStatus === "error" ? (
+									<>
+										<AlertCircle size={16} />
+										Réessayer
+									</>
+								) : (
+									<>
+										<Save size={16} />
+										Enregistrer les modifications
+									</>
+								)}
+							</button>
+						</div>
 					</div>
 				</form>
 			</div>
