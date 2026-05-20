@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useEffect } from "react";
+import { useState, use, useEffect, useRef } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { getAdminVehicleById, saveVehicle, getFeaturedCount } from "@/app/admin/vehicules/actions";
@@ -231,6 +231,7 @@ export default function EditVehiclePage({
 		"idle",
 	);
 	const [featuredCount, setFeaturedCount] = useState<number>(0);
+	const initialFeatured = useRef<boolean>(false);
 
 	useEffect(() => {
 		getFeaturedCount().then(setFeaturedCount).catch(() => {});
@@ -275,6 +276,7 @@ export default function EditVehiclePage({
 				garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? String(vehicle.features!["Garantie"][0]) : String(vehicle.features?.["Garantie"] ?? "")) || "",
 				options: mergedOptions,
 			});
+			initialFeatured.current = vehicle.featured ?? false;
 			setImages(getVehicleImages(vehicle));
 			setLoadState("ready");
 		}).catch(() => setLoadState("notfound"));
@@ -365,40 +367,44 @@ export default function EditVehiclePage({
 			return;
 		}
 		setSaveStatus("saving");
-		const httpImages = images.filter((u) => u.startsWith("http"));
-		await saveVehicle(id, {
-			brand: form.brand,
-			model: form.model,
-			year: +form.year,
-			mileage: +form.mileage,
-			fuel: form.fuel as Vehicle["fuel"],
-			transmission: form.transmission as Vehicle["transmission"],
-			power: +form.power,
-			price: +form.price,
-			color: form.color,
-			doors: +form.doors,
-			description_marketing: form.description,
-			images: httpImages,
-			status: form.status as Vehicle["status"],
-			published_at: form.published_at || undefined,
-			featured: form.featured,
-			critAir: form.critAir || undefined,
-			options: form.options,
-			features: {
-				...extraFeatures,
-				...(form.finition ? { Finition: form.finition } : {}),
-				...(form.garantie ? { Garantie: form.garantie } : {}),
-			},
-		});
-		// Sync vehicle_images table
-		await syncVehicleImages(
-			id,
-			ACTIVE_GARAGE_ID,
-			httpImages,
-			`${form.brand} ${form.model}`,
-		);
-		setSaveStatus("saved");
-		setTimeout(() => router.push("/admin/vehicules"), 1200);
+		try {
+			const httpImages = images.filter((u) => u.startsWith("http"));
+			await saveVehicle(id, {
+				brand: form.brand,
+				model: form.model,
+				year: +form.year,
+				mileage: +form.mileage,
+				fuel: form.fuel as Vehicle["fuel"],
+				transmission: form.transmission as Vehicle["transmission"],
+				power: +form.power,
+				price: +form.price,
+				color: form.color,
+				doors: +form.doors,
+				description_marketing: form.description,
+				images: httpImages,
+				status: form.status as Vehicle["status"],
+				published_at: form.published_at || undefined,
+				featured: form.featured,
+				critAir: form.critAir || undefined,
+				options: form.options,
+				features: {
+					...extraFeatures,
+					...(form.finition ? { Finition: form.finition } : {}),
+					...(form.garantie ? { Garantie: form.garantie } : {}),
+				},
+			});
+			await syncVehicleImages(
+				id,
+				ACTIVE_GARAGE_ID,
+				httpImages,
+				`${form.brand} ${form.model}`,
+			);
+			setSaveStatus("saved");
+			setTimeout(() => router.push("/admin/vehicules"), 1200);
+		} catch (err) {
+			console.error("[handleSubmit] save error:", err);
+			setSaveStatus("idle");
+		}
 	};
 
 	// ── Styles ───────────────────────────────────────────────────────
@@ -517,7 +523,8 @@ export default function EditVehiclePage({
 						<div className={`mt-5 pt-5 border-t ${t.border} space-y-4`}>
 							{/* Mise en avant (max 4) */}
 							{(() => {
-								const atMax = featuredCount >= MAX_FEATURED && !form.featured;
+								const effectiveCount = featuredCount - (initialFeatured.current ? 1 : 0);
+								const atMax = effectiveCount >= MAX_FEATURED && !form.featured;
 								return (
 									<div>
 										<div className="flex items-center gap-3">

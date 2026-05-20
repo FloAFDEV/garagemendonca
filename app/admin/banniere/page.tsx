@@ -178,19 +178,6 @@ function BannerPreview({
         )}
       </h3>
 
-      {/* Aperçu image standalone — visible uniquement si une image est chargée */}
-      {imageUrl && (
-        <div className="mb-4 rounded-xl overflow-hidden ring-1 ring-white/10 shadow-lg">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={imageUrl}
-            alt="Aperçu image bannière"
-            className="w-full object-cover"
-            style={{ maxHeight: "280px", objectPosition: "center" }}
-          />
-        </div>
-      )}
-
       {/* Rendu fidèle de la bannière (taille réelle) */}
       <p className={clsx("text-[10px] uppercase tracking-widest mb-2", t.txtSubtle)}>
         Rendu réel sur le site
