@@ -365,40 +365,44 @@ export default function EditVehiclePage({
 			return;
 		}
 		setSaveStatus("saving");
-		const httpImages = images.filter((u) => u.startsWith("http"));
-		await saveVehicle(id, {
-			brand: form.brand,
-			model: form.model,
-			year: +form.year,
-			mileage: +form.mileage,
-			fuel: form.fuel as Vehicle["fuel"],
-			transmission: form.transmission as Vehicle["transmission"],
-			power: +form.power,
-			price: +form.price,
-			color: form.color,
-			doors: +form.doors,
-			description_marketing: form.description,
-			images: httpImages,
-			status: form.status as Vehicle["status"],
-			published_at: form.published_at || undefined,
-			featured: form.featured,
-			critAir: form.critAir || undefined,
-			options: form.options,
-			features: {
-				...extraFeatures,
-				...(form.finition ? { Finition: form.finition } : {}),
-				...(form.garantie ? { Garantie: form.garantie } : {}),
-			},
-		});
-		// Sync vehicle_images table
-		await syncVehicleImages(
-			id,
-			ACTIVE_GARAGE_ID,
-			httpImages,
-			`${form.brand} ${form.model}`,
-		);
-		setSaveStatus("saved");
-		setTimeout(() => router.push("/admin/vehicules"), 1200);
+		try {
+			const httpImages = images.filter((u) => u.startsWith("http"));
+			await saveVehicle(id, {
+				brand: form.brand,
+				model: form.model,
+				year: +form.year,
+				mileage: +form.mileage,
+				fuel: form.fuel as Vehicle["fuel"],
+				transmission: form.transmission as Vehicle["transmission"],
+				power: +form.power,
+				price: +form.price,
+				color: form.color,
+				doors: +form.doors,
+				description_marketing: form.description,
+				images: httpImages,
+				status: form.status as Vehicle["status"],
+				published_at: form.published_at || undefined,
+				featured: form.featured,
+				critAir: form.critAir || undefined,
+				options: form.options,
+				features: {
+					...extraFeatures,
+					...(form.finition ? { Finition: form.finition } : {}),
+					...(form.garantie ? { Garantie: form.garantie } : {}),
+				},
+			});
+			await syncVehicleImages(
+				id,
+				ACTIVE_GARAGE_ID,
+				httpImages,
+				`${form.brand} ${form.model}`,
+			);
+			setSaveStatus("saved");
+			setTimeout(() => router.push("/admin/vehicules"), 1200);
+		} catch (err) {
+			console.error("[handleSubmit] save error:", err);
+			setSaveStatus("idle");
+		}
 	};
 
 	// ── Styles ───────────────────────────────────────────────────────
