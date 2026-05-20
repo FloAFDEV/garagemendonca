@@ -247,14 +247,12 @@ export default function VehicleGallery({
 											: "border-slate-200 opacity-50 hover:opacity-85 scale-100",
 									].join(" ")}
 								>
-									<Image
+									{/* eslint-disable-next-line @next/next/no-img-element */}
+									<img
 										src={src}
-										alt={`${vehicleName} — photo ${idx + 1}`}
-										fill
-										sizes="22vw"
-										className="object-cover object-center"
+										alt=""
+										className="absolute inset-0 w-full h-full object-cover object-center"
 										loading="eager"
-										unoptimized
 									/>
 								</button>
 							))}
@@ -283,14 +281,12 @@ export default function VehicleGallery({
 											: "border-slate-200 opacity-55 hover:opacity-100 hover:border-slate-300 hover:shadow-sm",
 									].join(" ")}
 								>
-									<Image
+									{/* eslint-disable-next-line @next/next/no-img-element */}
+									<img
 										src={src}
-										alt={`${vehicleName} — photo ${idx + 1}`}
-										fill
-										sizes="(min-width: 1024px) 130px, 120px"
-										className="object-cover object-center"
+										alt=""
+										className="absolute inset-0 w-full h-full object-cover object-center"
 										loading="eager"
-										unoptimized
 									/>
 									{activeIdx !== idx && (
 										<span className="absolute bottom-1 right-1 text-[9px] text-white bg-black/40 rounded px-1 pointer-events-none">
