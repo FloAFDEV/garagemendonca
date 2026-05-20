@@ -163,7 +163,10 @@ export default function AdminVehiclesPage() {
 	const [filterPriceMax, setFilterPriceMax] = useState("");
 	const [filterStatus, setFilterStatus] = useState("");
 	const [sortBy, setSortBy] = useState<SortKey>("date-desc");
-	const [page, setPage] = useState(1);
+	const [page, setPage] = useState<number>(() => {
+		if (typeof window === "undefined") return 1;
+		return Number(sessionStorage.getItem("admin-vehicles-page")) || 1;
+	});
 	const [showFilters, setShowFilters] = useState(false);
 	const t = useAdminTokens();
 
@@ -171,6 +174,11 @@ export default function AdminVehiclesPage() {
 		(id: string) => router.push(`/admin/vehicules/${id}/modifier`),
 		[router],
 	);
+
+	// Persist page across navigations
+	useEffect(() => {
+		sessionStorage.setItem("admin-vehicles-page", String(page));
+	}, [page]);
 
 	// Reset page when any filter/search changes
 	useEffect(() => {
@@ -227,9 +235,10 @@ export default function AdminVehiclesPage() {
 	]);
 
 	const totalPages = Math.max(1, Math.ceil(filtered.length / ADMIN_PER_PAGE));
+	const safePage = Math.min(page, totalPages);
 	const paginated = filtered.slice(
-		(page - 1) * ADMIN_PER_PAGE,
-		page * ADMIN_PER_PAGE,
+		(safePage - 1) * ADMIN_PER_PAGE,
+		safePage * ADMIN_PER_PAGE,
 	);
 	const hasActiveFilters = !!(
 		filterBrand ||
@@ -1006,7 +1015,7 @@ export default function AdminVehiclesPage() {
 				{totalPages > 1 && (
 					<div className="flex items-center justify-between gap-4">
 						<p className={clsx("text-xs", t.txtSubtle)}>
-							Page {page} / {totalPages} · {filtered.length}{" "}
+							Page {safePage} / {totalPages} · {filtered.length}{" "}
 							résultats
 						</p>
 						<div className="flex items-center gap-1">
@@ -1014,7 +1023,7 @@ export default function AdminVehiclesPage() {
 								onClick={() =>
 									setPage((p) => Math.max(1, p - 1))
 								}
-								disabled={page === 1}
+								disabled={safePage === 1}
 								className={clsx(
 									"p-2 rounded-xl border transition-colors disabled:opacity-30",
 									t.border,
@@ -1029,7 +1038,7 @@ export default function AdminVehiclesPage() {
 								(_, i) => {
 									const start = Math.max(
 										1,
-										Math.min(page - 2, totalPages - 4),
+										Math.min(safePage - 2, totalPages - 4),
 									);
 									const p = start + i;
 									return (
@@ -1038,7 +1047,7 @@ export default function AdminVehiclesPage() {
 											onClick={() => setPage(p)}
 											className={clsx(
 												"w-9 h-9 rounded-xl text-sm border transition-colors",
-												p === page
+												p === safePage
 													? "text-pink-700 border-gray-600"
 													: clsx(
 															t.border,
@@ -1056,7 +1065,7 @@ export default function AdminVehiclesPage() {
 								onClick={() =>
 									setPage((p) => Math.min(totalPages, p + 1))
 								}
-								disabled={page === totalPages}
+								disabled={safePage === totalPages}
 								className={clsx(
 									"p-2 rounded-xl border transition-colors disabled:opacity-30",
 									t.border,
