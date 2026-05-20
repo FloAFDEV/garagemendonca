@@ -12,7 +12,7 @@ export default function FloatingCTA() {
 
 	return (
 		<div
-			className="fixed bottom-6 right-4 z-50 flex flex-col items-end gap-3"
+			className="hidden sm:flex fixed bottom-6 right-4 z-50 flex-col items-end gap-3"
 			aria-label="Boutons de contact rapide"
 		>
 			{/* Actions expandées */}
