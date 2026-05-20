@@ -4,7 +4,7 @@ import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
 import Badge from "@/components/ui/Badge";
-import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+import { getLogoSrc } from "@/lib/brandLogos";
 
 /* ── Options highlights ──────────────────────────────────────────────────────
  * Options les plus "vendantes" à afficher sur la carte, par ordre de priorité.
@@ -132,18 +132,16 @@ export default function VehicleCard({
 			{/* Contenu */}
 			<div className="p-4 flex flex-col flex-grow">
 				<div className="flex items-start gap-2.5 mb-3">
-					{BRAND_LOGO_MAP[vehicle.brand] && (
-						<div className="w-9 h-9 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
-							<Image
-								src={BRAND_LOGO_MAP[vehicle.brand]}
-								alt=""
-								aria-hidden
-								width={28}
-								height={28}
-								className="object-contain w-full h-full"
-							/>
-						</div>
-					)}
+					<div className="w-9 h-9 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
+						<Image
+							src={getLogoSrc(vehicle.brand)}
+							alt=""
+							aria-hidden
+							width={28}
+							height={28}
+							className="object-contain w-full h-full"
+						/>
+					</div>
 					<div className="min-w-0">
 						<h3 className="ty-subheading text-[#0f172a] text-base leading-tight">
 							{vehicle.brand} {vehicle.model}

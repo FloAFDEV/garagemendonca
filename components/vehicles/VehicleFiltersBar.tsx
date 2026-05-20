@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, X, RotateCcw, ChevronDown, Check, SlidersHorizontal } from "lucide-react";
-import { BRAND_LOGO_MAP } from "@/lib/brandLogos";
+import { getLogoSrc } from "@/lib/brandLogos";
 
 // ─── Données statiques ───────────────────────────────────────────
 
@@ -66,20 +66,9 @@ function selectClass(active: boolean) {
 // ─── Composant logo marque ────────────────────────────────────────
 
 function BrandLogo({ brand, size = 24 }: { brand: string; size?: number }) {
-  const src = BRAND_LOGO_MAP[brand];
-  if (!src) {
-    return (
-      <span
-        style={{ width: size, height: size }}
-        className="rounded-full bg-slate-100 flex items-center justify-center text-[9px] font-medium text-slate-400 border border-slate-200 flex-shrink-0 uppercase"
-      >
-        {brand.slice(0, 2)}
-      </span>
-    );
-  }
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt="" width={size} height={size} className="object-contain flex-shrink-0" />
+    <img src={getLogoSrc(brand)} alt="" width={size} height={size} className="object-contain flex-shrink-0" />
   );
 }
 
