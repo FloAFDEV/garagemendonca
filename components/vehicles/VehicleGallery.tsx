@@ -133,6 +133,7 @@ export default function VehicleGallery({
 									className="object-cover object-center"
 									priority={idx === 0}
 									loading="eager"
+									unoptimized
 								/>
 							</div>
 						))}
