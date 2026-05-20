@@ -30,6 +30,7 @@ export default function GmBadge({ size = "md", className = "" }: GmBadgeProps) {
 				fill
 				sizes={`${px}px`}
 				className="object-cover"
+				unoptimized
 			/>
 		</div>
 	);

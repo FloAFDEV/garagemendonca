@@ -128,6 +128,7 @@ export default async function Footer() {
 									fill
 									sizes="44px"
 									className="object-cover"
+									unoptimized
 								/>
 							</div>
 							<div>
