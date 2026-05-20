@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
@@ -169,9 +169,14 @@ export default function AdminVehiclesPage() {
 	});
 	const [showFilters, setShowFilters] = useState(false);
 	const t = useAdminTokens();
+	const isFirstRender = useRef(true);
+	const scrollRestored = useRef(false);
 
 	const navigateToVehicle = useCallback(
-		(id: string) => router.push(`/admin/vehicules/${id}/modifier`),
+		(id: string) => {
+			sessionStorage.setItem("admin-vehicles-scroll", String(window.scrollY));
+			router.push(`/admin/vehicules/${id}/modifier`);
+		},
 		[router],
 	);
 
@@ -180,10 +185,24 @@ export default function AdminVehiclesPage() {
 		sessionStorage.setItem("admin-vehicles-page", String(page));
 	}, [page]);
 
-	// Reset page when any filter/search changes
+	// Reset page when filters/search change — skip initial mount to preserve stored page
 	useEffect(() => {
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+			return;
+		}
 		setPage(1);
 	}, [search, filterBrand, filterYear, filterPriceMax, filterStatus, sortBy]);
+
+	// Restore scroll position once data is loaded
+	useEffect(() => {
+		if (isLoading || scrollRestored.current) return;
+		scrollRestored.current = true;
+		const saved = Number(sessionStorage.getItem("admin-vehicles-scroll") ?? 0);
+		if (saved > 0) {
+			requestAnimationFrame(() => window.scrollTo({ top: saved, behavior: "instant" }));
+		}
+	}, [isLoading]);
 
 	const availableBrands = useMemo(
 		() => Array.from(new Set(vehicles.map((v) => v.brand))).sort(),
