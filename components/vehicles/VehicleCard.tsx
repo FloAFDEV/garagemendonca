@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
@@ -77,20 +76,21 @@ export default function VehicleCard({
 			{/* Image */}
 			<div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
 				{imgSrc ? (
-					<Image
+					// eslint-disable-next-line @next/next/no-img-element
+					<img
 						src={imgSrc}
 						alt={imgAlt}
-						fill
-						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-						className={`object-cover transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
-						priority={priority}
+						className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
+						loading={priority ? "eager" : "lazy"}
+						fetchPriority={priority ? "high" : "auto"}
 					/>
 				) : (
-					<Image
+					// eslint-disable-next-line @next/next/no-img-element
+					<img
 						src="/images/logo-gm.webp"
 						alt="Garage Mendonça"
-						fill
-						className="object-contain p-6 bg-[#0d1b34]"
+						className="absolute inset-0 w-full h-full object-contain p-6 bg-[#0d1b34]"
+						loading="lazy"
 					/>
 				)}
 
@@ -132,13 +132,13 @@ export default function VehicleCard({
 				<div className="flex items-start gap-2.5 mb-3">
 					{BRAND_LOGO_MAP[vehicle.brand] && (
 						<div className="w-9 h-9 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
-							<Image
+							{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img
 								src={BRAND_LOGO_MAP[vehicle.brand]}
 								alt=""
 								aria-hidden
-								width={28}
-								height={28}
 								className="object-contain w-full h-full"
+								loading="lazy"
 							/>
 						</div>
 					)}
