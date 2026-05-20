@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useVehiclesAdmin } from "@/lib/queries/useVehicles";
 import { useUser } from "@/lib/auth/useUser";
-import ProfileWidget from "@/components/admin/ProfileWidget";
 import { Car, TrendingUp, Mail, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
@@ -18,10 +16,8 @@ function DashboardContent() {
 	const t = useAdminTokens();
 	const { data: vehicles = [] } = useVehiclesAdmin(GARAGE_ID);
 	const { user } = useUser();
-	const [firstName, setFirstName] = useState<string | null>(null);
 
 	const displayName =
-		firstName ??
 		(user?.user_metadata?.first_name as string | undefined) ??
 		(user?.user_metadata?.given_name as string | undefined) ??
 		(user?.user_metadata?.name as string | undefined)?.split(" ")[0] ??
@@ -214,14 +210,6 @@ function DashboardContent() {
 							Voir les messages
 						</Link>
 					</div>
-
-					{/* Profil */}
-					{user && (
-						<ProfileWidget
-							user={user}
-							onUpdate={(name) => setFirstName(name)}
-						/>
-					)}
 				</div>
 			</div>
 		</div>

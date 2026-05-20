@@ -16,12 +16,14 @@ import {
 	ExternalLink,
 	Inbox,
 	Clock,
+	ChevronUp,
 } from "lucide-react";
 import clsx from "clsx";
 import { useAdminTokens, useAdminThemeActions } from "@/contexts/AdminThemeContext";
 import { adminUI } from "@/lib/admin-ui";
 import { useUser } from "@/lib/auth/useUser";
 import { signOutAction } from "@/lib/auth/actions";
+import ProfileWidget from "@/components/admin/ProfileWidget";
 
 const navItems = [
 	{
@@ -48,9 +50,16 @@ export default function AdminLayout({
 }) {
 	const pathname = usePathname();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const [profileOpen, setProfileOpen] = useState(false);
 	const t = useAdminTokens();
 	const { toggleTheme } = useAdminThemeActions();
 	const { user } = useUser();
+
+	const userDisplayName =
+		(user?.user_metadata?.first_name as string | undefined) ??
+		(user?.user_metadata?.given_name as string | undefined) ??
+		(user?.user_metadata?.name as string | undefined)?.split(" ")[0] ??
+		null;
 
 	const isDark = t.isDark;
 
@@ -204,43 +213,74 @@ export default function AdminLayout({
 						</div>
 					</nav>
 
-					{/* User */}
-					<div className={clsx("p-4 border-t", border)}>
-						<div
-							className={clsx(
-								"flex items-center gap-3 px-3 py-3 rounded-xl",
-								surface2,
-							)}
-						>
-							<div className="w-9 h-9 bg-brand-600/20 rounded-xl flex items-center justify-center flex-shrink-0">
-								<span className="text-brand-400 font-medium text-sm">
-									{user?.email?.[0]?.toUpperCase() ?? "A"}
-								</span>
-							</div>
-							<div className="flex-1 min-w-0">
+					{/* User + Profile popover */}
+					<div className={clsx("p-4 border-t relative", border)}>
+						{/* Popover profil */}
+						{profileOpen && (
+							<>
+								<div
+									className="fixed inset-0 z-40"
+									onClick={() => setProfileOpen(false)}
+								/>
 								<div
 									className={clsx(
-										"text-sm font-normal truncate",
-										t.txt,
+										"absolute bottom-full left-4 right-4 mb-2 z-50 rounded-2xl border shadow-2xl overflow-hidden",
+										surface,
+										border,
 									)}
 								>
-									Administrateur
+									{user && (
+										<ProfileWidget
+											user={user}
+											onClose={() => setProfileOpen(false)}
+										/>
+									)}
 								</div>
-								<div
+							</>
+						)}
+
+						<div className={clsx("flex items-center gap-2 px-3 py-2 rounded-xl", surface2)}>
+							{/* Bouton profil cliquable */}
+							<button
+								onClick={() => setProfileOpen((v) => !v)}
+								aria-label="Mon profil"
+								aria-expanded={profileOpen}
+								className={clsx(
+									"flex items-center gap-2.5 flex-1 min-w-0 rounded-lg transition-colors",
+									t.hoverBg,
+								)}
+							>
+								<div className="w-9 h-9 bg-brand-600/20 rounded-xl flex items-center justify-center flex-shrink-0">
+									<span className="text-brand-400 font-medium text-sm">
+										{user?.email?.[0]?.toUpperCase() ?? "A"}
+									</span>
+								</div>
+								<div className="flex-1 min-w-0 text-left">
+									<div className={clsx("text-sm font-normal truncate", t.txt)}>
+										{userDisplayName ?? "Mon profil"}
+									</div>
+									<div className={clsx("text-xs truncate", t.txtSubtle)}>
+										{user?.email ?? "—"}
+									</div>
+								</div>
+								<ChevronUp
+									size={14}
 									className={clsx(
-										"text-xs truncate",
+										"flex-shrink-0 transition-transform duration-200",
 										t.txtSubtle,
+										!profileOpen && "rotate-180",
 									)}
-								>
-									{user?.email ?? "—"}
-								</div>
-							</div>
+									aria-hidden="true"
+								/>
+							</button>
+
+							{/* Déconnexion */}
 							<form action={signOutAction}>
 								<button
 									type="submit"
 									aria-label="Se déconnecter"
 									className={clsx(
-										"p-1 rounded-lg transition-colors hover:text-red-600 dark:hover:text-red-400",
+										"p-1.5 rounded-lg transition-colors hover:text-red-500",
 										adminUI.txtSecondary,
 										adminUI.focusDanger,
 									)}

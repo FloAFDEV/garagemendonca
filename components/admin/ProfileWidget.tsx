@@ -11,9 +11,10 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 interface ProfileWidgetProps {
   user: SupabaseUser;
   onUpdate?: (firstName: string) => void;
+  onClose?: () => void;
 }
 
-export default function ProfileWidget({ user, onUpdate }: ProfileWidgetProps) {
+export default function ProfileWidget({ user, onUpdate, onClose }: ProfileWidgetProps) {
   const t = useAdminTokens();
   const currentFirst =
     (user.user_metadata?.first_name as string | undefined) ??
@@ -40,6 +41,7 @@ export default function ProfileWidget({ user, onUpdate }: ProfileWidgetProps) {
       toast.success("Prénom mis à jour.");
       setEditing(false);
       onUpdate?.(trimmed);
+      onClose?.();
     }
   };
 
