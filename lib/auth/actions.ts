@@ -161,7 +161,7 @@ export async function resetPasswordAction(
 
   const supabase = await createActionClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.garagemendonca.com"}/admin/reset-password`,
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.garagemendonca.com"}/reset-password`,
   });
 
   if (error) {
