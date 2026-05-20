@@ -165,8 +165,11 @@ export async function resetPasswordAction(
   });
 
   if (error) {
-    // Ne pas révéler si l'email existe ou non (sécurité)
     console.error("[resetPasswordAction]", error.message);
+    // Surfacer le rate-limit sans révéler si l'email existe
+    if (error.status === 429) {
+      return { error: "Trop de demandes. Attendez quelques minutes avant de réessayer." };
+    }
   }
 
   // Toujours retourner succès pour éviter l'énumération d'emails
