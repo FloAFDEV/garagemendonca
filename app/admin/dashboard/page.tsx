@@ -23,6 +23,8 @@ function DashboardContent() {
 	const displayName =
 		firstName ??
 		(user?.user_metadata?.first_name as string | undefined) ??
+		(user?.user_metadata?.given_name as string | undefined) ??
+		(user?.user_metadata?.name as string | undefined)?.split(" ")[0] ??
 		"";
 
 	const stockCount     = vehicles.filter((v) => v.status !== "sold").length;

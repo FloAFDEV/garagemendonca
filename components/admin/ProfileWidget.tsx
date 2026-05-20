@@ -15,7 +15,11 @@ interface ProfileWidgetProps {
 
 export default function ProfileWidget({ user, onUpdate }: ProfileWidgetProps) {
   const t = useAdminTokens();
-  const currentFirst = (user.user_metadata?.first_name as string | undefined) ?? "";
+  const currentFirst =
+    (user.user_metadata?.first_name as string | undefined) ??
+    (user.user_metadata?.given_name as string | undefined) ??
+    (user.user_metadata?.name as string | undefined)?.split(" ")[0] ??
+    "";
 
   const [editing, setEditing]   = useState(false);
   const [value, setValue]       = useState(currentFirst);
