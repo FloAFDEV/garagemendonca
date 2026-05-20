@@ -84,7 +84,6 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
     sold_at:          row.sold_at ?? undefined,
     featured:         row.featured,
     featuredOrder:    row.featured_order ?? undefined,
-    displayOrder:     row.display_order ?? undefined,
     categories:       row.categories ?? [],
     features:         (row.features as VehicleFeatures) ?? {},
     options:          (row.options as VehicleOptions) ?? {},
@@ -123,7 +122,6 @@ export function vehicleToInsert(input: VehicleCreateInput): VehicleInsert {
     sold_at:          input.sold_at ?? null,
     featured:         input.featured ?? false,
     featured_order:   input.featured_order ?? null,
-    display_order:    input.display_order ?? null,
     categories:       input.categories ?? [],
     features:         (input.features as VehicleFeatures) ?? {},
     options:          input.options ?? {},
@@ -160,7 +158,6 @@ export function vehicleToUpdate(input: VehicleUpdateInput): VehicleUpdate {
   if (input.sold_at         !== undefined) update.sold_at          = input.sold_at ?? null;
   if (input.featured        !== undefined) update.featured         = input.featured;
   if (input.featured_order  !== undefined) update.featured_order   = input.featured_order ?? null;
-  if (input.display_order   !== undefined) update.display_order    = input.display_order ?? null;
   if (input.categories      !== undefined) update.categories       = input.categories ?? [];
   if (input.features        !== undefined) update.features         = input.features as VehicleFeatures;
   if (input.options         !== undefined) update.options          = input.options ?? {};

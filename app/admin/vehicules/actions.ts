@@ -86,7 +86,6 @@ function toDbRow(input: VehicleUpdateInput): Record<string, unknown> {
 	if (input.sold_at !== undefined)          row.sold_at = input.sold_at;
 	if (input.featured !== undefined)         row.featured = input.featured;
 	if (input.featuredOrder !== undefined)    row.featured_order = input.featuredOrder;
-	if (input.displayOrder !== undefined)     row.display_order = input.displayOrder ?? null;
 	if (input.categories !== undefined)       row.categories = input.categories;
 	if (input.slug !== undefined)             row.slug = input.slug;
 	if (input.meta_description !== undefined) row.meta_description = input.meta_description;

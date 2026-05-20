@@ -124,7 +124,6 @@ export const vehicleCreateSchema = z.object({
   sold_at:      z.string().datetime().optional(),
   featured:     z.boolean().optional().default(false),
   featured_order: z.number().int().min(1).optional(),
-  display_order:  z.number().int().min(1).max(9999).optional(),
   categories:   z.array(z.string().min(1)).max(10).optional(),
   features:     z.record(z.string(), z.union([z.string(), z.array(z.string())])).optional(),
   options:      vehicleOptionsSchema,
