@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getStoragePublicUrl } from "@/lib/utils/storage";
+import { getStoragePublicUrl, normalizeSupabaseUrl } from "@/lib/utils/storage";
 import type { Service, ServiceImage } from "@/types";
 
 interface Props {
@@ -10,10 +10,11 @@ function getPrimaryImage(images: ServiceImage[]): ServiceImage | undefined {
 	return images.find((i) => i.is_primary) ?? images[0];
 }
 
-// service-images est un bucket public (migration 013) — URL directe, pas de signed URL
+// service-images est un bucket public — toujours construire une URL publique permanente
 function getImageUrl(image: ServiceImage): string | undefined {
 	if (image.storage_path) return getStoragePublicUrl("service-images", image.storage_path);
-	return image.url ?? undefined;
+	// Normalise les anciens signed URLs stockés dans url
+	return normalizeSupabaseUrl(image.url) ?? image.url ?? undefined;
 }
 
 export default function ServiceHero({ service }: Props) {
@@ -32,7 +33,6 @@ export default function ServiceHero({ service }: Props) {
 						sizes="(min-width: 1024px) 66vw, 100vw"
 						className="object-cover"
 						priority
-						unoptimized
 					/>
 
 					<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />

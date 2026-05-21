@@ -173,7 +173,6 @@ export default function Hero() {
 						sizes="(max-width: 1024px) 80px, 112px"
 						className="object-cover"
 						priority
-						unoptimized
 					/>
 				</div>
 			</div>

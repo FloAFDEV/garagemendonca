@@ -71,7 +71,6 @@ export default function CookieBanner() {
                 fill
                 sizes="32px"
                 className="object-cover"
-                unoptimized
               />
             </div>
             <span className="font-medium text-sm text-slate-800 whitespace-nowrap">
