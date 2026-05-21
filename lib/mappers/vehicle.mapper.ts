@@ -8,7 +8,7 @@
 import type { Vehicle, VehicleFeatures, VehicleOptions, VehicleImage } from "@/types";
 import type { VehicleRow, VehicleInsert, VehicleUpdate } from "@/lib/supabase/database.types";
 import type { VehicleCreateInput, VehicleUpdateInput } from "@/lib/validation/vehicle.schema";
-import { getVehiclePublicUrl } from "@/lib/utils/vehicle-images";
+import { getVehiclePublicUrl, resolveVehicleImageUrl } from "@/lib/utils/vehicle-images";
 import { isColorUnknown } from "@/lib/utils/detectVehicleColor";
 
 // ─────────────────────────────────────────────────────────────────
@@ -48,17 +48,21 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
       ? mapVehicleImages(row.vehicle_images)
       : undefined;
 
-  // Si vehicle_images jointes, elles deviennent la source canonique des URLs.
-  // storage_path → URL publique (bucket public, synchrone, sans round-trip).
+  // vehicle_images jointes → source canonique des URLs.
+  // Toujours normaliser vers URL publique permanente (évite les signed URLs expirés).
   const images = joinedImages
     ? joinedImages.map((i) =>
-        i.storage_path ? getVehiclePublicUrl(i.storage_path) : i.url,
+        i.storage_path
+          ? getVehiclePublicUrl(i.storage_path)
+          : resolveVehicleImageUrl(i.url),
       )
-    : (row.images ?? []);
+    : (row.images ?? []).map(resolveVehicleImageUrl);
+
   const primaryImage = joinedImages?.find((i) => i.is_primary) ?? joinedImages?.[0];
+  const rawThumb = primaryImage?.url ?? row.thumbnail_url ?? undefined;
   const thumbnailUrl = primaryImage?.storage_path
     ? getVehiclePublicUrl(primaryImage.storage_path)
-    : (primaryImage?.url ?? row.thumbnail_url ?? undefined);
+    : (rawThumb ? resolveVehicleImageUrl(rawThumb) : undefined);
 
   return {
     id:               row.id,
