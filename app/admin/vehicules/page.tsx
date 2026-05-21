@@ -62,6 +62,171 @@ type SortKey =
 	| "price-desc"
 	| "year-desc";
 
+// ── Utilitaire : normalise accents + casse pour recherche tolérante ──────────
+function normalizeText(s: string): string {
+	return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+}
+
+// ── Select marque searchable ─────────────────────────────────────────────────
+function BrandSearchSelect({
+	brands,
+	value,
+	onChange,
+}: {
+	brands: string[];
+	value: string;
+	onChange: (v: string) => void;
+}) {
+	const [open, setOpen] = useState(false);
+	const [openUp, setOpenUp] = useState(false);
+	const [query, setQuery] = useState("");
+	const btnRef = useRef<HTMLButtonElement>(null);
+	const queryInputRef = useRef<HTMLInputElement>(null);
+	const t = useAdminTokens();
+
+	const filteredBrands = useMemo(
+		() =>
+			query
+				? brands.filter((b) => normalizeText(b).includes(normalizeText(query)))
+				: brands,
+		[brands, query],
+	);
+
+	function handleOpen() {
+		if (!open && btnRef.current) {
+			const rect = btnRef.current.getBoundingClientRect();
+			setOpenUp(window.innerHeight - rect.bottom < 300);
+		}
+		if (!open) {
+			setQuery("");
+			setTimeout(() => queryInputRef.current?.focus(), 30);
+		}
+		setOpen((v) => !v);
+	}
+
+	function select(brand: string) {
+		onChange(brand);
+		setOpen(false);
+		setQuery("");
+	}
+
+	return (
+		<div className="relative">
+			<button
+				ref={btnRef}
+				type="button"
+				onClick={handleOpen}
+				aria-haspopup="listbox"
+				aria-expanded={open}
+				className={clsx(
+					"w-full flex items-center justify-between gap-2 border rounded-xl px-3 py-2 text-sm outline-none transition-all cursor-pointer",
+					t.inputBg,
+					open ? "border-brand-500" : t.inputBorder,
+					value ? t.inputText : t.inputPlaceholder,
+					adminUI.focusGhost,
+				)}
+			>
+				<span className="truncate">{value || "Toutes"}</span>
+				<ChevronDown
+					size={14}
+					className={clsx(
+						"flex-shrink-0 transition-transform duration-200",
+						t.txtSubtle,
+						open && "rotate-180",
+					)}
+					aria-hidden="true"
+				/>
+			</button>
+
+			{open && (
+				<>
+					<div
+						className="fixed inset-0 z-10"
+						onClick={() => setOpen(false)}
+					/>
+					<div
+						className={clsx(
+							"absolute left-0 z-20 w-full min-w-[180px] rounded-xl border shadow-xl overflow-hidden",
+							openUp ? "bottom-full mb-1" : "top-full mt-1",
+							t.dropdownBg,
+							t.dropdownBorder,
+						)}
+					>
+						{/* Search dans les marques */}
+						<div className={clsx("px-2 pt-2 pb-1 border-b", t.dropdownBorder)}>
+							<div className="relative">
+								<Search
+									size={13}
+									className={clsx("absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none", t.txtSubtle)}
+									aria-hidden="true"
+								/>
+								<input
+									ref={queryInputRef}
+									type="text"
+									value={query}
+									onChange={(e) => setQuery(e.target.value)}
+									onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
+									placeholder="Filtrer les marques…"
+									autoComplete="off"
+									className={clsx(
+										"w-full pl-7 pr-2 py-1.5 text-xs rounded-lg border outline-none transition-colors",
+										t.inputBg,
+										t.inputBorder,
+										t.inputText,
+										t.inputPlaceholder,
+										"focus:border-brand-400",
+									)}
+								/>
+							</div>
+						</div>
+
+						{/* Liste scrollable */}
+						<div className="overflow-y-auto max-h-52 py-1">
+							<button
+								type="button"
+								onClick={() => select("")}
+								className={clsx(
+									"w-full text-left px-3 py-2 text-xs transition-colors",
+									t.dropdownItemHover,
+									value === "" ? `${t.txt} font-medium` : t.dropdownItemTxt,
+									adminUI.focusGhost,
+								)}
+							>
+								Toutes les marques
+								{value === "" && " ✓"}
+							</button>
+							{filteredBrands.length === 0 ? (
+								<p className={clsx("px-3 py-3 text-xs text-center", t.txtSubtle)}>
+									Aucune marque trouvée
+								</p>
+							) : (
+								filteredBrands.map((b) => (
+									<button
+										key={b}
+										type="button"
+										onClick={() => select(b)}
+										className={clsx(
+											"w-full text-left px-3 py-2 text-xs transition-colors",
+											t.dropdownItemHover,
+											b === value
+												? `${t.txt} font-medium`
+												: t.dropdownItemTxt,
+											adminUI.focusGhost,
+										)}
+									>
+										{b}
+										{b === value && " ✓"}
+									</button>
+								))
+							)}
+						</div>
+					</div>
+				</>
+			)}
+		</div>
+	);
+}
+
 function StatusSelect({
 	vehicleId,
 	current,
@@ -237,8 +402,13 @@ export default function AdminVehiclesPage() {
 
 	const filtered = useMemo(() => {
 		let list = vehicles.filter((v) => {
-			const q = `${v.brand} ${v.model} ${v.year}`.toLowerCase();
-			if (debouncedSearch && !q.includes(debouncedSearch.toLowerCase())) return false;
+			if (debouncedSearch) {
+				const haystack = normalizeText(
+					`${v.brand} ${v.model} ${v.year} ${v.fuel} ${v.transmission} ${v.color ?? ""} ${v.features?.finition ?? ""}`,
+				);
+				const terms = normalizeText(debouncedSearch).split(/\s+/).filter(Boolean);
+				if (!terms.every((term) => haystack.includes(term))) return false;
+			}
 			if (filterBrand && v.brand !== filterBrand) return false;
 			if (filterYear && v.year !== parseInt(filterYear)) return false;
 			if (filterPriceMax && v.price > parseInt(filterPriceMax))
@@ -374,9 +544,11 @@ export default function AdminVehiclesPage() {
 							name="vehicle-search"
 							type="text"
 							autoComplete="off"
+							autoCorrect="off"
+							autoCapitalize="off"
 							spellCheck={false}
-							placeholder="Rechercher un véhicule…"
-							aria-label="Rechercher un véhicule par marque, modèle ou année"
+							placeholder="Marque, modèle, carburant, couleur…"
+							aria-label="Rechercher un véhicule par marque, modèle, carburant ou transmission"
 							aria-controls="vehicle-list"
 							value={inputValue}
 							onChange={(e) => setInputValue(e.target.value)}
@@ -385,6 +557,7 @@ export default function AdminVehiclesPage() {
 							}}
 							className={clsx(
 								"w-full border focus:border-brand-500 rounded-xl pl-11 py-3 outline-none transition-all text-sm",
+								"[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-ms-clear]:hidden",
 								inputValue ? "pr-9" : "pr-4",
 								t.inputBg,
 								t.inputBorder,
@@ -457,18 +630,11 @@ export default function AdminVehiclesPage() {
 							>
 								Marque
 							</label>
-							<select
-								value={filterBrand}
-								onChange={(e) => setFilterBrand(e.target.value)}
-								className={clsx(selectClass, "w-full")}
-							>
-								<option value="">Toutes</option>
-								{availableBrands.map((b) => (
-									<option key={b} value={b}>
-										{b}
-									</option>
-								))}
-							</select>
+							<BrandSearchSelect
+							brands={availableBrands}
+							value={filterBrand}
+							onChange={setFilterBrand}
+						/>
 						</div>
 						<div>
 							<label
