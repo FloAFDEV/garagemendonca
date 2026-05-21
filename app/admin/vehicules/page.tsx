@@ -18,6 +18,7 @@ import {
 	ChevronRight,
 	Star,
 	SlidersHorizontal,
+	X,
 } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
@@ -167,7 +168,8 @@ export default function AdminVehiclesPage() {
 	const loading = isLoading;
 	// localVehicles sert aux optimistic updates (delete/status) sans perdre le cache RQ
 	const vehicles = localVehicles ?? fetchedVehicles;
-	const [search, setSearch] = useState("");
+	const [inputValue, setInputValue] = useState("");
+	const [debouncedSearch, setDebouncedSearch] = useState("");
 	const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 	const [filterBrand, setFilterBrand] = useState("");
 	const [filterYear, setFilterYear] = useState("");
@@ -182,6 +184,19 @@ export default function AdminVehiclesPage() {
 	const t = useAdminTokens();
 	const isFirstRender = useRef(true);
 	const scrollRestored = useRef(false);
+	const searchInputRef = useRef<HTMLInputElement>(null);
+
+	// Debounce: met à jour debouncedSearch 300ms après la dernière frappe
+	useEffect(() => {
+		const timer = setTimeout(() => setDebouncedSearch(inputValue.trim()), 300);
+		return () => clearTimeout(timer);
+	}, [inputValue]);
+
+	const clearSearch = useCallback(() => {
+		setInputValue("");
+		setDebouncedSearch("");
+		searchInputRef.current?.focus();
+	}, []);
 
 	const navigateToVehicle = useCallback(
 		(id: string) => {
@@ -203,7 +218,7 @@ export default function AdminVehiclesPage() {
 			return;
 		}
 		setPage(1);
-	}, [search, filterBrand, filterYear, filterPriceMax, filterStatus, sortBy]);
+	}, [debouncedSearch, filterBrand, filterYear, filterPriceMax, filterStatus, sortBy]);
 
 	// Restore scroll position once data is loaded
 	useEffect(() => {
@@ -223,7 +238,7 @@ export default function AdminVehiclesPage() {
 	const filtered = useMemo(() => {
 		let list = vehicles.filter((v) => {
 			const q = `${v.brand} ${v.model} ${v.year}`.toLowerCase();
-			if (search && !q.includes(search.toLowerCase())) return false;
+			if (debouncedSearch && !q.includes(debouncedSearch.toLowerCase())) return false;
 			if (filterBrand && v.brand !== filterBrand) return false;
 			if (filterYear && v.year !== parseInt(filterYear)) return false;
 			if (filterPriceMax && v.price > parseInt(filterPriceMax))
@@ -256,7 +271,7 @@ export default function AdminVehiclesPage() {
 		return list;
 	}, [
 		vehicles,
-		search,
+		debouncedSearch,
 		filterBrand,
 		filterYear,
 		filterPriceMax,
@@ -348,23 +363,49 @@ export default function AdminVehiclesPage() {
 						<Search
 							size={16}
 							className={clsx(
-								"absolute left-4 top-1/2 -translate-y-1/2",
-								t.txtSubtle,
+								"absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors",
+								inputValue ? "text-brand-500" : t.txtSubtle,
 							)}
+							aria-hidden="true"
 						/>
 						<input
+							ref={searchInputRef}
+							id="admin-vehicle-search"
+							name="vehicle-search"
 							type="text"
+							autoComplete="off"
+							spellCheck={false}
 							placeholder="Rechercher un véhicule…"
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
+							aria-label="Rechercher un véhicule par marque, modèle ou année"
+							aria-controls="vehicle-list"
+							value={inputValue}
+							onChange={(e) => setInputValue(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Escape") clearSearch();
+							}}
 							className={clsx(
-								"w-full border focus:border-brand-500 rounded-xl pl-11 pr-4 py-3 outline-none transition-all text-sm",
+								"w-full border focus:border-brand-500 rounded-xl pl-11 py-3 outline-none transition-all text-sm",
+								inputValue ? "pr-9" : "pr-4",
 								t.inputBg,
 								t.inputBorder,
 								t.inputText,
 								t.inputPlaceholder,
 							)}
 						/>
+						{inputValue && (
+							<button
+								type="button"
+								onClick={clearSearch}
+								aria-label="Effacer la recherche"
+								className={clsx(
+									"absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full transition-colors",
+									t.txtSubtle,
+									t.hoverBgStrong,
+								)}
+							>
+								<X size={14} aria-hidden="true" />
+							</button>
+						)}
 					</div>
 					<button
 						onClick={() => setShowFilters((v) => !v)}
@@ -559,7 +600,7 @@ export default function AdminVehiclesPage() {
 				)}
 
 				{/* ── Mobile list ─────────────────────────────────── */}
-				<div className="md:hidden">
+				<div id="vehicle-list" className="md:hidden">
 					{loading ? (
 						<div className={clsx("rounded-2xl border overflow-hidden divide-y", t.surface, t.border, t.isDark ? "divide-dark-800" : "divide-slate-100")}>
 							{Array.from({ length: 4 }).map((_, i) => (
