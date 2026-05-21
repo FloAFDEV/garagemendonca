@@ -20,7 +20,6 @@ import {
 	SlidersHorizontal,
 } from "lucide-react";
 import Link from "next/link";
-import Badge from "@/components/ui/Badge";
 import clsx from "clsx";
 import { adminUI } from "@/lib/admin-ui";
 import {
@@ -547,198 +546,114 @@ export default function AdminVehiclesPage() {
 					</div>
 				)}
 
-				{/* ── Mobile cards ────────────────────────────────── */}
-				<div className="md:hidden space-y-3">
+				{/* ── Mobile list ─────────────────────────────────── */}
+				<div className="md:hidden">
 					{loading ? (
-						Array.from({ length: 4 }).map((_, i) => (
-							<div key={i} className={clsx("rounded-2xl border overflow-hidden animate-pulse", t.surface, t.border)}>
-								<div className={clsx("w-full h-36", t.isDark ? "bg-dark-800" : "bg-slate-100")} />
-								<div className="p-4 space-y-2.5">
-									<div className={clsx("h-4 rounded-lg w-2/3", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
-									<div className={clsx("h-3 rounded-lg w-1/2", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
-									<div className="flex gap-2">
-										<div className={clsx("h-6 rounded-xl w-16", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
-										<div className={clsx("h-6 rounded-xl w-20", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
+						<div className={clsx("rounded-2xl border overflow-hidden divide-y", t.surface, t.border, t.isDark ? "divide-dark-800" : "divide-slate-100")}>
+							{Array.from({ length: 4 }).map((_, i) => (
+								<div key={i} className="flex items-center gap-3 px-4 py-3 animate-pulse">
+									<div className={clsx("w-12 h-10 rounded-lg flex-shrink-0", t.isDark ? "bg-dark-800" : "bg-slate-200")} />
+									<div className="flex-1 space-y-1.5">
+										<div className={clsx("h-3.5 rounded-lg w-2/3", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
+										<div className={clsx("h-3 rounded-lg w-1/2", t.isDark ? "bg-dark-700" : "bg-slate-100")} />
+									</div>
+									<div className="space-y-1.5 items-end flex flex-col">
+										<div className={clsx("h-3.5 rounded-lg w-16", t.isDark ? "bg-dark-700" : "bg-slate-200")} />
+										<div className={clsx("h-3 rounded-xl w-12", t.isDark ? "bg-dark-700" : "bg-slate-100")} />
 									</div>
 								</div>
-							</div>
-						))
+							))}
+						</div>
 					) : paginated.length === 0 ? (
 						<div className="text-center py-16">
-							<Car
-								size={40}
-								className={clsx("mx-auto mb-3", t.txtFaint)}
-							/>
-							<p className={clsx("text-sm", t.txtSubtle)}>
-								Aucun véhicule trouvé
-							</p>
+							<Car size={40} className={clsx("mx-auto mb-3", t.txtFaint)} />
+							<p className={clsx("text-sm", t.txtSubtle)}>Aucun véhicule trouvé</p>
 						</div>
 					) : (
-						paginated.map((vehicle) => (
-							<div
-								key={vehicle.id}
-								role="button"
-								tabIndex={0}
-								onClick={() => navigateToVehicle(vehicle.id)}
-								onKeyDown={(e) => e.key === "Enter" && navigateToVehicle(vehicle.id)}
-								className={clsx(
-									"rounded-2xl border overflow-hidden cursor-pointer transition-shadow hover:shadow-lg focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:outline-none",
-									t.surface,
-									t.border,
-								)}
-							>
-								<div
-									className={clsx(
-										"w-full h-36 overflow-hidden flex items-center justify-center",
-										t.surface,
-									)}
-								>
-									<VehicleThumb
-										vehicle={vehicle}
-										className="w-full h-full object-cover"
-									/>
-								</div>
-								<div className="p-4 space-y-3">
-									<div className="flex items-start justify-between gap-3">
+						<div className={clsx("rounded-2xl border overflow-hidden", t.surface, t.border)}>
+							{paginated.map((vehicle) => (
+								<div key={vehicle.id} className={clsx("border-b last:border-0", t.border)}>
+									{/* Main row — tap to edit */}
+									<div
+										role="button"
+										tabIndex={0}
+										onClick={() => navigateToVehicle(vehicle.id)}
+										onKeyDown={(e) => e.key === "Enter" && navigateToVehicle(vehicle.id)}
+										className={clsx(
+											"flex items-center gap-3 px-4 py-3 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-500",
+											t.tableRowHover,
+										)}
+									>
+										<div className="w-12 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-700 flex items-center justify-center">
+											<VehicleThumb vehicle={vehicle} className="w-full h-full object-cover" />
+										</div>
 										<div className="flex-1 min-w-0">
-											<p
-												className={clsx(
-													"font-normal text-sm truncate flex items-center gap-1.5",
-													t.txt,
-												)}
-											>
+											<p className={clsx("font-normal text-sm truncate flex items-center gap-1", t.txt)}>
 												{vehicle.featured && (
-													<Star
-														size={11}
-														className="text-amber-400 flex-shrink-0"
-													/>
+													<Star size={10} className="text-amber-400 flex-shrink-0" aria-hidden="true" />
 												)}
 												{vehicle.brand} {vehicle.model}
-												{vehicle.features?.[
-													"Finition"
-												] && (
-													<span className="text-brand-400 text-xs font-normal ml-1">
-														—{" "}
-														{
-															vehicle.features[
-																"Finition"
-															]
-														}
-													</span>
-												)}
 											</p>
-											<p
-												className={clsx(
-													"text-xs mt-0.5",
-													t.txtSubtle,
-												)}
-											>
-												{vehicle.year}{vehicle.color ? ` · ${vehicle.color}` : ""}{" "}
-												· {vehicle.transmission}
+											<p className={clsx("text-xs mt-0.5 truncate", t.txtSubtle)}>
+												{vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km · {vehicle.fuel}
 											</p>
 										</div>
-										<span className="font-heading font-medium text-brand-400 text-sm flex-shrink-0">
-											{vehicle.price.toLocaleString(
-												"fr-FR",
-											)}{" "}
-											€
-										</span>
+										<div className="flex flex-col items-end gap-1.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+											<span className="font-heading font-medium text-brand-400 text-sm">
+												{vehicle.price.toLocaleString("fr-FR")} €
+											</span>
+											<StatusSelect
+												vehicleId={vehicle.id}
+												current={vehicle.status ?? "draft"}
+												onChange={handleStatusChange}
+											/>
+										</div>
 									</div>
-									<div className="flex items-center gap-2 flex-wrap">
-										<Badge
-											variant={
-												fuelVariants[vehicle.fuel] ??
-												"gray"
-											}
-										>
-											{vehicle.fuel}
-										</Badge>
-										<span
-											className={clsx(
-												"text-xs",
-												t.txtMuted,
-											)}
-										>
-											{vehicle.mileage.toLocaleString(
-												"fr-FR",
-											)}{" "}
-											km
-										</span>
-										<StatusSelect
-											vehicleId={vehicle.id}
-											current={vehicle.status ?? "draft"}
-											onChange={handleStatusChange}
-										/>
-									</div>
+									{/* Action bar */}
 									<div
 										onClick={(e) => e.stopPropagation()}
-										className={clsx(
-											"flex items-center gap-2 pt-1 border-t",
-											t.border,
-										)}
+										className={clsx("flex items-center border-t", t.border)}
 									>
 										<Link
 											href={`/vehicules/${vehicle.id}`}
 											target="_blank"
-											className={clsx(
-												actionBtn,
-												t.hoverTxt,
-											)}
+											className={clsx(actionBtn, t.hoverTxt, "py-2")}
 										>
 											<Eye size={13} aria-hidden="true" /> Voir
 										</Link>
 										<Link
 											href={`/admin/vehicules/${vehicle.id}/modifier`}
-											className={clsx(
-												actionBtn,
-												"hover:text-blue-500",
-											)}
+											className={clsx(actionBtn, "hover:text-blue-500", "py-2")}
 										>
 											<Pencil size={13} aria-hidden="true" /> Modifier
 										</Link>
 										{deleteConfirm === vehicle.id ? (
-											<div className="flex-1 flex items-center gap-1">
+											<div className="flex-1 flex items-center gap-1 px-2 py-1.5">
 												<button
-													onClick={() =>
-														handleDelete(vehicle.id)
-													}
-													className={clsx(
-														"flex-1",
-														adminUI.btnDangerSm,
-													)}
+													onClick={() => handleDelete(vehicle.id)}
+													className={clsx("flex-1", adminUI.btnDangerSm)}
 												>
 													Confirmer
 												</button>
 												<button
-													onClick={() =>
-														setDeleteConfirm(null)
-													}
-													className={clsx(
-														"px-2 py-1.5 text-xs rounded-lg transition-colors",
-														t.txtSubtle,
-														t.hoverTxt,
-													)}
+													onClick={() => setDeleteConfirm(null)}
+													className={clsx("px-2 py-1.5 text-xs rounded-lg transition-colors", t.txtSubtle, t.hoverTxt)}
 												>
 													✕
 												</button>
 											</div>
 										) : (
 											<button
-												onClick={() =>
-													setDeleteConfirm(vehicle.id)
-												}
-												className={clsx(
-													actionBtn,
-													"hover:text-red-500",
-												)}
+												onClick={() => setDeleteConfirm(vehicle.id)}
+												className={clsx(actionBtn, "hover:text-red-500", "py-2")}
 											>
 												<Trash2 size={13} aria-hidden="true" /> Supprimer
 											</button>
 										)}
 									</div>
 								</div>
-							</div>
-						))
+							))}
+						</div>
 					)}
 				</div>
 
