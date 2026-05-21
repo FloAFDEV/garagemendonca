@@ -42,7 +42,7 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 				"fixed top-0 left-0 right-0 z-50 transition-all duration-300",
 				isOpaque
 					? "bg-white shadow-[0_1px_0_#e2e8f0,0_4px_16px_rgba(0,0,0,0.06)] py-0"
-					: "bg-black/10 backdrop-blur-[2px] pb-2",
+					: "bg-gradient-to-b from-black/40 to-transparent backdrop-blur-[3px] pb-2",
 			)}
 			style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
 		>
