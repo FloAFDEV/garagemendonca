@@ -3,7 +3,11 @@
 import { useState, use, useEffect, useRef } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
-import { getAdminVehicleById, saveVehicle, getFeaturedCount } from "@/app/admin/vehicules/actions";
+import {
+	getAdminVehicleById,
+	saveVehicle,
+	getFeaturedCount,
+} from "@/app/admin/vehicules/actions";
 import AutoResizeTextarea from "@/components/ui/AutoResizeTextarea";
 import { MAX_FEATURED_VEHICLES as MAX_FEATURED } from "@/lib/config/vehicles";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
@@ -11,7 +15,15 @@ import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import type { VehicleOptions } from "@/types";
 import type { Vehicle } from "@/types";
-import { Save, ArrowLeft, CheckCircle2, Loader2, AlertCircle, Star, Eye } from "lucide-react";
+import {
+	Save,
+	ArrowLeft,
+	CheckCircle2,
+	Loader2,
+	AlertCircle,
+	Star,
+	Eye,
+} from "lucide-react";
 import Link from "next/link";
 import { BRANDS_MODELS, ALL_BRANDS } from "@/lib/brandsModels";
 import { BRAND_LOGO_MAP, getLogoSrc } from "@/lib/brandLogos";
@@ -116,7 +128,9 @@ function Combobox({
 	const t = useAdminTokens();
 	const [open, setOpen] = useState(false);
 	const filtered = value
-		? suggestions.filter((s) => s.toLowerCase().includes(value.toLowerCase()))
+		? suggestions.filter((s) =>
+				s.toLowerCase().includes(value.toLowerCase()),
+			)
 		: suggestions;
 
 	const exactMatch = suggestions.some(
@@ -130,13 +144,21 @@ function Combobox({
 			{hasLogo && (
 				<span className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none z-10 flex items-center justify-center">
 					{/* eslint-disable-next-line @next/next/no-img-element */}
-					<img src={getLogoSrc(value)} alt="" aria-hidden className="max-w-full max-h-full object-contain" />
+					<img
+						src={getLogoSrc(value)}
+						alt=""
+						aria-hidden
+						className="max-w-full max-h-full object-contain"
+					/>
 				</span>
 			)}
 			<input
 				id={id}
 				value={value}
-				onChange={(e) => { onChange(e.target.value); setOpen(true); }}
+				onChange={(e) => {
+					onChange(e.target.value);
+					setOpen(true);
+				}}
 				onFocus={() => setOpen(true)}
 				onBlur={() => setTimeout(() => setOpen(false), 160)}
 				placeholder={placeholder}
@@ -149,20 +171,32 @@ function Combobox({
 				}
 			/>
 			{open && (filtered.length > 0 || showFreeOption) && (
-				<div className={`absolute left-0 top-full mt-1 w-full z-50 ${t.dropdownBg} border ${t.dropdownBorder} rounded-xl shadow-2xl overflow-hidden max-h-52 overflow-y-auto`}>
+				<div
+					className={`absolute left-0 top-full mt-1 w-full z-50 ${t.dropdownBg} border ${t.dropdownBorder} rounded-xl shadow-2xl overflow-hidden max-h-52 overflow-y-auto`}
+				>
 					{filtered.slice(0, 14).map((s) => (
 						<button
 							key={s}
 							type="button"
-							onMouseDown={() => { onChange(s); setOpen(false); }}
+							onMouseDown={() => {
+								onChange(s);
+								setOpen(false);
+							}}
 							className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-2.5 ${t.dropdownItemHover} ${
-								s === value ? `${t.txt} bg-brand-500/10 font-medium` : t.dropdownItemTxt
+								s === value
+									? `${t.txt} bg-brand-500/10 font-medium`
+									: t.dropdownItemTxt
 							}`}
 						>
 							{logoMap ? (
 								<span className="w-6 h-5 flex-shrink-0 flex items-center justify-center">
 									{/* eslint-disable-next-line @next/next/no-img-element */}
-									<img src={getLogoSrc(s)} alt="" aria-hidden className="max-w-full max-h-full object-contain" />
+									<img
+										src={getLogoSrc(s)}
+										alt=""
+										aria-hidden
+										className="max-w-full max-h-full object-contain"
+									/>
 								</span>
 							) : null}
 							{s}
@@ -171,7 +205,10 @@ function Combobox({
 					{showFreeOption && (
 						<button
 							type="button"
-							onMouseDown={() => { onChange(value.trim()); setOpen(false); }}
+							onMouseDown={() => {
+								onChange(value.trim());
+								setOpen(false);
+							}}
 							className={`w-full text-left px-3 py-2.5 text-sm transition-colors flex items-center gap-1.5 border-t ${t.dropdownBorder} ${t.dropdownItemHover} text-brand-400`}
 						>
 							<span className="text-xs">↵</span>
@@ -201,9 +238,13 @@ export default function EditVehiclePage({
 	const { id } = use(params);
 	const router = useRouter();
 
-	const [loadState, setLoadState] = useState<"loading" | "ready" | "notfound">("loading");
+	const [loadState, setLoadState] = useState<
+		"loading" | "ready" | "notfound"
+	>("loading");
 	const [vehicleLabel, setVehicleLabel] = useState("");
-	const [extraFeatures, setExtraFeatures] = useState<Record<string, unknown>>({});
+	const [extraFeatures, setExtraFeatures] = useState<Record<string, unknown>>(
+		{},
+	);
 
 	const [form, setForm] = useState<VehicleForm>({
 		brand: "",
@@ -228,61 +269,89 @@ export default function EditVehiclePage({
 
 	const [images, setImages] = useState<string[]>([]);
 	const [errors, setErrors] = useState<FormErrors>({});
-	const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">(
-		"idle",
-	);
+	const [saveStatus, setSaveStatus] = useState<
+		"idle" | "saving" | "saved" | "error"
+	>("idle");
 	const [featuredCount, setFeaturedCount] = useState<number>(0);
 	const initialFeatured = useRef<boolean>(false);
 
 	useEffect(() => {
-		getFeaturedCount().then(setFeaturedCount).catch(() => {});
+		getFeaturedCount()
+			.then(setFeaturedCount)
+			.catch(() => {});
 	}, []);
 
 	useEffect(() => {
-		getAdminVehicleById(id).then((vehicle) => {
-			if (!vehicle) { setLoadState("notfound"); return; }
-			setVehicleLabel(`${vehicle.brand} ${vehicle.model} · ${vehicle.year} · #${vehicle.id}`);
-			setExtraFeatures(vehicle.features ?? {});
+		getAdminVehicleById(id)
+			.then((vehicle) => {
+				if (!vehicle) {
+					setLoadState("notfound");
+					return;
+				}
+				setVehicleLabel(
+					[
+						vehicle.brand,
+						vehicle.model,
+						vehicle.year,
+						`${vehicle.mileage} km`,
+						vehicle.color || null,
+					]
+						.filter(Boolean)
+						.join(" · "),
+				);
+				setExtraFeatures(vehicle.features ?? {});
 
-			// Si description_marketing est déjà peuplée (backfill fait), on l'utilise.
-			// Sinon on parse description brute pour extraire les options à la volée.
-			let displayDescription: string;
-			let mergedOptions: VehicleOptions;
-			if (vehicle.description_marketing != null) {
-				displayDescription = vehicle.description_marketing;
-				mergedOptions = { ...(vehicle.options ?? {}) };
-			} else {
-				const { detectedOptions, remainingText } = parseDescriptionToOptions(vehicle.description ?? "");
-				displayDescription = remainingText;
-				mergedOptions = { ...(vehicle.options ?? {}), ...detectedOptions };
-			}
+				// Si description_marketing est déjà peuplée (backfill fait), on l'utilise.
+				// Sinon on parse description brute pour extraire les options à la volée.
+				let displayDescription: string;
+				let mergedOptions: VehicleOptions;
+				if (vehicle.description_marketing != null) {
+					displayDescription = vehicle.description_marketing;
+					mergedOptions = { ...(vehicle.options ?? {}) };
+				} else {
+					const { detectedOptions, remainingText } =
+						parseDescriptionToOptions(vehicle.description ?? "");
+					displayDescription = remainingText;
+					mergedOptions = {
+						...(vehicle.options ?? {}),
+						...detectedOptions,
+					};
+				}
 
-			setForm({
-				brand: vehicle.brand,
-				model: vehicle.model,
-				finition: (Array.isArray(vehicle.features?.["Finition"]) ? String(vehicle.features!["Finition"][0]) : String(vehicle.features?.["Finition"] ?? "")) || "",
-				year: vehicle.year.toString(),
-				mileage: vehicle.mileage.toString(),
-				fuel: vehicle.fuel,
-				transmission: vehicle.transmission,
-				power: vehicle.power.toString(),
-				critAir: vehicle.critAir ?? "",
-				price: vehicle.price.toString(),
-				color: vehicle.color ?? "",
-				doors: vehicle.doors.toString(),
-				description: displayDescription,
-				status: vehicle.status ?? "draft",
-				published_at: vehicle.published_at ?? "",
-				featured: vehicle.featured ?? false,
-				garantie: (Array.isArray(vehicle.features?.["Garantie"]) ? String(vehicle.features!["Garantie"][0]) : String(vehicle.features?.["Garantie"] ?? "")) || "",
-				options: mergedOptions,
-			});
-			initialFeatured.current = vehicle.featured ?? false;
-			setImages(getVehicleImages(vehicle));
-			setLoadState("ready");
-		}).catch(() => setLoadState("notfound"));
+				setForm({
+					brand: vehicle.brand,
+					model: vehicle.model,
+					finition:
+						(Array.isArray(vehicle.features?.["Finition"])
+							? String(vehicle.features!["Finition"][0])
+							: String(vehicle.features?.["Finition"] ?? "")) ||
+						"",
+					year: vehicle.year.toString(),
+					mileage: vehicle.mileage.toString(),
+					fuel: vehicle.fuel,
+					transmission: vehicle.transmission,
+					power: vehicle.power.toString(),
+					critAir: vehicle.critAir ?? "",
+					price: vehicle.price.toString(),
+					color: vehicle.color ?? "",
+					doors: vehicle.doors.toString(),
+					description: displayDescription,
+					status: vehicle.status ?? "draft",
+					published_at: vehicle.published_at ?? "",
+					featured: vehicle.featured ?? false,
+					garantie:
+						(Array.isArray(vehicle.features?.["Garantie"])
+							? String(vehicle.features!["Garantie"][0])
+							: String(vehicle.features?.["Garantie"] ?? "")) ||
+						"",
+					options: mergedOptions,
+				});
+				initialFeatured.current = vehicle.featured ?? false;
+				setImages(getVehicleImages(vehicle));
+				setLoadState("ready");
+			})
+			.catch(() => setLoadState("notfound"));
 	}, [id]);
-
 
 	// ── Guards ───────────────────────────────────────────────────────
 
@@ -290,7 +359,10 @@ export default function EditVehiclePage({
 		return (
 			<AdminLayout>
 				<div className="flex items-center justify-center min-h-[400px]">
-					<Loader2 size={32} className="animate-spin text-brand-400" />
+					<Loader2
+						size={32}
+						className="animate-spin text-brand-400"
+					/>
 				</div>
 			</AdminLayout>
 		);
@@ -350,7 +422,11 @@ export default function EditVehiclePage({
 			e.year = `Année invalide (1980–${new Date().getFullYear()})`;
 		if (form.mileage === "" || parseInt(form.mileage) < 0)
 			e.mileage = "Kilométrage invalide";
-		if (form.power === "" || isNaN(parseInt(form.power)) || parseInt(form.power) < 0)
+		if (
+			form.power === "" ||
+			isNaN(parseInt(form.power)) ||
+			parseInt(form.power) < 0
+		)
 			e.power = "Puissance invalide";
 		if (!form.price || parseInt(form.price) <= 0)
 			e.price = "Prix requis et supérieur à 0";
@@ -367,8 +443,12 @@ export default function EditVehiclePage({
 			// Scroll vers le haut pour que les erreurs soient visibles
 			const firstErrorKey = Object.keys(errs)[0];
 			requestAnimationFrame(() => {
-				const el = firstErrorKey ? document.getElementById(firstErrorKey) ?? document.getElementById(`${firstErrorKey}-edit`) : null;
-				if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+				const el = firstErrorKey
+					? (document.getElementById(firstErrorKey) ??
+						document.getElementById(`${firstErrorKey}-edit`))
+					: null;
+				if (el)
+					el.scrollIntoView({ behavior: "smooth", block: "center" });
 				else window.scrollTo({ top: 0, behavior: "smooth" });
 			});
 			return;
@@ -446,7 +526,9 @@ export default function EditVehiclePage({
 						>
 							Modifier le véhicule
 						</h2>
-						<p className={`${t.txtMuted} text-sm mt-1 truncate`}>
+						<p
+							className={`${t.txtMuted} text-xl font-medium mt-1 truncate`}
+						>
 							{vehicleLabel}
 						</p>
 					</div>
@@ -528,11 +610,17 @@ export default function EditVehiclePage({
 							)}
 						</div>
 						{/* ── Mise en avant ───────────────────────────────── */}
-						<div className={`mt-5 pt-5 border-t ${t.border} space-y-4`}>
+						<div
+							className={`mt-5 pt-5 border-t ${t.border} space-y-4`}
+						>
 							{/* Mise en avant (max 4) */}
 							{(() => {
-								const effectiveCount = featuredCount - (initialFeatured.current ? 1 : 0);
-								const atMax = effectiveCount >= MAX_FEATURED && !form.featured;
+								const effectiveCount =
+									featuredCount -
+									(initialFeatured.current ? 1 : 0);
+								const atMax =
+									effectiveCount >= MAX_FEATURED &&
+									!form.featured;
 								return (
 									<div>
 										<div className="flex items-center gap-3">
@@ -549,17 +637,29 @@ export default function EditVehiclePage({
 												htmlFor="featured-edit"
 												className={`text-sm cursor-pointer select-none flex items-center gap-1.5 ${atMax ? "opacity-40 cursor-not-allowed" : t.txtMuted}`}
 											>
-												<Star size={13} className="text-amber-400" />
-												Mettre en avant sur la page d&apos;accueil
-												<span className={`ml-1 text-xs px-1.5 py-0.5 rounded-full font-medium ${featuredCount >= MAX_FEATURED ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-500"}`}>
-													{featuredCount}/{MAX_FEATURED}
+												<Star
+													size={13}
+													className="text-amber-400"
+												/>
+												Mettre en avant sur la page
+												d&apos;accueil
+												<span
+													className={`ml-1 text-xs px-1.5 py-0.5 rounded-full font-medium ${featuredCount >= MAX_FEATURED ? "bg-red-100 text-red-600" : "bg-slate-100 text-slate-500"}`}
+												>
+													{featuredCount}/
+													{MAX_FEATURED}
 												</span>
 											</label>
 										</div>
 										{atMax && (
 											<p className="mt-2 ml-7 text-xs text-amber-600 flex items-center gap-1.5">
-												<Star size={11} className="flex-shrink-0" />
-												Maximum atteint — retirez une annonce mise en avant pour en ajouter une autre.
+												<Star
+													size={11}
+													className="flex-shrink-0"
+												/>
+												Maximum atteint — retirez une
+												annonce mise en avant pour en
+												ajouter une autre.
 											</p>
 										)}
 									</div>
@@ -804,7 +904,9 @@ export default function EditVehiclePage({
 								)}
 							</div>
 							<div>
-								<label className={labelClass}>Crit&apos;Air</label>
+								<label className={labelClass}>
+									Crit&apos;Air
+								</label>
 								<select
 									name="critAir"
 									value={form.critAir}
@@ -812,8 +914,10 @@ export default function EditVehiclePage({
 									className={selectClass}
 								>
 									<option value="">— Non renseigné</option>
-									{["0","1","2","3","4","5"].map((c) => (
-										<option key={c} value={c}>Classe {c}</option>
+									{["0", "1", "2", "3", "4", "5"].map((c) => (
+										<option key={c} value={c}>
+											Classe {c}
+										</option>
 									))}
 								</select>
 							</div>
@@ -881,18 +985,23 @@ export default function EditVehiclePage({
 						/>
 						<p className={`${t.txtSubtle} text-xs mt-2`}>
 							Pour le carnet d&apos;entretien, utiliser le format{" "}
-							<code className="bg-slate-700/40 px-1 rounded text-[11px]">JJ/MM/AAAA : XX XXX km</code>{" "}
+							<code className="bg-slate-700/40 px-1 rounded text-[11px]">
+								JJ/MM/AAAA : XX XXX km
+							</code>{" "}
 							par ligne.
 						</p>
 					</div>
 
 					{/* ── Photos ─────────────────────────────────────────── */}
 					<div className={sectionClass}>
-						<h3 className={`font-heading font-normal ${t.txt} mb-1 tracking-widest`}>
+						<h3
+							className={`font-heading font-normal ${t.txt} mb-1 tracking-widest`}
+						>
 							Photos
 						</h3>
 						<p className={`${t.txtSubtle} text-xs mb-5`}>
-							La première photo est l&apos;image principale · max 10 · WebP automatique
+							La première photo est l&apos;image principale · max
+							10 · WebP automatique
 						</p>
 						<ImageUploadZone
 							entityId={id}
@@ -903,7 +1012,10 @@ export default function EditVehiclePage({
 						/>
 						{images.length > 0 && (
 							<div className="mt-4">
-								<SortablePhotoGrid images={images} onChange={setImages} />
+								<SortablePhotoGrid
+									images={images}
+									onChange={setImages}
+								/>
 							</div>
 						)}
 					</div>
@@ -926,7 +1038,8 @@ export default function EditVehiclePage({
 						{saveStatus === "error" && (
 							<p className="text-sm text-red-400 flex items-center gap-1.5">
 								<AlertCircle size={14} />
-								Erreur lors de la sauvegarde — vérifiez votre connexion et réessayez.
+								Erreur lors de la sauvegarde — vérifiez votre
+								connexion et réessayez.
 							</p>
 						)}
 						<div className="flex items-center justify-between gap-4">
@@ -938,7 +1051,10 @@ export default function EditVehiclePage({
 							</Link>
 							<button
 								type="submit"
-								disabled={saveStatus === "saving" || saveStatus === "saved"}
+								disabled={
+									saveStatus === "saving" ||
+									saveStatus === "saved"
+								}
 								aria-busy={saveStatus === "saving"}
 								className={`btn-primary text-sm py-3 px-6 sm:px-8 ${saveStatus === "error" ? "!bg-red-600 hover:!bg-red-700" : ""}`}
 							>
