@@ -65,8 +65,10 @@ export default function VehicleCard({
 	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
 	const imgSrc = vehicle.thumbnailUrl;
 
-	// Lien : slug SEO si disponible, UUID en fallback
-	const href = `/vehicules/${vehicle.slug ?? vehicle.id}`;
+	// Lien : slug SEO + shortId si disponible, UUID en fallback
+	const href = vehicle.slug
+		? `/vehicules/${vehicle.slug}-${vehicle.id.slice(0, 8)}`
+		: `/vehicules/${vehicle.id}`;
 
 	return (
 		<Link

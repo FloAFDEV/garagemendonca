@@ -100,3 +100,29 @@ export async function generateUniqueVehicleSlug(
 export function isValidSlug(slug: string): boolean {
   return /^[a-z0-9][a-z0-9-]{0,78}[a-z0-9]$/.test(slug) || /^[a-z0-9]$/.test(slug);
 }
+
+// ─────────────────────────────────────────────────────────────────
+//  buildVehicleUrl — URL canonique hybride slug-shortId
+//
+//  Format : /vehicules/{slug}-{shortId}
+//  shortId = 8 premiers chars de l'UUID (premier segment)
+//  Ex : buildVehicleUrl("peugeot-208-2021", "db2173a3-84fa-...") → "/vehicules/peugeot-208-2021-db2173a3"
+// ─────────────────────────────────────────────────────────────────
+
+export function buildVehicleUrl(slug: string, id: string): string {
+  const shortId = id.slice(0, 8);
+  return `/vehicules/${slug}-${shortId}`;
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  extractShortId — extrait le shortId d'un segment d'URL hybride
+//
+//  "peugeot-208-2021-db2173a3" → "db2173a3"
+//  "peugeot-208-2021"          → null  (slug pur, pas de shortId)
+//  UUID complet                → null  (géré séparément)
+// ─────────────────────────────────────────────────────────────────
+
+export function extractShortId(slugWithId: string): string | null {
+  const match = slugWithId.match(/-([0-9a-f]{8})$/i);
+  return match ? match[1].toLowerCase() : null;
+}
