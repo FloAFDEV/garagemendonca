@@ -644,10 +644,11 @@ export default function EditVehiclePage({
 								</label>
 								<input
 									name="year"
-									type="number"
+									type="text"
+									inputMode="numeric"
+									pattern="[0-9]*"
 									required
-									min="1980"
-									max={new Date().getFullYear() + 1}
+									placeholder={String(new Date().getFullYear())}
 									value={form.year}
 									onChange={handleChange}
 									className={
@@ -669,9 +670,10 @@ export default function EditVehiclePage({
 								</label>
 								<input
 									name="mileage"
-									type="number"
+									type="text"
+									inputMode="numeric"
+									pattern="[0-9]*"
 									required
-									min="0"
 									placeholder="45000"
 									value={form.mileage}
 									onChange={handleChange}
@@ -782,8 +784,9 @@ export default function EditVehiclePage({
 								</label>
 								<input
 									name="power"
-									type="number"
-									min="0"
+									type="text"
+									inputMode="numeric"
+									pattern="[0-9]*"
 									placeholder="130"
 									value={form.power}
 									onChange={handleChange}
@@ -831,9 +834,10 @@ export default function EditVehiclePage({
 							<div className="relative">
 								<input
 									name="price"
-									type="number"
+									type="text"
+									inputMode="numeric"
+									pattern="[0-9]*"
 									required
-									min="1"
 									placeholder="18900"
 									value={form.price}
 									onChange={handleChange}
