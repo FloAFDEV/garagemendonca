@@ -146,7 +146,7 @@ function BrandSearchSelect({
 					/>
 					<div
 						className={clsx(
-							"absolute left-0 z-20 w-full min-w-[180px] rounded-xl border shadow-xl overflow-hidden",
+							"absolute left-0 z-20 w-full rounded-xl border shadow-xl overflow-hidden",
 							openUp ? "bottom-full mb-1" : "top-full mt-1",
 							t.dropdownBg,
 							t.dropdownBorder,
@@ -275,7 +275,7 @@ function StatusSelect({
 					/>
 					<div
 						className={clsx(
-							"absolute left-0 z-20 rounded-xl shadow-xl overflow-hidden min-w-[130px] border",
+							"absolute left-0 z-20 w-full rounded-xl shadow-xl overflow-hidden border",
 							openUp ? "bottom-full mb-1" : "top-full mt-1",
 							t.dropdownBg,
 							t.dropdownBorder,
