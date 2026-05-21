@@ -154,7 +154,7 @@ function BrandMultiSelect({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl w-72 overflow-hidden animate-in fade-in slide-in-from-top-2">
+        <div className="absolute right-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl w-72 max-w-[calc(100vw-1rem)] overflow-hidden animate-in fade-in slide-in-from-top-2">
           {/* Search inside dropdown */}
           <div className="p-2.5 border-b border-slate-100">
             <div className="relative">
@@ -271,7 +271,7 @@ function MoreFiltersPanel({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl w-72 p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+        <div className="absolute right-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl w-72 max-w-[calc(100vw-1rem)] p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Filtres avancés</p>
 
           {/* Année */}
