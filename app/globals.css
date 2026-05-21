@@ -83,11 +83,6 @@
 		@apply inline-flex items-center text-brand-400 text-xs font-medium tracking-widest uppercase mb-3;
 	}
 
-	/* TITRE DESIGN (ROSE) — USAGE EXPLICITE UNIQUEMENT */
-	.text-title {
-		color: #d63384;
-	}
-
 	/* BRAND ACCENT (ROUGE) */
 	.text-brand {
 		color: #e11d48;
@@ -114,22 +109,6 @@
 	.badge {
 		@apply inline-flex items-center text-xs font-medium
 		uppercase tracking-wide px-2 py-1 rounded-full bg-slate-100 text-slate-600;
-	}
-}
-
-/* ══════════════════════════════════════
-   UTILITIES
-══════════════════════════════════════ */
-@layer utilities {
-	.scroll-hidden {
-		opacity: 0;
-		transform: translateY(18px);
-	}
-
-	.scroll-visible {
-		opacity: 1;
-		transform: translateY(0);
-		transition: all 0.5s ease;
 	}
 }
 
