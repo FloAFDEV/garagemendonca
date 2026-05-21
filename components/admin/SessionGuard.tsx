@@ -7,31 +7,30 @@
  * - Affiche un toast d'avertissement à WARN_MS avant l'expiration
  * - Déconnecte automatiquement après IDLE_MS d'inactivité
  * - Compatible dark/light mode (lit le thème via CSS variables)
+ *
+ * La déconnexion passe par POST /api/auth/signout (route serveur) pour
+ * effacer les cookies HTTP-only de @supabase/ssr — un simple browser
+ * signOut() ne suffit pas et permettrait de rester connecté après F5.
  */
 
 import { useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { createBrowserClient } from "@supabase/ssr";
 
 const IDLE_MS  = 30 * 60 * 1000; // 30 min → déconnexion
 const WARN_MS  = 25 * 60 * 1000; // 25 min → avertissement
 const EVENTS   = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "click"] as const;
 
 export default function SessionGuard() {
-  const router   = useRouter();
   const idleRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const warnRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const warnedRef = useRef(false);
 
-  const signOut = useCallback(async () => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
-    await supabase.auth.signOut();
-    router.push("/login?session=expired");
-  }, [router]);
+  // POST vers le route handler serveur qui révoque la session ET efface
+  // les cookies HTTP-only — garantit que F5 ne bypasse pas le re-login.
+  const signOut = useCallback(async (reason: "expired" | "inactivity" = "expired") => {
+    await fetch(`/api/auth/signout?reason=${reason}`, { method: "POST" });
+    window.location.href = `/login?session=${reason}`;
+  }, []);
 
   const resetTimers = useCallback(() => {
     if (idleRef.current)  clearTimeout(idleRef.current);
@@ -53,28 +52,24 @@ export default function SessionGuard() {
         id: "session-expiry-logout",
         duration: 4_000,
       });
-      void signOut();
+      void signOut("inactivity");
     }, IDLE_MS);
   }, [signOut]);
 
-  // Vérifie la validité de la session Supabase côté client.
-  // Déclenché quand l'onglet redevient visible (ex : retour après longue absence).
-  // Les timers d'inactivité sont suspendus par le navigateur sur les onglets
-  // en arrière-plan → cette vérification couvre le cas où le token a expiré
-  // pendant que l'onglet était caché.
+  // Vérifie la validité de la session côté serveur quand l'onglet redevient
+  // visible. Les timers JS sont suspendus en arrière-plan — on ne peut donc
+  // pas compter sur IDLE_MS pour détecter qu'un token a expiré pendant que
+  // l'onglet était caché. On appelle /api/auth/signout en mode dry-run via
+  // un GET pour vérifier la session sans la révoquer.
   const checkSessionOnFocus = useCallback(async () => {
     if (document.visibilityState !== "visible") return;
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    );
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    const res = await fetch("/api/auth/session-check", { method: "GET", cache: "no-store" });
+    if (res.status === 401) {
       toast.error("Session expirée — reconnexion requise", {
         id: "session-expiry-logout",
         duration: 4_000,
       });
-      void signOut();
+      void signOut("expired");
     }
   }, [signOut]);
 
