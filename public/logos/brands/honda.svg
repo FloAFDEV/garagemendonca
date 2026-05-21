@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="12" fill="#CC0000"/>
-  <path d="M18 22 L18 78 L32 78 L32 55 L68 55 L68 78 L82 78 L82 22 L68 22 L68 42 L32 42 L32 22 Z" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 145">
+  <!-- Fond noir -->
+  <rect width="220" height="145" fill="#111"/>
+  <!-- Cadre blanc arrondi (caractéristique Honda) -->
+  <rect x="10" y="8" width="200" height="129" rx="24" ry="24"
+        fill="none" stroke="white" stroke-width="7.5"/>
+  <!-- H Honda : barre gauche (trapèze — large en haut/bas, étroit au croisement) -->
+  <path d="M 28 18 L 78 18 L 65 60 L 65 80 L 78 127 L 28 127 Z" fill="white"/>
+  <!-- H Honda : barre droite (miroir) -->
+  <path d="M 142 18 L 192 18 L 192 127 L 142 127 L 155 80 L 155 60 Z" fill="white"/>
+  <!-- H Honda : barre horizontale centrale -->
+  <rect x="65" y="60" width="90" height="20" fill="white"/>
 </svg>
