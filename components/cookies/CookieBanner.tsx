@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 import { useConsentState, useConsentActions } from "@/contexts/CookieConsentContext";
 
 /**
@@ -28,6 +29,7 @@ import { useConsentState, useConsentActions } from "@/contexts/CookieConsentCont
 export default function CookieBanner() {
   const { showBanner }                          = useConsentState();
   const { acceptAll, rejectAll, openSettings }  = useConsentActions();
+  const pathname                                = usePathname();
 
   const primaryBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -37,7 +39,8 @@ export default function CookieBanner() {
     }
   }, [showBanner]);
 
-  if (!showBanner) return null;
+  // Pas de bannière RGPD sur les pages admin/auth — pas de tracking tiers
+  if (!showBanner || pathname.startsWith("/admin") || pathname.startsWith("/login")) return null;
 
   return (
     <div

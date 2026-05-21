@@ -5,6 +5,45 @@ import { Camera, Images, Upload, X, Loader2, AlertCircle } from "lucide-react";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
+// ─── Redimensionnement client-side ────────────────────────────────
+// Réduit les images à max MAX_DIM px avant upload.
+// Évite d'envoyer des photos 4K/8Mo sur un plan Supabase free.
+// Résultat : WebP 85% qualité — format déjà utilisé en prod.
+
+const MAX_DIM = 1200;
+const QUALITY = 0.85;
+
+async function resizeImage(file: File): Promise<File> {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    img.onload = () => {
+      const { naturalWidth: w, naturalHeight: h } = img;
+      // Déjà dans les limites → pas de redimensionnement
+      if (w <= MAX_DIM && h <= MAX_DIM) { resolve(file); return; }
+
+      const ratio = Math.min(MAX_DIM / w, MAX_DIM / h);
+      const canvas = document.createElement("canvas");
+      canvas.width  = Math.round(w * ratio);
+      canvas.height = Math.round(h * ratio);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { resolve(file); return; }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { resolve(file); return; }
+          const name = file.name.replace(/\.[^.]+$/, ".webp");
+          resolve(new File([blob], name, { type: "image/webp" }));
+        },
+        "image/webp",
+        QUALITY,
+      );
+    };
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 // ─── Types ────────────────────────────────────────────────────────
 
 export type UploadType = "vehicle" | "service" | "banner";
@@ -59,8 +98,11 @@ export default function ImageUploadZone({
       { id, name: file.name, previewUrl, progress: "uploading" },
     ]);
 
+    // Redimensionner avant upload (max 1200px, WebP 85%)
+    const resized = await resizeImage(file);
+
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", resized);
     formData.append("type", type);
     formData.append("entityId", entityId);
     formData.append("garageId", GARAGE_ID);
@@ -138,7 +180,7 @@ export default function ImageUploadZone({
                 Glissez vos photos ici
               </p>
               <p className={`text-xs mt-1 ${t.txtSubtle}`}>
-                WebP · JPEG · PNG · max 10 Mo · {remaining} photo{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}
+                WebP · JPEG · PNG · auto-compressé 1200px · {remaining} photo{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}
               </p>
               <p className={`text-xs mt-0.5 ${t.txtSubtle}`}>
                 Format paysage recommandé — 16:9 ou 4:3 pour un meilleur rendu.
