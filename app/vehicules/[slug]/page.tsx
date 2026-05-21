@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
-import { RedirectType } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
@@ -125,7 +124,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const vehicleSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
 	const canonicalParam = `${vehicleSlug}-${vehicle.id.slice(0, 8)}`;
 	if (slug !== canonicalParam) {
-		redirect(`/vehicules/${canonicalParam}`, RedirectType.permanent);
+		permanentRedirect(`/vehicules/${canonicalParam}`);
 	}
 
 	const [relatedVehicles, detectedColor] = await Promise.all([
