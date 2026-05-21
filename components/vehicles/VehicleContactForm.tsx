@@ -21,6 +21,7 @@ import {
 	PhoneCall,
 } from "lucide-react";
 import { z } from "zod";
+import AutoResizeTextarea from "@/components/ui/AutoResizeTextarea";
 import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
 
 // ─── Schéma de validation ────────────────────────────────────────────────────
@@ -223,16 +224,13 @@ export default function VehicleContactForm({
 				>
 					Votre message <span className="text-red-500">*</span>
 				</label>
-				<textarea
+				<AutoResizeTextarea
 					id="vcf-message"
 					name="message"
-					rows={5}
+					minRows={5}
+					maxRows={20}
 					defaultValue={defaultMessage}
-					className={`w-full px-3 py-2.5 text-sm rounded-xl border bg-white focus:outline-none focus:ring-2 transition-colors resize-none ${
-						errors.message
-							? "border-red-300 focus:ring-red-200"
-							: "border-slate-200 focus:ring-brand-100 focus:border-brand-400"
-					}`}
+					error={!!errors.message}
 				/>
 				{errors.message && (
 					<p className="mt-1 text-xs text-red-500 flex items-center gap-1">

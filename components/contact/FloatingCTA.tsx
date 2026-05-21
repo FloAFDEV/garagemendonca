@@ -31,7 +31,7 @@ export default function FloatingCTA() {
 					className="flex items-center gap-3 bg-slate-800 text-white rounded-full shadow-lg px-4 py-3 font-medium text-sm hover:bg-slate-700 transition-colors active:scale-95"
 					aria-label="Accéder au formulaire de contact"
 				>
-					<span className="hidden sm:inline">Contactez-nous</span>
+					<span className="hidden sm:inline">Écrivez-nous</span>
 					<Mail
 						size={20}
 						className="flex-shrink-0"
