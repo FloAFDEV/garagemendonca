@@ -172,12 +172,18 @@ export const vehicleDb = {
   },
 
   async getByShortId(garageId: string, shortId: string): Promise<Vehicle | null> {
-    // PostgREST supporte le cast de colonne : filter('id::text', 'like', 'prefix%')
+    // Plage UUID native : tous les UUIDs dont les 8 premiers chars hex = shortId.
+    // PostgreSQL compare les UUID comme des entiers 128-bit, donc gte/lte sur
+    // {shortId}-0000... / {shortId}-ffff... capture exactement le bon véhicule.
+    // Plus fiable que `id::text like 'prefix%'` (cast non supporté par le client JS).
+    const minId = `${shortId}-0000-0000-0000-000000000000`;
+    const maxId = `${shortId}-ffff-ffff-ffff-ffffffffffff`;
     const { data, error } = await anonDb()
       .from("vehicles")
       .select(SEL_WITH_IMAGES)
       .eq("garage_id", garageId)
-      .filter("id::text", "like", `${shortId}%`)
+      .gte("id", minId)
+      .lte("id", maxId)
       .maybeSingle();
     if (error) throw error;
     return data ? vehicleFromDb(data as VehicleRow) : null;
