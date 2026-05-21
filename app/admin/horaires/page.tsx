@@ -99,70 +99,80 @@ export default function AdminHorairesPage() {
                   <div
                     key={key}
                     className={clsx(
-                      "flex items-center gap-4 rounded-xl px-4 py-3 transition-colors",
+                      "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 rounded-xl px-4 py-3 transition-colors",
                       open ? t.surface : "opacity-60",
                       t.border,
                       "border",
                     )}
                   >
-                    {/* Toggle ouvert/fermé */}
-                    <button
-                      type="button"
-                      onClick={() => toggleDay(key)}
-                      className={clsx(
-                        "relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
-                        open ? "bg-brand-500" : "bg-slate-300 dark:bg-slate-600",
-                      )}
-                      aria-checked={open}
-                      role="switch"
-                      aria-label={`${label} : ${open ? "ouvert" : "fermé"}`}
-                    >
-                      <span
+                    {/* Ligne 1 : toggle + nom du jour + badge Fermé (mobile) */}
+                    <div className="flex items-center gap-3">
+                      {/* Toggle ouvert/fermé */}
+                      <button
+                        type="button"
+                        onClick={() => toggleDay(key)}
                         className={clsx(
-                          "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
-                          open ? "translate-x-4" : "translate-x-0",
+                          "relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
+                          open ? "bg-brand-500" : "bg-slate-300 dark:bg-slate-600",
                         )}
-                      />
-                    </button>
+                        aria-checked={open}
+                        role="switch"
+                        aria-label={`${label} : ${open ? "ouvert" : "fermé"}`}
+                      >
+                        <span
+                          className={clsx(
+                            "pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                            open ? "translate-x-4" : "translate-x-0",
+                          )}
+                        />
+                      </button>
 
-                    {/* Nom du jour */}
-                    <span className={clsx("w-24 text-sm font-medium flex-shrink-0", t.txt)}>
-                      {label}
-                    </span>
+                      {/* Nom du jour */}
+                      <span className={clsx("sm:w-24 text-sm font-medium flex-shrink-0 flex-1 sm:flex-none", t.txt)}>
+                        {label}
+                      </span>
 
-                    {/* Horaires ou badge Fermé */}
+                      {/* Badge Fermé — visible sur mobile inline, masqué quand open */}
+                      {!open && (
+                        <span className={clsx("text-xs font-medium px-2.5 py-1 rounded-full sm:hidden", t.txtSubtle, "bg-slate-100 dark:bg-slate-700")}>
+                          Fermé
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Horaires ou badge Fermé (desktop) */}
                     {open && dayHours ? (
-                      <div className="flex items-center gap-2 flex-1">
+                      <div className="flex items-center gap-2 flex-1 ml-8 sm:ml-0">
                         <input
                           type="time"
                           value={dayHours.open}
                           onChange={(e) => setTime(key, "open", e.target.value)}
                           className={clsx(
-                            "text-sm rounded-lg px-3 py-1.5 border focus:outline-none focus:ring-2 focus:ring-brand-500",
+                            "flex-1 sm:flex-none text-sm rounded-lg px-3 py-1.5 border focus:outline-none focus:ring-2 focus:ring-brand-500",
                             t.inputClass,
                           )}
                           aria-label={`${label} — heure d'ouverture`}
                         />
-                        <span className={clsx("text-xs", t.txtSubtle)}>→</span>
+                        <span className={clsx("text-xs flex-shrink-0", t.txtSubtle)}>→</span>
                         <input
                           type="time"
                           value={dayHours.close}
                           onChange={(e) => setTime(key, "close", e.target.value)}
                           className={clsx(
-                            "text-sm rounded-lg px-3 py-1.5 border focus:outline-none focus:ring-2 focus:ring-brand-500",
+                            "flex-1 sm:flex-none text-sm rounded-lg px-3 py-1.5 border focus:outline-none focus:ring-2 focus:ring-brand-500",
                             t.inputClass,
                           )}
                           aria-label={`${label} — heure de fermeture`}
                         />
                         {dayHours.open >= dayHours.close && (
-                          <span className="text-xs text-amber-500 flex items-center gap-1 ml-1">
+                          <span className="text-xs text-amber-500 flex items-center gap-1 flex-shrink-0">
                             <AlertCircle size={11} />
-                            Vérifier
+                            <span className="hidden sm:inline">Vérifier</span>
                           </span>
                         )}
                       </div>
                     ) : (
-                      <span className={clsx("text-xs font-medium px-2.5 py-1 rounded-full", t.txtSubtle, "bg-slate-100 dark:bg-slate-700")}>
+                      <span className={clsx("text-xs font-medium px-2.5 py-1 rounded-full hidden sm:inline-flex", t.txtSubtle, "bg-slate-100 dark:bg-slate-700")}>
                         Fermé
                       </span>
                     )}

@@ -216,18 +216,18 @@ function BannerPreview({
         )}
 
         {/* Contenu centré */}
-        <div className="relative px-10 py-3 flex items-center justify-center gap-3 min-h-[56px]">
-          {/* Icône image */}
+        <div className="relative px-4 sm:px-10 py-3 pr-10 sm:pr-12 flex items-center justify-center gap-2 sm:gap-3 min-h-[56px]">
+          {/* Icône image — masquée sur très petit écran */}
           {imageUrl && (
-            <div className="flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-lg overflow-hidden ring-1 ring-white/20 shadow">
+            <div className="hidden xs:flex flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-lg overflow-hidden ring-1 ring-white/20 shadow">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={imageUrl} alt="" aria-hidden="true" className="w-full h-full object-cover" />
             </div>
           )}
 
           {/* Textes */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 min-w-0">
-            <p className="text-sm font-bold text-white leading-tight whitespace-nowrap">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2.5 min-w-0">
+            <p className="text-sm font-bold text-white leading-tight line-clamp-2 sm:line-clamp-1">
               {form.message || <span className="opacity-30 italic font-normal">Message principal…</span>}
             </p>
             {form.sub_message && (
@@ -237,7 +237,7 @@ function BannerPreview({
 
           {/* CTA */}
           {form.cta_label && (
-            <span className="flex-shrink-0 inline-flex items-center gap-1 border border-white/40 text-white text-xs font-semibold px-3 py-1 rounded-lg whitespace-nowrap">
+            <span className="flex-shrink-0 hidden sm:inline-flex items-center gap-1 border border-white/40 text-white text-xs font-semibold px-3 py-1 rounded-lg whitespace-nowrap">
               {form.cta_label}
               <ArrowRight size={10} aria-hidden="true" />
             </span>
@@ -245,7 +245,7 @@ function BannerPreview({
 
           {/* Placeholder si vide */}
           {!hasContent && !imageUrl && (
-            <p className="text-white/30 text-xs italic">Remplissez les champs ci-dessous pour voir l&apos;aperçu</p>
+            <p className="text-white/30 text-xs italic text-center">Remplissez les champs ci-dessous pour voir l&apos;aperçu</p>
           )}
         </div>
       </div>
