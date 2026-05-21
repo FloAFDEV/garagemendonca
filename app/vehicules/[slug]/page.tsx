@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type React from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
@@ -17,6 +18,15 @@ import {
 	CheckCircle2,
 	ShieldCheck,
 	Star,
+	CalendarDays,
+	Gauge,
+	Zap,
+	Settings2,
+	Activity,
+	Palette,
+	DoorOpen,
+	Leaf,
+	ClipboardList,
 } from "lucide-react";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
@@ -311,70 +321,54 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									/>
 								)}
 
-							{/* SECTION TECHNIQUE & OPTIONS */}
-							{vehicle.features && (
-								<div className="space-y-12">
-									{/* Fiche Technique */}
-									<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 sm:p-6 md:p-10">
-										<h2 className="ty-heading text-[#0f172a] text-xl sm:text-2xl mb-6 sm:mb-10 flex items-center gap-4 text-center sm:text-left">
-											Fiche Technique{" "}
-											<div className="h-px flex-1 bg-slate-100" />
-										</h2>
-										<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 sm:gap-x-12 gap-y-5 sm:gap-y-8">
-											{[
-												{
-													label: "Année",
-													value: vehicle.year,
-												},
-												{
-													label: "Kilométrage",
-													value: `${vehicle.mileage.toLocaleString("fr-FR")} km`,
-												},
-												{
-													label: "Énergie",
-													value: vehicle.fuel,
-												},
-												{
-													label: "Transmission",
-													value: vehicle.transmission,
-												},
-												{
-													label: "Puissance",
-													value: `${vehicle.power} ch`,
-												},
-												...(displayColor
-													? [{ label: "Teinte", value: displayColor }]
-													: []),
-												{
-													label: "Portes",
-													value: `${vehicle.doors} portes`,
-												},
-												...(vehicle.critAir
-													? [
-															{
-																label: "Crit'Air",
-																value: `Classe ${vehicle.critAir}`,
-															},
-														]
-													: []),
-											].map(({ label, value }) => (
-												<div
-													key={label}
-													className="group"
-												>
-													<p className="ty-label mb-1.5 text-slate-600">
-														{label}
-													</p>
-													<p className="text-base ty-value">
-														{value}
-													</p>
-													<div className="mt-2 h-0.5 w-6 bg-brand-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-												</div>
-											))}
-										</div>
+							{/* FICHE TECHNIQUE */}
+							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 sm:p-7 md:p-10">
+								{/* Header */}
+								<div className="flex items-center gap-3 mb-6 sm:mb-8">
+									<div className="flex-shrink-0 w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center">
+										<ClipboardList size={16} className="text-brand-500" aria-hidden="true" />
 									</div>
+									<h2 className="font-heading font-medium text-[#0f172a] text-lg sm:text-xl tracking-tight">
+										Fiche Technique
+									</h2>
+									<div className="h-px flex-1 bg-slate-100" aria-hidden="true" />
 								</div>
-							)}
+
+								{/* Grille specs — 1 col mobile / 2 col sm / 3 col lg */}
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
+									{(
+										[
+											{ icon: CalendarDays, label: "Année",        value: String(vehicle.year) },
+											{ icon: Gauge,        label: "Kilométrage",  value: `${vehicle.mileage.toLocaleString("fr-FR")} km` },
+											{ icon: Zap,          label: "Énergie",      value: vehicle.fuel },
+											{ icon: Settings2,    label: "Transmission", value: vehicle.transmission },
+											...(vehicle.power ? [{ icon: Activity, label: "Puissance", value: `${vehicle.power} ch` }] : []),
+											...(displayColor     ? [{ icon: Palette,  label: "Teinte",  value: displayColor }] : []),
+											{ icon: DoorOpen, label: "Portes", value: `${vehicle.doors} portes` },
+											...(vehicle.critAir  ? [{ icon: Leaf, label: "Crit'Air", value: `Classe ${vehicle.critAir}` }] : []),
+										] as { icon: React.ElementType; label: string; value: string }[]
+									).map(({ icon: Icon, label, value }) => (
+										<div
+											key={label}
+											className="group flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-brand-200 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-default"
+										>
+											{/* Icône */}
+											<div className="flex-shrink-0 w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:border-brand-200 group-hover:bg-brand-50 transition-colors duration-200">
+												<Icon size={16} className="text-slate-400 group-hover:text-brand-500 transition-colors duration-200" aria-hidden="true" />
+											</div>
+											{/* Texte */}
+											<div className="min-w-0 flex-1">
+												<p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 leading-none mb-1">
+													{label}
+												</p>
+												<p className="text-sm font-semibold text-[#0f172a] leading-tight truncate">
+													{value}
+												</p>
+											</div>
+										</div>
+									))}
+								</div>
+							</div>
 						</div>
 
 						{/* ════ Colonne droite STICKY ════ */}
