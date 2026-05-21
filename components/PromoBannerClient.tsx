@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { Banner } from "@/types";
 import Link from "next/link";
 import { X, ArrowRight } from "lucide-react";
+import clsx from "clsx";
 
 /*
   ─── Centered Spotlight ──────────────────────────────────────
@@ -91,7 +92,7 @@ export default function PromoBannerClient({
 			role="banner"
 			aria-live="polite"
 			style={{
-				maxHeight: visible ? "120px" : "0px",
+				maxHeight: visible ? "180px" : "0px",
 				opacity: visible ? 1 : 0,
 				overflow: "hidden",
 				transition: "max-height 0.35s ease-out, opacity 0.3s ease-out",
@@ -137,11 +138,15 @@ export default function PromoBannerClient({
 				)}
 
 				{/* ── Contenu centré ───────────────────────────────── */}
-				<div className="relative max-w-5xl mx-auto px-3 sm:px-8 md:px-12 py-3 flex items-center justify-center gap-3 sm:gap-5">
+				<div className={clsx(
+					"relative max-w-5xl mx-auto py-2.5 sm:py-3 flex items-center justify-center gap-2.5 sm:gap-5",
+					/* Réserve de l'espace à droite pour le bouton × dismissible */
+					banner.is_dismissible ? "pl-3 pr-10 sm:pl-8 sm:pr-14 md:pl-12" : "px-3 sm:px-8 md:px-12",
+				)}>
 
-					{/* Image — icône illustration à gauche, carrée arrondie */}
+					{/* Image — icône illustration, masquée sur mobile si message long */}
 					{signedImageUrl && (
-						<div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg">
+						<div className="hidden sm:block flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg">
 							{/* eslint-disable-next-line @next/next/no-img-element */}
 							<img
 								src={signedImageUrl}
@@ -155,13 +160,13 @@ export default function PromoBannerClient({
 					)}
 
 					{/* Textes + CTA groupés */}
-					<div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4 flex-1 min-w-0 justify-center">
+					<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 flex-1 min-w-0 justify-center">
 						<div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2.5 min-w-0">
-							<p className="text-sm sm:text-base font-bold leading-tight text-white tracking-tight whitespace-nowrap">
+							<p className="text-sm sm:text-base font-bold leading-snug text-white tracking-tight">
 								{banner.message}
 							</p>
 							{banner.sub_message && (
-								<span className="text-white/70 text-xs font-normal leading-tight line-clamp-1">
+								<span className="text-white/70 text-xs font-normal leading-tight hidden sm:inline line-clamp-1">
 									—&nbsp;{banner.sub_message}
 								</span>
 							)}
@@ -171,7 +176,7 @@ export default function PromoBannerClient({
 						{banner.cta_label && banner.cta_url && (
 							<Link
 								href={banner.cta_url}
-								className="flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1.5 border border-white/40 hover:border-white hover:bg-white/10 active:bg-white/20 text-white text-xs font-semibold px-3 py-2 sm:py-1.5 rounded-lg transition-all whitespace-nowrap"
+								className="flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1.5 border border-white/40 hover:border-white hover:bg-white/10 active:bg-white/20 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-all whitespace-nowrap"
 							>
 								{banner.cta_label}
 								<ArrowRight size={11} aria-hidden="true" />
