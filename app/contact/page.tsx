@@ -99,7 +99,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 			/>
 			{/* ── Hero ── */}
-			<section className="bg-[#0f172a] pt-36 pb-20 relative overflow-hidden">
+			<section className="bg-[#0f172a] pt-24 sm:pt-28 pb-10 sm:pb-14 relative overflow-hidden">
 				<div
 					className="absolute top-0 right-0 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none"
 					aria-hidden="true"
@@ -107,7 +107,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 				<Container className="relative">
 					<div className="flex items-start justify-between gap-6">
 						<div className="flex-1 min-w-0">
-							<div className="flex items-center gap-3 mb-5">
+							<div className="flex items-center gap-3 mb-3">
 								<div
 									className="w-8 h-px bg-brand-500"
 									aria-hidden="true"
@@ -116,7 +116,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 									Disponibles du lundi au vendredi
 								</span>
 							</div>
-							<h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
+							<h1 className="ty-display text-white text-3xl sm:text-4xl md:text-5xl mb-4">
 								Contactez-nous —{" "}
 								<span className="text-brand-500">
 									devis gratuit sous 24h
@@ -134,20 +134,20 @@ export default async function ContactPage({ searchParams }: PageProps) {
 			</section>
 
 			{/* ── Contenu ── */}
-			<section className="py-16 bg-[#f8fafc]">
+			<section className="py-8 sm:py-10 bg-[#f8fafc]">
 				<Container>
-					<div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+					<div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 						{/* Sidebar coordonnées — en premier sur mobile */}
-						<div className="lg:col-span-2 lg:order-2 space-y-5">
-							<h2 className="ty-subheading text-[#0f172a] text-2xl mb-6">
+						<div className="lg:col-span-2 lg:order-2 space-y-3">
+							<h2 className="ty-subheading text-[#0f172a] text-xl mb-3">
 								Nos coordonnées
 							</h2>
 
 							{/* Téléphone */}
-							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
 								<div className="flex items-center gap-4 mb-3">
 									<div
-										className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
+										className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
 										aria-hidden="true"
 									>
 										<Phone
@@ -178,10 +178,10 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							</div>
 
 							{/* Email */}
-							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
 								<div className="flex items-start gap-4">
 									<div
-										className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
+										className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
 										aria-hidden="true"
 									>
 										<Mail
@@ -205,10 +205,10 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							</div>
 
 							{/* Adresse */}
-							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
 								<div className="flex items-start gap-4">
 									<div
-										className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
+										className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
 										aria-hidden="true"
 									>
 										<MapPin
@@ -244,10 +244,10 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							</div>
 
 							{/* Horaires */}
-							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-								<div className="flex items-center gap-3 mb-5">
+							<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+								<div className="flex items-center gap-3 mb-3">
 									<div
-										className="w-12 h-12 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
+										className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0"
 										aria-hidden="true"
 									>
 										<Clock
@@ -285,7 +285,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							id="contact-form"
 							className="lg:col-span-3 lg:order-1"
 						>
-							<h2 className="ty-subheading text-[#0f172a] text-2xl mb-6">
+							<h2 className="ty-subheading text-[#0f172a] text-xl mb-3">
 								Envoyez-nous un message
 							</h2>
 							<Suspense
@@ -299,7 +299,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 					</div>
 
 					{/* Carte */}
-					<div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+					<div className="mt-6 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
 						<iframe
 							src="https://maps.google.com/maps?q=6+Avenue+de+la+Mouyssaguese,+31280+Dr%C3%A9mil-Lafage,+France&z=16&output=embed"
 							width="100%"

@@ -1,9 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Search, X, RotateCcw, ChevronDown, Check, SlidersHorizontal } from "lucide-react";
 import { getLogoSrc } from "@/lib/brandLogos";
+
+function normalizeText(s: string): string {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+}
 
 // ─── Données statiques ───────────────────────────────────────────
 
@@ -84,15 +88,31 @@ function BrandMultiSelect({
   availableBrands: string[];
 }) {
   const [open, setOpen] = useState(false);
+  const [brandSearch, setBrandSearch] = useState("");
   const ref = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function handle(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+        setBrandSearch("");
+      }
     }
     document.addEventListener("mousedown", handle);
     return () => document.removeEventListener("mousedown", handle);
   }, []);
+
+  useEffect(() => {
+    if (open) setTimeout(() => searchRef.current?.focus(), 50);
+    else setBrandSearch("");
+  }, [open]);
+
+  const filteredBrands = useMemo(() => {
+    if (!brandSearch.trim()) return availableBrands;
+    const q = normalizeText(brandSearch);
+    return availableBrands.filter((b) => normalizeText(b).includes(q));
+  }, [brandSearch, availableBrands]);
 
   const toggle = (brand: string) => {
     onChange(
@@ -118,7 +138,7 @@ function BrandMultiSelect({
           "flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm transition-all",
           "focus:outline-none focus:ring-2 ring-brand-500/20",
           selected.length > 0
-            ? "bg-brand-500 text-white border-brand-500"
+            ? "bg-white border-2 border-brand-500 text-brand-700 ring-2 ring-brand-500/20"
             : "bg-white text-slate-700 border-slate-200 hover:border-brand-300",
         ].join(" ")}
       >
@@ -135,8 +155,33 @@ function BrandMultiSelect({
 
       {open && (
         <div className="absolute left-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl w-72 overflow-hidden animate-in fade-in slide-in-from-top-2">
+          {/* Search inside dropdown */}
+          <div className="p-2.5 border-b border-slate-100">
+            <div className="relative">
+              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <input
+                ref={searchRef}
+                type="text"
+                value={brandSearch}
+                onChange={(e) => setBrandSearch(e.target.value)}
+                placeholder="Rechercher une marque…"
+                className="w-full pl-7 pr-7 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 ring-brand-500/20 text-slate-700 placeholder-slate-400 [&::-webkit-search-cancel-button]:hidden [&::-ms-clear]:hidden"
+                onKeyDown={(e) => { if (e.key === "Escape") { setOpen(false); setBrandSearch(""); } }}
+              />
+              {brandSearch && (
+                <button
+                  type="button"
+                  onClick={() => setBrandSearch("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  <X size={11} />
+                </button>
+              )}
+            </div>
+          </div>
+
           {selected.length > 0 && (
-            <div className="px-3 pt-3 pb-2 flex items-center justify-between border-b border-slate-100">
+            <div className="px-3 pt-2 pb-1.5 flex items-center justify-between">
               <span className="text-xs text-slate-500">
                 {selected.length} sélectionné{selected.length > 1 ? "s" : ""}
               </span>
@@ -148,8 +193,10 @@ function BrandMultiSelect({
               </button>
             </div>
           )}
-          <ul className="max-h-72 overflow-y-auto py-2">
-            {availableBrands.map((brand) => {
+          <ul className="max-h-60 overflow-y-auto py-1.5">
+            {filteredBrands.length === 0 ? (
+              <li className="px-4 py-3 text-xs text-slate-400 text-center">Aucune marque trouvée</li>
+            ) : filteredBrands.map((brand) => {
               const active = selected.includes(brand);
               return (
                 <li key={brand}>
@@ -211,7 +258,7 @@ function MoreFiltersPanel({
           "flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm transition-all",
           "focus:outline-none focus:ring-2 ring-brand-500/20",
           hasExtra
-            ? "bg-brand-500 text-white border-brand-500"
+            ? "bg-white border-2 border-brand-500 text-brand-700 ring-2 ring-brand-500/20"
             : "bg-white text-slate-700 border-slate-200 hover:border-brand-300",
         ].join(" ")}
         aria-label="Plus de filtres"
@@ -389,12 +436,12 @@ export default function VehicleFiltersBar({
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
           />
           <input
-            type="search"
+            type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Marque, modèle…"
             aria-label="Rechercher un véhicule"
-            className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-brand-500 ring-brand-500/20 transition-all"
+            className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-brand-500 ring-brand-500/20 transition-all [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-ms-clear]:hidden"
           />
           {searchInput && (
             <button
