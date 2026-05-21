@@ -71,13 +71,24 @@ function StatusSelect({
 	onChange: (id: string, status: VehicleStatus) => void;
 }) {
 	const [open, setOpen] = useState(false);
+	const [openUp, setOpenUp] = useState(false);
+	const btnRef = useRef<HTMLButtonElement>(null);
 	const t = useAdminTokens();
 	const cfg = STATUS_BADGE[current];
+
+	function handleToggle() {
+		if (!open && btnRef.current) {
+			const rect = btnRef.current.getBoundingClientRect();
+			setOpenUp(window.innerHeight - rect.bottom < 140);
+		}
+		setOpen((v) => !v);
+	}
 
 	return (
 		<div className="relative">
 			<button
-				onClick={() => setOpen((v) => !v)}
+				ref={btnRef}
+				onClick={handleToggle}
 				aria-haspopup="listbox"
 				aria-expanded={open}
 				aria-label={`Statut : ${cfg.label}`}
@@ -98,7 +109,8 @@ function StatusSelect({
 					/>
 					<div
 						className={clsx(
-							"absolute left-0 top-full mt-1 z-20 rounded-xl shadow-xl overflow-hidden min-w-[130px] border",
+							"absolute left-0 z-20 rounded-xl shadow-xl overflow-hidden min-w-[130px] border",
+							openUp ? "bottom-full mb-1" : "top-full mt-1",
 							t.dropdownBg,
 							t.dropdownBorder,
 						)}
