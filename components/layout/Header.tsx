@@ -105,7 +105,6 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 								priority
 								sizes="44px"
 								className="object-cover"
-								unoptimized
 							/>
 						</div>
 						{/* Logo texte */}
@@ -117,7 +116,6 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 								priority
 								sizes="175px"
 								className="object-contain object-left"
-								unoptimized
 							/>
 						</div>
 					</Link>

@@ -101,7 +101,6 @@ export default function VehicleCard({
 						alt="Garage Mendonça"
 						fill
 						className="object-contain p-6 bg-[#0d1b34]"
-						unoptimized
 					/>
 				)}
 

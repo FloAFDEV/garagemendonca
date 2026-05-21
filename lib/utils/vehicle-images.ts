@@ -1,11 +1,11 @@
 import type { Vehicle, VehicleImage } from "@/types";
-import { extractStoragePath } from "./storage";
+import { extractStoragePath, normalizeSupabaseUrl } from "./storage";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const BUCKET = "vehicle-images";
 
 /**
- * Builds a permanent public URL from a storage_path.
+ * Builds a permanent public URL from a storage_path in the vehicle-images bucket.
  * Requires the bucket to be public in Supabase.
  */
 export function getVehiclePublicUrl(storagePath: string): string {
@@ -13,27 +13,32 @@ export function getVehiclePublicUrl(storagePath: string): string {
 }
 
 /**
- * Normalises any Supabase image URL to a permanent public URL.
- * Handles: storage_path, public object URL, legacy signed URL.
- * If it cannot be resolved (external/local URL), returns the input as-is.
+ * Normalises any vehicle image URL/path to a permanent public URL.
+ *
+ * Input forms handled:
+ *   1. Plain storage_path (no protocol) → public URL in vehicle-images bucket
+ *   2. Signed Supabase URL              → permanent public URL (via normalizeSupabaseUrl)
+ *   3. Public Supabase URL              → idempotent (returned as-is)
+ *   4. Local static path ("/images/…")  → returned as-is
+ *   5. External URL (non-Supabase)      → returned as-is
+ *   6. empty / null-ish                 → returned as-is
  */
 export function resolveVehicleImageUrl(urlOrPath: string): string {
   if (!urlOrPath) return urlOrPath;
-  // Already a relative local path (e.g. /images/placeholder.webp)
+  // Local path — already correct
   if (urlOrPath.startsWith("/") && !urlOrPath.startsWith("//")) return urlOrPath;
-  // Non-Supabase URL (external CDN, unsplash, …) — keep as-is
+  // Non-Supabase external URL — keep as-is
   if (urlOrPath.startsWith("http") && !urlOrPath.includes(".supabase.co")) return urlOrPath;
-  // Relative storage path (no protocol) — direct build
-  if (!urlOrPath.startsWith("http")) return getVehiclePublicUrl(urlOrPath);
-  // Full Supabase URL: extract path and build fresh public URL
-  const path = extractStoragePath(urlOrPath);
-  return path ? getVehiclePublicUrl(path) : urlOrPath;
+  // Full Supabase URL (public or signed) — normalise via general helper
+  if (urlOrPath.startsWith("http")) return normalizeSupabaseUrl(urlOrPath) ?? urlOrPath;
+  // Plain storage_path (no protocol) — build public URL directly
+  return getVehiclePublicUrl(urlOrPath);
 }
 
 /**
- * Returns the resolved image URL list for a vehicle.
- * All URLs are normalised to permanent public URLs (no signed URLs).
- * Priority: vehicle_images join → legacy images JSONB.
+ * Returns resolved image URLs for a vehicle, always as permanent public URLs.
+ * Priority: vehicle_images join → legacy images[] JSONB.
+ * All URLs are normalised — no signed URLs will ever reach the caller.
  */
 export function getVehicleImages(
   vehicle: Pick<Vehicle, "images" | "vehicleImages">,
@@ -41,12 +46,14 @@ export function getVehicleImages(
 ): string[] {
   const joined = vehicleImages ?? vehicle.vehicleImages;
   if (joined && joined.length > 0) {
-    return joined.map((img) =>
-      img.storage_path
-        ? getVehiclePublicUrl(img.storage_path)
-        : resolveVehicleImageUrl(img.url),
-    );
+    return joined
+      .map((img) =>
+        img.storage_path
+          ? getVehiclePublicUrl(img.storage_path)
+          : resolveVehicleImageUrl(img.url),
+      )
+      .filter(Boolean);
   }
-  // Legacy JSONB fallback — might contain expired signed URLs
-  return (vehicle.images ?? []).map(resolveVehicleImageUrl);
+  // Legacy JSONB fallback — may contain expired signed URLs
+  return (vehicle.images ?? []).map(resolveVehicleImageUrl).filter(Boolean);
 }

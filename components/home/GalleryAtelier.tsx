@@ -2,7 +2,7 @@ import Image from "next/image";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
 import { serviceRepository } from "@/lib/repositories";
-import { getStoragePublicUrl } from "@/lib/utils/storage";
+import { getStoragePublicUrl, normalizeSupabaseUrl } from "@/lib/utils/storage";
 
 // Mise en page grille : première image grande, suivantes standards
 const SPANS = [
@@ -18,10 +18,10 @@ export default async function GalleryAtelier() {
 
 	const allImages = services.flatMap((s) =>
 		(s.images ?? []).map((img) => ({
-			// service-images est un bucket public (migration 013)
+			// service-images est un bucket public — toujours URL publique permanente
 			src: img.storage_path
 				? getStoragePublicUrl("service-images", img.storage_path)
-				: (img.url ?? undefined),
+				: (normalizeSupabaseUrl(img.url) ?? img.url ?? undefined),
 			alt:     img.alt ?? s.title,
 			caption: s.title,
 		})),
@@ -68,7 +68,6 @@ export default async function GalleryAtelier() {
 									sizes="(min-width: 1024px) 25vw, 50vw"
 									className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.07]"
 									loading="lazy"
-									unoptimized
 								/>
 
 								<div
