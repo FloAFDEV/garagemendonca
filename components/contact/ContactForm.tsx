@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Send, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
 import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
+import AutoResizeTextarea from "@/components/ui/AutoResizeTextarea";
 
 // ─── Schéma de validation client-side ────────────────────────────────────────
 const schema = z.object({
@@ -271,14 +272,15 @@ export default function ContactForm({
         <label htmlFor="message" className="label">
           Message <span className="text-brand-600" aria-hidden="true">*</span>
         </label>
-        <textarea
+        <AutoResizeTextarea
           id="message"
           name="message"
-          rows={5}
+          minRows={5}
+          maxRows={22}
           placeholder="Décrivez votre demande…"
           value={form.message}
           onChange={handleChange}
-          className={`input-field resize-none ${fieldErrors.message ? "border-red-300 focus:ring-red-200" : ""}`}
+          error={!!fieldErrors.message}
           aria-required="true"
           aria-invalid={!!fieldErrors.message}
         />

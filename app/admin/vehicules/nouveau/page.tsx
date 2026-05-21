@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { createVehicleAction, getFeaturedCount } from "@/app/admin/vehicules/actions";
+import AutoResizeTextarea from "@/components/ui/AutoResizeTextarea";
 import { MAX_FEATURED_VEHICLES as MAX_FEATURED } from "@/lib/config/vehicles";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
 import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
@@ -665,13 +666,14 @@ export default function NewVehiclePage() {
 						>
 							Description
 						</h3>
-						<textarea
+						<AutoResizeTextarea
 							name="description"
-							rows={5}
+							minRows={8}
+							maxRows={40}
 							placeholder="Décrivez le véhicule : état, équipements, historique…"
 							value={form.description}
 							onChange={handleChange}
-							className={inputClass + " resize-none"}
+							className={inputClass}
 						/>
 						<p className={`${t.txtSubtle} text-xs mt-2`}>
 							Pour le carnet d&apos;entretien, utiliser le format{" "}
