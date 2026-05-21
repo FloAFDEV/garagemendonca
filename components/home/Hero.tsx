@@ -28,7 +28,13 @@ const stats = [
 
 export default function Hero() {
 	return (
-		<section className="relative min-h-screen flex flex-col overflow-hidden bg-[#0f172a]">
+		/*
+		  h-[100svh]   → hauteur exacte du viewport visible (safe viewport height)
+		               Exclut la toolbar Safari sur iOS. Pas de double-scroll.
+		  min-h-[580px] → plancher pour petits écrans / clavier ouvert
+		  max-h-[920px] → plafond ultrawide (évite un hero de 2000px sur 4K)
+		*/
+		<section className="relative flex flex-col overflow-hidden bg-[#0f172a] h-[100svh] min-h-[580px] max-h-[920px]">
 			{/* Image hero avec parallaxe — client component */}
 			<div className="absolute inset-0 z-0 overflow-hidden">
 				<HeroParallax
@@ -37,12 +43,6 @@ export default function Hero() {
 				/>
 			</div>
 
-			{/*
-			  Overlay gradient L → R :
-			  Le "from" très sombre couvre la colonne texte (côté gauche).
-			  Le "to-transparent" laisse l'image s'exprimer sur la droite.
-			  Valeurs identiques à la version originale validée.
-			*/}
 			{/* Gradient L→R : protège la colonne texte gauche sur desktop */}
 			<div
 				className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/50 to-black/10 z-1"
@@ -53,18 +53,25 @@ export default function Hero() {
 				className="absolute inset-0 bg-black/28 z-1"
 				aria-hidden="true"
 			/>
-			{/* Overlay mobile renforcé — couvre toute la largeur sur petit écran */}
+			{/* Overlay mobile renforcé */}
 			<div
 				className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent sm:hidden z-1"
 				aria-hidden="true"
 			/>
 
-			{/* Contenu */}
-			<div className="relative flex-1 flex items-center">
-				<Container className="pt-28 sm:pt-24 md:pt-36 pb-20 mb-6">
+			{/* Contenu — min-h-0 permet la compression flex sans overflow */}
+			<div className="relative flex-1 flex items-center min-h-0">
+				{/*
+				  pt-20 / pt-24 / pt-[108px] : compense la navbar fixe
+				  Mobile  : h-16 (64px) + 16px de respiration = 80px
+				  sm      : h-16 (64px) + 32px                = 96px
+				  md      : h-[72px] (72px) + barre info 32px + 4px = 108px
+				  pb-6 md:pb-8 : padding bas minimal — la section a une hauteur fixée
+				*/}
+				<Container className="pt-20 sm:pt-24 md:pt-[108px] pb-6 md:pb-8">
 					<div className="max-w-2xl xl:max-w-3xl">
 						{/* Eyebrow */}
-						<div className="flex items-center gap-3 mb-8 animate-fade-in">
+						<div className="flex items-center gap-3 mb-5 animate-fade-in">
 							<div
 								className="w-8 h-px bg-brand-500 flex-shrink-0"
 								aria-hidden="true"
@@ -74,8 +81,13 @@ export default function Hero() {
 							</span>
 						</div>
 
-						{/* H1 */}
-						<h1 className="ty-display text-white text-4xl md:text-6xl xl:text-7xl mb-6 animate-slide-up [text-shadow:0_2px_16px_rgba(0,0,0,0.6)]">
+						{/* H1
+						  text-4xl             → mobile  (375px) ~36px
+						  md:text-5xl          → laptop  (768px) ~48px  — réduit de 60→48 pour 1366×768
+						  lg:text-6xl          → desktop (1024px) ~60px
+						  xl:text-7xl          → large   (1280px+) ~72px
+						*/}
+						<h1 className="ty-display text-white text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-4 animate-slide-up [text-shadow:0_2px_16px_rgba(0,0,0,0.6)]">
 							Votre garage
 							<br />
 							de confiance à{" "}
@@ -91,17 +103,18 @@ export default function Hero() {
 						</h1>
 
 						{/* Sous-titre */}
-						<p className="text-slate-200 font-light text-lg md:text-xl leading-relaxed mb-10 max-w-xl animate-slide-up">
+						<p className="text-slate-200 font-light text-lg md:text-xl leading-relaxed mb-5 max-w-xl animate-slide-up">
 							Mécaniciens qualifiés, équipement dernière
 							génération, devis transparent avant toute
-							intervention. <br className="hidden lg:block" />
+							intervention.{" "}
+							<br className="hidden lg:block" />
 							Spécialiste japonaises et boîte automatique depuis
 							2001. Jeunes conducteurs, seniors &amp; PMR
 							bienvenus.
 						</p>
 
 						{/* H3 */}
-						<h3 className="ty-display text-white text-2xl md:text-3xl xl:text-4xl mt-6 mb-6 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.5)]">
+						<h3 className="ty-display text-white text-xl md:text-2xl lg:text-3xl xl:text-4xl mt-3 mb-4 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.5)]">
 							Spécialiste
 							<br />
 							<span className="text-brand-500">
@@ -110,7 +123,7 @@ export default function Hero() {
 						</h3>
 
 						{/* CTA */}
-						<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs mx-auto sm:max-w-full sm:mx-0 mb-14 animate-slide-up">
+						<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs mx-auto sm:max-w-full sm:mx-0 mb-6 animate-slide-up">
 							<a
 								href="tel:0532002038"
 								className="btn-primary w-full sm:w-auto text-base sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2 shadow-brand-lg"
@@ -127,17 +140,17 @@ export default function Hero() {
 							</Link>
 						</div>
 
-						{/* Compteurs — valeurs statiques, visibles dès le SSR */}
-						<div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-10 border-t border-white/12 animate-fade-in text-white">
+						{/* Stats — 3 items → grid-cols-3 (l'original avait grid-cols-4, col vide) */}
+						<div className="grid grid-cols-3 gap-3 sm:gap-4 pt-5 border-t border-white/12 animate-fade-in text-white">
 							{stats.map(({ value, label }) => (
 								<div
 									key={label}
 									className="text-center sm:text-left"
 								>
-									<div className="ty-stat text-3xl md:text-4xl leading-none mb-1">
+									<div className="ty-stat text-2xl sm:text-3xl md:text-4xl leading-none mb-1">
 										{value}
 									</div>
-									<div className="text-slate-300 font-light text-xs leading-snug mt-0.5">
+									<div className="text-slate-300 font-light text-[10px] sm:text-xs leading-snug mt-0.5">
 										{label}
 									</div>
 								</div>
@@ -148,9 +161,8 @@ export default function Hero() {
 			</div>
 
 			{/* ── Logo GM — badge emblème coin haut droit ─────────────── */}
-			{/* Masqué sur mobile pour ne rien cacher ; visible dès sm: */}
 			<div
-				className="absolute top-[96px] right-6 sm:top-[104px] sm:right-8 md:top-[112px] md:right-12 z-10 animate-fade-in hidden sm:block"
+				className="absolute top-[80px] right-6 sm:top-[88px] sm:right-8 md:top-[100px] md:right-12 z-10 animate-fade-in hidden sm:block"
 				aria-hidden="true"
 			>
 				<div className="relative sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full ring-2 ring-white/30 shadow-[0_6px_32px_rgba(0,0,0,0.6)] overflow-hidden">
@@ -166,7 +178,7 @@ export default function Hero() {
 				</div>
 			</div>
 
-			{/* Badges flottants desktop */}
+			{/* Badges flottants — uniquement xl (≥1280px), évite de cacher du contenu */}
 			<div className="absolute bottom-14 right-8 hidden xl:flex flex-col gap-3 animate-fade-in">
 				{trustBadges.map(({ Icon, text }) => (
 					<div
@@ -185,9 +197,9 @@ export default function Hero() {
 				))}
 			</div>
 
-			{/* Scroll indicator */}
+			{/* Scroll indicator — pb-6 (réduit de pb-10) */}
 			<div
-				className="relative pb-10 flex flex-col items-center gap-1 text-white/60"
+				className="relative pb-6 flex flex-col items-center gap-1 text-white/60"
 				aria-hidden="true"
 			>
 				<span className="text-[9px] font-light uppercase tracking-caps">
