@@ -1,12 +1,11 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Lock, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { createSupabaseBrowserClient } from "@/lib/supabase/supabaseClient";
 
-// ── Règles mot de passe ───────────────────────────────────────────────────────
 const PASSWORD_RULES = [
   { test: (p: string) => p.length >= 10,          label: "10 caractères minimum" },
   { test: (p: string) => /[A-Z]/.test(p),         label: "1 majuscule" },
@@ -21,77 +20,35 @@ function validatePassword(p: string): string | null {
   return null;
 }
 
-// ── États de la page ──────────────────────────────────────────────────────────
-type PageState =
-  | "verifying"      // échange du code en cours
-  | "ready"          // session recovery active → afficher le form
-  | "invalid"        // code absent / expiré / non-recovery
-  | "submitting"     // updateUser en cours
-  | "success";       // mot de passe mis à jour
+type PageState = "verifying" | "ready" | "invalid" | "submitting" | "success";
 
-function ResetPasswordContent() {
+export default function ResetPasswordPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [pageState, setPageState] = useState<PageState>("verifying");
-  const [invalidReason, setInvalidReason] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [fieldError, setFieldError] = useState("");
 
-  // Guard anti double-submit : bloque tout appel updateUser supplémentaire
   const submittingRef = useRef(false);
 
-  // Échange le code PKCE et vérifie que l'event est bien PASSWORD_RECOVERY
   useEffect(() => {
-    const code = searchParams.get("code");
-
-    if (!code) {
-      setInvalidReason("Lien invalide ou expiré. Demandez un nouvel email de réinitialisation.");
-      setPageState("invalid");
-      return;
-    }
-
+    // La session a été établie server-side par /auth/callback.
+    // On vérifie simplement qu'une session active existe dans les cookies.
     const supabase = createSupabaseBrowserClient();
-
-    // onAuthStateChange détecte si Supabase confirme un token de type RECOVERY.
-    // Sans cet event, l'échange a réussi mais ce n'est pas une session recovery :
-    // on refuse l'accès au formulaire.
-    let recoveryConfirmed = false;
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
-      if (event === "PASSWORD_RECOVERY") {
-        recoveryConfirmed = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
         setPageState("ready");
+      } else {
+        setPageState("invalid");
       }
     });
-
-    supabase.auth
-      .exchangeCodeForSession(code)
-      .then(({ error }: { error: { message: string } | null }) => {
-        if (error) {
-          setInvalidReason("Lien expiré ou déjà utilisé. Demandez un nouvel email de réinitialisation.");
-          setPageState("invalid");
-        } else if (!recoveryConfirmed) {
-          // Échange réussi mais pas en mode recovery → possible manipulation d'URL
-          setInvalidReason("Session invalide. Utilisez le lien envoyé par email.");
-          // Déconnecte la session non-recovery obtenue frauduleusement
-          supabase.auth.signOut().catch(() => {});
-          setPageState("invalid");
-        }
-        // Si recoveryConfirmed : setPageState("ready") déjà appelé par onAuthStateChange
-      });
-
-    return () => { subscription.unsubscribe(); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Guard anti double-submit
     if (submittingRef.current || pageState !== "ready") return;
 
     const pwError = validatePassword(password);
@@ -111,7 +68,6 @@ function ResetPasswordContent() {
       setPageState("ready");
     } else {
       setPageState("success");
-      // Expire la session recovery immédiatement après la mise à jour
       setTimeout(() => {
         supabase.auth.signOut().finally(() => router.push("/login"));
       }, 2500);
@@ -138,7 +94,7 @@ function ResetPasswordContent() {
 
         <div className="bg-white rounded-2xl shadow-2xl p-8">
 
-          {/* ── Vérification en cours ── */}
+          {/* Vérification */}
           {pageState === "verifying" && (
             <div className="flex flex-col items-center gap-4 py-4">
               <Loader2 size={32} className="animate-spin text-brand-500" />
@@ -146,12 +102,14 @@ function ResetPasswordContent() {
             </div>
           )}
 
-          {/* ── Token invalide / expiré ── */}
+          {/* Lien invalide / session absente */}
           {pageState === "invalid" && (
             <div className="flex flex-col items-center gap-4 text-center">
               <AlertCircle size={40} className="text-red-500" />
               <h1 className="text-lg font-semibold text-slate-800">Lien invalide</h1>
-              <p className="text-sm text-slate-500">{invalidReason}</p>
+              <p className="text-sm text-slate-500">
+                Lien expiré ou déjà utilisé. Demandez un nouvel email de réinitialisation.
+              </p>
               <button
                 onClick={() => router.push("/login")}
                 className="btn-primary w-full py-3 mt-2"
@@ -161,7 +119,7 @@ function ResetPasswordContent() {
             </div>
           )}
 
-          {/* ── Succès ── */}
+          {/* Succès */}
           {pageState === "success" && (
             <div className="flex flex-col items-center gap-4 text-center">
               <CheckCircle size={40} className="text-green-500" />
@@ -170,7 +128,7 @@ function ResetPasswordContent() {
             </div>
           )}
 
-          {/* ── Formulaire (ready | submitting) ── */}
+          {/* Formulaire */}
           {(pageState === "ready" || pageState === "submitting") && (
             <>
               <div className="mb-6">
@@ -183,17 +141,12 @@ function ResetPasswordContent() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-                {/* Nouveau mot de passe */}
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Nouveau mot de passe
                   </label>
                   <div className="relative">
-                    <Lock
-                      size={15}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                      aria-hidden="true"
-                    />
+                    <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
@@ -216,17 +169,12 @@ function ResetPasswordContent() {
                   </div>
                 </div>
 
-                {/* Confirmation */}
                 <div>
                   <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Confirmer le mot de passe
                   </label>
                   <div className="relative">
-                    <Lock
-                      size={15}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                      aria-hidden="true"
-                    />
+                    <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
                     <input
                       type={showConfirm ? "text" : "password"}
                       value={confirm}
@@ -249,7 +197,6 @@ function ResetPasswordContent() {
                   </div>
                 </div>
 
-                {/* Erreur champ */}
                 {fieldError && (
                   <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
                     {fieldError}
@@ -271,13 +218,5 @@ function ResetPasswordContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function ResetPasswordPage() {
-  return (
-    <Suspense>
-      <ResetPasswordContent />
-    </Suspense>
   );
 }
