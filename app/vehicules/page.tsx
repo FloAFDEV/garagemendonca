@@ -4,7 +4,8 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
+import { unstable_cache } from "next/cache";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import GmBadge from "@/components/ui/GmBadge";
@@ -57,6 +58,20 @@ function buildItemListJsonLd(
 
 const GARAGE_ID = getActiveGarageId();
 
+// ─── Cache helpers ────────────────────────────────────────────────
+// cache() : déduplique countPublic dans la même requête (metadata + page)
+const countPublicCached = cache(
+  (garageId: string, filters: Parameters<typeof vehicleDb.countPublic>[1]) =>
+    vehicleDb.countPublic(garageId, filters),
+);
+
+// unstable_cache : marques disponibles — peu volatiles, TTL 5 min
+const listBrandsCached = unstable_cache(
+  (garageId: string) => vehicleDb.listBrands(garageId),
+  ["vehicle-brands"],
+  { revalidate: 300 },
+);
+
 // ─── Types ───────────────────────────────────────────────────────
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -70,7 +85,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const sp = await searchParams;
   const filters = parsePageFilters(sp);
-  const totalCount = await vehicleDb.countPublic(GARAGE_ID, filters).catch(() => 0);
+  const totalCount = await countPublicCached(GARAGE_ID, filters).catch(() => 0);
   const desc = listingDescription(1, totalCount);
   return {
     title: listingTitle(1, 1),
@@ -165,11 +180,11 @@ export default async function VehiculesPage({
       console.error("[VehiculesPage] listPaginated failed:", err);
       return [];
     }),
-    vehicleDb.countPublic(GARAGE_ID, filters).catch((err) => {
+    countPublicCached(GARAGE_ID, filters).catch((err) => {
       console.error("[VehiculesPage] countPublic failed:", err);
       return 0;
     }),
-    vehicleDb.listBrands(GARAGE_ID).catch(() => []),
+    listBrandsCached(GARAGE_ID).catch(() => []),
   ]);
 
   const meta = buildPaginationMeta(1, totalCount);
