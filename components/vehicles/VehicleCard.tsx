@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
@@ -58,6 +61,7 @@ export default function VehicleCard({
 	vehicle,
 	priority = false,
 }: VehicleCardProps) {
+	const router = useRouter();
 	const colorLabel = vehicle.color ?? "";
 	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year}${colorLabel ? ` — ${colorLabel}` : ""} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
 	const priceLabel = `${vehicle.price.toLocaleString("fr-FR")} euros`;
@@ -73,6 +77,9 @@ export default function VehicleCard({
 	return (
 		<Link
 			href={href}
+			prefetch={false}
+			onMouseEnter={() => router.prefetch(href)}
+			onTouchStart={() => router.prefetch(href)}
 			className="group flex flex-col h-full bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400"
 			aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
 		>
@@ -86,7 +93,7 @@ export default function VehicleCard({
 						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
 						className={`object-cover transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 						priority={priority}
-						unoptimized
+						quality={75}
 					/>
 				) : (
 					<Image

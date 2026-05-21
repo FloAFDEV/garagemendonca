@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
 import type { VehicleImage } from "@/types";
@@ -124,14 +125,26 @@ export default function VehicleGallery({
 								key={`slide-${idx}-${src}`}
 								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
 							>
-								{/* eslint-disable-next-line @next/next/no-img-element */}
-								<img
-									src={src}
-									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
-									className="absolute inset-0 w-full h-full object-cover object-center"
-									loading="eager"
-									fetchPriority={idx === 0 ? "high" : "auto"}
-								/>
+										{idx === 0 ? (
+									<Image
+										src={src}
+										alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
+										fill
+										className="object-cover object-center"
+										priority
+										quality={85}
+										sizes="(max-width: 640px) 100vw, (max-width: 1280px) 75vw, 900px"
+									/>
+								) : (
+									/* eslint-disable-next-line @next/next/no-img-element */
+									<img
+										src={src}
+										alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
+										className="absolute inset-0 w-full h-full object-cover object-center"
+										loading="lazy"
+										decoding="async"
+									/>
+								)}
 							</div>
 						))}
 					</div>
@@ -250,7 +263,8 @@ export default function VehicleGallery({
 										src={src}
 										alt=""
 										className="absolute inset-0 w-full h-full object-cover object-center"
-										loading="eager"
+										loading="lazy"
+										decoding="async"
 									/>
 								</button>
 							))}
@@ -284,7 +298,8 @@ export default function VehicleGallery({
 										src={src}
 										alt=""
 										className="absolute inset-0 w-full h-full object-cover object-center"
-										loading="eager"
+										loading="lazy"
+										decoding="async"
 									/>
 									{activeIdx !== idx && (
 										<span className="absolute bottom-1 right-1 text-[9px] text-white bg-black/40 rounded px-1 pointer-events-none">
