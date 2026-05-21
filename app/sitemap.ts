@@ -12,8 +12,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 	if (SUPABASE_ENABLED && GARAGE_ID) {
 		const slugs = await vehicleDb.listSlugs(GARAGE_ID).catch(() => []);
-		vehicleEntries = slugs.map(({ slug, updated_at }) => ({
-			url: `${BASE_URL}/vehicules/${slug}`,
+		vehicleEntries = slugs.map(({ slug, id, updated_at }) => ({
+			url: `${BASE_URL}/vehicules/${slug}-${id.slice(0, 8)}`,
 			lastModified: updated_at ? new Date(updated_at) : new Date(),
 			changeFrequency: "weekly" as const,
 			priority: 0.8,

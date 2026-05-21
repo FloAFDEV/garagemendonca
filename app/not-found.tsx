@@ -11,8 +11,8 @@ export default function NotFound() {
 		<>
 			<Header />
 
-			<main className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-72px)] mt-16 md:mt-[72px] bg-[#f8fafc] flex flex-col items-center justify-center px-4 py-12 text-center">
-				{/* Illustration — ratio 3:2 paysage */}
+			<main className="min-h-[calc(100dvh-64px)] md:min-h-[calc(100dvh-72px)] mt-16 md:mt-[72px] bg-[#f8fafc] flex flex-col items-center justify-center px-4 py-6 sm:py-12 text-center overflow-auto">
+				{/* Illustration — ratio 3:2, hauteur plafonnée sur petits écrans */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
@@ -20,17 +20,17 @@ export default function NotFound() {
 						duration: 0.55,
 						ease: [0.25, 0.46, 0.45, 0.94],
 					}}
-					className="mb-8 flex justify-center"
+					className="mb-4 sm:mb-8 flex justify-center w-full"
 					aria-hidden="true"
 				>
-					<div className="relative w-full max-w-[520px] md:max-w-[680px] lg:max-w-[820px]">
+					<div className="relative w-full max-w-[320px] sm:max-w-[520px] md:max-w-[680px] lg:max-w-[820px]">
 						<Image
 							src="/images/404-illustration.webp"
 							alt="page d'erreur 404 introuvable"
 							width={800}
 							height={600}
 							priority
-							className="w-full h-auto object-contain"
+							className="w-full h-auto max-h-[35vh] sm:max-h-none object-contain"
 							onError={(e) => {
 								e.currentTarget.style.display = "none";
 							}}
@@ -43,19 +43,19 @@ export default function NotFound() {
 					initial={{ opacity: 0, y: 12 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ delay: 0.18, duration: 0.45 }}
-					className="max-w-lg"
+					className="max-w-lg w-full"
 				>
-					<h1 className="font-heading font-medium text-[#0f172a] text-3xl md:text-4xl mb-4 tracking-tight">
+					<h1 className="font-heading font-medium text-[#0f172a] text-2xl sm:text-3xl md:text-4xl mb-3 sm:mb-4 tracking-tight">
 						Oups&nbsp;! Cette route est sans issue.
 					</h1>
-					<p className="text-[#475569] text-base md:text-lg leading-relaxed mb-10">
+					<p className="text-[#475569] text-sm sm:text-base md:text-lg leading-relaxed mb-6 sm:mb-10">
 						Le véhicule ou la page que vous recherchez n&apos;est
 						plus disponible ou a changé d&apos;adresse. Ne restez
 						pas sur le bas-côté, laissez-nous vous rediriger.
 					</p>
 
 					{/* CTAs */}
-					<div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
+					<div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-5 sm:mb-8">
 						<Link
 							href="/"
 							className="btn-primary w-full sm:w-auto px-7 py-3 justify-center"

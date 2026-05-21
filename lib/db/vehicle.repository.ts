@@ -171,6 +171,18 @@ export const vehicleDb = {
     return (count ?? 0) > 0;
   },
 
+  async getByShortId(garageId: string, shortId: string): Promise<Vehicle | null> {
+    // PostgREST supporte le cast de colonne : filter('id::text', 'like', 'prefix%')
+    const { data, error } = await anonDb()
+      .from("vehicles")
+      .select(SEL_WITH_IMAGES)
+      .eq("garage_id", garageId)
+      .filter("id::text", "like", `${shortId}%`)
+      .maybeSingle();
+    if (error) throw error;
+    return data ? vehicleFromDb(data as VehicleRow) : null;
+  },
+
   async getRelated(vehicleId: string, garageId: string, limit = 3): Promise<Vehicle[]> {
     const current = await vehicleDb.getById(vehicleId);
     if (!current) return [];
@@ -201,16 +213,16 @@ export const vehicleDb = {
     return brands;
   },
 
-  async listSlugs(garageId: string): Promise<{ slug: string; updated_at: string | null }[]> {
+  async listSlugs(garageId: string): Promise<{ slug: string; id: string; updated_at: string | null }[]> {
     const { data, error } = await anonDb()
       .from("vehicles")
-      .select("slug, updated_at")
+      .select("id, slug, updated_at")
       .eq("garage_id", garageId)
       .not("slug", "is", null)
       .in("status", ["published", "scheduled", "sold"]);
     if (error) return [];
-    return ((data ?? []) as { slug: string | null; updated_at: string | null }[])
-      .filter((r): r is { slug: string; updated_at: string | null } => r.slug !== null);
+    return ((data ?? []) as { slug: string | null; id: string; updated_at: string | null }[])
+      .filter((r): r is { slug: string; id: string; updated_at: string | null } => r.slug !== null);
   },
 
   async listAdmin(garageId: string): Promise<Vehicle[]> {

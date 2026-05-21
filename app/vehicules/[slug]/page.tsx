@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
@@ -24,6 +24,7 @@ import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
+import { extractShortId, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
@@ -36,14 +37,20 @@ export const revalidate = 3600;
 const UUID_RE =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-async function getVehicle(slug: string): Promise<Vehicle | null> {
-	const bySlug = await vehicleDb.getBySlug(GARAGE_ID, slug).catch(() => null);
-	if (bySlug) return bySlug;
-
-	if (UUID_RE.test(slug)) {
-		return vehicleDb.getById(slug).catch(() => null);
+async function getVehicle(slugParam: string): Promise<Vehicle | null> {
+	// Cas 1 : format hybride — finit par 8 chars hex (shortId)
+	const shortId = extractShortId(slugParam);
+	if (shortId) {
+		return vehicleDb.getByShortId(GARAGE_ID, shortId).catch(() => null);
 	}
-	return null;
+
+	// Cas 2 : UUID complet (backward compat — vieilles URLs /vehicules/uuid)
+	if (UUID_RE.test(slugParam)) {
+		return vehicleDb.getById(slugParam).catch(() => null);
+	}
+
+	// Cas 3 : slug pur sans shortId (legacy avant migration)
+	return vehicleDb.getBySlug(GARAGE_ID, slugParam).catch(() => null);
 }
 
 /* ─────────── types ─────────── */
@@ -64,7 +71,8 @@ export async function generateMetadata({
 		vehicle.meta_description ??
 		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, boîte ${vehicle.transmission}. Révisé et garanti. Garage Mendonça.`;
 
-	const canonical = `https://www.garagemendonca.com/vehicules/${vehicle.slug ?? vehicle.id}`;
+	const vehicleSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
+	const canonical = `https://www.garagemendonca.com${buildVehicleUrl(vehicleSlug, vehicle.id)}`;
 	const ogImage = `${canonical}/opengraph-image`;
 
 	return {
@@ -101,7 +109,9 @@ export async function generateMetadata({
 export async function generateStaticParams() {
 	if (!SUPABASE_ENABLED || !GARAGE_ID) return [];
 	const slugs = await vehicleDb.listSlugs(GARAGE_ID).catch(() => []);
-	return slugs.map(({ slug }) => ({ slug }));
+	return slugs.map(({ slug, id }) => ({
+		slug: `${slug}-${id.slice(0, 8)}`,
+	}));
 }
 
 /* ─────────── composant ─────────── */
@@ -109,6 +119,13 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const { slug } = await params;
 	const vehicle = await getVehicle(slug);
 	if (!vehicle) notFound();
+
+	// Redirect 301 vers l'URL canonique hybride si l'URL actuelle ne correspond pas
+	const vehicleSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
+	const canonicalParam = `${vehicleSlug}-${vehicle.id.slice(0, 8)}`;
+	if (slug !== canonicalParam) {
+		permanentRedirect(`/vehicules/${canonicalParam}`);
+	}
 
 	const [relatedVehicles, detectedColor] = await Promise.all([
 		vehicleDb.getRelated(vehicle.id, GARAGE_ID, 3).catch(() => []),
@@ -126,7 +143,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const vehicleLabel = `${vehicleName} · ${vehicle.price.toLocaleString("fr-FR")} €`;
 
 	/* JSON-LD */
-	const vehicleCanonical = `https://www.garagemendonca.com/vehicules/${vehicle.slug ?? vehicle.id}`;
+	const vehicleCanonical = `https://www.garagemendonca.com${buildVehicleUrl(vehicleSlug, vehicle.id)}`;
 	const jsonLdCar = {
 		"@context": "https://schema.org",
 		"@type": "Car",
