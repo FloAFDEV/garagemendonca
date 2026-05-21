@@ -3,10 +3,12 @@ import { SIMPLE_REDIRECTS } from "./redirects-simple";
 
 const nextConfig: NextConfig = {
 	images: {
-		formats: ["image/webp"],          // AVIF supprimé — trop lent à encoder en serverless
-		minimumCacheTTL: 2592000, // 30 jours
-		deviceSizes: [640, 828, 1080, 1200, 1920],
-		imageSizes: [64, 128, 256, 384],
+		// unoptimized: bypass /_next/image entirely.
+		// Vercel Hobby plan caps Image Optimization at ~1000 source images/month;
+		// exhausting it causes 402 on /_next/image which also corrupts CDN-cached
+		// CSS responses. Supabase images are already .webp — no format benefit lost.
+		// priority / loading="lazy" / fill props all remain effective.
+		unoptimized: true,
 		remotePatterns: [
 			{
 				protocol: "https",
