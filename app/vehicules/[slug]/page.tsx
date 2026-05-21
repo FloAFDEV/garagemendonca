@@ -365,24 +365,30 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							{/* Carte Prix & CTA */}
 							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-5 sm:p-8">
 								<div className="mb-6 pb-6 border-b border-slate-100">
-									<div className="mt-4 m-4 flex items-center gap-2">
+									<div className="mt-4 m-4 flex items-center gap-3">
 										<Image
-										src={getLogoSrc(vehicle.brand)}
-										alt={vehicle.brand}
-										width={50}
-										height={50}
-										className="object-contain border rounded-md p-1 bg-white"
-									/>
-										{vehicle.brand} {vehicle.model}{" "}
-										{vehicle.year}
+											src={getLogoSrc(vehicle.brand)}
+											alt={vehicle.brand}
+											width={44}
+											height={44}
+											className="object-contain border rounded-md p-1 bg-white flex-shrink-0"
+										/>
+										<div>
+											<p className="font-semibold text-[#0f172a] leading-tight">
+												{vehicle.brand} {vehicle.model}
+											</p>
+											<p className="text-slate-400 text-sm leading-tight mt-0.5">
+												{vehicle.year}
+											</p>
+										</div>
 									</div>
 									<div className="ty-value font-heading text-3xl sm:text-4xl">
 										{vehicle.price.toLocaleString("fr-FR")}{" "}
 										€
 									</div>
-									<p className="text-slate-400 text-sm mt-1 font-medium italic">
-										Prix TTC
-									</p>{" "}
+									<p className="text-slate-500 text-sm mt-1 font-medium">
+										{vehicle.mileage.toLocaleString("fr-FR")} km
+									</p>
 								</div>
 
 								<div className="space-y-4">
