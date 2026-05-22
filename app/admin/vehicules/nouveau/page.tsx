@@ -353,7 +353,7 @@ export default function NewVehiclePage() {
 					</Link>
 					<div>
 						<h2
-							className={`font-heading font-medium ${t.txt} text-2xl`}
+							className={`font-heading font-medium ${t.txt} text-xl`}
 						>
 							Ajouter un véhicule
 						</h2>
@@ -367,7 +367,7 @@ export default function NewVehiclePage() {
 					{/* ── Informations générales ─────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Informations générales
 						</h3>
@@ -533,7 +533,7 @@ export default function NewVehiclePage() {
 					{/* ── Motorisation ───────────────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Motorisation
 						</h3>
@@ -619,7 +619,7 @@ export default function NewVehiclePage() {
 					{/* ── Prix ───────────────────────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Prix de vente
 						</h3>
@@ -662,7 +662,7 @@ export default function NewVehiclePage() {
 					{/* ── Description ────────────────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Description
 						</h3>
@@ -685,7 +685,7 @@ export default function NewVehiclePage() {
 					{/* ── Publication ────────────────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Publication
 						</h3>
@@ -793,7 +793,7 @@ export default function NewVehiclePage() {
 						<h3 className={`font-heading font-normal ${t.txt} mb-1 tracking-widest`}>
 							Photos
 						</h3>
-						<p className={`${t.txtSubtle} text-xs mb-5`}>
+						<p className={`${t.txtSubtle} text-xs mb-4`}>
 							Max 10 photos · WebP automatique · compression intelligente
 						</p>
 						<ImageUploadZone
@@ -813,7 +813,7 @@ export default function NewVehiclePage() {
 					{/* ── Options & Équipements ───────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Options &amp; Équipements
 						</h3>

@@ -111,13 +111,13 @@ export default async function Footer() {
 			/>
 
 			{/* Corps principal */}
-			<Container className="py-10 md:py-16">
+			<Container className="py-8 md:py-12">
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
 					{/* Colonne 1 — Marque */}
 					<div className="lg:col-span-1">
 						<Link
 							href="/"
-							className="flex items-center gap-3 mb-5 group"
+							className="flex items-center gap-3 mb-4 group"
 							aria-label="Garage Mendonça — retour à l'accueil"
 						>
 							<div className="relative w-11 h-11 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-white/15 group-hover:ring-white/30 transition-all shadow-lg">
@@ -151,7 +151,7 @@ export default async function Footer() {
 
 					{/* Colonne 2 — Services + Nav */}
 					<div>
-						<h4 className="ty-label text-slate-200 mb-5">
+						<h4 className="ty-label text-slate-200 mb-4">
 							Nos Services
 						</h4>
 						<ul className="space-y-3 mb-8">
@@ -171,7 +171,7 @@ export default async function Footer() {
 							))}
 						</ul>
 
-						<h4 className="ty-label text-slate-200 mb-5">
+						<h4 className="ty-label text-slate-200 mb-4">
 							Navigation
 						</h4>
 						<ul className="space-y-3">
@@ -194,7 +194,7 @@ export default async function Footer() {
 
 					{/* Colonne 3 — Contact */}
 					<div>
-						<h4 className="ty-label text-slate-200 mb-5">
+						<h4 className="ty-label text-slate-200 mb-4">
 							Contact
 						</h4>
 						<ul className="space-y-4">
@@ -255,7 +255,7 @@ export default async function Footer() {
 
 					{/* Colonne 4 — Horaires */}
 					<div>
-						<h4 className="ty-label text-slate-200 mb-5">
+						<h4 className="ty-label text-slate-200 mb-4">
 							Horaires d&apos;ouverture
 						</h4>
 						<div className="flex items-center gap-2 mb-4">
@@ -303,7 +303,7 @@ export default async function Footer() {
 
 			{/* Barre légale */}
 			<div className="border-t border-slate-800">
-				<Container className="py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-400">
+				<Container className="py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-400">
 					<p>
 						© {new Date().getFullYear()} Garage Auto Mendonca · SARL
 						· SIRET 449 948 975 00023 · RCS Toulouse ·

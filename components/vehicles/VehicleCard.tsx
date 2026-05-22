@@ -138,8 +138,8 @@ export default function VehicleCard({
 			</div>
 
 			{/* Contenu */}
-			<div className="p-4 flex flex-col flex-grow">
-				<div className="flex items-start gap-2.5 mb-3">
+			<div className="p-3.5 flex flex-col flex-grow">
+				<div className="flex items-start gap-2 mb-2.5">
 					<div className="w-9 h-9 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
 						<Image
 							src={getLogoSrc(vehicle.brand)}
@@ -163,7 +163,7 @@ export default function VehicleCard({
 				</div>
 
 				{/* Specs */}
-				<div className="grid grid-cols-3 gap-2 mb-3">
+				<div className="grid grid-cols-3 gap-2 mb-2.5">
 					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-2 px-1">
 						<Calendar
 							size={13}
@@ -197,7 +197,7 @@ export default function VehicleCard({
 				</div>
 
 				{/* Badges — carburant masqué sur mobile (déjà dans la grille specs) */}
-				<div className="flex items-center gap-1.5 flex-wrap mb-3">
+				<div className="flex items-center gap-1.5 flex-wrap mb-2">
 					<Badge variant={fuelVariants[vehicle.fuel] ?? "gray"} className="hidden sm:inline-flex">
 						{vehicle.fuel}
 					</Badge>
@@ -243,7 +243,7 @@ export default function VehicleCard({
 			</div>
 
 			{/* Prix + CTA */}
-				<div className="mt-auto pt-3 border-t border-slate-100 space-y-2.5">
+				<div className="mt-auto pt-2.5 border-t border-slate-100 space-y-2">
 					<span
 						className="block ty-value font-heading text-lg"
 						aria-label={priceLabel}

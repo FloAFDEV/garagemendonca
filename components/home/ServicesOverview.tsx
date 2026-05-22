@@ -103,11 +103,11 @@ const reassuranceItems = [
 export default async function ServicesOverview() {
 	const services = await serviceRepository.getAll().catch(() => []);
 	return (
-		<section className="py-28 bg-[#f8fafc]">
+		<section className="py-20 bg-[#f8fafc]">
 			<Container>
 				{/* ── Header ── */}
 				<AnimateOnScroll>
-					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
+					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-10">
 						<div>
 							<div className="section-divider" />
 							<span className="eyebrow">Ce que nous faisons</span>
@@ -205,7 +205,7 @@ export default async function ServicesOverview() {
 
 				{/* ── Bande de réassurance ── */}
 				<AnimateOnScroll>
-					<div className="mt-14 bg-slate-100/70 rounded-2xl py-8 px-6 sm:px-10">
+					<div className="mt-10 bg-slate-100/70 rounded-2xl py-6 px-5 sm:px-8">
 						<dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
 							{reassuranceItems.map(({ label, desc, icon }) => (
 								<div key={label} className="flex items-start gap-4">

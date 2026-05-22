@@ -87,7 +87,7 @@ export default function Hero() {
 						  lg:text-6xl          → desktop (1024px) ~60px
 						  xl:text-7xl          → large   (1280px+) ~72px
 						*/}
-						<h1 className="ty-display text-white text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-4 animate-slide-up [text-shadow:0_2px_16px_rgba(0,0,0,0.6)]">
+						<h1 className="ty-display text-white text-3xl md:text-[42px] lg:text-5xl xl:text-[60px] mb-4 animate-slide-up [text-shadow:0_2px_16px_rgba(0,0,0,0.6)]">
 							Votre garage
 							<br />
 							de confiance à{" "}
@@ -103,7 +103,7 @@ export default function Hero() {
 						</h1>
 
 						{/* Sous-titre */}
-						<p className="text-slate-200 font-light text-lg md:text-xl leading-relaxed mb-5 max-w-xl animate-slide-up">
+						<p className="text-slate-200 font-light text-base md:text-lg leading-relaxed mb-5 max-w-xl animate-slide-up">
 							Mécaniciens qualifiés, équipement dernière
 							génération, devis transparent avant toute
 							intervention.{" "}
@@ -114,7 +114,7 @@ export default function Hero() {
 						</p>
 
 						{/* H3 */}
-						<h3 className="ty-display text-white text-xl md:text-2xl lg:text-3xl xl:text-4xl mt-3 mb-4 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.5)]">
+						<h3 className="ty-display text-white text-lg md:text-xl lg:text-2xl xl:text-3xl mt-3 mb-4 animate-slide-up [text-shadow:0_2px_12px_rgba(0,0,0,0.5)]">
 							Spécialiste
 							<br />
 							<span className="text-brand-500">
@@ -126,14 +126,14 @@ export default function Hero() {
 						<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs mx-auto sm:max-w-full sm:mx-0 mb-6 animate-slide-up">
 							<a
 								href="tel:0532002038"
-								className="btn-primary w-full sm:w-auto text-base sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2 shadow-brand-lg"
+								className="btn-primary w-full sm:w-auto text-sm sm:text-base py-2.5 px-5 sm:py-3 sm:px-7 flex justify-center items-center gap-2 shadow-brand-lg"
 							>
-								<Phone size={18} aria-hidden="true" />
+								<Phone size={16} aria-hidden="true" />
 								Nous contacter
 							</a>
 							<Link
 								href="/contact"
-								className="btn-outline w-full sm:w-auto text-white sm:text-lg py-2.5 px-5 sm:py-4 sm:px-8 flex justify-center items-center gap-2"
+								className="btn-outline w-full sm:w-auto text-white sm:text-base py-2.5 px-5 sm:py-3 sm:px-7 flex justify-center items-center gap-2"
 							>
 								Demander un devis gratuit
 								<ArrowRight size={17} aria-hidden="true" />
@@ -147,7 +147,7 @@ export default function Hero() {
 									key={label}
 									className="text-center sm:text-left"
 								>
-									<div className="ty-stat text-2xl sm:text-3xl md:text-4xl leading-none mb-1">
+									<div className="ty-stat text-xl sm:text-2xl md:text-3xl leading-none mb-1">
 										{value}
 									</div>
 									<div className="text-slate-300 font-light text-[10px] sm:text-xs leading-snug mt-0.5">

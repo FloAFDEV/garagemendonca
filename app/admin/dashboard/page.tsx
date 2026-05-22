@@ -59,7 +59,7 @@ function DashboardContent() {
 			{/* Welcome */}
 			<div className="flex flex-wrap items-center justify-between gap-3">
 				<div>
-					<h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>
+					<h2 className={clsx("font-heading font-medium text-xl", t.txt)}>
 						Bonjour{displayName ? ` ${displayName}` : ""}
 					</h2>
 					<p className={clsx("mt-1 text-sm", t.txtMuted)}>
@@ -80,9 +80,9 @@ function DashboardContent() {
 				{stats.map(({ label, value, change, icon: Icon, color, bg }) => (
 					<div
 						key={label}
-						className={clsx("rounded-2xl border p-6", t.surface, t.border)}
+						className={clsx("rounded-2xl border p-4", t.surface, t.border)}
 					>
-						<div className="flex items-center justify-between mb-4">
+						<div className="flex items-center justify-between mb-3">
 							<div
 								className={clsx(
 									"w-10 h-10 rounded-xl flex items-center justify-center",
@@ -94,7 +94,7 @@ function DashboardContent() {
 						</div>
 						<div
 							className={clsx(
-								"font-heading font-light text-3xl mb-1 tracking-tight",
+								"font-heading font-light text-2xl mb-1 tracking-tight",
 								t.txt,
 							)}
 						>
@@ -110,12 +110,12 @@ function DashboardContent() {
 				{/* Recent vehicles */}
 				<div
 					className={clsx(
-						"xl:col-span-2 rounded-2xl border p-6",
+						"xl:col-span-2 rounded-2xl border p-5",
 						t.surface,
 						t.border,
 					)}
 				>
-					<div className="flex items-center justify-between mb-6">
+					<div className="flex items-center justify-between mb-4">
 						<h3
 							className={clsx(
 								"font-heading font-normal tracking-wide",
@@ -206,7 +206,7 @@ function DashboardContent() {
 					{/* Messagerie */}
 					<div
 						className={clsx(
-							"rounded-2xl border p-6 flex flex-col items-center justify-center gap-4 text-center",
+							"rounded-2xl border p-5 flex flex-col items-center justify-center gap-3 text-center",
 							t.surface,
 							t.border,
 						)}
