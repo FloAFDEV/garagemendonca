@@ -115,7 +115,7 @@ export default function VehicleCard({
 
 				{vehicle.featured && vehicle.status !== "sold" && (
 					<div className="absolute top-2 left-2">
-						<span className="inline-flex items-center gap-1 bg-brand-600/90 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg shadow-sm">
+						<span className="inline-flex items-center gap-1 bg-brand-600/90 backdrop-blur-sm text-white text-[11px] font-medium tracking-wide px-2.5 py-1 rounded-lg shadow-sm">
 							<Star size={10} className="fill-current" aria-hidden="true" />
 							À la une
 						</span>
