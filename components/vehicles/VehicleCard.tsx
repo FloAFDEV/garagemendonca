@@ -10,8 +10,7 @@ import Badge from "@/components/ui/Badge";
 import { getLogoSrc } from "@/lib/brandLogos";
 
 /* ── Options highlights ──────────────────────────────────────────────────────
- * Options les plus "vendantes" à afficher sur la carte, par ordre de priorité.
- * Max 4 affichées + badge "+N" si davantage. */
+ * Options les plus "vendantes", par ordre de priorité. Max 4 + badge "+N". */
 const HIGHLIGHT_KEYS: (keyof VehicleOptions)[] = [
 	"climatisation_automatique",
 	"toit_panoramique",
@@ -69,7 +68,12 @@ export default function VehicleCard({
 	const imgAlt = vehicle.vehicleImages?.[0]?.alt ?? altText;
 	const imgSrc = vehicle.thumbnailUrl;
 
-	// Lien : slug SEO + shortId si disponible, UUID en fallback
+	// Finition — supporte les deux conventions de clé (lowercase + capital)
+	const finition =
+		vehicle.features?.finition ??
+		(vehicle.features as { Finition?: string } | undefined)?.Finition;
+
+	// Lien SEO : slug + shortId, UUID en fallback
 	const href = vehicle.slug
 		? `/vehicules/${vehicle.slug}-${vehicle.id.slice(0, 8)}`
 		: `/vehicules/${vehicle.id}`;
@@ -80,7 +84,7 @@ export default function VehicleCard({
 			prefetch={false}
 			onMouseEnter={() => router.prefetch(href)}
 			onTouchStart={() => router.prefetch(href)}
-			className="group flex flex-col h-full bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400"
+			className="group flex flex-col h-full bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-brand-400"
 			aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
 		>
 			{/* Image */}
@@ -110,7 +114,7 @@ export default function VehicleCard({
 						className="absolute inset-0 bg-[#0f172a]/55 flex items-center justify-center"
 						aria-hidden="true"
 					>
-						<span className="bg-red-700 text-white font-heading font-normal text-base px-5 py-2 rounded-xl tracking-widest rotate-[-8deg] shadow-lg select-none uppercase">
+						<span className="bg-red-700 text-white font-heading font-normal text-sm px-4 py-1.5 rounded-xl tracking-widest rotate-[-8deg] shadow-lg select-none uppercase">
 							Vendue
 						</span>
 					</div>
@@ -118,19 +122,16 @@ export default function VehicleCard({
 
 				{/* Prix overlay */}
 				<div
-					className="absolute top-2.5 right-2.5 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-medium text-sm px-2.5 py-1 rounded-lg"
+					className="absolute top-2 right-2 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-medium text-sm px-2.5 py-1 rounded-lg"
 					aria-hidden="true"
 				>
 					{vehicle.price.toLocaleString("fr-FR")} €
 				</div>
+
 				{vehicle.featured && vehicle.status !== "sold" && (
-					<div className="absolute top-2.5 left-2.5">
+					<div className="absolute top-2 left-2">
 						<Badge variant="gray">
-							<Star
-								size={10}
-								className="fill-current"
-								aria-hidden="true"
-							/>
+							<Star size={10} className="fill-current" aria-hidden="true" />
 							À la une
 						</Badge>
 					</div>
@@ -138,58 +139,50 @@ export default function VehicleCard({
 			</div>
 
 			{/* Contenu */}
-			<div className="p-3.5 flex flex-col flex-grow">
-				<div className="flex items-start gap-2 mb-2.5">
-					<div className="w-9 h-9 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
+			<div className="p-3 flex flex-col flex-grow">
+				{/* Marque + modèle + finition */}
+				<div className="flex items-start gap-2 mb-2">
+					<div className="w-8 h-8 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
 						<Image
 							src={getLogoSrc(vehicle.brand)}
 							alt=""
 							aria-hidden
-							width={28}
-							height={28}
+							width={24}
+							height={24}
 							className="object-contain w-full h-full"
 						/>
 					</div>
 					<div className="min-w-0">
-						<h3 className="ty-subheading text-[#0f172a] text-base leading-tight">
+						<h3 className="ty-subheading text-[#0f172a] text-sm font-medium leading-tight">
 							{vehicle.brand} {vehicle.model}
 						</h3>
-						{colorLabel && (
-						<p className="text-[#64748b] text-xs mt-0.5">
-							{colorLabel}
-						</p>
-					)}
+						{finition && (
+							<p className="text-brand-500/80 text-[11px] font-medium mt-0.5 truncate leading-tight">
+								{finition}
+							</p>
+						)}
+						{!finition && colorLabel && (
+							<p className="text-[#64748b] text-[11px] mt-0.5 truncate">
+								{colorLabel}
+							</p>
+						)}
 					</div>
 				</div>
 
 				{/* Specs */}
-				<div className="grid grid-cols-3 gap-2 mb-2.5">
-					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-2 px-1">
-						<Calendar
-							size={13}
-							className="text-brand-500 mb-0.5"
-							aria-hidden="true"
-						/>
-						<span className="text-xs font-normal text-[#334155]">
-							{vehicle.year}
-						</span>
+				<div className="grid grid-cols-3 gap-1.5 mb-2">
+					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-1.5 px-1">
+						<Calendar size={12} className="text-brand-500 mb-0.5" aria-hidden="true" />
+						<span className="text-xs font-normal text-[#334155]">{vehicle.year}</span>
 					</div>
-					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-2 px-1">
-						<Gauge
-							size={13}
-							className="text-brand-500 mb-0.5"
-							aria-hidden="true"
-						/>
+					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-1.5 px-1">
+						<Gauge size={12} className="text-brand-500 mb-0.5" aria-hidden="true" />
 						<span className="text-xs font-normal text-[#334155] truncate w-full text-center">
 							{vehicle.mileage.toLocaleString("fr-FR")} km
 						</span>
 					</div>
-					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-2 px-1">
-						<Fuel
-							size={13}
-							className="text-brand-500 mb-0.5"
-							aria-hidden="true"
-						/>
+					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-1.5 px-1">
+						<Fuel size={12} className="text-brand-500 mb-0.5" aria-hidden="true" />
 						<span className="text-xs font-normal text-[#334155] truncate w-full text-center">
 							{vehicle.fuel}
 						</span>
@@ -197,7 +190,7 @@ export default function VehicleCard({
 				</div>
 
 				{/* Badges — carburant masqué sur mobile (déjà dans la grille specs) */}
-				<div className="flex items-center gap-1.5 flex-wrap mb-2">
+				<div className="flex items-center gap-1 flex-wrap mb-2">
 					<Badge variant={fuelVariants[vehicle.fuel] ?? "gray"} className="hidden sm:inline-flex">
 						{vehicle.fuel}
 					</Badge>
@@ -206,61 +199,57 @@ export default function VehicleCard({
 				</div>
 
 				{/* Options highlights */}
-			<div className="flex flex-wrap gap-1 flex-grow content-start" aria-label="Équipements principaux">
-				{vehicle.options && (() => {
-					const hits = HIGHLIGHT_KEYS.filter(
-						(k) => vehicle.options![k] === true,
-					);
-					if (hits.length === 0) return null;
-					const shown       = hits.slice(0, 4);
-					const desktopRest = hits.length - shown.length;
-					const mobileRest  = hits.length - 2;
-					return (
-						<>
-							{shown.map((k, idx) => (
-								<span
-									key={k}
-									className={`text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5${idx >= 2 ? " hidden sm:inline-flex" : ""}`}
-								>
-									{HIGHLIGHT_LABELS[k]}
-								</span>
-							))}
-							{/* Badge +N desktop */}
-							{desktopRest > 0 && (
-								<span className="hidden sm:inline text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
-									+{desktopRest}
-								</span>
-							)}
-							{/* Badge +N mobile — inclut les options 3+ non affichées */}
-							{mobileRest > 0 && (
-								<span className="sm:hidden text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
-									+{mobileRest}
-								</span>
-							)}
-						</>
-					);
-				})()}
-			</div>
+				<div className="flex flex-wrap gap-1 flex-grow content-start" aria-label="Équipements principaux">
+					{vehicle.options && (() => {
+						const hits = HIGHLIGHT_KEYS.filter((k) => vehicle.options![k] === true);
+						if (hits.length === 0) return null;
+						const shown       = hits.slice(0, 4);
+						const desktopRest = hits.length - shown.length;
+						const mobileRest  = hits.length - 2;
+						return (
+							<>
+								{shown.map((k, idx) => (
+									<span
+										key={k}
+										className={`text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5${idx >= 2 ? " hidden sm:inline-flex" : ""}`}
+									>
+										{HIGHLIGHT_LABELS[k]}
+									</span>
+								))}
+								{desktopRest > 0 && (
+									<span className="hidden sm:inline text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+										+{desktopRest}
+									</span>
+								)}
+								{mobileRest > 0 && (
+									<span className="sm:hidden text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+										+{mobileRest}
+									</span>
+								)}
+							</>
+						);
+					})()}
+				</div>
 
-			{/* Prix + CTA */}
-				<div className="mt-auto pt-2.5 border-t border-slate-100 space-y-2">
+				{/* Prix + CTA */}
+				<div className="mt-auto pt-2 border-t border-slate-100 space-y-1.5">
 					<span
-						className="block ty-value font-heading text-lg"
+						className="block ty-value font-heading text-base"
 						aria-label={priceLabel}
 					>
 						{vehicle.price.toLocaleString("fr-FR")} €
 					</span>
 					{vehicle.status === "sold" ? (
-						<div className="w-full bg-slate-200 text-slate-500 font-normal text-sm py-3 rounded-lg flex items-center justify-center gap-2 cursor-default">
+						<div className="w-full bg-slate-200 text-slate-500 font-normal text-sm py-2.5 rounded-lg flex items-center justify-center gap-2 cursor-default">
 							Vendue
 						</div>
 					) : (
 						/* Masqué sur mobile : la carte entière est un lien */
-						<div className="hidden sm:flex w-full bg-brand-500/90 group-hover:bg-brand-600/95 text-white font-semibold text-sm py-3 rounded-lg items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-300 transform-gpu hover:-translate-y-0.5 hover:scale-105">
+						<div className="hidden sm:flex w-full bg-brand-500/90 group-hover:bg-brand-600/95 text-white font-medium text-sm py-2.5 rounded-lg items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all duration-300">
 							Voir le véhicule
 							<ArrowRight
-								size={14}
-								className="group-hover:translate-x-1 transition-transform duration-300"
+								size={13}
+								className="group-hover:translate-x-0.5 transition-transform duration-300"
 							/>
 						</div>
 					)}

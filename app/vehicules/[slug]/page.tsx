@@ -230,7 +230,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					<BackToListingButton className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-6 text-sm font-medium" />
 
 					{/* ── En-tête ── */}
-					<div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+					<div className="flex flex-wrap items-start justify-between gap-4 mb-6">
 						<div className="flex items-start gap-4">
 							<div className="w-16 h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-2 flex items-center justify-center">
 								<Image
@@ -277,7 +277,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					{/* ── Layout principal ── */}
 					<div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 sm:gap-8 lg:gap-10 items-start relative">
 						{/* ════ Colonne gauche ════ */}
-						<div className="space-y-10 min-w-0">
+						<div className="space-y-8 min-w-0">
 							<VehicleGallery
 								images={getVehicleImages(vehicle)}
 								vehicleName={vehicleName}
@@ -292,7 +292,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								<FormatVehicleDescription
 									text={vehicle.description_marketing ?? vehicle.description ?? ""}
 								/>
-								<div className="mt-8 pt-8 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
+								<div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
 									{[
 										"Contrôle technique à jour",
 										"Révision effectuée",
