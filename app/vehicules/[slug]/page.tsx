@@ -414,6 +414,16 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									<p className="text-slate-500 text-sm mt-1 font-medium">
 										{vehicle.mileage.toLocaleString("fr-FR")} km
 									</p>
+									{(() => {
+										const garantie = vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown> | undefined)?.["Garantie"] as string | undefined;
+										if (!garantie) return null;
+										return (
+											<span className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold px-3 py-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full">
+												<ShieldCheck size={12} className="text-emerald-500" />
+												Garantie {garantie}
+											</span>
+										);
+									})()}
 								</div>
 
 								<div className="space-y-4">
