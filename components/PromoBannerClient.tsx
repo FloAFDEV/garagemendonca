@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import type { Banner } from "@/types";
 import Link from "next/link";
@@ -32,33 +32,21 @@ export default function PromoBannerClient({
 	banner?: Banner | null;
 	signedImageUrl?: string;
 }) {
-	// ── Hooks TOUJOURS appelés en premier — Rules of Hooks ─────────────────
-	// Ne jamais placer de return conditionnel avant useState/useEffect.
-	// L'ancien `if (!banner) return null` placé ici causait l'erreur React :
-	// "The children should not have changed if we pass in the same set"
-	// car le nombre de hooks appelés variait entre les renders.
 	const [visible, setVisible] = useState(false);
 	const [dismissed, setDismissed] = useState(false);
 	const [mounted, setMounted] = useState(false);
 	const pathname = usePathname();
 
 	useEffect(() => {
-		// Guard : banner peut être null (type défensif) — ne rien faire
 		if (!banner) return;
 
 		setMounted(true);
 
-		// ── Vérification dates côté client (toujours fraîche, pas de cache) ──
 		const now = new Date();
 		if (banner.scheduled_start && new Date(banner.scheduled_start) > now) return;
 		if (banner.scheduled_end   && new Date(banner.scheduled_end)   < now) return;
 
-		// ── Vérification pages d'affichage ──
 		if (banner.display_pages === "home_only" && pathname !== "/") return;
-
-		// Le dismiss est volontairement en mémoire uniquement (pas de sessionStorage) :
-		// la bannière réapparaît à chaque refresh et à chaque changement de page.
-		// L'utilisateur doit la fermer explicitement sur chaque chargement.
 
 		const prefersReduced = window.matchMedia(
 			"(prefers-reduced-motion: reduce)",
@@ -79,27 +67,15 @@ export default function PromoBannerClient({
 		pathname,
 	]);
 
-	const bannerRef = useRef<HTMLDivElement>(null);
-
 	const dismiss = () => {
-		// Mesure la hauteur réelle avant animation
-		const bannerH = bannerRef.current?.offsetHeight ?? 0;
 		setVisible(false);
-		setTimeout(() => {
-			setDismissed(true);
-			// Compense le retrait de la bannière pour ne pas perdre le haut de page
-			if (window.scrollY < bannerH + 40) {
-				window.scrollTo({ top: 0, behavior: "instant" });
-			}
-		}, 380);
+		setTimeout(() => setDismissed(true), 380);
 	};
 
-	// Rendu null si aucune bannière, avant montage client, ou après dismiss
 	if (!banner || !mounted || dismissed) return null;
 
 	return (
 		<div
-			ref={bannerRef}
 			role="banner"
 			aria-live="polite"
 			style={{
@@ -110,12 +86,10 @@ export default function PromoBannerClient({
 			}}
 			className="relative w-full motion-reduce:transition-none"
 		>
-			{/* ── Fond : image + overlay couleur ───────────────────── */}
 			<div
 				className="relative w-full overflow-hidden"
 				style={{ backgroundColor: banner.bg_color || "#111827" }}
 			>
-				{/* Image en fond, très atténuée — la vraie image est dans l'icône */}
 				{signedImageUrl && (
 					<>
 						{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -136,7 +110,6 @@ export default function PromoBannerClient({
 					</>
 				)}
 
-				{/* ── Bouton fermeture — position absolue, hors flux ── */}
 				{banner.is_dismissible && (
 					<button
 						type="button"
@@ -148,16 +121,14 @@ export default function PromoBannerClient({
 					</button>
 				)}
 
-				{/* ── Contenu centré ───────────────────────────────── */}
 				<div className={clsx(
 					"relative max-w-5xl mx-auto py-2.5 sm:py-3 flex items-center justify-center gap-2.5 sm:gap-5",
-					/* Réserve de l'espace à droite pour le bouton × dismissible */
 					banner.is_dismissible ? "pl-3 pr-10 sm:pl-8 sm:pr-14 md:pl-12" : "px-3 sm:px-8 md:px-12",
 				)}>
 
-					{/* Image — icône illustration, masquée sur mobile si message long */}
+					{/* Image — taille originale */}
 					{signedImageUrl && (
-						<div className="hidden sm:block flex-shrink-0 w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-xl overflow-hidden ring-2 ring-white/25 shadow-lg">
+						<div className="hidden sm:block flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg">
 							{/* eslint-disable-next-line @next/next/no-img-element */}
 							<img
 								src={signedImageUrl}
@@ -170,7 +141,6 @@ export default function PromoBannerClient({
 						</div>
 					)}
 
-					{/* Textes + CTA groupés */}
 					<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 flex-1 min-w-0 justify-center">
 						<div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2.5 min-w-0">
 							<p className="text-sm sm:text-base font-bold leading-snug text-white tracking-tight">
@@ -183,7 +153,6 @@ export default function PromoBannerClient({
 							)}
 						</div>
 
-						{/* CTA */}
 						{banner.cta_label && banner.cta_url && (
 							<Link
 								href={banner.cta_url}
