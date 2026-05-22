@@ -49,8 +49,8 @@ function AccordionItem({
 							strokeWidth={2}
 						/>
 					</div>
-					<span className="ty-label text-slate-700">{label}</span>
-					<span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+					<span className="ty-label text-slate-700 truncate min-w-0">{label}</span>
+					<span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
 						{items.length} option{items.length > 1 ? "s" : ""}
 					</span>
 				</div>
