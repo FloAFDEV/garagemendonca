@@ -220,7 +220,7 @@ Deno.serve(async (req: Request) => {
     // ── Envoi email Resend ────────────────────────────────────────────────────
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) {
-      console.warn("[notify-vehicle-message] RESEND_API_KEY non configuré");
+      console.warn("[notify-vehicle-message] Email skipped: RESEND_API_KEY not configured");
       return new Response(JSON.stringify({ ok: true, skipped: "no_resend_key" }), {
         headers: { "Content-Type": "application/json" },
       });
