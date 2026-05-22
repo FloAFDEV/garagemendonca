@@ -333,14 +333,20 @@ export default function AdminVehiclesPage() {
 	const loading = isLoading;
 	// localVehicles sert aux optimistic updates (delete/status) sans perdre le cache RQ
 	const vehicles = localVehicles ?? fetchedVehicles;
-	const [inputValue, setInputValue] = useState("");
-	const [debouncedSearch, setDebouncedSearch] = useState("");
+	function ss<T>(key: string, fallback: T): T {
+		if (typeof window === "undefined") return fallback;
+		const v = sessionStorage.getItem(key);
+		return v !== null ? (v as unknown as T) : fallback;
+	}
+
+	const [inputValue, setInputValue] = useState(() => ss("admin-vehicles-search", ""));
+	const [debouncedSearch, setDebouncedSearch] = useState(() => ss("admin-vehicles-search", ""));
 	const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-	const [filterBrand, setFilterBrand] = useState("");
-	const [filterYear, setFilterYear] = useState("");
-	const [filterPriceMax, setFilterPriceMax] = useState("");
-	const [filterStatus, setFilterStatus] = useState("");
-	const [sortBy, setSortBy] = useState<SortKey>("date-desc");
+	const [filterBrand, setFilterBrand] = useState(() => ss("admin-vehicles-brand", ""));
+	const [filterYear, setFilterYear] = useState(() => ss("admin-vehicles-year", ""));
+	const [filterPriceMax, setFilterPriceMax] = useState(() => ss("admin-vehicles-pricemax", ""));
+	const [filterStatus, setFilterStatus] = useState(() => ss("admin-vehicles-status", ""));
+	const [sortBy, setSortBy] = useState<SortKey>(() => ss("admin-vehicles-sort", "date-desc") as SortKey);
 	const [page, setPage] = useState<number>(() => {
 		if (typeof window === "undefined") return 1;
 		return Number(sessionStorage.getItem("admin-vehicles-page")) || 1;
@@ -371,10 +377,14 @@ export default function AdminVehiclesPage() {
 		[router],
 	);
 
-	// Persist page across navigations
-	useEffect(() => {
-		sessionStorage.setItem("admin-vehicles-page", String(page));
-	}, [page]);
+	// Persist filters + sort + page across navigations
+	useEffect(() => { sessionStorage.setItem("admin-vehicles-page", String(page)); }, [page]);
+	useEffect(() => { sessionStorage.setItem("admin-vehicles-search", inputValue); }, [inputValue]);
+	useEffect(() => { sessionStorage.setItem("admin-vehicles-brand", filterBrand); }, [filterBrand]);
+	useEffect(() => { sessionStorage.setItem("admin-vehicles-year", filterYear); }, [filterYear]);
+	useEffect(() => { sessionStorage.setItem("admin-vehicles-pricemax", filterPriceMax); }, [filterPriceMax]);
+	useEffect(() => { sessionStorage.setItem("admin-vehicles-status", filterStatus); }, [filterStatus]);
+	useEffect(() => { sessionStorage.setItem("admin-vehicles-sort", sortBy); }, [sortBy]);
 
 	// Reset page when filters/search change — skip initial mount to preserve stored page
 	useEffect(() => {
