@@ -9,7 +9,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, ExternalLink, CalendarOff } from "lucide-react";
 import Container from "@/components/ui/Container";
 import CookieSettingsButton from "@/components/cookies/CookieSettingsButton";
 import { garageRepository } from "@/lib/repositories";
@@ -102,6 +102,10 @@ export default async function Footer() {
 	const hours = garage?.opening_hours
 		? buildHoursRows(garage.opening_hours)
 		: FALLBACK_HOURS;
+	const closure = garage?.closure_notice;
+	const isClosureActive = closure?.active && (
+		!closure.end_date || new Date(closure.end_date) >= new Date()
+	);
 	return (
 		<footer className="bg-slate-900 text-slate-300">
 			{/* Bande accent top */}
@@ -268,6 +272,26 @@ export default async function Footer() {
 								Avec ou sans rendez-vous
 							</span>
 						</div>
+						{isClosureActive && (
+							<div className="flex items-start gap-2 mb-4 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2.5">
+								<CalendarOff size={13} className="text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+								<div>
+									<p className="text-amber-300 text-xs font-semibold leading-snug">
+										Fermeture exceptionnelle
+									</p>
+									{closure!.message && (
+										<p className="text-amber-200/70 text-xs font-light mt-0.5 leading-snug">
+											{closure!.message}
+										</p>
+									)}
+									{closure!.end_date && (
+										<p className="text-amber-200/50 text-[11px] mt-1">
+											Réouverture le {new Date(closure!.end_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+										</p>
+									)}
+								</div>
+							</div>
+						)}
 						<ul className="space-y-3 mb-6">
 							{hours.map(({ day, time }) => (
 								<li

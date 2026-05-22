@@ -146,7 +146,7 @@ export default function PromoBannerClient({
 
 					{/* Image — icône illustration, masquée sur mobile si message long */}
 					{signedImageUrl && (
-						<div className="hidden sm:block flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg">
+						<div className="hidden sm:block flex-shrink-0 w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-xl overflow-hidden ring-2 ring-white/25 shadow-lg">
 							{/* eslint-disable-next-line @next/next/no-img-element */}
 							<img
 								src={signedImageUrl}

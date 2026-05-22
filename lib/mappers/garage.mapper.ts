@@ -1,4 +1,4 @@
-import type { Garage, GarageOpeningHours } from "@/types";
+import type { Garage, GarageOpeningHours, ClosureNotice } from "@/types";
 import type { GarageRow, GarageInsert, GarageUpdate } from "@/lib/supabase/database.types";
 import type { GarageCreateInput, GarageUpdateInput } from "@/lib/validation/garage.schema";
 
@@ -24,6 +24,7 @@ export function garageFromDb(row: GarageRow): Garage {
     lng:            row.lng ?? undefined,
     google_maps_url: row.google_maps_url ?? undefined,
     opening_hours:  (row.opening_hours as GarageOpeningHours) ?? undefined,
+    closure_notice: (((row as unknown as Record<string, unknown>).content as Record<string, unknown> | null)?.closure as ClosureNotice) ?? undefined,
     createdAt:      row.created_at,
     updatedAt:      row.updated_at,
   };
