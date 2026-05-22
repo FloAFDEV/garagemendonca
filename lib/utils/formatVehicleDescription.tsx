@@ -59,7 +59,7 @@ function renderInline(nodes: InlineNode[], prefix: string): React.ReactNode[] {
   return nodes.map((n, i) =>
     typeof n === "string"
       ? n
-      : <strong key={`${prefix}-b${i}`} className="font-semibold text-slate-800">{n.bold}</strong>,
+      : <strong key={`${prefix}-b${i}`} className="font-semibold">{n.bold}</strong>,
   );
 }
 
@@ -178,12 +178,18 @@ function coalesceSingleWordParas(blocks: Block[]): Block[] {
 //  React component — Server Component safe
 // ─────────────────────────────────────────────────────────────────────
 
-export function FormatVehicleDescription({ text }: { text: string }) {
+export function FormatVehicleDescription({
+  text,
+  textClass = "text-slate-600",
+}: {
+  text: string;
+  textClass?: string;
+}) {
   if (!text?.trim()) return null;
   const blocks = parseDescription(text);
 
   return (
-    <div className="space-y-4 text-slate-600 text-[15px] leading-relaxed">
+    <div className={`space-y-4 ${textClass} text-[15px] leading-relaxed`}>
       {blocks.map((block, i) => {
         if (block.kind === "heading") {
           return (
