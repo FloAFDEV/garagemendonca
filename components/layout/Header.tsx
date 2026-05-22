@@ -53,7 +53,7 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 			{/* Barre info supérieure */}
 			<div
 				className={clsx(
-					"bg-[#0f172a] text-slate-300 text-[11px] py-2 hidden md:block transition-all duration-300",
+					"bg-[#0f172a] text-slate-300 text-[13px] py-2 hidden md:block transition-all duration-300",
 					isOpaque && "h-0 py-0 overflow-hidden opacity-0",
 				)}
 			>

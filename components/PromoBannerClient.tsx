@@ -38,6 +38,7 @@ export default function PromoBannerClient({
 	// "The children should not have changed if we pass in the same set"
 	// car le nombre de hooks appelés variait entre les renders.
 	const [visible, setVisible] = useState(false);
+	const [dismissed, setDismissed] = useState(false);
 	const [mounted, setMounted] = useState(false);
 	const pathname = usePathname();
 
@@ -80,12 +81,12 @@ export default function PromoBannerClient({
 
 	const dismiss = () => {
 		setVisible(false);
-		// Pas de persistance — le dismiss est in-memory uniquement.
-		// Refresh ou navigation → la bannière réapparaît.
+		// Retire du DOM après la fin de l'animation pour libérer l'espace
+		setTimeout(() => setDismissed(true), 380);
 	};
 
-	// Rendu null si aucune bannière ou avant montage client
-	if (!banner || !mounted) return null;
+	// Rendu null si aucune bannière, avant montage client, ou après dismiss
+	if (!banner || !mounted || dismissed) return null;
 
 	return (
 		<div
