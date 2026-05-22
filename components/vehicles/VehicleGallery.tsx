@@ -97,12 +97,12 @@ export default function VehicleGallery({
 	/* ─────────────────────────────────────────────────────── */
 	return (
 		<>
-			<div className="space-y-3 -mx-4 sm:mx-0">
+			<div className="space-y-3 -mx-3 sm:mx-0">
 				{/* ── SLIDER ─────────────────────────────────────── */}
 				<div
 					className={[
 						"relative group bg-slate-100",
-						"h-[65dvh] rounded-none overflow-hidden",
+						"h-[60dvh] rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.10)]",
 						"sm:h-auto sm:aspect-[16/9] sm:rounded-2xl sm:border sm:border-slate-200 sm:shadow-[0_2px_12px_rgba(0,0,0,0.08)]",
 					].join(" ")}
 					role="region"

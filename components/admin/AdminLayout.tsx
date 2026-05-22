@@ -95,7 +95,7 @@ export default function AdminLayout({
 					)}
 				>
 					{/* Logo */}
-					<div className={clsx("p-6 border-b", border)}>
+					<div className={clsx("p-4 border-b", border)}>
 						<Link href="/" className="flex items-center gap-3">
 							<div className="w-9 h-9 bg-brand-600 rounded-xl flex items-center justify-center">
 								<svg
@@ -297,7 +297,7 @@ export default function AdminLayout({
 					{/* Top bar */}
 					<header
 						className={clsx(
-							"px-6 py-4 flex items-center justify-between sticky top-0 z-10 border-b",
+							"px-5 py-3 flex items-center justify-between sticky top-0 z-10 border-b",
 							surface,
 							border,
 						)}
@@ -320,7 +320,7 @@ export default function AdminLayout({
 						<div className="hidden lg:block">
 							<h1
 								className={clsx(
-									"font-normal text-lg tracking-wide",
+									"font-normal text-base tracking-wide",
 									t.txt,
 								)}
 							>
@@ -367,7 +367,7 @@ export default function AdminLayout({
 					</header>
 
 					{/* Page content */}
-					<main className="flex-1 p-4 md:p-6">{children}</main>
+					<main className="flex-1 p-4 md:p-5">{children}</main>
 				</div>
 			</div>
 	);

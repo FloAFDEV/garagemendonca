@@ -83,7 +83,7 @@ export default function NouveauServicePage() {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>Nouveau service</h2>
+            <h2 className={clsx("font-heading font-medium text-xl", t.txt)}>Nouveau service</h2>
             <p className={clsx("text-sm mt-1", t.txtMuted)}>Créez un service, puis ajoutez les détails.</p>
           </div>
         </div>

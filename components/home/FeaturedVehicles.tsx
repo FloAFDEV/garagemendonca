@@ -63,11 +63,11 @@ export default async function FeaturedVehicles() {
 	}
 
 	return (
-		<section className="py-16 sm:py-24 lg:py-28 bg-white">
+		<section className="py-12 sm:py-20 lg:py-24 bg-white">
 			<Container>
 				{/* ── Header ── */}
 				<AnimateOnScroll>
-					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-5 sm:mb-10 lg:mb-14">
+					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-4 sm:mb-8 lg:mb-10">
 						<div className="flex-1">
 							<div className="section-divider" />
 							<span className="eyebrow">Derniers arrivages</span>

@@ -31,11 +31,11 @@ export default async function GalleryAtelier() {
 	if (selected.length === 0) return null;
 
 	return (
-		<section className="py-28 bg-dark-950">
+		<section className="py-20 bg-dark-950">
 			<Container>
 				{/* ── Header ── */}
 				<AnimateOnScroll>
-					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-12">
+					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-8">
 						<div>
 							<div className="section-divider" />
 							<span className="eyebrow-light">Notre atelier</span>

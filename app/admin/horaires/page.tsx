@@ -71,7 +71,7 @@ export default function AdminHorairesPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>
+          <h2 className={clsx("font-heading font-medium text-xl", t.txt)}>
             Horaires d&apos;ouverture
           </h2>
           <p className={clsx("text-sm mt-1", t.txtMuted)}>
@@ -79,8 +79,8 @@ export default function AdminHorairesPage() {
           </p>
         </div>
 
-        <div className={clsx("rounded-2xl border p-6 space-y-4", t.surface, t.border)}>
-          <h3 className={clsx("font-heading font-normal mb-2 tracking-widest flex items-center gap-2", t.txt)}>
+        <div className={clsx("rounded-2xl border p-5 space-y-4", t.surface, t.border)}>
+          <h3 className={clsx("font-heading font-normal mb-3 tracking-widest flex items-center gap-2", t.txt)}>
             <Clock size={16} />
             Planning hebdomadaire
           </h3>
@@ -189,7 +189,7 @@ export default function AdminHorairesPage() {
             type="button"
             onClick={handleSave}
             disabled={saveStatus !== "idle" || loading}
-            className="btn-primary text-sm py-3 px-8"
+            className="btn-primary text-sm py-2.5 px-7"
           >
             {saveStatus === "saving" ? (
               <><Loader2 size={16} className="animate-spin" />Enregistrement…</>

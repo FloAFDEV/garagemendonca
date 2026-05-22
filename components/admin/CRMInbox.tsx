@@ -139,7 +139,7 @@ function MessageListItem({
 			type="button"
 			onClick={onClick}
 			className={clsx(
-				"w-full text-left px-4 py-4 border-b border-dark-800 transition-colors hover:bg-dark-800/70",
+				"w-full text-left px-4 py-3 border-b border-dark-800 transition-colors hover:bg-dark-800/70",
 				isSelected && "bg-dark-800 border-l-2 border-l-brand-500",
 				!message.is_read && !isSelected && "bg-dark-900",
 			)}
@@ -773,7 +773,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 							{Array.from({ length: 5 }).map((_, i) => (
 								<div
 									key={i}
-									className="px-4 py-4 border-b border-dark-800 animate-pulse"
+									className="px-4 py-3 border-b border-dark-800 animate-pulse"
 								>
 									<div className="flex gap-3">
 										<div className="w-10 h-10 rounded-full bg-dark-700" />

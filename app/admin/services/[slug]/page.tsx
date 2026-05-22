@@ -453,7 +453,7 @@ export default function EditServicePage({
 					<div className="flex-1 min-w-0">
 						<h2
 							className={clsx(
-								"font-heading font-medium text-2xl",
+								"font-heading font-medium text-xl",
 								t.txt,
 							)}
 						>

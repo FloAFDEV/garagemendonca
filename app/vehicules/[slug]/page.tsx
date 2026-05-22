@@ -199,7 +199,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			/>
 
 			<div className="bg-[#f8fafc] min-h-screen">
-				<Container className="pt-24 sm:pt-28 pb-28 sm:pb-12">
+				<Container className="pt-24 sm:pt-28 pb-16 sm:pb-8">
 					{/* ── Navigation ── */}
 					<nav aria-label="Fil d'Ariane" className="mb-3">
 						<ol className="flex items-center gap-2 text-xs text-[#64748b]">
@@ -285,8 +285,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							/>
 
 							{/* Description & Confiance */}
-							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-10">
-								<h2 className="ty-subheading text-[#0f172a] text-xl mb-5 sm:mb-6">
+							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-8">
+								<h2 className="ty-subheading text-[#0f172a] text-lg mb-4 sm:mb-5">
 									Description du véhicule
 								</h2>
 								<FormatVehicleDescription
@@ -322,7 +322,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								)}
 
 							{/* FICHE TECHNIQUE */}
-							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-5 sm:p-7 md:p-10">
+							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 sm:p-6 md:p-8">
 								{/* Header */}
 								<div className="flex items-center gap-3 mb-6 sm:mb-8">
 									<div className="flex-shrink-0 w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center">
@@ -358,10 +358,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 											</div>
 											{/* Texte */}
 											<div className="min-w-0 flex-1">
-												<p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 leading-none mb-1">
+												<p className="text-[10px] font-medium uppercase tracking-widest text-slate-400 leading-none mb-1">
 													{label}
 												</p>
-												<p className="text-sm font-semibold text-[#0f172a] leading-tight truncate">
+												<p className="text-sm font-medium text-[#0f172a] leading-tight truncate">
 													{value}
 												</p>
 											</div>
@@ -375,7 +375,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						<aside className="lg:sticky lg:top-[120px] space-y-6 self-start h-fit">
 							{/* Carte Prix & CTA */}
 							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-5 sm:p-8">
-								<div className="mb-6 pb-6 border-b border-slate-100">
+								<div className="mb-4 pb-4 border-b border-slate-100">
 									<div className="mt-4 m-4 flex items-center gap-3">
 										<Image
 											src={getLogoSrc(vehicle.brand)}
@@ -385,7 +385,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 											className="object-contain border rounded-md p-1 bg-white flex-shrink-0"
 										/>
 										<div>
-											<p className="font-semibold text-[#0f172a] leading-tight">
+											<p className="font-medium text-[#0f172a] leading-tight">
 												{vehicle.brand} {vehicle.model}
 											</p>
 											<p className="text-slate-400 text-sm leading-tight mt-0.5">
@@ -418,7 +418,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									</a>
 								</div>
 
-								<ul className="mt-8 space-y-4">
+								<ul className="mt-5 space-y-3">
 									{[
 										"Essai possible sur RDV",
 										"Reprise de votre véhicule",
@@ -447,7 +447,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					{/* ── Formulaire de contact inline ─────────────────────────── */}
 					<section
 						id="contact-vehicule"
-						className="mt-24 border-t border-slate-100 pt-16 scroll-mt-24"
+						className="mt-16 border-t border-slate-100 pt-12 scroll-mt-24"
 					>
 						<div className="max-w-2xl mx-auto">
 							<div className="mb-8 text-center">
@@ -476,8 +476,8 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 					{/* Véhicules similaires */}
 					{relatedVehicles.length > 0 && (
-						<section className="mt-24 border-t border-slate-100 pt-16">
-							<div className="flex items-center justify-between mb-10">
+						<section className="mt-16 border-t border-slate-100 pt-12">
+							<div className="flex items-center justify-between mb-6">
 								<h2 className="ty-heading text-[#0f172a] text-3xl">
 									Suggestions
 								</h2>

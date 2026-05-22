@@ -58,11 +58,11 @@ function Stars({ count }: { count: number }) {
 
 export default function Testimonials() {
 	return (
-		<section className="py-28 bg-[#f8fafc]">
+		<section className="py-20 bg-[#f8fafc]">
 			<Container>
 				{/* ── Header ── */}
 				<AnimateOnScroll>
-					<div className="text-center max-w-2xl mx-auto mb-14">
+					<div className="text-center max-w-2xl mx-auto mb-10">
 						<div className="section-divider mx-auto" />
 						<span className="eyebrow justify-center">
 							Avis clients
@@ -79,7 +79,7 @@ export default function Testimonials() {
 
 				{/* ── Note globale ── */}
 				<AnimateOnScroll delay={80}>
-					<div className="flex items-center justify-center gap-3 mb-12">
+					<div className="flex items-center justify-center gap-3 mb-8">
 						<div className="flex items-center gap-1">
 							{Array.from({ length: 5 }).map((_, i) => (
 								<Star
@@ -115,7 +115,7 @@ export default function Testimonials() {
 							i,
 						) => (
 							<AnimateOnScroll key={name} delay={i * 100}>
-								<div className="relative bg-white rounded-2xl border border-slate-200 p-7 hover:shadow-[0_8px_32px_rgba(0,0,0,0.07)] hover:-translate-y-1 transition-all duration-300 h-full">
+								<div className="relative bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.07)] hover:-translate-y-1 transition-all duration-300 h-full">
 									<Quote
 										size={24}
 										className="text-brand-100 fill-current absolute top-5 right-6"

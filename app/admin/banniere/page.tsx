@@ -334,7 +334,7 @@ export default function AdminBannierePage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>
+            <h2 className={clsx("font-heading font-medium text-xl", t.txt)}>
               Bannière promotionnelle
             </h2>
             <p className={clsx("text-sm mt-1", t.txtMuted)}>
@@ -390,7 +390,7 @@ export default function AdminBannierePage() {
           <div className={sectionClass}>
             <h3
               className={clsx(
-                "font-heading font-normal mb-6 tracking-widest flex items-center gap-2",
+                "font-heading font-normal mb-4 tracking-widest flex items-center gap-2",
                 t.txt,
               )}
             >
@@ -436,7 +436,7 @@ export default function AdminBannierePage() {
           <div className={sectionClass}>
             <h3
               className={clsx(
-                "font-heading font-normal mb-6 tracking-widest flex items-center gap-2",
+                "font-heading font-normal mb-4 tracking-widest flex items-center gap-2",
                 t.txt,
               )}
             >
@@ -542,7 +542,7 @@ export default function AdminBannierePage() {
           <div className={sectionClass}>
             <h3
               className={clsx(
-                "font-heading font-normal mb-6 tracking-widest flex items-center gap-2",
+                "font-heading font-normal mb-4 tracking-widest flex items-center gap-2",
                 t.txt,
               )}
             >
@@ -575,7 +575,7 @@ export default function AdminBannierePage() {
           <div className={sectionClass}>
             <h3
               className={clsx(
-                "font-heading font-normal mb-6 tracking-widest flex items-center gap-2",
+                "font-heading font-normal mb-4 tracking-widest flex items-center gap-2",
                 t.txt,
               )}
             >
@@ -616,7 +616,7 @@ export default function AdminBannierePage() {
 
           {/* Options */}
           <div className={sectionClass}>
-            <h3 className={clsx("font-heading font-normal mb-6 tracking-widest", t.txt)}>
+            <h3 className={clsx("font-heading font-normal mb-4 tracking-widest", t.txt)}>
               Options
             </h3>
             <div className="space-y-5">
@@ -677,7 +677,7 @@ export default function AdminBannierePage() {
               type="submit"
               disabled={saveStatus !== "idle"}
               aria-busy={saveStatus === "saving"}
-              className="btn-primary text-sm py-3 px-8"
+              className="btn-primary text-sm py-2.5 px-7"
             >
               {saveStatus === "saving" ? (
                 <>

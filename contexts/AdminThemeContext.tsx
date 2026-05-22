@@ -95,13 +95,13 @@ export function buildTokens(isDark: boolean): AdminTokens {
 		inputPlaceholder:      inputPH,
 		/* Composed strings — remplace la construction locale dans chaque page */
 		inputClass: [
-			"w-full border rounded-xl px-4 py-3 outline-none transition-all text-sm",
+			"w-full border rounded-xl px-3.5 py-2.5 outline-none transition-all text-sm",
 			"focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20",
 			"focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2",
 			inputBg, inputBorder, inputText, inputPH,
 		].join(" "),
 		labelClass: `block text-sm font-medium mb-2 ${labelTxt}`,
-		sectionCard: `rounded-2xl border p-5 sm:p-6 ${surface} ${isDark ? "border-dark-700" : "border-slate-200"}`,
+		sectionCard: `rounded-2xl border p-4 sm:p-5 ${surface} ${isDark ? "border-dark-700" : "border-slate-200"}`,
 		/* Table */
 		tableRowHover:         isDark ? "hover:bg-dark-800/50"    : "hover:bg-slate-50",
 		/* Dropdown */

@@ -61,7 +61,7 @@ export default function AdminServicesPage() {
         {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h2 className={clsx("font-heading font-medium text-2xl", t.txt)}>Services</h2>
+            <h2 className={clsx("font-heading font-medium text-xl", t.txt)}>Services</h2>
             <p className={clsx("text-sm mt-1", t.txtMuted)}>Gérez les services affichés sur la page publique.</p>
           </div>
           <Link

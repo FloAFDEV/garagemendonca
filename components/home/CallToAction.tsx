@@ -20,8 +20,8 @@ export default function CallToAction() {
       />
 
       <AnimateOnScroll>
-        <Container className="relative py-28">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-14">
+        <Container className="relative py-20">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
 
             {/* ── Texte ── */}
             <div className="lg:max-w-xl">
@@ -33,12 +33,12 @@ export default function CallToAction() {
               </div>
 
               {/* H2 héroïque — font-light pour le premium */}
-              <h2 className="ty-display text-white text-4xl md:text-5xl mb-5">
+              <h2 className="ty-display text-white text-3xl md:text-4xl mb-5">
                 Besoin d&apos;une réparation<br />
                 <span className="text-brand-400">rapide et fiable ?</span>
               </h2>
 
-              <p className="font-light text-slate-300 text-base leading-relaxed mb-8">
+              <p className="font-light text-slate-300 text-sm leading-relaxed mb-6">
                 Contactez-nous par téléphone ou via notre formulaire.
                 Nous intervenons sur tous types de véhicules et établissons
                 un devis détaillé et transparent sous 24h.
@@ -59,7 +59,7 @@ export default function CallToAction() {
             <div className="flex flex-col gap-3 lg:min-w-[280px]">
               <a
                 href="tel:0532002038"
-                className="btn-primary w-full justify-center py-4 text-base shadow-brand hover:shadow-brand-lg"
+                className="btn-primary w-full justify-center py-3 text-sm shadow-brand hover:shadow-brand-lg"
               >
                 <Phone size={18} />
                 05 32 00 20 38
@@ -67,7 +67,7 @@ export default function CallToAction() {
 
               <Link
                 href="/contact#contact-form"
-                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/35 text-slate-200 hover:text-white font-normal px-8 py-4 rounded-lg text-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
+                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/35 text-slate-200 hover:text-white font-normal px-7 py-3 rounded-lg text-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
               >
                 <MessageSquare size={16} />
                 Envoyer un message
@@ -75,7 +75,7 @@ export default function CallToAction() {
 
               <Link
                 href="/contact#contact-form"
-                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/35 text-slate-200 hover:text-white font-normal px-8 py-4 rounded-lg text-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
+                className="inline-flex items-center justify-center gap-3 border border-white/20 hover:border-white/35 text-slate-200 hover:text-white font-normal px-7 py-3 rounded-lg text-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/5"
               >
                 <CalendarDays size={16} />
                 Prendre rendez-vous

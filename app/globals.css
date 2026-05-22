@@ -45,7 +45,7 @@
 	.btn-primary {
 		@apply inline-flex items-center gap-2
 		bg-[#e11d48] hover:bg-[#be123c] active:bg-[#9f1239]
-		text-white font-medium px-6 py-3 rounded-lg
+		text-white font-medium px-5 py-2.5 rounded-lg
 		transition-all duration-200
 		hover:-translate-y-[2px] active:translate-y-0;
 	}
@@ -54,21 +54,21 @@
 	.btn-secondary {
 		@apply inline-flex items-center gap-2
 		bg-white border border-slate-200
-		text-[#0f172a] font-medium px-6 py-3 rounded-lg
+		text-[#0f172a] font-medium px-5 py-2.5 rounded-lg
 		hover:bg-slate-50 transition-all duration-200;
 	}
 
 	/* TITRES SECTION */
 	.section-title {
-		@apply text-3xl md:text-4xl font-heading font-normal text-[#0f172a];
+		@apply text-2xl md:text-3xl font-heading font-normal text-[#0f172a];
 	}
 
 	.section-title-light {
-		@apply text-3xl md:text-4xl font-heading font-normal text-white;
+		@apply text-2xl md:text-3xl font-heading font-normal text-white;
 	}
 
 	.section-subtitle {
-		@apply text-[#64748b] text-base mt-4 max-w-2xl leading-relaxed;
+		@apply text-[#64748b] text-sm mt-3 max-w-2xl leading-relaxed;
 	}
 
 	/* EYEBROW LABEL — petit texte surtitre */
@@ -95,7 +95,7 @@
 
 	/* INPUT */
 	.input-field {
-		@apply w-full px-4 py-3 rounded-lg border border-slate-200
+		@apply w-full px-4 py-2.5 rounded-lg border border-slate-200
 		focus:border-[#e11d48] focus:ring-2 focus:ring-[#e11d48]/20
 		bg-white text-[#0f172a];
 	}

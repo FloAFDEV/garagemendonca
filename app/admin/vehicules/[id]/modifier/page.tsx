@@ -522,7 +522,7 @@ export default function EditVehiclePage({
 					</Link>
 					<div className="min-w-0 flex-1">
 						<h2
-							className={`font-heading font-medium ${t.txt} text-2xl`}
+							className={`font-heading font-medium ${t.txt} text-xl`}
 						>
 							Modifier le véhicule
 						</h2>
@@ -546,7 +546,7 @@ export default function EditVehiclePage({
 					{/* ── Statut + mise en avant ─────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Statut &amp; publication
 						</h3>
@@ -671,7 +671,7 @@ export default function EditVehiclePage({
 					{/* ── Informations générales ─────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Informations générales
 						</h3>
@@ -837,7 +837,7 @@ export default function EditVehiclePage({
 					{/* ── Motorisation ───────────────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Motorisation
 						</h3>
@@ -927,7 +927,7 @@ export default function EditVehiclePage({
 					{/* ── Prix ───────────────────────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Prix de vente
 						</h3>
@@ -970,7 +970,7 @@ export default function EditVehiclePage({
 					{/* ── Description ────────────────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Description
 						</h3>
@@ -999,7 +999,7 @@ export default function EditVehiclePage({
 						>
 							Photos
 						</h3>
-						<p className={`${t.txtSubtle} text-xs mb-5`}>
+						<p className={`${t.txtSubtle} text-xs mb-4`}>
 							La première photo est l&apos;image principale · max
 							10 · WebP automatique
 						</p>
@@ -1023,7 +1023,7 @@ export default function EditVehiclePage({
 					{/* ── Options & Équipements ───────────────────────────── */}
 					<div className={sectionClass}>
 						<h3
-							className={`font-heading font-normal ${t.txt} mb-6 tracking-widest`}
+							className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}
 						>
 							Options &amp; Équipements
 						</h3>
