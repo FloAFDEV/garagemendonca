@@ -28,11 +28,7 @@ export async function updateVehicleAction(
 
   try {
     const vehicle = await vehicleDb.update(id, row);
-    revalidatePath("/vehicules");
-    const vehiclePath = vehicle.slug
-      ? `/vehicules/${vehicle.slug}-${vehicle.id.slice(0, 8)}`
-      : `/vehicules/${vehicle.id}`;
-    revalidatePath(vehiclePath);
+    revalidatePath("/vehicules", "layout"); // invalide /vehicules + tous les /vehicules/[slug]
     revalidatePath("/admin/vehicules");
     return { data: vehicle };
   } catch (err) {

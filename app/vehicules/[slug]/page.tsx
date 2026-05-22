@@ -33,6 +33,7 @@ import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
+import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { extractShortId, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import type { Vehicle } from "@/types";
@@ -242,7 +243,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								/>
 							</div>
 							<div>
-								<div className="flex items-center gap-2 mb-1.5">
+								<div className="flex items-center flex-wrap gap-2 mb-1.5">
 									{vehicle.featured && (
 										<span className="inline-flex items-center gap-1 bg-brand-500 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
 											<Star
@@ -260,6 +261,15 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										/>
 										{isAvailable ? "Disponible" : "Vendue"}
 									</span>
+									{(() => {
+										const badge = getMarketingBadge(vehicle.features as Record<string, unknown>);
+										if (!badge) return null;
+										return (
+											<span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full ${badge.variant === "arrivage" ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"}`}>
+												{badge.label}
+											</span>
+										);
+									})()}
 								</div>
 								<h1 className="ty-heading text-[#0f172a] text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight">
 									{vehicle.brand} {vehicle.model}

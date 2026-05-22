@@ -59,10 +59,9 @@ export async function getAdminVehicleById(id: string): Promise<Vehicle | null> {
 
 /* ── Helpers ─────────────────────────────────────────────────── */
 
-function revalidateAll(id?: string) {
+function revalidateAll(_id?: string) {
 	revalidatePath("/");
-	revalidatePath("/vehicules");
-	if (id) revalidatePath(`/vehicules/${id}`);
+	revalidatePath("/vehicules", "layout"); // invalide /vehicules + tous les /vehicules/[slug]
 }
 
 function toDbRow(input: VehicleUpdateInput): Record<string, unknown> {
