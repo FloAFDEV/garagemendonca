@@ -161,8 +161,8 @@ function MessageListItem({
 							className={clsx(
 								"text-sm font-semibold truncate",
 								!message.is_read
-									? "text-white"
-									: "text-slate-300",
+									? "text-dark-300"
+									: "text-dark-500",
 							)}
 						>
 							{message.firstname} {message.lastname}
@@ -321,10 +321,10 @@ function MessageDetail({
 				</div>
 
 				<div className="flex-1 min-w-0">
-					<h2 className="font-semibold text-white truncate text-sm">
+					<h2 className="font-semibold text-dark-300 truncate text-sm">
 						{message.firstname} {message.lastname}
 					</h2>
-					<div className="flex items-center gap-3 text-xs text-slate-400">
+					<div className="flex items-center gap-3 text-xs text-dark-500">
 						<a
 							href={`mailto:${message.email}`}
 							className="hover:text-brand-400 truncate"
@@ -692,7 +692,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 				{/* En-tête liste */}
 				<div className="px-4 pt-4 pb-3 border-b border-dark-800 space-y-3">
 					<div className="flex items-center justify-between">
-						<h1 className="font-semibold text-white flex items-center gap-2">
+						<h1 className="font-semibold text-dark-300 flex items-center gap-2">
 							<Mail size={18} className="text-brand-400" />
 							Messages
 							{unreadCount > 0 && (
