@@ -128,7 +128,7 @@ export default function PromoBannerClient({
 
 					{/* Image — taille originale */}
 					{signedImageUrl && (
-						<div className="hidden sm:block flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg">
+						<div className="hidden sm:block flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg">
 							{/* eslint-disable-next-line @next/next/no-img-element */}
 							<img
 								src={signedImageUrl}

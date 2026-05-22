@@ -173,8 +173,8 @@ export default function VehicleCard({
 							className="object-contain w-full h-full"
 						/>
 					</div>
-					<div className="min-w-0">
-						<h3 className="ty-subheading text-[#0f172a] text-sm font-medium leading-tight">
+					<div className="min-w-0 overflow-hidden">
+						<h3 className="ty-subheading text-[#0f172a] text-sm font-medium leading-tight line-clamp-2">
 							{vehicle.brand} {vehicle.model}
 							{finition && (
 								<span className="text-brand-600 font-semibold ml-1 text-[12px]">
