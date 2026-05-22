@@ -41,7 +41,7 @@ export default function NotFound() {
 						height={600}
 						priority
 						className="w-auto object-contain"
-						style={{ maxHeight: "clamp(132px, 33.6svh, 312px)" }}
+						style={{ maxHeight: "clamp(180px, 44svh, 500px)" }}
 						onError={(e) => { e.currentTarget.style.display = "none"; }}
 					/>
 				</motion.div>
