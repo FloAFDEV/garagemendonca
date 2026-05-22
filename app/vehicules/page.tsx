@@ -224,7 +224,7 @@ export default async function VehiculesPage({
       </section>
 
       {/* ── Catalogue ── */}
-      <section className="py-12 bg-[#f0f2f5]">
+      <section className="py-12 bg-[#f8fafc]">
         <Container>
           {/* Filtres */}
           <Suspense>

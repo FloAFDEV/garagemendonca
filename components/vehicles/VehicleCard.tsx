@@ -93,7 +93,7 @@ export default function VehicleCard({
 			prefetch={false}
 			onMouseEnter={() => router.prefetch(href)}
 			onTouchStart={() => router.prefetch(href)}
-			className="group flex flex-col h-full bg-white rounded-xl border border-slate-200/80 overflow-hidden shadow-[0_2px_8px_rgba(15,23,42,0.06)] transition-all duration-300 hover:shadow-[0_8px_28px_rgba(15,23,42,0.13)] hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400"
+			className="group flex flex-col h-full bg-white rounded-xl border border-black/[0.07] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_14px_rgba(0,0,0,0.06)] transition-all duration-200 hover:shadow-[0_6px_14px_rgba(0,0,0,0.07),0_18px_38px_rgba(0,0,0,0.09)] hover:-translate-y-[5px] focus-visible:ring-2 focus-visible:ring-brand-400"
 			aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
 		>
 			{/* Image */}
