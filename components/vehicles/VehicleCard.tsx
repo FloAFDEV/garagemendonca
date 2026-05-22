@@ -43,6 +43,9 @@ const HIGHLIGHT_LABELS: Partial<Record<keyof VehicleOptions, string>> = {
 	bluetooth:                 "Bluetooth",
 };
 
+const toSentenceCase = (s: string) =>
+	s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+
 interface VehicleCardProps {
 	vehicle: Vehicle;
 	priority?: boolean;
@@ -70,6 +73,11 @@ export default function VehicleCard({
 	const href = vehicle.slug
 		? `/vehicules/${vehicle.slug}-${vehicle.id.slice(0, 8)}`
 		: `/vehicules/${vehicle.id}`;
+
+	// Calculé une seule fois — partagé entre mobile et desktop
+	const optionHits = vehicle.options
+		? HIGHLIGHT_KEYS.filter((k) => vehicle.options![k] === true)
+		: [];
 
 	return (
 		<Link
@@ -124,10 +132,11 @@ export default function VehicleCard({
 			</div>
 
 			{/* Contenu */}
-			<div className="p-3 flex flex-col flex-grow">
+			<div className="p-2 sm:p-3 flex flex-col flex-grow">
 				{/* Marque + modèle + finition */}
 				<div className="flex items-start gap-2 mb-2">
-					<div className="w-8 h-8 flex-shrink-0 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center p-1">
+					{/* Logo — fond transparent, sans bordure */}
+					<div className="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0 flex items-center justify-center">
 						<Image
 							src={getLogoSrc(vehicle.brand)}
 							alt=""
@@ -174,38 +183,54 @@ export default function VehicleCard({
 					</div>
 				</div>
 
-				{/* Badges — carburant supprimé (déjà dans la grille specs) */}
-				<div className="flex items-center gap-1 flex-wrap mb-2">
-					<Badge variant="gray">{vehicle.transmission}</Badge>
-					<Badge variant="gray">{vehicle.power} ch</Badge>
+				{/* Mobile : tous les tags en ligne horizontale scrollable */}
+				<div className="sm:hidden overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] mb-2">
+					<div className="flex items-center gap-1.5 flex-nowrap">
+						<span className="flex-none text-[10px] px-1.5 py-0.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-md font-medium whitespace-nowrap">
+							{toSentenceCase(vehicle.transmission)}
+						</span>
+						<span className="flex-none text-[10px] px-1.5 py-0.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-md font-medium whitespace-nowrap">
+							{vehicle.power} ch
+						</span>
+						{optionHits.map((k) => (
+							<span
+								key={k}
+								className="flex-none text-[10px] px-1.5 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium whitespace-nowrap"
+							>
+								{HIGHLIGHT_LABELS[k]}
+							</span>
+						))}
+					</div>
 				</div>
 
-				{/* Options highlights */}
-				<div className="flex flex-wrap gap-1 flex-grow content-start" aria-label="Équipements principaux">
-					{vehicle.options && (() => {
-						const hits = HIGHLIGHT_KEYS.filter((k) => vehicle.options![k] === true);
-						if (hits.length === 0) return null;
-						const shown       = hits.slice(0, 4);
-						const desktopRest = hits.length - shown.length;
-						const mobileRest  = hits.length - 2;
+				{/* Desktop : badges boîte + puissance — casse normalisée, étirés pour remplir la ligne */}
+				<div className="hidden sm:flex items-center gap-1.5 mb-2">
+					<Badge variant="gray" className="flex-1 justify-center normal-case">
+						{toSentenceCase(vehicle.transmission)}
+					</Badge>
+					<Badge variant="gray" className="flex-1 justify-center normal-case">
+						{vehicle.power} ch
+					</Badge>
+				</div>
+
+				{/* Desktop : options highlights */}
+				<div className="hidden sm:flex flex-wrap gap-1 flex-grow content-start" aria-label="Équipements principaux">
+					{optionHits.length > 0 && (() => {
+						const shown   = optionHits.slice(0, 4);
+						const rest    = optionHits.length - shown.length;
 						return (
 							<>
-								{shown.map((k, idx) => (
+								{shown.map((k) => (
 									<span
 										key={k}
-										className={`text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5${idx >= 2 ? " hidden sm:inline-flex" : ""}`}
+										className="text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium leading-5"
 									>
 										{HIGHLIGHT_LABELS[k]}
 									</span>
 								))}
-								{desktopRest > 0 && (
-									<span className="hidden sm:inline text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
-										+{desktopRest}
-									</span>
-								)}
-								{mobileRest > 0 && (
-									<span className="sm:hidden text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
-										+{mobileRest}
+								{rest > 0 && (
+									<span className="text-[11px] px-2 py-0.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-md leading-5">
+										+{rest}
 									</span>
 								)}
 							</>
@@ -216,7 +241,7 @@ export default function VehicleCard({
 				{/* Prix + CTA */}
 				<div className="mt-auto pt-2 border-t border-slate-100 space-y-2">
 					<span
-						className="block font-heading font-semibold text-[#0f172a] text-lg leading-tight"
+						className="block text-center sm:text-left font-heading font-semibold text-[#0f172a] text-lg leading-tight"
 						aria-label={priceLabel}
 					>
 						{vehicle.price.toLocaleString("fr-FR")} €
