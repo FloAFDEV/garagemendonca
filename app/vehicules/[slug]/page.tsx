@@ -199,7 +199,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			/>
 
 			<div className="bg-[#f8fafc] min-h-screen">
-				<Container className="pt-20 sm:pt-28 pb-16 sm:pb-8">
+				<Container className="pt-20 sm:pt-28 pb-28 sm:pb-8">
 					{/* ── Navigation — masquée sur mobile (bouton retour suffit) ── */}
 					<nav aria-label="Fil d'Ariane" className="hidden sm:block mb-3">
 						<ol className="flex items-center gap-2 text-xs text-[#64748b]">
