@@ -135,14 +135,14 @@ export default async function Footer() {
 									Garage Mendonca
 								</div>
 								<div className="font-light text-xs text-slate-300 mt-0.5">
-									Depuis 2001 · Drémil-Lafage
+									Depuis 2003 · Drémil-Lafage
 								</div>
 							</div>
 						</Link>
 
 						<p className="font-light text-sm leading-relaxed text-slate-300 mb-5">
 							Spécialiste des voitures japonaises et boîtes
-							automatiques depuis 2001, le Garage Mendonca
+							automatiques depuis 2003, le Garage Mendonca
 							accueille jeunes conducteurs, seniors et personnes à
 							mobilité réduite. Nous parlons portugais et
 							francais.

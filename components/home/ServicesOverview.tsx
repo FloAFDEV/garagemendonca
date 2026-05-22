@@ -13,7 +13,7 @@ const iconMap: Record<string, React.ElementType> = {
 
 const reassuranceItems = [
 	{
-		label: "Depuis 2001",
+		label: "Depuis 2003",
 		desc: "Plus de 20 ans au service des conducteurs de la région toulousaine.",
 		icon: (
 			<svg
@@ -117,7 +117,7 @@ export default async function ServicesOverview() {
 								la carrosserie et la vente
 							</h2>
 							<p className="section-subtitle mt-3 max-w-lg text-sm leading-relaxed">
-								Depuis 2001, Vitor Mendonca et son équipe interviennent sur tous types de véhicules. Devis pièce et main-d&apos;œuvre systématique avant toute intervention, spécialistes des véhicules japonais et boîtes automatiques.
+								Depuis 2003, Vitor Mendonca et son équipe interviennent sur tous types de véhicules. Devis pièce et main-d&apos;œuvre systématique avant toute intervention, spécialistes des véhicules japonais et boîtes automatiques.
 							</p>
 						</div>
 						<Link

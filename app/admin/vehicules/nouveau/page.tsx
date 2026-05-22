@@ -78,6 +78,7 @@ interface VehicleForm {
 	finition: string;
 	critAir: string;
 	garantie: string;
+	scheduledLabel: "en_preparation" | "en_arrivage" | "";
 }
 
 interface FormErrors {
@@ -110,6 +111,7 @@ const emptyForm: VehicleForm = {
 	finition: "",
 	critAir: "",
 	garantie: "",
+	scheduledLabel: "",
 };
 
 // ── Combobox ───────────────────────────────────────────────────────
@@ -310,6 +312,7 @@ export default function NewVehiclePage() {
 			features: {
 				...(form.finition ? { Finition: form.finition } : {}),
 				...(form.garantie ? { Garantie: form.garantie } : {}),
+				...(form.scheduledLabel ? { ScheduledLabel: form.scheduledLabel } : {}),
 			},
 		});
 		// Sync vehicle_images table avec les URLs réelles
@@ -715,22 +718,50 @@ export default function NewVehiclePage() {
 								</p>
 							</div>
 							{form.vehicleStatus === "scheduled" && (
-								<div>
-									<label className={labelClass}>
-										Date de publication{" "}
-										<span className="text-brand-500">
-											*
-										</span>
-									</label>
-									<input
-										name="published_at"
-										type="datetime-local"
-										value={form.published_at}
-										onChange={handleChange}
-										required
-										className={inputClass}
-									/>
-								</div>
+								<>
+									<div>
+										<label className={labelClass}>
+											Date de publication{" "}
+											<span className="text-brand-500">
+												*
+											</span>
+										</label>
+										<input
+											name="published_at"
+											type="datetime-local"
+											value={form.published_at}
+											onChange={handleChange}
+											required
+											className={inputClass}
+										/>
+									</div>
+									<div>
+										<label className={labelClass}>
+											Affichage avant arrivée
+										</label>
+										<div className="flex gap-3 mt-1">
+											{[
+												{ value: "en_preparation", label: "En préparation" },
+												{ value: "en_arrivage", label: "En cours d'arrivage" },
+											].map((opt) => (
+												<label
+													key={opt.value}
+													className="flex items-center gap-2 cursor-pointer"
+												>
+													<input
+														type="radio"
+														name="scheduledLabel"
+														value={opt.value}
+														checked={form.scheduledLabel === opt.value}
+														onChange={handleChange}
+														className="accent-brand-600"
+													/>
+													<span className="text-sm">{opt.label}</span>
+												</label>
+											))}
+										</div>
+									</div>
+								</>
 							)}
 							<div>
 								<label className={labelClass}>Garantie</label>

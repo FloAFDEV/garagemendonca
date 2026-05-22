@@ -74,6 +74,14 @@ export default function VehicleCard({
 		vehicle.features?.garantie ??
 		(vehicle.features as { Garantie?: string } | undefined)?.Garantie;
 
+	// Statut programmé — label affiché
+	const scheduledLabel =
+		(vehicle.features as { ScheduledLabel?: string } | undefined)?.ScheduledLabel as
+			| "en_preparation"
+			| "en_arrivage"
+			| undefined;
+	const isScheduled = vehicle.status === "scheduled";
+
 	// Lien SEO : slug + shortId, UUID en fallback
 	const href = vehicle.slug
 		? `/vehicules/${vehicle.slug}-${vehicle.id.slice(0, 8)}`
@@ -105,6 +113,13 @@ export default function VehicleCard({
 						priority={priority}
 						quality={75}
 					/>
+				) : isScheduled && scheduledLabel === "en_arrivage" ? (
+					<Image
+						src="/images/arrivage.webp"
+						alt="Véhicule en cours d'arrivage — Garage Mendonça"
+						fill
+						className="object-cover"
+					/>
 				) : (
 					<Image
 						src="/images/logo-gm.webp"
@@ -131,6 +146,18 @@ export default function VehicleCard({
 						<span className="inline-flex items-center gap-1 bg-brand-600/90 backdrop-blur-sm text-white text-[11px] font-medium tracking-wide px-2.5 py-1 rounded-lg shadow-sm">
 							<Star size={10} className="fill-current" aria-hidden="true" />
 							À la une
+						</span>
+					</div>
+				)}
+
+				{isScheduled && scheduledLabel && (
+					<div className="absolute bottom-2 left-2 right-2">
+						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm text-white text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md w-full justify-center ${
+							scheduledLabel === "en_arrivage"
+								? "bg-amber-600/90"
+								: "bg-slate-700/90"
+						}`}>
+							{scheduledLabel === "en_arrivage" ? "En cours d'arrivage" : "En préparation"}
 						</span>
 					</div>
 				)}

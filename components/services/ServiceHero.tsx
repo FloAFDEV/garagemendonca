@@ -40,7 +40,7 @@ export default function ServiceHero({ service }: Props) {
 					<div className="absolute top-4 left-4">
 						<span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-slate-700 text-[11px] font-medium px-3 py-1.5 rounded-full shadow-sm">
 							<span className="w-1.5 h-1.5 rounded-full bg-brand-500 flex-shrink-0" />
-							Expertise depuis 2001
+							Expertise depuis 2003
 						</span>
 					</div>
 				</div>
