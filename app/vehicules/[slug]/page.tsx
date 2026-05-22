@@ -199,9 +199,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 			/>
 
 			<div className="bg-[#f8fafc] min-h-screen">
-				<Container className="pt-24 sm:pt-28 pb-16 sm:pb-8">
-					{/* ── Navigation ── */}
-					<nav aria-label="Fil d'Ariane" className="mb-3">
+				<Container className="pt-20 sm:pt-28 pb-16 sm:pb-8">
+					{/* ── Navigation — masquée sur mobile (bouton retour suffit) ── */}
+					<nav aria-label="Fil d'Ariane" className="hidden sm:block mb-3">
 						<ol className="flex items-center gap-2 text-xs text-[#64748b]">
 							<li>
 								<Link
@@ -227,12 +227,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						</ol>
 					</nav>
 
-					<BackToListingButton className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-6 text-sm font-medium" />
+					<BackToListingButton className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-3 sm:mb-5 text-sm font-medium" />
 
 					{/* ── En-tête ── */}
-					<div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-						<div className="flex items-start gap-4">
-							<div className="w-16 h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-2 flex items-center justify-center">
+					<div className="flex flex-wrap items-start justify-between gap-3 mb-3 sm:mb-6">
+						<div className="flex items-start gap-3">
+							<div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-1.5 sm:p-2 flex items-center justify-center">
 								<Image
 									src={getLogoSrc(vehicle.brand)}
 									alt={vehicle.brand}
@@ -242,18 +242,18 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 								/>
 							</div>
 							<div>
-								<div className="flex items-center gap-2 mb-2">
+								<div className="flex items-center gap-2 mb-1.5">
 									{vehicle.featured && (
-										<span className="inline-flex items-center gap-1 bg-brand-500 text-white text-xs font-medium px-3 py-1 rounded-full">
+										<span className="inline-flex items-center gap-1 bg-brand-500 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
 											<Star
-												size={11}
+												size={10}
 												fill="currentColor"
 											/>{" "}
 											À la une
 										</span>
 									)}
 									<span
-										className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full ${isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}
+										className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full ${isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}
 									>
 										<span
 											className={`w-1.5 h-1.5 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-slate-400"}`}
@@ -261,10 +261,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 										{isAvailable ? "Disponible" : "Vendue"}
 									</span>
 								</div>
-								<h1 className="ty-heading text-[#0f172a] text-2xl sm:text-3xl md:text-4xl leading-tight">
+								<h1 className="ty-heading text-[#0f172a] text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight">
 									{vehicle.brand} {vehicle.model}
 									{vehicle.features?.["Finition"] && (
-										<span className="text-slate-400 font-medium text-xl ml-2">
+										<span className="text-slate-400 font-medium text-base sm:text-xl ml-2">
 											{" — "}
 											{vehicle.features["Finition"]}
 										</span>
