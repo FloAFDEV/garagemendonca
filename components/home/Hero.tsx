@@ -68,7 +68,7 @@ export default function Hero() {
 				  md     : bannière 88px + topbar 32px + nav 72px + 12px air   = 204px
 				  lg     : idem md                                              = 204px
 				*/}
-				<Container className="pt-[132px] sm:pt-[164px] md:pt-[204px] lg:pt-[204px] pb-6 md:pb-8">
+				<Container className="pt-[132px] sm:pt-[164px] md:pt-[224px] lg:pt-[224px] pb-6 md:pb-8">
 					<div className="max-w-2xl xl:max-w-3xl">
 						{/* Eyebrow */}
 						<div className="flex items-center gap-3 mb-5 animate-fade-in">
