@@ -642,7 +642,10 @@ function DescriptionEditorInner({
             </p>
 
             {hasContent ? (
-              <FormatVehicleDescription text={value} />
+              <FormatVehicleDescription
+                text={value}
+                textClass={isDark ? "text-slate-300" : "text-slate-600"}
+              />
             ) : (
               <p className={clsx("text-sm italic", t.txtFaint)}>
                 L&apos;aperçu s&apos;actualise ici en temps réel…
