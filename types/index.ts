@@ -157,6 +157,16 @@ export type GarageDay =
 export type GarageOpeningHours = Partial<Record<GarageDay, GarageHours | null>>;
 
 // ─────────────────────────────────────────────
+//  Fermeture exceptionnelle
+//  Stockée dans garages.content->closure
+// ─────────────────────────────────────────────
+export interface ClosureNotice {
+  active: boolean;
+  end_date?: string;   // ISO date "2025-08-15"
+  message: string;     // "Fermés du 1er au 15 août"
+}
+
+// ─────────────────────────────────────────────
 //  Garage
 //  Mirrors: table "garages"
 // ─────────────────────────────────────────────
@@ -178,6 +188,7 @@ export interface Garage {
   lng?: number;        // ex: 1.444209
   google_maps_url?: string;
   opening_hours?: GarageOpeningHours;
+  closure_notice?: ClosureNotice;
   // ── Timestamps ─────────────────────────────
   createdAt: string;   // ISO 8601
   updatedAt: string;   // ISO 8601

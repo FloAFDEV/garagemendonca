@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import { Clock, Save, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Clock, Save, Loader2, CheckCircle2, AlertCircle, CalendarOff } from "lucide-react";
 import clsx from "clsx";
-import type { GarageOpeningHours, GarageDay } from "@/types";
-import { getGarageAction, updateOpeningHoursAction } from "./actions";
+import type { GarageOpeningHours, GarageDay, ClosureNotice } from "@/types";
+import { getGarageAction, updateOpeningHoursAction, updateClosureAction } from "./actions";
 
 const DAYS: { key: GarageDay; label: string; short: string }[] = [
 	{ key: "lundi", label: "Lundi", short: "Lun" },
@@ -38,14 +38,14 @@ export default function AdminHorairesPage() {
 	const [loading, setLoading] = useState(true);
 
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+	const [closure, setClosure] = useState<ClosureNotice>({ active: false, message: "", end_date: "" });
+	const [closureStatus, setClosureStatus] = useState<SaveStatus>("idle");
 
 	useEffect(() => {
 		getGarageAction()
 			.then((garage) => {
-				if (garage?.opening_hours) {
-					setHours(garage.opening_hours);
-				}
-
+				if (garage?.opening_hours) setHours(garage.opening_hours);
+				if (garage?.closure_notice) setClosure(garage.closure_notice);
 				setLoading(false);
 			})
 			.catch(() => setLoading(false));
@@ -90,11 +90,14 @@ export default function AdminHorairesPage() {
 
 		setSaveStatus(result.ok ? "saved" : "error");
 
-		if (result.ok) {
-			setTimeout(() => {
-				setSaveStatus("idle");
-			}, 2500);
-		}
+		if (result.ok) setTimeout(() => setSaveStatus("idle"), 2500);
+	};
+
+	const handleSaveClosure = async () => {
+		setClosureStatus("saving");
+		const result = await updateClosureAction(closure);
+		setClosureStatus(result.ok ? "saved" : "error");
+		if (result.ok) setTimeout(() => setClosureStatus("idle"), 2500);
 	};
 
 	return (
@@ -317,6 +320,86 @@ export default function AdminHorairesPage() {
 							})}
 						</div>
 					)}
+				</div>
+
+				{/* ── Fermeture exceptionnelle ── */}
+				<div className={clsx("rounded-3xl border p-4 sm:p-5 lg:p-6 space-y-4 shadow-sm", t.surface, t.border)}>
+					<div className="flex items-center justify-between">
+						<div className="flex items-center gap-2">
+							<CalendarOff size={18} className="text-amber-500" aria-hidden="true" />
+							<h3 className={clsx("font-heading text-sm font-semibold uppercase tracking-[0.2em]", t.txt)}>
+								Fermeture exceptionnelle
+							</h3>
+						</div>
+						<button
+							type="button"
+							onClick={() => setClosure((c) => ({ ...c, active: !c.active }))}
+							className={clsx(
+								"relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200",
+								"focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500",
+								closure.active ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-600",
+							)}
+							aria-checked={closure.active}
+							role="switch"
+							aria-label="Activer la fermeture exceptionnelle"
+						>
+							<span className={clsx(
+								"pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ease-in-out",
+								closure.active ? "translate-x-5" : "translate-x-0",
+							)} />
+						</button>
+					</div>
+
+					{closure.active && (
+						<div className="space-y-3">
+							<div>
+								<label className={clsx("block text-xs font-medium mb-1.5", t.txtMuted)}>
+									Message affiché dans le footer
+								</label>
+								<input
+									type="text"
+									value={closure.message}
+									onChange={(e) => setClosure((c) => ({ ...c, message: e.target.value }))}
+									placeholder="Ex : Fermés du 1er au 15 août pour congés estivaux"
+									className={clsx("w-full rounded-xl border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500", t.inputClass)}
+								/>
+							</div>
+							<div>
+								<label className={clsx("block text-xs font-medium mb-1.5", t.txtMuted)}>
+									Date de réouverture{" "}
+									<span className={clsx("font-normal", t.txtSubtle)}>(optionnel)</span>
+								</label>
+								<input
+									type="date"
+									value={closure.end_date ?? ""}
+									onChange={(e) => setClosure((c) => ({ ...c, end_date: e.target.value }))}
+									className={clsx("rounded-xl border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500", t.inputClass)}
+								/>
+							</div>
+						</div>
+					)}
+
+					<div className="flex justify-end">
+						<button
+							type="button"
+							onClick={handleSaveClosure}
+							disabled={closureStatus !== "idle"}
+							className={clsx(
+								"btn-primary flex items-center gap-2 rounded-2xl px-5 py-2.5 text-sm",
+								"disabled:cursor-not-allowed disabled:opacity-70",
+							)}
+						>
+							{closureStatus === "saving" ? (
+								<><Loader2 size={14} className="animate-spin" />Enregistrement…</>
+							) : closureStatus === "saved" ? (
+								<><CheckCircle2 size={14} />Enregistré !</>
+							) : closureStatus === "error" ? (
+								<><AlertCircle size={14} />Erreur</>
+							) : (
+								<><Save size={14} />Enregistrer</>
+							)}
+						</button>
+					</div>
 				</div>
 
 				{/* Sticky Save */}
