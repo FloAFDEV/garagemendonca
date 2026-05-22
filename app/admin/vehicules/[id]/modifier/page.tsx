@@ -479,9 +479,9 @@ export default function EditVehiclePage({
 				options: form.options,
 				features: {
 					...extraFeatures,
-					...(form.finition ? { Finition: form.finition } : {}),
-					...(form.garantie ? { Garantie: form.garantie } : {}),
-					...(form.scheduledLabel ? { ScheduledLabel: form.scheduledLabel } : {}),
+					...(form.finition ? { Finition: form.finition } : { Finition: undefined }),
+					...(form.garantie ? { Garantie: form.garantie } : { Garantie: undefined }),
+					ScheduledLabel: form.scheduledLabel || undefined,
 				},
 			});
 			await syncVehicleImages(

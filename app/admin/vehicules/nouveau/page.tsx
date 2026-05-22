@@ -312,7 +312,7 @@ export default function NewVehiclePage() {
 			features: {
 				...(form.finition ? { Finition: form.finition } : {}),
 				...(form.garantie ? { Garantie: form.garantie } : {}),
-				...(form.scheduledLabel ? { ScheduledLabel: form.scheduledLabel } : {}),
+				ScheduledLabel: form.scheduledLabel || undefined,
 			},
 		});
 		// Sync vehicle_images table avec les URLs réelles
