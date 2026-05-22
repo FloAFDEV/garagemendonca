@@ -155,13 +155,13 @@ export default function VehicleCard({
 					<div className="min-w-0">
 						<h3 className="ty-subheading text-[#0f172a] text-sm font-medium leading-tight">
 							{vehicle.brand} {vehicle.model}
+							{finition && (
+								<span className="text-brand-600 font-semibold ml-1 text-[12px]">
+									{finition}
+								</span>
+							)}
 						</h3>
-						{finition && (
-							<p className="text-brand-500/80 text-[11px] font-medium mt-0.5 truncate leading-tight">
-								{finition}
-							</p>
-						)}
-						{!finition && colorLabel && (
+						{colorLabel && (
 							<p className="text-[#64748b] text-[11px] mt-0.5 truncate">
 								{colorLabel}
 							</p>
