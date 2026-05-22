@@ -62,12 +62,13 @@ export default function Hero() {
 			{/* Contenu — min-h-0 permet la compression flex sans overflow */}
 			<div className="relative flex-1 flex items-center min-h-0">
 				{/*
-				  pt : compense navbar fixe + topbar (md) + bannière promo (~52px)
-				  Mobile : 52 banner + 64 nav + 16 air    = 132px
-				  sm     : 52 banner + 64 nav + 20 air    = 136px
-				  md     : 52 banner + 34 topbar + 72 nav = 158px + 18 air = 176px
+				  pt : compense navbar fixe + topbar (md+, visible si non scrollé) + bannière (~88px avec image)
+				  Mobile : bannière 38px (pas d'image) + nav 64px + 30px air  = 132px
+				  sm     : bannière 88px (image 64px + py-3) + nav 64px + 12px = 164px
+				  md     : bannière 88px + topbar 32px + nav 72px + 12px air   = 204px
+				  lg     : idem md                                              = 204px
 				*/}
-				<Container className="pt-[132px] sm:pt-[136px] md:pt-[176px] pb-6 md:pb-8">
+				<Container className="pt-[132px] sm:pt-[164px] md:pt-[204px] lg:pt-[204px] pb-6 md:pb-8">
 					<div className="max-w-2xl xl:max-w-3xl">
 						{/* Eyebrow */}
 						<div className="flex items-center gap-3 mb-5 animate-fade-in">
