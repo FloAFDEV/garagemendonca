@@ -77,7 +77,7 @@ export default function Hero() {
 								aria-hidden="true"
 							/>
 							<span className="text-brand-400 font-normal text-[10px] uppercase tracking-caps leading-tight">
-								Garage Mendonca – Expert auto depuis 2001
+								Garage Mendonca – Expert auto depuis 2003
 							</span>
 						</div>
 
@@ -109,7 +109,7 @@ export default function Hero() {
 							intervention.{" "}
 							<br className="hidden lg:block" />
 							Spécialiste japonaises et boîte automatique depuis
-							2001. Jeunes conducteurs, seniors &amp; PMR
+							2003. Jeunes conducteurs, seniors &amp; PMR
 							bienvenus.
 						</p>
 
