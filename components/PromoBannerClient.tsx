@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import type { Banner } from "@/types";
 import Link from "next/link";
@@ -79,10 +79,19 @@ export default function PromoBannerClient({
 		pathname,
 	]);
 
+	const bannerRef = useRef<HTMLDivElement>(null);
+
 	const dismiss = () => {
+		// Mesure la hauteur réelle avant animation
+		const bannerH = bannerRef.current?.offsetHeight ?? 0;
 		setVisible(false);
-		// Retire du DOM après la fin de l'animation pour libérer l'espace
-		setTimeout(() => setDismissed(true), 380);
+		setTimeout(() => {
+			setDismissed(true);
+			// Compense le retrait de la bannière pour ne pas perdre le haut de page
+			if (window.scrollY < bannerH + 40) {
+				window.scrollTo({ top: 0, behavior: "instant" });
+			}
+		}, 380);
 	};
 
 	// Rendu null si aucune bannière, avant montage client, ou après dismiss
@@ -90,6 +99,7 @@ export default function PromoBannerClient({
 
 	return (
 		<div
+			ref={bannerRef}
 			role="banner"
 			aria-live="polite"
 			style={{
