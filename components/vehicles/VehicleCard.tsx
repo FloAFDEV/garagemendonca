@@ -48,13 +48,6 @@ interface VehicleCardProps {
 	priority?: boolean;
 }
 
-const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
-	Essence: "orange",
-	Diesel: "gray",
-	Hybride: "green",
-	Électrique: "green",
-	GPL: "blue",
-};
 
 export default function VehicleCard({
 	vehicle,
@@ -120,14 +113,6 @@ export default function VehicleCard({
 					</div>
 				)}
 
-				{/* Prix overlay */}
-				<div
-					className="absolute top-2 right-2 bg-[#0f172a]/90 backdrop-blur-sm text-white font-heading font-medium text-sm px-2.5 py-1 rounded-lg"
-					aria-hidden="true"
-				>
-					{vehicle.price.toLocaleString("fr-FR")} €
-				</div>
-
 				{vehicle.featured && vehicle.status !== "sold" && (
 					<div className="absolute top-2 left-2">
 						<Badge variant="gray">
@@ -189,11 +174,8 @@ export default function VehicleCard({
 					</div>
 				</div>
 
-				{/* Badges — carburant masqué sur mobile (déjà dans la grille specs) */}
+				{/* Badges — carburant supprimé (déjà dans la grille specs) */}
 				<div className="flex items-center gap-1 flex-wrap mb-2">
-					<Badge variant={fuelVariants[vehicle.fuel] ?? "gray"} className="hidden sm:inline-flex">
-						{vehicle.fuel}
-					</Badge>
 					<Badge variant="gray">{vehicle.transmission}</Badge>
 					<Badge variant="gray">{vehicle.power} ch</Badge>
 				</div>
@@ -232,9 +214,9 @@ export default function VehicleCard({
 				</div>
 
 				{/* Prix + CTA */}
-				<div className="mt-auto pt-2 border-t border-slate-100 space-y-1.5">
+				<div className="mt-auto pt-2 border-t border-slate-100 space-y-2">
 					<span
-						className="block ty-value font-heading text-base"
+						className="block font-heading font-semibold text-[#0f172a] text-lg leading-tight"
 						aria-label={priceLabel}
 					>
 						{vehicle.price.toLocaleString("fr-FR")} €
