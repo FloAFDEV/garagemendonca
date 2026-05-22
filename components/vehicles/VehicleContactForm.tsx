@@ -144,15 +144,15 @@ export default function VehicleContactForm({
 	return (
 		<form onSubmit={handleSubmit} noValidate className="space-y-5">
 			{/* Contexte véhicule */}
-			<div className="flex items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
-				<div className="w-9 h-9 bg-brand-50 border border-brand-100 rounded-lg flex items-center justify-center flex-shrink-0">
-					<MessageSquare size={16} className="text-brand-500" />
+			<div className="flex items-center gap-3 p-4 bg-brand-50/50 border border-brand-100 rounded-xl">
+				<div className="w-9 h-9 bg-brand-100 border border-brand-200 rounded-lg flex items-center justify-center flex-shrink-0">
+					<MessageSquare size={16} className="text-brand-600" />
 				</div>
 				<div className="min-w-0">
-					<p className="text-xs text-slate-400 font-medium uppercase tracking-wide">
+					<p className="text-xs text-brand-500 font-medium uppercase tracking-wide">
 						Votre demande concerne
 					</p>
-					<p className="text-sm font-medium text-[#0f172a] truncate">
+					<p className="text-sm font-semibold text-[#0f172a] truncate">
 						{vehicleLabel}
 					</p>
 				</div>
@@ -267,7 +267,7 @@ export default function VehicleContactForm({
 			<button
 				type="submit"
 				disabled={mutation.isPending}
-				className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition-colors shadow-sm"
+				className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-base rounded-xl transition-all shadow-md hover:shadow-lg hover:shadow-brand-500/25"
 			>
 				{mutation.isPending ? (
 					<>
@@ -345,10 +345,10 @@ function Field({
 					type={type}
 					autoComplete={autoComplete}
 					placeholder={placeholder}
-					className={`w-full ${icon ? "pl-9" : "pl-3"} pr-3 py-2.5 text-sm rounded-xl border bg-white focus:outline-none focus:ring-2 transition-colors ${
+					className={`w-full ${icon ? "pl-9" : "pl-3"} pr-3 py-3.5 text-sm rounded-xl border bg-white focus:outline-none focus:ring-2 transition-colors ${
 						error
 							? "border-red-300 focus:ring-red-200"
-							: "border-slate-200 focus:ring-brand-100 focus:border-brand-400"
+							: "border-slate-300 focus:ring-brand-200 focus:border-brand-500"
 					}`}
 				/>
 			</div>

@@ -118,9 +118,9 @@ const AutoResizeTextarea = forwardRef<
             error
               ? "border-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-100"
               : [
-                  "border-slate-200",
-                  "hover:border-slate-300",
-                  "focus:border-brand-400 focus:ring-2 focus:ring-brand-100/70",
+                  "border-slate-300",
+                  "hover:border-slate-400",
+                  "focus:border-brand-500 focus:ring-2 focus:ring-brand-200",
                 ],
           ],
 
