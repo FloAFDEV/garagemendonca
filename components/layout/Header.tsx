@@ -7,6 +7,7 @@ import { Menu, X, Phone } from "lucide-react";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Container from "@/components/ui/Container";
+import { HeaderSearchButton } from "@/components/search/HeaderSearch";
 
 const navLinks = [
 	{ href: "/", label: "Accueil" },
@@ -143,8 +144,11 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 					</ul>
 
 					{/* CTA & Burger */}
-					<div className="flex items-center gap-4 ml-auto md:ml-0">
-						<div className="hidden md:block">
+					<div className="flex items-center gap-2 ml-auto md:ml-0">
+						{/* Bouton recherche — desktop + mobile */}
+						<HeaderSearchButton isOpaque={isOpaque} />
+
+						<div className="hidden md:block ml-2">
 							<a
 								href="tel:0532002038"
 								className={clsx(
