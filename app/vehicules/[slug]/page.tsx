@@ -293,12 +293,16 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									text={vehicle.description_marketing ?? vehicle.description ?? ""}
 								/>
 								<div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
-									{[
+									{([
 										"Contrôle technique à jour",
 										"Révision effectuée",
 										"Vérification 160 points",
-										"Garantie 6 à 12 mois",
-									].map((item) => (
+										// Garantie dynamique — valeur saisie dans l'admin
+										(vehicle.features?.garantie ||
+											(vehicle.features as Record<string, unknown> | undefined)?.["Garantie"])
+											? `Garantie ${vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown>)["Garantie"]}`
+											: "Garantie 6 à 12 mois",
+									] as string[]).map((item) => (
 										<div
 											key={item}
 											className="flex items-center gap-3 text-sm font-normal text-slate-700"

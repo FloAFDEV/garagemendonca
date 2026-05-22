@@ -155,7 +155,7 @@ export const vehicleDb = {
     const { data, error } = await anonDb()
       .from("vehicles").select(SEL_WITH_IMAGES)
       .eq("garage_id", garageId).eq("featured", true)
-      .in("status", ["published", "sold"])
+      .in("status", ["published", "scheduled", "sold"])
       .order("featured_order",  { ascending: true, nullsFirst: false })
       .order("created_at",      { ascending: false })
       .limit(limit);
