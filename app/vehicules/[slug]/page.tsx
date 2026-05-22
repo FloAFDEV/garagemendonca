@@ -447,7 +447,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					{/* ── Formulaire de contact inline ─────────────────────────── */}
 					<section
 						id="contact-vehicule"
-						className="mt-16 border-t border-slate-100 pt-12 scroll-mt-24"
+						className="mt-16 scroll-mt-24 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-100 py-16"
 					>
 						<div className="max-w-2xl mx-auto">
 							<div className="mb-8 text-center">
@@ -462,7 +462,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									Envoyez-nous un message — nous vous répondons sous 24 h.
 								</p>
 							</div>
-							<div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+							<div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xl">
 								<VehicleContactFormLazy
 									vehicleId={vehicle.id}
 									vehicleName={vehicleName}
