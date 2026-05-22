@@ -62,13 +62,12 @@ export default function Hero() {
 			{/* Contenu — min-h-0 permet la compression flex sans overflow */}
 			<div className="relative flex-1 flex items-center min-h-0">
 				{/*
-				  pt-20 / pt-24 / pt-[108px] : compense la navbar fixe
-				  Mobile  : h-16 (64px) + 16px de respiration = 80px
-				  sm      : h-16 (64px) + 32px                = 96px
-				  md      : h-[72px] (72px) + barre info 32px + 4px = 108px
-				  pb-6 md:pb-8 : padding bas minimal — la section a une hauteur fixée
+				  pt : compense la navbar fixe + bannière promo éventuelle (~48px)
+				  Mobile  : 64px nav + 48px banner + 8px  = ~120px → pt-[120px]
+				  sm      : 64px nav + 48px banner + 16px = ~128px → pt-32
+				  md      : 72px nav + 34px topbar + 48px banner + 8px = ~162px → pt-[162px]
 				*/}
-				<Container className="pt-20 sm:pt-24 md:pt-[108px] pb-6 md:pb-8">
+				<Container className="pt-[120px] sm:pt-32 md:pt-[162px] pb-6 md:pb-8">
 					<div className="max-w-2xl xl:max-w-3xl">
 						{/* Eyebrow */}
 						<div className="flex items-center gap-3 mb-5 animate-fade-in">
