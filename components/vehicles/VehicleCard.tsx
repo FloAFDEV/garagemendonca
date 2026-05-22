@@ -69,6 +69,11 @@ export default function VehicleCard({
 		vehicle.features?.finition ??
 		(vehicle.features as { Finition?: string } | undefined)?.Finition;
 
+	// Garantie — même double convention
+	const garantie =
+		vehicle.features?.garantie ??
+		(vehicle.features as { Garantie?: string } | undefined)?.Garantie;
+
 	// Lien SEO : slug + shortId, UUID en fallback
 	const href = vehicle.slug
 		? `/vehicules/${vehicle.slug}-${vehicle.id.slice(0, 8)}`
@@ -192,6 +197,11 @@ export default function VehicleCard({
 						<span className="flex-none text-[10px] px-1.5 py-0.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-md font-medium whitespace-nowrap">
 							{vehicle.power} ch
 						</span>
+						{garantie && (
+							<span className="flex-none text-[10px] px-1.5 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-md font-medium whitespace-nowrap">
+								Garantie {garantie}
+							</span>
+						)}
 						{optionHits.map((k) => (
 							<span
 								key={k}
@@ -203,7 +213,7 @@ export default function VehicleCard({
 					</div>
 				</div>
 
-				{/* Desktop : badges boîte + puissance — casse normalisée, étirés pour remplir la ligne */}
+				{/* Desktop : badges boîte + puissance + garantie */}
 				<div className="hidden sm:flex items-center gap-1.5 mb-2">
 					<Badge variant="gray" className="flex-1 justify-center normal-case">
 						{toSentenceCase(vehicle.transmission)}
@@ -211,6 +221,11 @@ export default function VehicleCard({
 					<Badge variant="gray" className="flex-1 justify-center normal-case">
 						{vehicle.power} ch
 					</Badge>
+					{garantie && (
+						<span className="flex-1 text-center text-[11px] px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full font-medium leading-5 whitespace-nowrap">
+							Garantie {garantie}
+						</span>
+					)}
 				</div>
 
 				{/* Desktop : options highlights */}
