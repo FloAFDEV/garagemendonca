@@ -43,8 +43,8 @@ const HIGHLIGHT_LABELS: Partial<Record<keyof VehicleOptions, string>> = {
 	bluetooth:                 "Bluetooth",
 };
 
-const toSentenceCase = (s: string) =>
-	s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+const toSentenceCase = (s: string | null | undefined): string =>
+	s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : (s ?? "");
 
 interface VehicleCardProps {
 	vehicle: Vehicle;
