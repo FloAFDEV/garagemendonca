@@ -75,13 +75,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Assets statiques Next.js — immuables (hash dans le nom de fichier)
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
-      {
         // Images publiques statiques (/images/, /icons/, /fonts/)
         source: "/(images|icons|fonts)/:path*",
         headers: [
