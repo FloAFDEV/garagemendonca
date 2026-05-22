@@ -41,6 +41,7 @@ export interface UIVehicle {
   categories: string[];
   options?: VehicleOptions;
   critAir?: string;
+  finition?: string;       // ex. "GT Line", "RS Line", "M Sport"
   meta_description?: string;
   createdAt?: string;
   // Champs computés (remplis par toUIVehicle())
@@ -196,6 +197,7 @@ export function toUIVehicle(v: Vehicle): UIVehicle {
     categories:       v.categories ?? [],
     options:          v.options,
     critAir:          v.critAir,
+    finition:         v.features?.finition ?? (v.features as { Finition?: string } | undefined)?.Finition,
     meta_description: v.meta_description,
     createdAt:        v.createdAt,
     // Computed
