@@ -140,9 +140,12 @@ function MessageListItem({
 			type="button"
 			onClick={onClick}
 			className={clsx(
-				"w-full text-left px-4 py-3 border-b border-dark-800 transition-colors hover:bg-dark-800/70",
-				isSelected && "bg-dark-800 border-l-2 border-l-brand-500",
-				!message.is_read && !isSelected && "bg-dark-900",
+				"w-full text-left px-4 py-3 border-b border-dark-800 transition-colors",
+				isSelected
+					? "bg-dark-800 border-l-2 border-l-brand-500"
+					: !message.is_read
+						? "bg-dark-850 hover:bg-dark-800"
+						: "hover:bg-dark-800/50",
 			)}
 		>
 			<div className="flex items-start gap-3">
@@ -162,8 +165,8 @@ function MessageListItem({
 							className={clsx(
 								"text-sm font-semibold truncate",
 								!message.is_read
-									? "text-dark-300"
-									: "text-dark-500",
+									? "text-slate-100"
+									: "text-dark-400",
 							)}
 						>
 							{message.firstname} {message.lastname}
