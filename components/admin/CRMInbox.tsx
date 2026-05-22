@@ -427,7 +427,7 @@ function MessageDetail({
 
 				{/* Message original */}
 				<div className="bg-dark-900 rounded-xl p-4 border border-dark-800">
-					<p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">
+					<p className="text-sm text-dark-400 leading-relaxed whitespace-pre-wrap">
 						{message.message}
 					</p>
 				</div>
