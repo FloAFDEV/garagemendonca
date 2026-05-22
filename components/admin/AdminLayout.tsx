@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import {
 	LayoutDashboard,
 	Car,
@@ -62,6 +63,7 @@ export default function AdminLayout({
 		null;
 
 	const isDark = t.isDark;
+	const unreadCount = useUnreadMessages();
 
 	/* ── Tokens de thème ─────────────────────────────────────── */
 	const bg      = isDark ? "bg-dark-950"    : "bg-slate-100";
@@ -180,7 +182,13 @@ export default function AdminLayout({
 											)}
 										>
 											<Icon size={17} />
-											{label}
+											<span className="flex-1">{label}</span>
+											{href === "/admin/messages" && unreadCount > 0 && (
+												<span className="relative flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-bold leading-none bg-brand-600 text-white rounded-full">
+													<span className="absolute inset-0 rounded-full bg-brand-600 animate-ping opacity-60" />
+													<span className="relative">{unreadCount > 99 ? "99+" : unreadCount}</span>
+												</span>
+											)}
 										</Link>
 									</li>
 								);
