@@ -1,167 +1,185 @@
 /**
- * Transforme une description véhicule brute (texte copié/collé depuis une concession)
- * en blocs React structurés — sans dangerouslySetInnerHTML.
+ * Transforme une description véhicule brute en blocs React structurés.
+ * Server Component safe — pas de hooks, pas d'API browser.
  *
  * Patterns détectés :
- *  - ***** TITRE ***** ou === TITRE === → <h3> section heading
- *  - "Label :" en début de ligne (Mécanique :, Carrosserie :, …) → <h3>
- *  - "- item" ou "• item" → <ul> liste
- *  - " / " → séparateur → plusieurs lignes de texte
- *  - Texte ordinaire → <p>
+ *  - ## Titre             → <h3> section (markdown standard)
+ *  - ***** TITRE *****    → <h3> section (format concession)
+ *  - "Label :" seul       → <h3> section
+ *  - "- item" / "• item"  → <ul> liste
+ *  - " / " séparateur     → plusieurs paragraphes
+ *  - **gras**             → <strong> inline
+ *  - Texte ordinaire      → <p>
  */
 
 import React from "react";
 
-// ─────────────────────────────────────────────
-//  Types internes
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
+//  Types
+// ─────────────────────────────────────────────────────────────────────
+
+type InlineNode = string | { bold: string };
 
 type Block =
   | { kind: "heading"; text: string }
-  | { kind: "para"; text: string }
-  | { kind: "list"; items: string[] };
+  | { kind: "para"; nodes: InlineNode[] }
+  | { kind: "list"; items: InlineNode[][] };
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
 //  Regex
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
 
-/** ***** TEXTE ***** ou === TEXTE === */
-const STAR_HEADING_RE = /^[*=\-_]{2,}\s*(.+?)\s*[*=\-_]{2,}$/;
+const MARKDOWN_HEADING_RE = /^#{1,3}\s+(.+)/;
+const STAR_HEADING_RE     = /^[*=\-_]{2,}\s*(.+?)\s*[*=\-_]{2,}$/;
+const INLINE_HEADING_RE   = /^([A-ZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜ][A-ZÀ-ÿa-z\s&'/()-]{1,50})\s*:\s*$/;
+const LIST_ITEM_RE        = /^[-•*]\s+(.+)/;
+const SLASH_SEP_RE        = /\s*\/\s+|\s+\/\s*/;
 
-/** "Label :" ou "LABEL:" en fin de ligne (section courte sans contenu sur la même ligne) */
-const INLINE_HEADING_RE =
-  /^([A-ZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜ][A-ZÀ-ÿa-z\s&'/()-]{1,50})\s*:\s*$/;
+// ─────────────────────────────────────────────────────────────────────
+//  Inline parser — **bold**
+// ─────────────────────────────────────────────────────────────────────
 
-/** Listes : - item ou • item */
-const LIST_ITEM_RE = /^[-•]\s+(.+)/;
+function parseInline(text: string): InlineNode[] {
+  const nodes: InlineNode[] = [];
+  const re = /\*\*(.+?)\*\*/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
 
-/** Séparateur " / " au milieu d'une ligne */
-const SLASH_SEP_RE = /\s*\/\s+|\s+\/\s*/;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    nodes.push({ bold: m[1] });
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
 
-// ─────────────────────────────────────────────
+  return nodes.length ? nodes : [text];
+}
+
+function renderInline(nodes: InlineNode[], prefix: string): React.ReactNode[] {
+  return nodes.map((n, i) =>
+    typeof n === "string"
+      ? n
+      : <strong key={`${prefix}-b${i}`} className="font-semibold text-slate-800">{n.bold}</strong>,
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────
 //  Parser
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
 
 function parseDescription(raw: string): Block[] {
   const blocks: Block[] = [];
-  const listItems: string[] = [];
+  const listBuf: string[] = [];
 
   const flushList = () => {
-    if (listItems.length > 0) {
-      blocks.push({ kind: "list", items: [...listItems] });
-      listItems.length = 0;
+    if (listBuf.length > 0) {
+      blocks.push({ kind: "list", items: listBuf.map(parseInline) });
+      listBuf.length = 0;
     }
   };
 
-  // 1. Expand lines : chaque retour à la ligne, puis séparer sur " / "
-  const expandedLines: string[] = [];
-  for (const raw_line of raw.split("\n")) {
-    const line = raw_line.trim();
-    if (!line) { expandedLines.push(""); continue; }
+  // 1. Expand lines — split on " / " except for headings/lists
+  const expanded: string[] = [];
+  for (const rawLine of raw.split("\n")) {
+    const line = rawLine.trim();
+    if (!line) { expanded.push(""); continue; }
 
-    // Ne pas éclater les lignes qui sont déjà des headings ou des listes
-    if (STAR_HEADING_RE.test(line) || INLINE_HEADING_RE.test(line) || LIST_ITEM_RE.test(line)) {
-      expandedLines.push(line);
-      continue;
-    }
+    const isSpecial =
+      MARKDOWN_HEADING_RE.test(line) ||
+      STAR_HEADING_RE.test(line) ||
+      INLINE_HEADING_RE.test(line) ||
+      LIST_ITEM_RE.test(line);
 
-    // Éclater sur " / " → plusieurs "paragraphes"
+    if (isSpecial) { expanded.push(line); continue; }
+
     const parts = line.split(SLASH_SEP_RE).map((p) => p.trim()).filter(Boolean);
-    if (parts.length > 1) {
-      for (const part of parts) expandedLines.push(part);
-    } else {
-      expandedLines.push(line);
-    }
+    if (parts.length > 1) parts.forEach((p) => expanded.push(p));
+    else expanded.push(line);
   }
 
-  // 2. Classifier chaque ligne
-  for (const line of expandedLines) {
+  // 2. Classify each line
+  for (const line of expanded) {
     if (!line) { flushList(); continue; }
 
-    // Section heading étoilée / égale
-    const starMatch = line.match(STAR_HEADING_RE);
-    if (starMatch) {
+    const mdH = line.match(MARKDOWN_HEADING_RE);
+    if (mdH) {
       flushList();
-      blocks.push({ kind: "heading", text: normalizeHeading(starMatch[1]) });
+      blocks.push({ kind: "heading", text: normalizeHeading(mdH[1]) });
       continue;
     }
 
-    // Section heading "Label :"
-    const inlineMatch = line.match(INLINE_HEADING_RE);
-    if (inlineMatch) {
+    const starH = line.match(STAR_HEADING_RE);
+    if (starH) {
       flushList();
-      blocks.push({ kind: "heading", text: normalizeHeading(inlineMatch[1]) });
+      blocks.push({ kind: "heading", text: normalizeHeading(starH[1]) });
       continue;
     }
 
-    // Liste
-    const listMatch = line.match(LIST_ITEM_RE);
-    if (listMatch) {
-      listItems.push(listMatch[1].trim());
+    const inlineH = line.match(INLINE_HEADING_RE);
+    if (inlineH) {
+      flushList();
+      blocks.push({ kind: "heading", text: normalizeHeading(inlineH[1]) });
       continue;
     }
 
-    // Paragraphe ordinaire
+    const listM = line.match(LIST_ITEM_RE);
+    if (listM) {
+      listBuf.push(listM[1].trim());
+      continue;
+    }
+
     flushList();
-    blocks.push({ kind: "para", text: line });
+    blocks.push({ kind: "para", nodes: parseInline(line) });
   }
 
   flushList();
 
-  // 3. Fusionner les blocs "para" consécutifs très courts (< 3 mots) en liste
-  //    Exemple : 3 lignes d'équipements sans tiret → auto-list
   return coalesceSingleWordParas(blocks);
 }
 
-/** Met la première lettre en majuscule, nettoie les espaces */
 function normalizeHeading(text: string): string {
   const t = text.trim().replace(/\s+/g, " ");
-  return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase().replace(
-    /\b(ct|gps|abs|esp|acc)\b/gi,
-    (m) => m.toUpperCase(),
+  return (
+    t.charAt(0).toUpperCase() +
+    t.slice(1).toLowerCase().replace(/\b(ct|gps|abs|esp|acc)\b/gi, (m) => m.toUpperCase())
   );
 }
 
 /**
- * Si on a ≥ 3 paragraphes courts consécutifs (< 6 mots chacun)
- * sans heading entre eux, on les regroupe en liste.
+ * Fusionne ≥3 paragraphes courts consécutifs (≤7 mots) en liste.
+ * Gère les textes collés sans tirets explicites.
  */
 function coalesceSingleWordParas(blocks: Block[]): Block[] {
   const result: Block[] = [];
-  let runParas: string[] = [];
+  let run: InlineNode[][] = [];
 
   const flushRun = () => {
-    if (runParas.length >= 3) {
-      result.push({ kind: "list", items: [...runParas] });
-    } else {
-      for (const p of runParas) result.push({ kind: "para", text: p });
-    }
-    runParas = [];
+    if (run.length >= 3) result.push({ kind: "list", items: [...run] });
+    else run.forEach((nodes) => result.push({ kind: "para", nodes }));
+    run = [];
   };
 
-  for (const block of blocks) {
-    if (block.kind === "para") {
-      const wordCount = block.text.split(/\s+/).length;
-      if (wordCount <= 7) {
-        runParas.push(block.text);
-        continue;
-      }
+  for (const b of blocks) {
+    if (b.kind === "para") {
+      const words = b.nodes.reduce((acc, n) => {
+        return acc + (typeof n === "string" ? n : n.bold).split(/\s+/).length;
+      }, 0);
+      if (words <= 7) { run.push(b.nodes); continue; }
     }
     flushRun();
-    result.push(block);
+    result.push(b);
   }
   flushRun();
 
   return result;
 }
 
-// ─────────────────────────────────────────────
-//  Rendu React — Server Component safe
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────
+//  React component — Server Component safe
+// ─────────────────────────────────────────────────────────────────────
 
 export function FormatVehicleDescription({ text }: { text: string }) {
   if (!text?.trim()) return null;
-
   const blocks = parseDescription(text);
 
   return (
@@ -183,23 +201,22 @@ export function FormatVehicleDescription({ text }: { text: string }) {
         if (block.kind === "list") {
           return (
             <ul key={i} className="space-y-1.5">
-              {block.items.map((item, j) => (
+              {block.items.map((nodes, j) => (
                 <li key={j} className="flex items-start gap-2.5">
                   <span
                     className="mt-2 w-1.5 h-1.5 rounded-full bg-brand-500/60 flex-shrink-0"
                     aria-hidden="true"
                   />
-                  <span>{item}</span>
+                  <span>{renderInline(nodes, `${i}-${j}`)}</span>
                 </li>
               ))}
             </ul>
           );
         }
 
-        // para
         return (
           <p key={i} className="leading-relaxed">
-            {block.text}
+            {renderInline(block.nodes, `${i}`)}
           </p>
         );
       })}
