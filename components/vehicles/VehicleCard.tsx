@@ -8,6 +8,7 @@ import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
 import Badge from "@/components/ui/Badge";
 import { getLogoSrc } from "@/lib/brandLogos";
+import { getMarketingBadge } from "@/lib/vehicles/helpers";
 
 /* ── Options highlights ──────────────────────────────────────────────────────
  * Options les plus "vendantes", par ordre de priorité. Max 4 + badge "+N". */
@@ -74,13 +75,7 @@ export default function VehicleCard({
 		vehicle.features?.garantie ??
 		(vehicle.features as { Garantie?: string } | undefined)?.Garantie;
 
-	// Statut programmé — label affiché
-	const scheduledLabel =
-		(vehicle.features as { ScheduledLabel?: string } | undefined)?.ScheduledLabel as
-			| "en_preparation"
-			| "en_arrivage"
-			| undefined;
-	const isScheduled = vehicle.status === "scheduled";
+	const marketingBadge = getMarketingBadge(vehicle.features as Record<string, unknown>);
 
 	// Lien SEO : slug + shortId, UUID en fallback
 	const href = vehicle.slug
@@ -113,7 +108,7 @@ export default function VehicleCard({
 						priority={priority}
 						quality={75}
 					/>
-				) : isScheduled && scheduledLabel === "en_arrivage" ? (
+				) : marketingBadge?.variant === "arrivage" ? (
 					<Image
 						src="/images/arrivage.webp"
 						alt="Véhicule en cours d'arrivage — Garage Mendonça"
@@ -150,14 +145,14 @@ export default function VehicleCard({
 					</div>
 				)}
 
-				{isScheduled && scheduledLabel && (
+				{marketingBadge && (
 					<div className="absolute bottom-2 left-2 right-2">
 						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm text-white text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md w-full justify-center ${
-							scheduledLabel === "en_arrivage"
+							marketingBadge.variant === "arrivage"
 								? "bg-amber-600/90"
 								: "bg-slate-700/90"
 						}`}>
-							{scheduledLabel === "en_arrivage" ? "En cours d'arrivage" : "En préparation"}
+							{marketingBadge.label}
 						</span>
 					</div>
 				)}

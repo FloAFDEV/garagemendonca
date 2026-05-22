@@ -206,7 +206,7 @@ export default async function VehiculesPage({
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-px bg-brand-500" aria-hidden="true" />
                 <span className="text-brand-400 font-normal text-xs uppercase tracking-caps">
-                  Notre stock · {totalCount} véhicule{totalCount > 1 ? "s" : ""}
+                  Notre stock
                 </span>
               </div>
               <h1 className="ty-display text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-4 sm:mb-5">

@@ -403,10 +403,16 @@ export default function VehicleFiltersBar({
     <div className="mb-8 space-y-4">
       {/* Compteur + tri */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <p className="text-sm font-normal text-slate-800 uppercase tracking-wide">
-          <span className="text-brand-600 text-lg">{totalCount}</span>{" "}
-          véhicule{totalCount !== 1 ? "s" : ""} disponible{totalCount !== 1 ? "s" : ""}
-        </p>
+        {hasFilters ? (
+          <p className="text-sm font-normal text-slate-800 uppercase tracking-wide">
+            <span className="text-brand-600 text-lg font-semibold">{totalCount}</span>{" "}
+            résultat{totalCount !== 1 ? "s" : ""}
+          </p>
+        ) : (
+          <p className="text-sm font-normal text-slate-500 uppercase tracking-wide">
+            Tous nos véhicules
+          </p>
+        )}
 
         {/* Tri */}
         <div className="flex items-center gap-2">
