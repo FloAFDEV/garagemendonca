@@ -39,6 +39,7 @@ import {
 import { replyToMessageAction } from "@/lib/safe-actions/replyToMessage";
 import type { UIMessage } from "@/types/ui";
 import type { MessageStatusInput } from "@/lib/validation/message.schema";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 // ─────────────────────────────────────────────────────────────────
 //  Constants
@@ -221,6 +222,7 @@ function MessageDetail({
 	const [notes, setNotes] = useState(message.admin_notes ?? "");
 	const [notesDirty, setNotesDirty] = useState(false);
 	const [showNotes, setShowNotes] = useState(!!message.admin_notes);
+	const [deleteOpen, setDeleteOpen] = useState(false);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	// Charger le détail complet avec réponses
@@ -252,11 +254,15 @@ function MessageDetail({
 	const deleteMut = useMutation({
 		mutationFn: () => deleteMessageAction(message.id, garageId),
 		onSuccess: () => {
+			setDeleteOpen(false);
 			invalidate();
 			onClose();
 			toast.success("Message supprimé.");
 		},
-		onError: () => toast.error("Impossible de supprimer le message."),
+		onError: () => {
+			setDeleteOpen(false);
+			toast.error("Impossible de supprimer le message.");
+		},
 	});
 
 	// Reply mutation
@@ -368,18 +374,33 @@ function MessageDetail({
 					)}
 
 					<button
-						onClick={() => {
-							if (
-								confirm("Supprimer ce message définitivement ?")
-							)
-								deleteMut.mutate();
-						}}
+						onClick={() => setDeleteOpen(true)}
 						disabled={deleteMut.isPending}
 						className="p-2 rounded-lg hover:bg-red-900/30 text-slate-400 hover:text-red-400 transition-colors"
 						title="Supprimer"
+						aria-label="Supprimer ce message"
 					>
 						<Trash2 size={16} />
 					</button>
+
+					<ConfirmModal
+						isOpen={deleteOpen}
+						onCancel={() => setDeleteOpen(false)}
+						onConfirm={() => deleteMut.mutate()}
+						isLoading={deleteMut.isPending}
+						title="Supprimer ce message ?"
+						description={
+							<>
+								Le message de{" "}
+								<strong className="text-dark-300">
+									{message.firstname} {message.lastname}
+								</strong>{" "}
+								sera définitivement supprimé. Cette action est
+								irréversible.
+							</>
+						}
+						confirmLabel="Supprimer définitivement"
+					/>
 				</div>
 			</div>
 
