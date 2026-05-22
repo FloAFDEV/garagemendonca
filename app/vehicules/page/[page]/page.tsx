@@ -244,7 +244,7 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
       </section>
 
       {/* ── Catalogue + filtres ── */}
-      <section className="py-12 bg-[#f0f2f5]">
+      <section className="py-12 bg-[#f8fafc]">
         <Container>
           {/* Filtres (client component, besoin de Suspense pour useSearchParams) */}
           <Suspense>
