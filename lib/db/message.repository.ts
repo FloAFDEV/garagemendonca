@@ -88,6 +88,18 @@ export const messageDb = {
     return count ?? 0;
   },
 
+  async countStats(garageId: string): Promise<{ total: number; unread: number; read: number }> {
+    const [totalResult, unreadResult] = await Promise.all([
+      adminDb().from("messages").select("id", { count: "exact", head: true }).eq("garage_id", garageId),
+      adminDb().from("messages").select("id", { count: "exact", head: true }).eq("garage_id", garageId).eq("is_read", false),
+    ]);
+    if (totalResult.error) throw totalResult.error;
+    if (unreadResult.error) throw unreadResult.error;
+    const total = totalResult.count ?? 0;
+    const unread = unreadResult.count ?? 0;
+    return { total, unread, read: total - unread };
+  },
+
   async update(id: string, row: MessageUpdate): Promise<Message> {
     const { data, error } = await adminDb()
       .from("messages").update(row).eq("id", id).select().single();

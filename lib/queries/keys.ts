@@ -20,10 +20,11 @@ export const vehicleKeys = {
 };
 
 export const messageKeys = {
-  all:    ()                 => ["messages"]                     as const,
-  list:   (garageId: string) => ["messages", "list", garageId]  as const,
+  all:    ()                 => ["messages"]                      as const,
+  list:   (garageId: string) => ["messages", "list", garageId]   as const,
   unread: (garageId: string) => ["messages", "unread", garageId] as const,
-  detail: (id: string)       => ["messages", "detail", id]      as const,
+  stats:  (garageId: string) => ["messages", "stats", garageId]  as const,
+  detail: (id: string)       => ["messages", "detail", id]       as const,
 };
 
 export const garageKeys = {

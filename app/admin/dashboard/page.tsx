@@ -4,6 +4,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useVehiclesAdmin } from "@/lib/queries/useVehicles";
 import { useUser } from "@/lib/auth/useUser";
+import { useMessageStats } from "@/hooks/useMessageStats";
 import { Car, TrendingUp, Mail, Plus, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
@@ -15,6 +16,7 @@ import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 function DashboardContent() {
 	const t = useAdminTokens();
 	const { data: vehicles = [] } = useVehiclesAdmin(GARAGE_ID);
+	const { data: msgStats } = useMessageStats();
 	const { user } = useUser();
 
 	const displayName =
@@ -38,8 +40,10 @@ function DashboardContent() {
 		},
 		{
 			label: "Demandes reçues",
-			value: "—",
-			change: "voir messagerie",
+			value: msgStats ? msgStats.total.toString() : "—",
+			change: msgStats && msgStats.unread > 0
+				? `${msgStats.unread} non lu${msgStats.unread > 1 ? "s" : ""}`
+				: "voir messagerie",
 			icon: Mail,
 			color: "text-emerald-500",
 			bg: "bg-emerald-500/10",

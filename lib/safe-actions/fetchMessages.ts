@@ -47,3 +47,11 @@ export async function fetchUnreadCountAction(garageId: string): Promise<number> 
   if (authError) return 0;
   return messageDb.countUnread(garageId);
 }
+
+export async function fetchMessageStatsAction(
+  garageId: string,
+): Promise<{ total: number; unread: number; read: number }> {
+  const authError = await requireMemberOfGarage(garageId);
+  if (authError) return { total: 0, unread: 0, read: 0 };
+  return messageDb.countStats(garageId);
+}
