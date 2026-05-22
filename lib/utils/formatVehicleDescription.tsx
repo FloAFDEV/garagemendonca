@@ -189,7 +189,7 @@ export function FormatVehicleDescription({ text }: { text: string }) {
           return (
             <h3
               key={i}
-              className="text-[#0f172a] font-semibold text-sm uppercase tracking-widest mt-6 mb-2 first:mt-0 flex items-center gap-3"
+              className="text-brand-600 font-semibold text-sm uppercase tracking-widest mt-6 mb-2 first:mt-0 flex items-center gap-3"
             >
               <span className="h-px flex-1 bg-slate-100" aria-hidden="true" />
               {block.text}
