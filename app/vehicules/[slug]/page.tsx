@@ -12,6 +12,7 @@ import Image from "next/image";
 import { getLogoSrc } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
 import BackToListingButton from "@/components/vehicles/BackToListingButton";
+import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 import {
 	Phone,
 	MessageSquare,
@@ -306,15 +307,17 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 									{([
 										"Contrôle technique à jour",
 										"Révision effectuée",
-										"Vérification 160 points",
+										<QualityControlTooltip key="qc" variant="inline" triggerClassName="text-sm font-normal text-slate-700">
+											Vérification 160 points
+										</QualityControlTooltip>,
 										// Garantie dynamique — valeur saisie dans l'admin
 										(vehicle.features?.garantie ||
 											(vehicle.features as Record<string, unknown> | undefined)?.["Garantie"])
 											? `Garantie ${vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown>)["Garantie"]}`
 											: "Garantie 6 à 12 mois",
-									] as string[]).map((item) => (
+									] as React.ReactNode[]).map((item, idx) => (
 										<div
-											key={item}
+											key={idx}
 											className="flex items-center gap-3 text-sm font-normal text-slate-700"
 										>
 											<CheckCircle2

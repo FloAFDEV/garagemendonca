@@ -3,17 +3,11 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
+import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getActiveGarageId } from "@/lib/config/garage";
 
 const GARAGE_ID = getActiveGarageId();
-
-const guarantees = [
-	"Garantie 6 à 12 mois km illimités",
-	"Vérification en 160 points",
-	"250–500 km parcourus avant vente",
-	"Révision boîte automatique incluse",
-];
 
 export default async function FeaturedVehicles() {
 	const [featured, totalCount] = await Promise.all([
@@ -142,7 +136,12 @@ export default async function FeaturedVehicles() {
 										révisés et garantis
 									</p>
 									<div className="flex flex-wrap gap-x-3 gap-y-1 sm:gap-x-5">
-										{guarantees.map((g) => (
+										{[
+											"Garantie 6 à 12 mois km illimités",
+											"160 points de contrôle",
+											"250–500 km parcourus avant vente",
+											"Révision boîte automatique incluse",
+										].map((g) => (
 											<span
 												key={g}
 												className="font-light text-[#64748b] text-xs sm:text-sm flex items-center gap-1"
@@ -151,7 +150,13 @@ export default async function FeaturedVehicles() {
 													className="w-1 h-1 bg-brand-500/70 rounded-full"
 													aria-hidden="true"
 												/>
-												{g}
+												{g === "160 points de contrôle" ? (
+													<QualityControlTooltip variant="inline" triggerClassName="text-[#64748b] text-xs sm:text-sm font-light">
+														160 points de contrôle
+													</QualityControlTooltip>
+												) : (
+													g
+												)}
 											</span>
 										))}
 									</div>

@@ -32,6 +32,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { getActiveGarageId } from "@/lib/config/garage";
+import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 
 // ─── JSON-LD ─────────────────────────────────────────────────────
 
@@ -214,8 +215,12 @@ export default async function VehiculesPage({
                 <span className="text-brand-500">révisés &amp; garantis</span>
               </h1>
               <p className="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl">
-                Chaque véhicule est inspecté en 160 points, révisé et garanti 6 à 12 mois
-                kilométrage illimité. Financement et reprise étudiés ensemble.
+                Chaque véhicule est inspecté en{" "}
+                <QualityControlTooltip variant="inline" triggerClassName="text-slate-300">
+                  160 points de contrôle
+                </QualityControlTooltip>
+                , révisé et garanti 6 à 12 mois kilométrage illimité. Financement et
+                reprise étudiés ensemble.
               </p>
             </div>
             <GmBadge size="lg" className="hidden sm:block opacity-90 flex-shrink-0 self-center" />
