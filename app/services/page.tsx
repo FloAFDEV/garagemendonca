@@ -5,6 +5,8 @@ import GmBadge from "@/components/ui/GmBadge";
 import { serviceRepository, garageRepository } from "@/lib/repositories";
 import { ACTIVE_GARAGE_ID } from "@/lib/config/garage";
 import ServiceSection from "@/components/services/ServiceSection";
+import { FileCheck2, BadgeCheck } from "lucide-react";
+import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
 
 export const metadata: Metadata = {
 	title: "Nos Services",
@@ -114,6 +116,87 @@ export default async function ServicesPage() {
 							)}
 						</div>
 					))}
+				</Container>
+			</section>
+
+			{/* ── Protocole Qualité 160 points ── */}
+			<section
+				id="protocole-qualite"
+				className="py-16 bg-white border-t border-slate-100"
+				aria-labelledby="qc-heading"
+			>
+				<Container>
+					<div className="mb-10 text-center">
+						<div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-500/20 bg-brand-500/5 mb-4">
+							<span className="w-1.5 h-1.5 rounded-full bg-brand-500" aria-hidden="true" />
+							<span className="text-brand-500 text-xs font-medium tracking-wide uppercase">
+								Protocole qualité
+							</span>
+						</div>
+						<h2
+							id="qc-heading"
+							className="ty-heading text-2xl sm:text-3xl text-slate-900 mb-3"
+						>
+							{QUALITY_CONTROL.total} points de contrôle
+						</h2>
+						<p className="text-slate-500 text-base max-w-xl mx-auto leading-relaxed">
+							Avant chaque mise en vente, chaque véhicule d&apos;occasion est soumis
+							à un protocole d&apos;inspection en deux volets — contrôle technique
+							réglementaire et charte qualité interne.
+						</p>
+					</div>
+
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+						{/* Contrôle technique */}
+						<div className="rounded-2xl border border-blue-100 bg-blue-50 p-6">
+							<div className="flex items-center gap-3 mb-5">
+								<div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/80 border border-blue-100">
+									<FileCheck2 size={17} className="text-blue-600" aria-hidden="true" />
+								</div>
+								<div>
+									<h3 className="font-heading font-semibold text-slate-900 text-sm leading-snug">
+										{QUALITY_CONTROL.sections[0].title}
+									</h3>
+									<p className="text-slate-500 text-xs leading-snug mt-0.5">
+										{QUALITY_CONTROL.sections[0].description}
+									</p>
+								</div>
+							</div>
+							<ul className="space-y-2">
+								{QUALITY_CONTROL.sections[0].items.map((item) => (
+									<li key={item} className="flex items-start gap-2 text-sm text-slate-700 leading-snug">
+										<span className="mt-[7px] w-1.5 h-1.5 rounded-full flex-shrink-0 bg-blue-400" aria-hidden="true" />
+										{item}
+									</li>
+								))}
+							</ul>
+						</div>
+
+						{/* Charte qualité Garage Mendonça */}
+						<div className="rounded-2xl border border-brand-100 bg-brand-50 p-6">
+							<div className="flex items-center gap-3 mb-5">
+								<div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/80 border border-brand-100">
+									<BadgeCheck size={17} className="text-brand-600" aria-hidden="true" />
+								</div>
+								<div>
+									<h3 className="font-heading font-semibold text-slate-900 text-sm leading-snug">
+										{QUALITY_CONTROL.sections[1].title}
+									</h3>
+									<p className="text-slate-500 text-xs leading-snug mt-0.5">
+										{QUALITY_CONTROL.sections[1].description}
+									</p>
+								</div>
+							</div>
+							<ul className="space-y-2">
+								{QUALITY_CONTROL.sections[1].items.map((item) => (
+									<li key={item} className="flex items-start gap-2 text-sm text-slate-700 leading-snug">
+										<span className="mt-[7px] w-1.5 h-1.5 rounded-full flex-shrink-0 bg-brand-500" aria-hidden="true" />
+										{item}
+									</li>
+								))}
+							</ul>
+						</div>
+					</div>
 				</Container>
 			</section>
 		</MainLayout>
