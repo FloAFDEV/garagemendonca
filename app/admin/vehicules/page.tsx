@@ -6,6 +6,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useAdminVehiclesList } from "@/lib/queries/useVehicles";
 import { Vehicle, VehicleStatus } from "@/types";
+import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import {
 	Plus,
 	Search,
@@ -29,6 +30,12 @@ import {
 } from "./actions";
 
 const ADMIN_PER_PAGE = 20;
+
+function vehiclePreviewHref(v: Vehicle): string {
+	const vSlug = v.slug ?? generateVehicleSlug(v.brand, v.model, v.year);
+	const catSlug = v.categories?.[0];
+	return catSlug ? buildOccasionUrl(catSlug, vSlug, v.id) : buildVehicleUrl(vSlug, v.id);
+}
 
 const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {
 	Essence: "orange",
@@ -844,7 +851,7 @@ export default function AdminVehiclesPage() {
 										className={clsx("flex items-center border-t", t.border)}
 									>
 										<Link
-											href={`/vehicules/${vehicle.id}`}
+											href={vehiclePreviewHref(vehicle)}
 											target="_blank"
 											className={clsx(actionBtn, t.hoverTxt, "py-2")}
 										>
@@ -1071,7 +1078,7 @@ export default function AdminVehiclesPage() {
 										<td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
 											<div className="flex items-center gap-1">
 												<Link
-													href={`/vehicules/${vehicle.id}`}
+													href={vehiclePreviewHref(vehicle)}
 													target="_blank"
 													aria-label={`Prévisualiser ${vehicle.brand} ${vehicle.model}`}
 													className={clsx(

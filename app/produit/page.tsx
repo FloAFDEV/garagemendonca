@@ -8,6 +8,7 @@ import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
+import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import {
 	Car,
 	ShieldCheck,
@@ -97,12 +98,14 @@ export default async function ProduitPage() {
 		description:
 			"Sélection de véhicules d'occasion inspectés en 160 points, révisés et garantis",
 		url: `${BASE_URL}/produit`,
-		itemListElement: rest.map((v, i) => ({
-			"@type": "ListItem",
-			position: i + 1,
-			url: `${BASE_URL}/vehicules/${v.slug ?? v.id}`,
-			name: `${v.brand} ${v.model} ${v.year}`,
-		})),
+		itemListElement: rest.map((v, i) => {
+			const vSlug = v.slug ?? generateVehicleSlug(v.brand, v.model, v.year);
+			const catSlug = v.categories?.[0];
+			const url = catSlug
+				? `${BASE_URL}${buildOccasionUrl(catSlug, vSlug, v.id)}`
+				: `${BASE_URL}${buildVehicleUrl(vSlug, v.id)}`;
+			return { "@type": "ListItem", position: i + 1, url, name: `${v.brand} ${v.model} ${v.year}` };
+		}),
 	};
 
 	return (
