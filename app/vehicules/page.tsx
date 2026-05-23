@@ -178,10 +178,13 @@ export default async function VehiculesPage({
   const filterQuery = filtersToQs(sp);
 
   // Fetch categories first to resolve slug → categoryId (source de vérité)
-  const [availableBrands, categories] = await Promise.all([
+  const [availableBrands, allCategories, activeCatIds] = await Promise.all([
     listBrandsCached(GARAGE_ID).catch(() => []),
     vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
+    vehicleDb.listActiveCategoryIds(GARAGE_ID).catch(() => []),
   ]);
+  // N'afficher que les catégories ayant au moins un véhicule public
+  const categories = allCategories.filter((c) => activeCatIds.includes(c.id));
 
   // Résolution slug → categoryId pour utiliser le FK (pas TEXT[])
   const categoryId = rawFilters.category

@@ -274,6 +274,18 @@ export const vehicleDb = {
     if (error) throw error;
   },
 
+  /** Retourne les category_id distinctes ayant au moins 1 véhicule public */
+  async listActiveCategoryIds(garageId: string): Promise<string[]> {
+    const { data, error } = await anonDb()
+      .from("vehicles")
+      .select("category_id")
+      .eq("garage_id", garageId)
+      .in("status", ["published", "scheduled", "sold"])
+      .not("category_id", "is", null);
+    if (error) throw error;
+    return [...new Set((data ?? []).map((r: { category_id: string }) => r.category_id))];
+  },
+
   /** Compte les véhicules publics (published + scheduled + sold), avec filtres optionnels */
   async countPublic(garageId: string, filters: Omit<VehicleListFilters, "limit" | "offset"> = {}): Promise<number> {
     let q = anonDb()
