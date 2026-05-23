@@ -95,8 +95,8 @@ export default async function OccasionsPage() {
 				</Container>
 			</section>
 
-			{/* ── Catégories ── */}
-			{categories.length > 0 && (
+			{/* ── Catégories — masquées si une seule catégorie active ── */}
+			{categories.length > 1 && (
 				<section className="py-16 bg-white border-b border-slate-100">
 					<Container>
 						<div className="mb-8">
