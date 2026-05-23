@@ -18,17 +18,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
 		]);
 
-		// Véhicules : URL canonique /occasions/[cat]/[slug] si catégorie connue
-		vehicleEntries = slugs.map(({ slug, id, updated_at, categories: cats }) => {
-			const catSlug = cats?.[0];
-			const url = catSlug
-				? `${BASE_URL}/occasions/${catSlug}/${slug}-${id.slice(0, 8)}`
-				: `${BASE_URL}/vehicules/${slug}-${id.slice(0, 8)}`; // fallback sans catégorie
+		// Véhicules : URL canonique /occasions/[cat]/[slug] si category_id connu (source de vérité)
+		vehicleEntries = slugs.map(({ slug, id, updated_at, categorySlug }) => {
+			const url = categorySlug
+				? `${BASE_URL}/occasions/${categorySlug}/${slug}-${id.slice(0, 8)}`
+				: `${BASE_URL}/vehicules/${slug}-${id.slice(0, 8)}`; // fallback véhicule non catégorisé
 			return {
 				url,
 				lastModified: updated_at ? new Date(updated_at) : new Date(),
 				changeFrequency: "weekly" as const,
-				priority: catSlug ? 0.9 : 0.7,
+				priority: categorySlug ? 0.9 : 0.7,
 			};
 		});
 

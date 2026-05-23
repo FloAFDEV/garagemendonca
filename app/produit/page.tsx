@@ -100,7 +100,7 @@ export default async function ProduitPage() {
 		url: `${BASE_URL}/produit`,
 		itemListElement: rest.map((v, i) => {
 			const vSlug = v.slug ?? generateVehicleSlug(v.brand, v.model, v.year);
-			const catSlug = v.categories?.[0];
+			const catSlug = v.categorySlug;
 			const url = catSlug
 				? `${BASE_URL}${buildOccasionUrl(catSlug, vSlug, v.id)}`
 				: `${BASE_URL}${buildVehicleUrl(vSlug, v.id)}`;

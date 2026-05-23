@@ -151,7 +151,7 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
     numberOfItems: totalCount,
     itemListElement: vehicles.map((v, i) => {
       const vSlug = v.slug ?? generateVehicleSlug(v.brand, v.model, v.year);
-      const catSlug = v.categories?.[0] ?? category.slug;
+      const catSlug = v.categorySlug ?? category.slug;
       const url = catSlug
         ? `${BASE_URL}${buildOccasionUrl(catSlug, vSlug, v.id)}`
         : `${BASE_URL}${buildVehicleUrl(vSlug, v.id)}`;

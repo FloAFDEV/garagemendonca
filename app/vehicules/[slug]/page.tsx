@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
 	const vSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
-	const categorySlug = vehicle.categories?.[0];
+	const categorySlug = vehicle.categorySlug;
 	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} € | Garage Mendonça`;
 	const desc = vehicle.meta_description ??
 		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, boîte ${vehicle.transmission}. Révisé et garanti. Garage Mendonça.`;
@@ -110,7 +110,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const canonicalParam = `${vSlug}-${vehicle.id.slice(0, 8)}`;
 
 	// Véhicule catégorisé → redirect 301 vers URL canonique /occasions/[cat]/[slug]
-	const categorySlug = vehicle.categories?.[0];
+	const categorySlug = vehicle.categorySlug;
 	if (categorySlug) {
 		permanentRedirect(buildOccasionUrl(categorySlug, vSlug, vehicle.id));
 	}

@@ -89,9 +89,9 @@ export async function generateStaticParams() {
 	if (!SUPABASE_ENABLED || !GARAGE_ID) return [];
 	const slugs = await vehicleDb.listSlugsWithCategory(GARAGE_ID).catch(() => []);
 	return slugs
-		.filter((r) => r.categories?.[0])
-		.map(({ slug, id, categories }) => ({
-			categorySlug: categories[0],
+		.filter((r) => r.categorySlug)
+		.map(({ slug, id, categorySlug }) => ({
+			categorySlug: categorySlug!,
 			vehicleSlug: `${slug}-${id.slice(0, 8)}`,
 		}));
 }
@@ -105,7 +105,7 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 	const canonicalParam = `${vSlug}-${vehicle.id.slice(0, 8)}`;
 
 	// Redirect vers l'URL canonique correcte si le slug ou la catégorie diffèrent
-	const vehicleCategorySlug = vehicle.categories?.[0];
+	const vehicleCategorySlug = vehicle.categorySlug;
 	if (!vehicleCategorySlug) {
 		// Véhicule sans catégorie → fallback vers /vehicules/[slug]
 		permanentRedirect(`/vehicules/${canonicalParam}`);

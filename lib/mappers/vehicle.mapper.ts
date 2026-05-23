@@ -22,6 +22,8 @@ import { isColorUnknown } from "@/lib/utils/detectVehicleColor";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type VehicleRowWithImages = VehicleRow & {
   vehicle_images?: any[];
+  // Résultat du JOIN vehicle_categories!category_id(slug) — source de vérité pour le routing
+  vehicle_categories?: { slug: string } | null;
   description_marketing?: string | null;
   original_description?: string | null;
 };
@@ -89,6 +91,7 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
     featured:         row.featured,
     featuredOrder:    row.featured_order ?? undefined,
     categoryId:       row.category_id ?? undefined,
+    categorySlug:     row.vehicle_categories?.slug ?? undefined,
     categories:       row.categories ?? [],
     features:         (row.features as VehicleFeatures) ?? {},
     options:          (row.options as VehicleOptions) ?? {},

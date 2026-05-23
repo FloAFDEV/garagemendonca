@@ -25,8 +25,8 @@ function adminDb(): Q {
   return createSupabaseAdminClient();
 }
 
-// Sélecteur commun : inclut vehicle_images avec storage_path pour signed URLs
-const SEL_WITH_IMAGES = "*, vehicle_images(id, url, storage_path, alt, sort_order, is_primary)";
+// Sélecteur commun : inclut vehicle_images + catégorie via FK (source de vérité)
+const SEL_WITH_IMAGES = "*, vehicle_images(id, url, storage_path, alt, sort_order, is_primary), vehicle_categories!category_id(slug)";
 
 // ─── Filtres pour list() ──────────────────────────────────────────
 
@@ -233,16 +233,17 @@ export const vehicleDb = {
       .filter((r): r is { slug: string; id: string; updated_at: string | null } => r.slug !== null);
   },
 
-  async listSlugsWithCategory(garageId: string): Promise<{ slug: string; id: string; updated_at: string | null; categories: string[] }[]> {
+  async listSlugsWithCategory(garageId: string): Promise<{ slug: string; id: string; updated_at: string | null; categorySlug: string | null }[]> {
     const { data, error } = await anonDb()
       .from("vehicles")
-      .select("id, slug, updated_at, categories")
+      .select("id, slug, updated_at, vehicle_categories!category_id(slug)")
       .eq("garage_id", garageId)
       .not("slug", "is", null)
       .in("status", ["published", "scheduled", "sold"]);
     if (error) return [];
-    return ((data ?? []) as { slug: string | null; id: string; updated_at: string | null; categories: string[] }[])
-      .filter((r): r is { slug: string; id: string; updated_at: string | null; categories: string[] } => r.slug !== null);
+    return ((data ?? []) as { slug: string | null; id: string; updated_at: string | null; vehicle_categories: { slug: string } | null }[])
+      .filter((r) => r.slug !== null)
+      .map((r) => ({ slug: r.slug!, id: r.id, updated_at: r.updated_at, categorySlug: r.vehicle_categories?.slug ?? null }));
   },
 
   async listAdmin(garageId: string): Promise<Vehicle[]> {

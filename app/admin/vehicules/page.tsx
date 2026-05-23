@@ -33,8 +33,9 @@ const ADMIN_PER_PAGE = 20;
 
 function vehiclePreviewHref(v: Vehicle): string {
 	const vSlug = v.slug ?? generateVehicleSlug(v.brand, v.model, v.year);
-	const catSlug = v.categories?.[0];
-	return catSlug ? buildOccasionUrl(catSlug, vSlug, v.id) : buildVehicleUrl(vSlug, v.id);
+	return v.categorySlug
+		? buildOccasionUrl(v.categorySlug, vSlug, v.id)
+		: buildVehicleUrl(vSlug, v.id);
 }
 
 const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {

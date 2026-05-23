@@ -37,7 +37,7 @@ interface SearchHit {
   thumbnailUrl?: string;
   status: string;
   finition?: string;
-  categories?: string[];
+  categorySlug?: string;
 }
 
 // ─── Fetcher — défini HORS du composant → référence stable ───────────────────
@@ -273,7 +273,7 @@ const SearchOverlay = memo(function SearchOverlay({
 
                       <ul role="listbox" aria-label="Résultats de recherche">
                         {results.map((v) => {
-                          const categorySlug = v.categories?.[0];
+                          const categorySlug = v.categorySlug;
                           const href = categorySlug && v.slug
                             ? buildOccasionUrl(categorySlug, v.slug, v.id)
                             : v.slug

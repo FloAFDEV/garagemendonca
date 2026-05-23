@@ -79,7 +79,7 @@ export default function VehicleCard({
 	const marketingBadge = getMarketingBadge(vehicle.features as Record<string, unknown>);
 
 	// Lien SEO : /occasions/[cat]/[slug] si catégorie connue, sinon /vehicules/[slug]
-	const categorySlug = vehicle.categories?.[0];
+	const categorySlug = vehicle.categorySlug;
 	const href = categorySlug && vehicle.slug
 		? buildOccasionUrl(categorySlug, vehicle.slug, vehicle.id)
 		: vehicle.slug
