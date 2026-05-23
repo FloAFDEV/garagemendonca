@@ -9,6 +9,7 @@ import type { VehicleOptions } from "@/types";
 import Badge from "@/components/ui/Badge";
 import { getLogoSrc } from "@/lib/brandLogos";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
+import { buildOccasionUrl, buildVehicleUrl } from "@/lib/utils/slug";
 
 /* ── Options highlights ──────────────────────────────────────────────────────
  * Options les plus "vendantes", par ordre de priorité. Max 4 + badge "+N". */
@@ -77,10 +78,13 @@ export default function VehicleCard({
 
 	const marketingBadge = getMarketingBadge(vehicle.features as Record<string, unknown>);
 
-	// Lien SEO : slug + shortId, UUID en fallback
-	const href = vehicle.slug
-		? `/vehicules/${vehicle.slug}-${vehicle.id.slice(0, 8)}`
-		: `/vehicules/${vehicle.id}`;
+	// Lien SEO : /occasions/[cat]/[slug] si catégorie connue, sinon /vehicules/[slug]
+	const categorySlug = vehicle.categories?.[0];
+	const href = categorySlug && vehicle.slug
+		? buildOccasionUrl(categorySlug, vehicle.slug, vehicle.id)
+		: vehicle.slug
+			? buildVehicleUrl(vehicle.slug, vehicle.id)
+			: `/vehicules/${vehicle.id}`;
 
 	// Calculé une seule fois — partagé entre mobile et desktop
 	const optionHits = vehicle.options
