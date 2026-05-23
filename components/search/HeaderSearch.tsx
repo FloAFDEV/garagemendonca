@@ -21,7 +21,7 @@ import { ArrowRight, Loader2, Search, X } from "lucide-react";
 import clsx from "clsx";
 import { useSearch } from "@/hooks/useSearch";
 import { getLogoSrc } from "@/lib/brandLogos";
-import { buildOccasionUrl, buildVehicleUrl } from "@/lib/utils/slug";
+import { resolveVehicleHref } from "@/lib/utils/slug";
 
 // ─── Type résultat API ────────────────────────────────────────────────────────
 
@@ -273,12 +273,7 @@ const SearchOverlay = memo(function SearchOverlay({
 
                       <ul role="listbox" aria-label="Résultats de recherche">
                         {results.map((v) => {
-                          const categorySlug = v.categorySlug;
-                          const href = categorySlug && v.slug
-                            ? buildOccasionUrl(categorySlug, v.slug, v.id)
-                            : v.slug
-                              ? buildVehicleUrl(v.slug, v.id)
-                              : `/vehicules/${v.id}`;
+                          const href = resolveVehicleHref(v);
                           return (
                             <li key={v.id} role="option" aria-selected={false}>
                               <Link

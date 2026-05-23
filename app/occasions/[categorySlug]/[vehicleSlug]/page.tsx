@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} € | Garage Mendonça`;
 	const desc = vehicle.meta_description ??
 		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, boîte ${vehicle.transmission}. Révisé et garanti. Garage Mendonça.`;
-	const ogImage = `${BASE_URL}/vehicules/${vSlug}-${vehicle.id.slice(0, 8)}/opengraph-image`;
+	const ogImage = `${canonical}/opengraph-image`;
 
 	return {
 		title,
@@ -134,7 +134,7 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 		name: vehicleName,
 		url: vehicleCanonical,
 		description: vehicle.meta_description ?? (vehicle.description_marketing ?? vehicle.description ?? "").slice(0, 200),
-		image: `${BASE_URL}/vehicules/${canonicalParam}/opengraph-image`,
+		image: `${vehicleCanonical}/opengraph-image`,
 		brand: { "@type": "Brand", name: vehicle.brand },
 		model: vehicle.model,
 		modelDate: vehicle.year.toString(),

@@ -6,7 +6,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useAdminVehiclesList } from "@/lib/queries/useVehicles";
 import { Vehicle, VehicleStatus } from "@/types";
-import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { resolveVehicleHref } from "@/lib/utils/slug";
 import {
 	Plus,
 	Search,
@@ -32,10 +32,7 @@ import {
 const ADMIN_PER_PAGE = 20;
 
 function vehiclePreviewHref(v: Vehicle): string {
-	const vSlug = v.slug ?? generateVehicleSlug(v.brand, v.model, v.year);
-	return v.categorySlug
-		? buildOccasionUrl(v.categorySlug, vSlug, v.id)
-		: buildVehicleUrl(vSlug, v.id);
+	return resolveVehicleHref(v);
 }
 
 const fuelVariants: Record<string, "orange" | "green" | "blue" | "gray"> = {

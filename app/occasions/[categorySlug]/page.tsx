@@ -10,7 +10,7 @@ import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRep
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { buildPaginationMeta, paginationRange, VEHICLES_PER_PAGE } from "@/lib/vehicles/pagination";
 import { getActiveGarageId } from "@/lib/config/garage";
-import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { resolveVehicleHref } from "@/lib/utils/slug";
 
 const GARAGE_ID = getActiveGarageId();
 const BASE_URL  = "https://www.garagemendonca.com";
@@ -149,14 +149,12 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
     url:        `${BASE_URL}/occasions/${category.slug}`,
     description: `Catalogue de ${category.label.toLowerCase()} d'occasion révisés et garantis`,
     numberOfItems: totalCount,
-    itemListElement: vehicles.map((v, i) => {
-      const vSlug = v.slug ?? generateVehicleSlug(v.brand, v.model, v.year);
-      const catSlug = v.categorySlug ?? category.slug;
-      const url = catSlug
-        ? `${BASE_URL}${buildOccasionUrl(catSlug, vSlug, v.id)}`
-        : `${BASE_URL}${buildVehicleUrl(vSlug, v.id)}`;
-      return { "@type": "ListItem", position: (pageNum - 1) * VEHICLES_PER_PAGE + i + 1, url, name: `${v.brand} ${v.model} ${v.year}` };
-    }),
+    itemListElement: vehicles.map((v, i) => ({
+      "@type": "ListItem",
+      position: (pageNum - 1) * VEHICLES_PER_PAGE + i + 1,
+      url: `${BASE_URL}${resolveVehicleHref(v)}`,
+      name: `${v.brand} ${v.model} ${v.year}`,
+    })),
   };
 
   return (

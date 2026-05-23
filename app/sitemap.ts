@@ -18,18 +18,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 			vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
 		]);
 
-		// Véhicules : URL canonique /occasions/[cat]/[slug] si category_id connu (source de vérité)
-		vehicleEntries = slugs.map(({ slug, id, updated_at, categorySlug }) => {
-			const url = categorySlug
-				? `${BASE_URL}/occasions/${categorySlug}/${slug}-${id.slice(0, 8)}`
-				: `${BASE_URL}/vehicules/${slug}-${id.slice(0, 8)}`; // fallback véhicule non catégorisé
-			return {
-				url,
+		// Sitemap : uniquement les véhicules catégorisés (URL /occasions/ indexable)
+		// Les véhicules sans category_id sont noindex → exclus du sitemap
+		vehicleEntries = slugs
+			.filter(({ categorySlug }) => !!categorySlug)
+			.map(({ slug, id, updated_at, categorySlug }) => ({
+				url: `${BASE_URL}/occasions/${categorySlug}/${slug}-${id.slice(0, 8)}`,
 				lastModified: updated_at ? new Date(updated_at) : new Date(),
 				changeFrequency: "weekly" as const,
-				priority: categorySlug ? 0.9 : 0.7,
-			};
-		});
+				priority: 0.9,
+			}));
 
 		categoryEntries = categories.map((cat) => ({
 			url: `${BASE_URL}/occasions/${cat.slug}`,

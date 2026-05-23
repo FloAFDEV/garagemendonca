@@ -97,8 +97,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export async function generateStaticParams() {
 	if (!SUPABASE_ENABLED || !GARAGE_ID) return [];
-	const slugs = await vehicleDb.listSlugs(GARAGE_ID).catch(() => []);
-	return slugs.map(({ slug, id }) => ({ slug: `${slug}-${id.slice(0, 8)}` }));
+	// Uniquement les véhicules sans categorySlug — les catégorisés font un 301
+	// et n'ont pas besoin d'être pré-générés à cette URL.
+	const slugs = await vehicleDb.listSlugsWithCategory(GARAGE_ID).catch(() => []);
+	return slugs
+		.filter(({ categorySlug }) => !categorySlug)
+		.map(({ slug, id }) => ({ slug: `${slug}-${id.slice(0, 8)}` }));
 }
 
 export default async function VehicleDetailPage({ params }: PageProps) {
