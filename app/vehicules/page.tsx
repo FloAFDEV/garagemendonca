@@ -181,7 +181,7 @@ export default async function VehiculesPage({
   const [availableBrands, allCategories, activeCatIds] = await Promise.all([
     listBrandsCached(GARAGE_ID).catch(() => []),
     vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
-    vehicleDb.listActiveCategoryIds(GARAGE_ID).catch(() => []),
+    vehicleDb.listActiveCategoryIds(GARAGE_ID).catch((): string[] => []),
   ]);
   // N'afficher que les catégories ayant au moins un véhicule public
   const categories = allCategories.filter((c) => activeCatIds.includes(c.id));
