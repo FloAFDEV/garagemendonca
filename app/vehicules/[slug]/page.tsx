@@ -1,16 +1,16 @@
 /**
- * /vehicules/[slug]
+ * /vehicules/[slug] — route de transition SEO
  *
- * Deux comportements selon l'état du véhicule :
+ * Toujours noindex + follow. Jamais indexée directement.
+ * L'URL canonique déclarée est /occasions/[cat]/[slug] dès que la catégorie est connue.
  *
- * 1. Véhicule avec category_id → 301 vers /occasions/[cat]/[slug] (URL canonique)
- *    robots: noindex (le contenu vit à /occasions/[cat]/[slug])
+ * Comportements :
+ * 1. Véhicule avec catégorie → 301 permanent vers /occasions/[cat]/[slug]
+ * 2. Véhicule sans catégorie → rendu complet (UX fallback) + noindex
+ *    canonical = self (/vehicules/[slug]) en attendant l'assignation
  *
- * 2. Véhicule SANS category_id (pas encore catégorisé) → rendu complet
- *    robots: index  (cette URL EST la canonique tant qu'aucune catégorie n'est assignée)
- *
- * Une fois la catégorie assignée via l'admin, la prochaine revalidation ISR
- * fera basculer cette page en 301 automatiquement.
+ * Transition finale : quand tous les vehicles ont un category_id,
+ * supprimer le rendu et laisser uniquement le permanentRedirect.
  */
 import type { Metadata } from "next";
 import type React from "react";
@@ -82,31 +82,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const desc = vehicle.meta_description ??
 		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, boîte ${vehicle.transmission}. Révisé et garanti. Garage Mendonça.`;
 
-	if (categorySlug) {
-		// Catégorie connue → cette page redirige, on ne l'indexe pas
-		const canonical = `https://www.garagemendonca.com${buildOccasionUrl(categorySlug, vSlug, vehicle.id)}`;
-		return {
-			title,
-			robots: { index: false, follow: false },
-			alternates: { canonical },
-		};
-	}
+	// Canonical = /occasions/[cat]/[slug] si catégorie connue, sinon self-canonical temporaire
+	const canonical = categorySlug
+		? `https://www.garagemendonca.com${buildOccasionUrl(categorySlug, vSlug, vehicle.id)}`
+		: `https://www.garagemendonca.com${buildVehicleUrl(vSlug, vehicle.id)}`;
 
-	// Pas de catégorie → cette page EST la canonique
-	const canonical = `https://www.garagemendonca.com${buildVehicleUrl(vSlug, vehicle.id)}`;
-	const ogImage = `${canonical}/opengraph-image`;
 	return {
 		title,
-		description: desc,
-		keywords: [vehicle.brand, vehicle.model, `${vehicle.brand} ${vehicle.model} occasion`, vehicle.fuel, vehicle.transmission],
-		robots: { index: vehicle.status !== "draft", follow: true },
+		// Toujours noindex — Google doit indexer /occasions/[cat]/[slug] uniquement
+		robots: { index: false, follow: true },
 		alternates: { canonical },
-		openGraph: {
-			title, description: desc, url: canonical, type: "website",
-			siteName: "Garage Mendonça", locale: "fr_FR",
-			images: [{ url: ogImage, width: 1200, height: 630, alt: `${vehicle.brand} ${vehicle.model} ${vehicle.year}` }],
-		},
-		twitter: { card: "summary_large_image", title, description: desc, images: [ogImage] },
 	};
 }
 
