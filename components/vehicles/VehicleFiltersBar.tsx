@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Search, X, RotateCcw, ChevronDown, Check, SlidersHorizontal } from "lucide-react";
 import { getLogoSrc } from "@/lib/brandLogos";
+import type { VehicleCategory } from "@/types";
 
 function normalizeText(s: string): string {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
@@ -340,10 +341,12 @@ export default function VehicleFiltersBar({
   totalCount,
   availableBrands,
   currentYear,
+  categories = [],
 }: {
   totalCount: number;
   availableBrands: string[];
   currentYear: number;
+  categories?: VehicleCategory[];
 }) {
   const YEAR_OPTIONS = buildYearOptions(currentYear);
 
@@ -362,6 +365,7 @@ export default function VehicleFiltersBar({
   const minYear     = searchParams.get("minYear") ?? "";
   const maxYear     = searchParams.get("maxYear") ?? "";
   const sort        = searchParams.get("sort") ?? "";
+  const category    = searchParams.get("category") ?? "";
 
   // État local du champ texte (débounce avant écriture URL)
   const [searchInput, setSearchInput] = useState(qUrl);
@@ -369,7 +373,7 @@ export default function VehicleFiltersBar({
   // Sync si l'URL change (ex: bouton "retour")
   useEffect(() => { setSearchInput(qUrl); }, [qUrl]);
 
-  const hasFilters = !!(qUrl || brandsStr || fuel || transmission || maxKm || maxPrice || minPrice || minYear || maxYear || sort);
+  const hasFilters = !!(qUrl || brandsStr || fuel || transmission || maxKm || maxPrice || minPrice || minYear || maxYear || sort || category);
 
   // Fonction centrale : met à jour des paramètres et revient toujours à /vehicules (page 1)
   const pushFilters = useCallback(
@@ -401,6 +405,40 @@ export default function VehicleFiltersBar({
 
   return (
     <div className="mb-8 space-y-4">
+      {/* ── Onglets catégories ── */}
+      {categories.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap -mb-1">
+          <button
+            type="button"
+            onClick={() => pushFilters({ category: "" })}
+            className={[
+              "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border",
+              !category
+                ? "bg-brand-500 text-white border-brand-500 shadow-sm"
+                : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-600",
+            ].join(" ")}
+          >
+            Tous
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.slug}
+              type="button"
+              onClick={() => pushFilters({ category: cat.slug })}
+              className={[
+                "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border",
+                category === cat.slug
+                  ? "bg-brand-500 text-white border-brand-500 shadow-sm"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-600",
+              ].join(" ")}
+            >
+              {cat.icon && <span aria-hidden="true">{cat.icon}</span>}
+              {cat.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Compteur + tri */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         {hasFilters ? (

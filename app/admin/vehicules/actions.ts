@@ -1,6 +1,6 @@
 "use server";
 
-import type { Vehicle, VehicleStatus, VehicleUpdateInput, VehicleCreateInput } from "@/types";
+import type { Vehicle, VehicleCategory, VehicleStatus, VehicleUpdateInput, VehicleCreateInput } from "@/types";
 import { revalidatePath } from "next/cache";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
@@ -9,6 +9,7 @@ import { requireAdminForGarage } from "@/lib/auth/getSession";
 import { assertSameOrigin } from "@/lib/auth/csrf";
 import { logAudit } from "@/lib/audit/logAction";
 import { getActiveGarageId } from "@/lib/config/garage";
+import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
 
 async function assertAdmin() {
 	await assertSameOrigin();
@@ -181,4 +182,8 @@ export async function deleteVehicleAction(id: string): Promise<void> {
 
 	revalidateAll(id);
 	await logAudit({ action: "delete", resourceType: "vehicle", resourceId: id });
+}
+
+export async function fetchCategoriesAction(): Promise<VehicleCategory[]> {
+	return vehicleCategoryRepository.getAll(getActiveGarageId()).catch(() => []);
 }

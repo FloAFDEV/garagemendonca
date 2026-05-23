@@ -15,6 +15,7 @@ import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
 import { FilterStatePreserver } from "@/components/vehicles/FilterStatePreserver";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
+import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
 import {
   buildPaginationMeta,
   paginationRange,
@@ -176,7 +177,7 @@ export default async function VehiculesPage({
   const filters = parsePageFilters(sp);
   const filterQuery = filtersToQs(sp);
 
-  const [vehicles, totalCount, availableBrands] = await Promise.all([
+  const [vehicles, totalCount, availableBrands, categories] = await Promise.all([
     vehicleDb.listPaginated(GARAGE_ID, 1, VEHICLES_PER_PAGE, filters).catch((err) => {
       console.error("[VehiculesPage] listPaginated failed:", err);
       return [];
@@ -186,6 +187,7 @@ export default async function VehiculesPage({
       return 0;
     }),
     listBrandsCached(GARAGE_ID).catch(() => []),
+    vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
   ]);
 
   const meta = buildPaginationMeta(1, totalCount);
@@ -238,6 +240,7 @@ export default async function VehiculesPage({
               totalCount={totalCount}
               availableBrands={availableBrands}
               currentYear={new Date().getFullYear()}
+              categories={categories}
             />
           </Suspense>
 

@@ -3,13 +3,13 @@
 import { useState, useRef, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
-import { createVehicleAction, getFeaturedCount } from "@/app/admin/vehicules/actions";
+import { createVehicleAction, getFeaturedCount, fetchCategoriesAction } from "@/app/admin/vehicules/actions";
 import { DescriptionEditor } from "@/components/admin/DescriptionEditor";
 import { MAX_FEATURED_VEHICLES as MAX_FEATURED } from "@/lib/config/vehicles";
 import VehicleOptionsForm from "@/components/admin/VehicleOptionsForm";
 import SortablePhotoGrid from "@/components/admin/SortablePhotoGrid";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import type { VehicleOptions } from "@/types";
+import type { VehicleOptions, VehicleCategory } from "@/types";
 import type { Vehicle } from "@/types";
 import { Save, ArrowLeft, CheckCircle2, Loader2, Star, AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -75,6 +75,7 @@ interface VehicleForm {
 	published_at: string;
 	featured: boolean;
 	options: VehicleOptions;
+	categories: string[];
 	finition: string;
 	critAir: string;
 	garantie: string;
@@ -108,6 +109,7 @@ const emptyForm: VehicleForm = {
 	published_at: "",
 	featured: false,
 	options: {},
+	categories: [],
 	finition: "",
 	critAir: "",
 	garantie: "",
@@ -232,9 +234,11 @@ export default function NewVehiclePage() {
 		"idle",
 	);
 	const [featuredCount, setFeaturedCount] = useState<number>(0);
+	const [availableCategories, setAvailableCategories] = useState<VehicleCategory[]>([]);
 
 	useEffect(() => {
 		getFeaturedCount().then(setFeaturedCount).catch(() => {});
+		fetchCategoriesAction().then(setAvailableCategories).catch(() => {});
 	}, []);
 
 	// ID stable pour le nouveau véhicule — utilisé pour le chemin storage avant création DB
@@ -308,6 +312,7 @@ export default function NewVehiclePage() {
 			published_at: form.published_at || undefined,
 			featured: form.featured,
 			options: form.options,
+			categories: form.categories.length > 0 ? form.categories : undefined,
 			critAir: form.critAir || undefined,
 			features: {
 				...(form.finition ? { Finition: form.finition } : {}),
@@ -827,6 +832,37 @@ export default function NewVehiclePage() {
 							})()}
 						</div>
 					</div>
+
+					{/* ── Catégories ─────────────────────────────────────── */}
+					{availableCategories.length > 0 && (
+						<div className={sectionClass}>
+							<h3 className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}>
+								Catégories
+							</h3>
+							<div className="flex flex-wrap gap-3">
+								{availableCategories.map((cat) => {
+									const checked = form.categories.includes(cat.slug);
+									return (
+										<label key={cat.slug} className={`flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all text-sm select-none ${checked ? "border-brand-500 bg-brand-500/10 text-brand-600 font-medium" : `${t.border} ${t.surface} ${t.txtMuted} hover:border-brand-300`}`}>
+											<input
+												type="checkbox"
+												checked={checked}
+												onChange={() => {
+													const next = checked
+														? form.categories.filter((s) => s !== cat.slug)
+														: [...form.categories, cat.slug];
+													set("categories", next);
+												}}
+												className="sr-only"
+											/>
+											{cat.icon && <span aria-hidden="true">{cat.icon}</span>}
+											{cat.label}
+										</label>
+									);
+								})}
+							</div>
+						</div>
+					)}
 
 					{/* ── Photos ─────────────────────────────────────────── */}
 					<div className={sectionClass}>

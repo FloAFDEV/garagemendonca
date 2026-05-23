@@ -45,12 +45,13 @@ export function parsePageFilters(
     minYear:      num(sp, "minYear"),
     maxYear:      num(sp, "maxYear"),
     sortBy,
+    category:     str(sp, "category"),
   };
 }
 
 /** Sérialise les filtres actifs en query string pour les liens de pagination. */
 export function filtersToQs(sp: PageSearchParams): string {
-  const keys = ["brands", "q", "fuel", "transmission", "maxKm", "minPrice", "maxPrice", "minYear", "maxYear", "sort"];
+  const keys = ["brands", "q", "fuel", "transmission", "maxKm", "minPrice", "maxPrice", "minYear", "maxYear", "sort", "category"];
   const params = new URLSearchParams();
   for (const k of keys) {
     const v = sp[k];

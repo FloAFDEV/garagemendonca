@@ -75,6 +75,7 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
   if (filters.minYear)      q = q.gte("year", filters.minYear);
   if (filters.maxYear)      q = q.lte("year", filters.maxYear);
   if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
+  if (filters.category)     q = q.contains("categories", [filters.category]);
 
   if (filters.search) {
     const tokens = normalizeSearch(filters.search)
