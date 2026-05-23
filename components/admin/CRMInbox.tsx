@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBrowserClient } from "@supabase/ssr";
@@ -632,20 +632,16 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 	);
 	const qc = useQueryClient();
 
-	// Liste messages
+	// Liste messages — fetch unique, filtrage côté client
 	const {
 		data: messages = [],
 		isLoading,
 		isError,
 		refetch,
 	} = useQuery({
-		queryKey: [...messageKeys.list(garageId), filter, search],
-		queryFn: () =>
-			fetchMessagesAction(garageId, {
-				status: filter === "all" ? undefined : filter,
-				search: search || undefined,
-			}),
-		staleTime: 30_000,
+		queryKey: messageKeys.list(garageId),
+		queryFn: () => fetchMessagesAction(garageId),
+		staleTime: 2 * 60 * 1000,
 	});
 
 	// Realtime Supabase
@@ -687,8 +683,9 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		(m) => !m.is_read && m.status !== "archived",
 	).length;
 
-	// Filtrer côté client (recherche temps réel + filtre véhicule)
-	const displayed = messages.filter((m) => {
+	// Filtrage 100% client — statut, recherche, filtre véhicule
+	const displayed = useMemo(() => messages.filter((m) => {
+		if (filter !== "all" && m.status !== filter) return false;
 		if (vehicleOnly && !m.vehicleId) return false;
 		if (!search) return true;
 		const q = search.toLowerCase();
@@ -700,7 +697,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 			m.message.toLowerCase().includes(q) ||
 			(m.vehicleName?.toLowerCase().includes(q) ?? false)
 		);
-	});
+	}), [messages, filter, vehicleOnly, search]);
 
 	return (
 		<div className="flex h-[calc(100vh-80px)] bg-dark-950 rounded-xl overflow-hidden border border-dark-800">

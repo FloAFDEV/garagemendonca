@@ -285,7 +285,12 @@ export default function EditVehiclePage({
 		getFeaturedCount()
 			.then(setFeaturedCount)
 			.catch(() => {});
-		fetchCategoriesAction().then(setAvailableCategories).catch(() => {});
+		fetchCategoriesAction().then((cats) => {
+			setAvailableCategories(cats);
+			if (cats.length === 1) {
+				setForm((prev) => prev.categoryId ? prev : { ...prev, categoryId: cats[0].id });
+			}
+		}).catch(() => {});
 	}, []);
 
 	useEffect(() => {
@@ -971,30 +976,36 @@ export default function EditVehiclePage({
 									))}
 								</select>
 							</div>
-							{availableCategories.length > 0 && (
-								<div>
-									<label className={labelClass} htmlFor="categoryId-edit">
-										Catégorie
-									</label>
-									<select
-										id="categoryId-edit"
-										name="categoryId"
-										value={form.categoryId}
-										onChange={handleChange}
-										className={selectClass}
-									>
-										<option value="">— Aucune catégorie —</option>
-										{availableCategories.map((cat) => (
-											<option key={cat.id} value={cat.id}>
-												{cat.icon ? `${cat.icon} ` : ""}{cat.label}
-											</option>
-										))}
-									</select>
-									<p className={`${t.txtSubtle} text-xs mt-1.5`}>
-										URL : /occasions/[catégorie]/…
+							<div>
+								<label className={labelClass} htmlFor="categoryId-edit">
+									Catégorie
+								</label>
+								{availableCategories.length === 0 ? (
+									<p className={`${t.txtSubtle} text-xs mt-1`}>
+										Aucune catégorie configurée.
 									</p>
-								</div>
-							)}
+								) : (
+									<>
+										<select
+											id="categoryId-edit"
+											name="categoryId"
+											value={form.categoryId}
+											onChange={handleChange}
+											className={selectClass}
+										>
+											<option value="">— Aucune catégorie —</option>
+											{availableCategories.map((cat) => (
+												<option key={cat.id} value={cat.id}>
+													{cat.icon ? `${cat.icon} ` : ""}{cat.label}
+												</option>
+											))}
+										</select>
+										<p className={`${t.txtSubtle} text-xs mt-1.5`}>
+											URL : /occasions/[catégorie]/…
+										</p>
+									</>
+								)}
+							</div>
 						</div>
 					</div>
 
