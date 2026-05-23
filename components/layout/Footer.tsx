@@ -88,7 +88,7 @@ const footerLinks = {
 	navigation: [
 		{ href: "/", label: "Accueil" },
 		{ href: "/vehicules", label: "Occasions" },
-		{ href: "/produit", label: "Notre offre VO" },
+		{ href: "/produit", label: "Notre offre" },
 		{ href: "/contact", label: "Contact & Devis" },
 		{ href: "/faq", label: "FAQ" },
 	],
@@ -330,7 +330,14 @@ export default async function Footer() {
 				<Container className="py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] font-light text-slate-400">
 					<p>
 						© {new Date().getFullYear()} Garage Auto Mendonca · SARL
-						· SIRET 449 948 975 00023 · RCS Toulouse ·
+						·{" "}
+						<span
+							aria-label="Numéro SIRET"
+							style={{ userSelect: "text", WebkitTouchCallout: "none" } as React.CSSProperties}
+						>
+							SIRET 449 948 975 00023
+						</span>
+						{" "}· RCS Toulouse ·
 					</p>
 					<div className="flex items-center gap-5">
 						<Link

@@ -80,6 +80,7 @@ const jsonLd = {
 	"@context": "https://schema.org",
 	"@type": "AutoRepair",
 	name: "Garage Auto Mendonca",
+	logo: "https://www.garagemendonca.com/images/logo-gm.webp",
 	description:
 		"Spécialiste de la mécanique, carrosserie et vente de véhicules d'occasion japonais à boîte automatique à Drémil-Lafage depuis 2003.",
 	url: "https://www.garagemendonca.com",
@@ -176,6 +177,8 @@ export default function RootLayout({
 			 * Ils s'exécutent donc APRÈS ①②③ et après l'hydration React.
 			 */}
 			<head>
+				{/* Empêche iOS/Android de transformer numéros SIRET/codes en liens */}
+				<meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
 				{/* ① Anti-FOUC : thème admin avant tout paint */}
 				<script
 					dangerouslySetInnerHTML={{
