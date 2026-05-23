@@ -4,7 +4,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import VehicleCard from "@/components/vehicles/VehicleCard";
-import QualityControlPopover from "@/components/ui/QualityControlPopover";
+import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
@@ -135,14 +135,9 @@ export default async function ProduitPage() {
 						</h1>
 						<p className="text-slate-300 text-xl leading-relaxed max-w-2xl mb-4">
 							Chaque véhicule est inspecté selon{" "}
-							<QualityControlPopover triggerClassName="inline-flex items-center gap-1 underline decoration-brand-500 decoration-dotted underline-offset-4 text-white hover:text-brand-400 transition-colors cursor-pointer font-medium">
+							<QualityControlTooltip variant="inline" triggerClassName="text-white hover:text-brand-400 transition-colors font-medium">
 								{QUALITY_CONTROL.total} points de contrôle
-								<Info
-									size={14}
-									className="text-brand-400"
-									aria-hidden="true"
-								/>
-							</QualityControlPopover>
+							</QualityControlTooltip>
 							, révisé par nos mécaniciens et garanti. Financement
 							et reprise étudiés ensemble.
 						</p>
@@ -210,12 +205,12 @@ export default async function ProduitPage() {
 
 							if (interactive) {
 								return (
-									<QualityControlPopover
+									<QualityControlTooltip
 										key={id}
 										triggerClassName="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 rounded-xl"
 									>
 										{card}
-									</QualityControlPopover>
+									</QualityControlTooltip>
 								);
 							}
 

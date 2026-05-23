@@ -23,6 +23,7 @@ import {
 } from "@/lib/vehicles/pagination";
 import { ChevronLeft, ChevronRight, ShieldCheck, ClipboardCheck, Wrench, BookOpen } from "lucide-react";
 import { getActiveGarageId } from "@/lib/config/garage";
+import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 
 const GARAGE_ID = getActiveGarageId();
 
@@ -231,8 +232,11 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
               <span className="text-brand-500">révisés &amp; garantis</span>
             </h1>
             <p className="text-slate-300 text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl">
-              Chaque véhicule est inspecté en 160 points, révisé et garanti 6
-              à 12 mois kilométrage illimité.
+              Chaque véhicule est inspecté en{" "}
+              <QualityControlTooltip variant="inline" triggerClassName="text-slate-300">
+                160 points de contrôle
+              </QualityControlTooltip>
+              , révisé et garanti 6 à 12 mois kilométrage illimité.
             </p>
             {meta.totalPages > 1 && (
               <p className="text-slate-400 text-sm mt-4">
