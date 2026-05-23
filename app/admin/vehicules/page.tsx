@@ -382,14 +382,16 @@ export default function AdminVehiclesPage() {
 		[router],
 	);
 
-	// Persist filters + sort + page across navigations
-	useEffect(() => { sessionStorage.setItem("admin-vehicles-page", String(page)); }, [page]);
-	useEffect(() => { sessionStorage.setItem("admin-vehicles-search", inputValue); }, [inputValue]);
-	useEffect(() => { sessionStorage.setItem("admin-vehicles-brand", filterBrand); }, [filterBrand]);
-	useEffect(() => { sessionStorage.setItem("admin-vehicles-year", filterYear); }, [filterYear]);
-	useEffect(() => { sessionStorage.setItem("admin-vehicles-pricemax", filterPriceMax); }, [filterPriceMax]);
-	useEffect(() => { sessionStorage.setItem("admin-vehicles-status", filterStatus); }, [filterStatus]);
-	useEffect(() => { sessionStorage.setItem("admin-vehicles-sort", sortBy); }, [sortBy]);
+	// Persist filters + sort + page across navigations (1 seul effet = 1 seule subscription)
+	useEffect(() => {
+		sessionStorage.setItem("admin-vehicles-page",     String(page));
+		sessionStorage.setItem("admin-vehicles-search",   inputValue);
+		sessionStorage.setItem("admin-vehicles-brand",    filterBrand);
+		sessionStorage.setItem("admin-vehicles-year",     filterYear);
+		sessionStorage.setItem("admin-vehicles-pricemax", filterPriceMax);
+		sessionStorage.setItem("admin-vehicles-status",   filterStatus);
+		sessionStorage.setItem("admin-vehicles-sort",     sortBy);
+	}, [page, inputValue, filterBrand, filterYear, filterPriceMax, filterStatus, sortBy]);
 
 	// Reset page when filters/search change — skip initial mount to preserve stored page
 	useEffect(() => {
@@ -477,13 +479,13 @@ export default function AdminVehiclesPage() {
 		filterStatus
 	);
 
-	const handleDelete = (id: string) => {
+	const handleDelete = useCallback((id: string) => {
 		setLocalVehicles((prev) => (prev ?? fetchedVehicles).filter((v) => v.id !== id));
 		setDeleteConfirm(null);
 		deleteVehicleAction(id).catch(console.error);
-	};
+	}, [fetchedVehicles]);
 
-	const handleStatusChange = (id: string, status: VehicleStatus) => {
+	const handleStatusChange = useCallback((id: string, status: VehicleStatus) => {
 		setLocalVehicles((prev) =>
 			(prev ?? fetchedVehicles).map((v) =>
 				v.id === id
@@ -498,7 +500,7 @@ export default function AdminVehiclesPage() {
 			),
 		);
 		updateVehicleStatus(id, status).catch(console.error);
-	};
+	}, [fetchedVehicles]);
 
 	const actionBtn = clsx(
 		"flex-1 flex items-center justify-center gap-1.5 p-2 rounded-lg transition-colors text-xs",

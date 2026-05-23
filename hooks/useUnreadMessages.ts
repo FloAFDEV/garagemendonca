@@ -12,7 +12,9 @@ export function useUnreadMessages() {
     queryKey: messageKeys.unread(garageId),
     queryFn: () => fetchUnreadCountAction(garageId),
     enabled: Boolean(garageId),
-    refetchInterval: 60_000,
+    // Polling uniquement quand l'onglet est actif
+    refetchInterval: () => (typeof document !== "undefined" && document.hidden ? false : 60_000),
+    refetchIntervalInBackground: false,
     staleTime: 30_000,
   });
 
