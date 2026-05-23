@@ -15,6 +15,7 @@ type SearchHit = {
   thumbnailUrl: string | undefined;
   status: string;
   finition: string | undefined;
+  categorySlug: string | undefined;
 };
 
 export async function GET(req: NextRequest) {
@@ -49,6 +50,7 @@ export async function GET(req: NextRequest) {
       slug: v.slug,
       thumbnailUrl: v.thumbnailUrl,
       status: v.status ?? "published",
+      categorySlug: v.categorySlug,
       finition:
         v.features?.finition ??
         (v.features as Record<string, unknown> | undefined)?.["Finition"] as

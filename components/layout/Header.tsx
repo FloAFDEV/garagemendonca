@@ -24,6 +24,8 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 	const isLightPage =
 		pathname === "/vehicules" ||
 		/^\/vehicules\/.+/.test(pathname) ||
+		pathname === "/occasions" ||
+		/^\/occasions\/.+/.test(pathname) ||
 		pathname === "/contact" ||
 		pathname === "/cgu" ||
 		pathname === "/mentions-legales" ||

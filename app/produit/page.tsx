@@ -8,6 +8,7 @@ import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
+import { resolveVehicleHref } from "@/lib/utils/slug";
 import {
 	Car,
 	ShieldCheck,
@@ -100,7 +101,7 @@ export default async function ProduitPage() {
 		itemListElement: rest.map((v, i) => ({
 			"@type": "ListItem",
 			position: i + 1,
-			url: `${BASE_URL}/vehicules/${v.slug ?? v.id}`,
+			url: `${BASE_URL}${resolveVehicleHref(v)}`,
 			name: `${v.brand} ${v.model} ${v.year}`,
 		})),
 	};

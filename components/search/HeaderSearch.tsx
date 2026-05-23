@@ -21,6 +21,7 @@ import { ArrowRight, Loader2, Search, X } from "lucide-react";
 import clsx from "clsx";
 import { useSearch } from "@/hooks/useSearch";
 import { getLogoSrc } from "@/lib/brandLogos";
+import { resolveVehicleHref } from "@/lib/utils/slug";
 
 // ─── Type résultat API ────────────────────────────────────────────────────────
 
@@ -36,6 +37,7 @@ interface SearchHit {
   thumbnailUrl?: string;
   status: string;
   finition?: string;
+  categorySlug?: string;
 }
 
 // ─── Fetcher — défini HORS du composant → référence stable ───────────────────
@@ -271,9 +273,7 @@ const SearchOverlay = memo(function SearchOverlay({
 
                       <ul role="listbox" aria-label="Résultats de recherche">
                         {results.map((v) => {
-                          const href = v.slug
-                            ? `/vehicules/${v.slug}-${v.id.slice(0, 8)}`
-                            : `/vehicules/${v.id}`;
+                          const href = resolveVehicleHref(v);
                           return (
                             <li key={v.id} role="option" aria-selected={false}>
                               <Link

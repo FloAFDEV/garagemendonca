@@ -25,8 +25,8 @@ function adminDb(): Q {
   return createSupabaseAdminClient();
 }
 
-// Sélecteur commun : inclut vehicle_images avec storage_path pour signed URLs
-const SEL_WITH_IMAGES = "*, vehicle_images(id, url, storage_path, alt, sort_order, is_primary)";
+// Sélecteur commun : inclut vehicle_images + catégorie via FK (source de vérité)
+const SEL_WITH_IMAGES = "*, vehicle_images(id, url, storage_path, alt, sort_order, is_primary), vehicle_categories!category_id(slug)";
 
 // ─── Filtres pour list() ──────────────────────────────────────────
 
@@ -44,7 +44,8 @@ export interface VehicleListFilters {
   minYear?:      number;
   maxYear?:      number;
   maxMileage?:   number;
-  category?:     string;
+  category?:     string;   // slug — déprécié, utiliser categoryId si possible
+  categoryId?:   string;   // UUID FK → vehicle_categories.id (source de vérité)
   featured?:     boolean;
   sortBy?:       VehicleSortBy; // tri catalogue public
   limit?:        number;
@@ -75,6 +76,7 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
   if (filters.minYear)      q = q.gte("year", filters.minYear);
   if (filters.maxYear)      q = q.lte("year", filters.maxYear);
   if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
+  if (filters.categoryId)   q = q.eq("category_id", filters.categoryId);
 
   if (filters.search) {
     const tokens = normalizeSearch(filters.search)
@@ -126,7 +128,7 @@ export const vehicleDb = {
     if (filters.maxYear)      q = q.lte("year", filters.maxYear);
     if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
     if (filters.featured)     q = q.eq("featured", true);
-    if (filters.category)     q = q.contains("categories", [filters.category]);
+    if (filters.categoryId)   q = q.eq("category_id", filters.categoryId);
     if (filters.limit)        q = q.limit(filters.limit);
     if (filters.offset)       q = q.range(filters.offset, filters.offset + (filters.limit ?? 20) - 1);
 
@@ -229,6 +231,19 @@ export const vehicleDb = {
     if (error) return [];
     return ((data ?? []) as { slug: string | null; id: string; updated_at: string | null }[])
       .filter((r): r is { slug: string; id: string; updated_at: string | null } => r.slug !== null);
+  },
+
+  async listSlugsWithCategory(garageId: string): Promise<{ slug: string; id: string; updated_at: string | null; categorySlug: string | null }[]> {
+    const { data, error } = await anonDb()
+      .from("vehicles")
+      .select("id, slug, updated_at, vehicle_categories!category_id(slug)")
+      .eq("garage_id", garageId)
+      .not("slug", "is", null)
+      .in("status", ["published", "scheduled", "sold"]);
+    if (error) return [];
+    return ((data ?? []) as { slug: string | null; id: string; updated_at: string | null; vehicle_categories: { slug: string } | null }[])
+      .filter((r) => r.slug !== null)
+      .map((r) => ({ slug: r.slug!, id: r.id, updated_at: r.updated_at, categorySlug: r.vehicle_categories?.slug ?? null }));
   },
 
   async listAdmin(garageId: string): Promise<Vehicle[]> {

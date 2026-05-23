@@ -126,3 +126,55 @@ export function extractShortId(slugWithId: string): string | null {
   const match = slugWithId.match(/-([0-9a-f]{8})$/i);
   return match ? match[1].toLowerCase() : null;
 }
+
+// ─────────────────────────────────────────────────────────────────
+//  buildOccasionUrl — URL canonique silo SEO
+//
+//  Format : /occasions/{categorySlug}/{slug}-{shortId}
+//  Ex : buildOccasionUrl("japonaises", "toyota-corolla-2021", "db2173a3-...")
+//       → "/occasions/japonaises/toyota-corolla-2021-db2173a3"
+// ─────────────────────────────────────────────────────────────────
+
+export function buildOccasionUrl(categorySlug: string, vehicleSlug: string, id: string): string {
+  const shortId = id.slice(0, 8);
+  return `/occasions/${categorySlug}/${vehicleSlug}-${shortId}`;
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  resolveVehicleHref — URL publique d'un véhicule avec guard de sécurité
+//
+//  Règle : categorySlug (JOIN vehicle_categories) est la seule source autorisée.
+//  Si categoryId est défini mais categorySlug est null, la JOIN a échoué
+//  (incohérence de données) — on log un warning et on fallback vers /vehicules.
+//  Si ni categoryId ni categorySlug : véhicule non catégorisé (état transitoire OK).
+// ─────────────────────────────────────────────────────────────────
+
+export function resolveVehicleHref(vehicle: {
+  id: string;
+  slug?: string | null;
+  categoryId?: string;
+  categorySlug?: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+}): string {
+  const vSlug = vehicle.slug ?? generateVehicleSlug(
+    vehicle.brand ?? "vehicule",
+    vehicle.model ?? "",
+    vehicle.year ?? 0,
+  );
+
+  if (vehicle.categorySlug) {
+    return buildOccasionUrl(vehicle.categorySlug, vSlug, vehicle.id);
+  }
+
+  // Data integrity: categoryId present but JOIN returned no slug → suspect
+  if (vehicle.categoryId && typeof window === "undefined") {
+    // Server-side only — avoids noise in client bundles
+    console.warn(
+      `[SEO] Vehicle ${vehicle.id} has categoryId "${vehicle.categoryId}" but categorySlug JOIN returned null — check vehicle_categories integrity`,
+    );
+  }
+
+  return vehicle.slug ? buildVehicleUrl(vSlug, vehicle.id) : `/vehicules/${vehicle.id}`;
+}

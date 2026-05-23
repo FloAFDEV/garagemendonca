@@ -290,8 +290,10 @@ export interface Vehicle {
   // Mise en avant
   featured?: boolean;
   featuredOrder?: number; // position parmi les "à la une" (1 = premier)
-  // Classification dynamique — slugs des VehicleCategory de ce garage
-  categories?: string[];  // Mirrors: vehicles.categories TEXT[]
+  // Classification — source de vérité : category_id (FK)
+  categoryId?: string;     // UUID → vehicle_categories.id (source de vérité)
+  categorySlug?: string;   // slug depuis vehicle_categories JOIN — utilisé pour le routing URL
+  categories?: string[];   // TEXT[] déprécié — NE PAS utiliser pour le routing
   // ── SEO ──────────────────────────────────────────────────────
   slug?: string;           // URL-safe unique par garage, ex: "peugeot-208-2021"
   meta_description?: string;
