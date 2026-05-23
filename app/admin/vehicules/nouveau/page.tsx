@@ -238,7 +238,10 @@ export default function NewVehiclePage() {
 
 	useEffect(() => {
 		getFeaturedCount().then(setFeaturedCount).catch(() => {});
-		fetchCategoriesAction().then(setAvailableCategories).catch(() => {});
+		fetchCategoriesAction().then((cats) => {
+			setAvailableCategories(cats);
+			if (cats.length === 1) set("categoryId", cats[0].id);
+		}).catch(() => {});
 	}, []);
 
 	// ID stable pour le nouveau véhicule — utilisé pour le chemin storage avant création DB
@@ -621,30 +624,36 @@ export default function NewVehiclePage() {
 									))}
 								</select>
 							</div>
-							{availableCategories.length > 0 && (
-								<div>
-									<label className={labelClass} htmlFor="categoryId-new">
-										Catégorie
-									</label>
-									<select
-										id="categoryId-new"
-										name="categoryId"
-										value={form.categoryId}
-										onChange={handleChange}
-										className={selectClass}
-									>
-										<option value="">— Aucune catégorie —</option>
-										{availableCategories.map((cat) => (
-											<option key={cat.id} value={cat.id}>
-												{cat.icon ? `${cat.icon} ` : ""}{cat.label}
-											</option>
-										))}
-									</select>
-									<p className={`${t.txtSubtle} text-xs mt-1.5`}>
-										URL : /occasions/[catégorie]/…
+							<div>
+								<label className={labelClass} htmlFor="categoryId-new">
+									Catégorie
+								</label>
+								{availableCategories.length === 0 ? (
+									<p className={`${t.txtSubtle} text-xs mt-1`}>
+										Aucune catégorie configurée.
 									</p>
-								</div>
-							)}
+								) : (
+									<>
+										<select
+											id="categoryId-new"
+											name="categoryId"
+											value={form.categoryId}
+											onChange={handleChange}
+											className={selectClass}
+										>
+											<option value="">— Aucune catégorie —</option>
+											{availableCategories.map((cat) => (
+												<option key={cat.id} value={cat.id}>
+													{cat.icon ? `${cat.icon} ` : ""}{cat.label}
+												</option>
+											))}
+										</select>
+										<p className={`${t.txtSubtle} text-xs mt-1.5`}>
+											URL : /occasions/[catégorie]/…
+										</p>
+									</>
+								)}
+							</div>
 						</div>
 					</div>
 
