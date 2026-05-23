@@ -283,7 +283,8 @@ export const vehicleDb = {
       .in("status", ["published", "scheduled", "sold"])
       .not("category_id", "is", null);
     if (error) throw error;
-    return [...new Set((data ?? []).map((r: { category_id: string }) => r.category_id))];
+    const rows = (data ?? []) as { category_id: string }[];
+    return [...new Set(rows.map((r) => r.category_id))];
   },
 
   /** Compte les véhicules publics (published + scheduled + sold), avec filtres optionnels */
