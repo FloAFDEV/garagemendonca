@@ -20,6 +20,7 @@ import {
 	useCallback,
 	type CSSProperties,
 } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { FileCheck2, BadgeCheck, ArrowRight } from "lucide-react";
 import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
@@ -65,8 +66,10 @@ export default function QualityControlTooltip({
 }: Props) {
 	const router = useRouter();
 
+	const [mounted,  setMounted]  = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
 	useEffect(() => {
+		setMounted(true);
 		setIsMobile(window.matchMedia("(pointer: coarse)").matches);
 	}, []);
 
@@ -178,6 +181,19 @@ export default function QualityControlTooltip({
 		return () => document.removeEventListener("keydown", handler);
 	}, [open, closeAll]);
 
+	/* ── Fermer au scroll + recalculer au resize ── */
+	useEffect(() => {
+		if (!open) return;
+		const onScroll = () => closeAll();
+		const onResize = () => { if (open) calcPos(); };
+		window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+		window.addEventListener("resize", onResize);
+		return () => {
+			window.removeEventListener("scroll", onScroll, { capture: true });
+			window.removeEventListener("resize", onResize);
+		};
+	}, [open, closeAll, calcPos]);
+
 	const trans: CSSProperties = prefersReduced
 		? {}
 		: { transition: "opacity 0.18s ease, transform 0.22s cubic-bezier(0.16,1,0.3,1)" };
@@ -273,8 +289,10 @@ export default function QualityControlTooltip({
 				)}
 			</button>
 
-			{/* Desktop popover */}
-			{!isMobile && open && (
+			{/* Desktop popover — rendu dans document.body via createPortal pour
+			    échapper aux CSS transform des ancêtres (AnimateOnScroll etc.)
+			    qui cassent position:fixed */}
+			{!isMobile && open && mounted && createPortal(
 				<div
 					ref={tooltipRef}
 					id={dialogId}
@@ -283,20 +301,21 @@ export default function QualityControlTooltip({
 					aria-labelledby={titleId}
 					onMouseEnter={handleTooltipEnter}
 					onMouseLeave={handleTooltipLeave}
-					className="fixed z-50 bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.14),0_2px_8px_rgba(0,0,0,0.08)] border border-slate-100 overflow-hidden"
+					className="fixed bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.18),0_2px_8px_rgba(0,0,0,0.10)] border border-slate-100 overflow-hidden"
 					style={{
+						zIndex: 9999,
 						width: TOOLTIP_W,
 						top: tooltipPos.above ? undefined : tooltipPos.top,
 						bottom: tooltipPos.above
 							? `${window.innerHeight - tooltipPos.top}px`
 							: undefined,
 						left: tooltipPos.left,
-						transform: `translateX(${tooltipPos.transformX})`,
 						...trans,
 					} as CSSProperties}
 				>
 					{popoverContent}
-				</div>
+				</div>,
+				document.body,
 			)}
 		</>
 	);
