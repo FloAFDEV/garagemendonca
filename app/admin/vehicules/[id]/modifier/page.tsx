@@ -971,6 +971,30 @@ export default function EditVehiclePage({
 									))}
 								</select>
 							</div>
+							{availableCategories.length > 0 && (
+								<div>
+									<label className={labelClass} htmlFor="categoryId-edit">
+										Catégorie
+									</label>
+									<select
+										id="categoryId-edit"
+										name="categoryId"
+										value={form.categoryId}
+										onChange={handleChange}
+										className={selectClass}
+									>
+										<option value="">— Aucune catégorie —</option>
+										{availableCategories.map((cat) => (
+											<option key={cat.id} value={cat.id}>
+												{cat.icon ? `${cat.icon} ` : ""}{cat.label}
+											</option>
+										))}
+									</select>
+									<p className={`${t.txtSubtle} text-xs mt-1.5`}>
+										URL : /occasions/[catégorie]/…
+									</p>
+								</div>
+							)}
 						</div>
 					</div>
 
@@ -1039,37 +1063,6 @@ export default function EditVehiclePage({
 							par ligne.
 						</p>
 					</div>
-
-					{/* ── Catégorie ──────────────────────────────────────── */}
-					{availableCategories.length > 0 && (
-						<div className={sectionClass}>
-							<h3 className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}>
-								Catégorie
-							</h3>
-							<div className="max-w-xs">
-								<label className={t.labelClass} htmlFor="categoryId-edit">
-									Catégorie principale
-								</label>
-								<select
-									id="categoryId-edit"
-									name="categoryId"
-									value={form.categoryId}
-									onChange={handleChange}
-									className={selectClass}
-								>
-									<option value="">— Aucune catégorie —</option>
-									{availableCategories.map((cat) => (
-										<option key={cat.id} value={cat.id}>
-											{cat.icon ? `${cat.icon} ` : ""}{cat.label}
-										</option>
-									))}
-								</select>
-								<p className={`${t.txtSubtle} text-xs mt-1.5`}>
-									Définit l&apos;URL canonique : /occasions/[catégorie]/[véhicule]
-								</p>
-							</div>
-						</div>
-					)}
 
 					{/* ── Photos ─────────────────────────────────────────── */}
 					<div className={sectionClass}>
