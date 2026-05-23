@@ -61,8 +61,11 @@ export async function getAdminVehicleById(id: string): Promise<Vehicle | null> {
 /* ── Helpers ─────────────────────────────────────────────────── */
 
 function revalidateAll(_id?: string) {
-	revalidatePath("/");
-	revalidatePath("/vehicules", "layout"); // invalide /vehicules + tous les /vehicules/[slug]
+	// Invalide uniquement les pages publiques liées aux véhicules
+	// (évite de vider TOUT le cache Next.js à chaque opération admin)
+	revalidatePath("/vehicules", "layout");      // /vehicules + /vehicules/[slug] + /vehicules/page/[n]
+	revalidatePath("/occasions", "layout");      // /occasions + /occasions/[cat] + /occasions/[cat]/[slug]
+	revalidatePath("/", "page");                 // home (featured vehicles)
 }
 
 function toDbRow(input: VehicleUpdateInput): Record<string, unknown> {

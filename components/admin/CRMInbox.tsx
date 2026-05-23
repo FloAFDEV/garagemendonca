@@ -236,11 +236,10 @@ function MessageDetail({
 
 	const displayed = fullMessage ?? message;
 
+	// 1 seule invalidation en cascade (couvre list, detail, unread, stats)
 	const invalidate = useCallback(() => {
-		qc.invalidateQueries({ queryKey: messageKeys.list(garageId) });
-		qc.invalidateQueries({ queryKey: messageKeys.detail(message.id) });
-		qc.invalidateQueries({ queryKey: messageKeys.unread(garageId) });
-	}, [qc, garageId, message.id]);
+		qc.invalidateQueries({ queryKey: messageKeys.all() });
+	}, [qc]);
 
 	// Status mutation
 	const statusMut = useMutation({
@@ -662,12 +661,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 					filter: `garage_id=eq.${garageId}`,
 				},
 				() => {
-					qc.invalidateQueries({
-						queryKey: messageKeys.list(garageId),
-					});
-					qc.invalidateQueries({
-						queryKey: messageKeys.unread(garageId),
-					});
+					qc.invalidateQueries({ queryKey: messageKeys.all() });
 				},
 			)
 			.subscribe();
