@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { FileCheck2, BadgeCheck, ArrowRight } from "lucide-react";
 import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
 
-const SERVICES_URL = "/services";
+const SERVICES_URL = "/services#protocole-qualite";
 const TOOLTIP_W = 340;
 const PREVIEW_ITEMS = 3; // items affichés par section avant "…"
 
