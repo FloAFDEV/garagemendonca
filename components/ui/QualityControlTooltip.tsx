@@ -101,12 +101,11 @@ export default function QualityControlTooltip({
 		const halfW = TOOLTIP_W / 2;
 		const idealLeft = rect.left + rect.width / 2 - halfW;
 		const clampedLeft = Math.max(12, Math.min(vw - TOOLTIP_W - 12, idealLeft));
-		const arrowOffset = rect.left + rect.width / 2 - clampedLeft - halfW;
 		const spaceBelow = vh - rect.bottom;
 		setTooltipPos({
 			top: spaceBelow < 260 ? rect.top - 8 : rect.bottom + 8,
-			left: clampedLeft + halfW,
-			transformX: `calc(-50% + ${arrowOffset}px)`,
+			left: clampedLeft,
+			transformX: "0px",
 			above: spaceBelow < 260,
 		});
 	}, []);
