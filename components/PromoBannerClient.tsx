@@ -122,11 +122,11 @@ export default function PromoBannerClient({
 				)}
 
 				<div className={clsx(
-					"relative max-w-5xl mx-auto py-2.5 sm:py-3 flex items-center justify-center gap-2.5 sm:gap-5",
+					"relative max-w-5xl mx-auto py-1.5 sm:py-3 flex items-center justify-center gap-2.5 sm:gap-5",
 					banner.is_dismissible ? "pl-3 pr-10 sm:pl-8 sm:pr-14 md:pl-12" : "px-3 sm:px-8 md:px-12",
 				)}>
 
-					{/* Image — taille originale */}
+					{/* Image — desktop uniquement */}
 					{signedImageUrl && (
 						<div className="hidden sm:block flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden ring-2 ring-white/20 shadow-lg">
 							{/* eslint-disable-next-line @next/next/no-img-element */}
@@ -141,13 +141,14 @@ export default function PromoBannerClient({
 						</div>
 					)}
 
-					<div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 flex-1 min-w-0 justify-center">
-						<div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2.5 min-w-0">
-							<p className="text-sm sm:text-base font-bold leading-snug text-white tracking-tight">
+					<div className="flex items-center gap-2 sm:gap-4 justify-center min-w-0">
+						{/* Message de bienvenue — masqué sur mobile */}
+						<div className="hidden sm:flex sm:items-center gap-2.5 min-w-0">
+							<p className="text-sm font-medium leading-snug text-white sm:tracking-wide">
 								{banner.message}
 							</p>
 							{banner.sub_message && (
-								<span className="text-white/70 text-xs font-normal leading-tight hidden sm:inline line-clamp-1">
+								<span className="text-white/70 text-xs font-normal leading-tight line-clamp-1">
 									—&nbsp;{banner.sub_message}
 								</span>
 							)}
@@ -156,7 +157,13 @@ export default function PromoBannerClient({
 						{banner.cta_label && banner.cta_url && (
 							<Link
 								href={banner.cta_url}
-								className="flex-shrink-0 self-start sm:self-auto inline-flex items-center gap-1.5 border border-white/40 hover:border-white hover:bg-white/10 active:bg-white/20 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-all whitespace-nowrap"
+								className={clsx(
+									"inline-flex items-center gap-1 whitespace-nowrap transition-all text-white",
+									// Mobile : texte flottant sans bordure, discret
+									"text-xs font-medium opacity-90 hover:opacity-100",
+									// Desktop : bouton outline standard
+									"sm:font-semibold sm:border sm:border-white/40 sm:hover:border-white sm:hover:bg-white/10 sm:px-3 sm:py-1 sm:rounded-lg",
+								)}
 							>
 								{banner.cta_label}
 								<ArrowRight size={11} aria-hidden="true" />
