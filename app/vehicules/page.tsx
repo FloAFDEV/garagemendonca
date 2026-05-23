@@ -174,10 +174,22 @@ export default async function VehiculesPage({
   searchParams: Promise<SearchParams>;
 }) {
   const sp = await searchParams;
-  const filters = parsePageFilters(sp);
+  const rawFilters = parsePageFilters(sp);
   const filterQuery = filtersToQs(sp);
 
-  const [vehicles, totalCount, availableBrands, categories] = await Promise.all([
+  // Fetch categories first to resolve slug → categoryId (source de vérité)
+  const [availableBrands, categories] = await Promise.all([
+    listBrandsCached(GARAGE_ID).catch(() => []),
+    vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
+  ]);
+
+  // Résolution slug → categoryId pour utiliser le FK (pas TEXT[])
+  const categoryId = rawFilters.category
+    ? categories.find((c) => c.slug === rawFilters.category)?.id
+    : undefined;
+  const filters = { ...rawFilters, category: undefined, categoryId };
+
+  const [vehicles, totalCount] = await Promise.all([
     vehicleDb.listPaginated(GARAGE_ID, 1, VEHICLES_PER_PAGE, filters).catch((err) => {
       console.error("[VehiculesPage] listPaginated failed:", err);
       return [];
@@ -186,8 +198,6 @@ export default async function VehiculesPage({
       console.error("[VehiculesPage] countPublic failed:", err);
       return 0;
     }),
-    listBrandsCached(GARAGE_ID).catch(() => []),
-    vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
   ]);
 
   const meta = buildPaginationMeta(1, totalCount);

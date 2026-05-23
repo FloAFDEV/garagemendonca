@@ -126,3 +126,16 @@ export function extractShortId(slugWithId: string): string | null {
   const match = slugWithId.match(/-([0-9a-f]{8})$/i);
   return match ? match[1].toLowerCase() : null;
 }
+
+// ─────────────────────────────────────────────────────────────────
+//  buildOccasionUrl — URL canonique silo SEO
+//
+//  Format : /occasions/{categorySlug}/{slug}-{shortId}
+//  Ex : buildOccasionUrl("japonaises", "toyota-corolla-2021", "db2173a3-...")
+//       → "/occasions/japonaises/toyota-corolla-2021-db2173a3"
+// ─────────────────────────────────────────────────────────────────
+
+export function buildOccasionUrl(categorySlug: string, vehicleSlug: string, id: string): string {
+  const shortId = id.slice(0, 8);
+  return `/occasions/${categorySlug}/${vehicleSlug}-${shortId}`;
+}

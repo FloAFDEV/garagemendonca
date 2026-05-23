@@ -88,6 +88,7 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
     sold_at:          row.sold_at ?? undefined,
     featured:         row.featured,
     featuredOrder:    row.featured_order ?? undefined,
+    categoryId:       row.category_id ?? undefined,
     categories:       row.categories ?? [],
     features:         (row.features as VehicleFeatures) ?? {},
     options:          (row.options as VehicleOptions) ?? {},

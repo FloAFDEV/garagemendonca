@@ -90,7 +90,7 @@ interface VehicleForm {
 	garantie: string;
 	scheduledLabel: "en_preparation" | "en_arrivage" | "";
 	options: VehicleOptions;
-	categories: string[];
+	categoryId: string;
 }
 
 interface FormErrors {
@@ -269,7 +269,7 @@ export default function EditVehiclePage({
 		garantie: "",
 		scheduledLabel: "",
 		options: {},
-		categories: [],
+		categoryId: "",
 	});
 
 	const [images, setImages] = useState<string[]>([]);
@@ -353,7 +353,7 @@ export default function EditVehiclePage({
 						"",
 					scheduledLabel: (vehicle.features?.["ScheduledLabel"] as "en_preparation" | "en_arrivage" | "") ?? "",
 					options: mergedOptions,
-					categories: vehicle.categories ?? [],
+					categoryId: vehicle.categoryId ?? "",
 				});
 				initialFeatured.current = vehicle.featured ?? false;
 				setImages(getVehicleImages(vehicle));
@@ -483,7 +483,7 @@ export default function EditVehiclePage({
 				featured: form.featured,
 				critAir: form.critAir || undefined,
 				options: form.options,
-				categories: form.categories.length > 0 ? form.categories : [],
+				categoryId: form.categoryId || undefined,
 				features: {
 					...extraFeatures,
 					...(form.finition ? { Finition: form.finition } : { Finition: undefined }),
@@ -1040,33 +1040,33 @@ export default function EditVehiclePage({
 						</p>
 					</div>
 
-					{/* ── Catégories ─────────────────────────────────────── */}
+					{/* ── Catégorie ──────────────────────────────────────── */}
 					{availableCategories.length > 0 && (
 						<div className={sectionClass}>
 							<h3 className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}>
-								Catégories
+								Catégorie
 							</h3>
-							<div className="flex flex-wrap gap-3">
-								{availableCategories.map((cat) => {
-									const checked = form.categories.includes(cat.slug);
-									return (
-										<label key={cat.slug} className={`flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all text-sm select-none ${checked ? "border-brand-500 bg-brand-500/10 text-brand-600 font-medium" : `${t.border} ${t.surface} ${t.txtMuted} hover:border-brand-300`}`}>
-											<input
-												type="checkbox"
-												checked={checked}
-												onChange={() => {
-													const next = checked
-														? form.categories.filter((s) => s !== cat.slug)
-														: [...form.categories, cat.slug];
-													set("categories", next);
-												}}
-												className="sr-only"
-											/>
-											{cat.icon && <span aria-hidden="true">{cat.icon}</span>}
-											{cat.label}
-										</label>
-									);
-								})}
+							<div className="max-w-xs">
+								<label className={t.labelClass} htmlFor="categoryId-edit">
+									Catégorie principale
+								</label>
+								<select
+									id="categoryId-edit"
+									name="categoryId"
+									value={form.categoryId}
+									onChange={handleChange}
+									className={selectClass}
+								>
+									<option value="">— Aucune catégorie —</option>
+									{availableCategories.map((cat) => (
+										<option key={cat.id} value={cat.id}>
+											{cat.icon ? `${cat.icon} ` : ""}{cat.label}
+										</option>
+									))}
+								</select>
+								<p className={`${t.txtSubtle} text-xs mt-1.5`}>
+									Définit l&apos;URL canonique : /occasions/[catégorie]/[véhicule]
+								</p>
 							</div>
 						</div>
 					)}

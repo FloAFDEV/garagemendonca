@@ -128,7 +128,8 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
 
   if (!category) notFound();
 
-  const filters = { category: category.slug };
+  // Filtre par category_id (source de vérité) — fall back sur slug TEXT[] si nécessaire
+  const filters = { categoryId: category.id };
 
   const [vehicles, totalCount] = await Promise.all([
     vehicleDb.listPaginated(GARAGE_ID, pageNum, VEHICLES_PER_PAGE, filters).catch(() => []),

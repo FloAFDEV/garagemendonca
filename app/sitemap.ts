@@ -14,15 +14,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 	if (SUPABASE_ENABLED && GARAGE_ID) {
 		const [slugs, categories] = await Promise.all([
-			vehicleDb.listSlugs(GARAGE_ID).catch(() => []),
+			vehicleDb.listSlugsWithCategory(GARAGE_ID).catch(() => []),
 			vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
 		]);
-		vehicleEntries = slugs.map(({ slug, id, updated_at }) => ({
-			url: `${BASE_URL}/vehicules/${slug}-${id.slice(0, 8)}`,
-			lastModified: updated_at ? new Date(updated_at) : new Date(),
-			changeFrequency: "weekly" as const,
-			priority: 0.8,
-		}));
+
+		// Véhicules : URL canonique /occasions/[cat]/[slug] si catégorie connue
+		vehicleEntries = slugs.map(({ slug, id, updated_at, categories: cats }) => {
+			const catSlug = cats?.[0];
+			const url = catSlug
+				? `${BASE_URL}/occasions/${catSlug}/${slug}-${id.slice(0, 8)}`
+				: `${BASE_URL}/vehicules/${slug}-${id.slice(0, 8)}`; // fallback sans catégorie
+			return {
+				url,
+				lastModified: updated_at ? new Date(updated_at) : new Date(),
+				changeFrequency: "weekly" as const,
+				priority: catSlug ? 0.9 : 0.7,
+			};
+		});
+
 		categoryEntries = categories.map((cat) => ({
 			url: `${BASE_URL}/occasions/${cat.slug}`,
 			lastModified: new Date(),
@@ -33,8 +42,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 	return [
 		{ url: BASE_URL,                              lastModified: new Date(), changeFrequency: "weekly",  priority: 1   },
-		{ url: `${BASE_URL}/vehicules`,               lastModified: new Date(), changeFrequency: "daily",   priority: 0.9 },
-		{ url: `${BASE_URL}/occasions`,               lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
+		{ url: `${BASE_URL}/occasions`,               lastModified: new Date(), changeFrequency: "daily",   priority: 0.95 },
+		{ url: `${BASE_URL}/vehicules`,               lastModified: new Date(), changeFrequency: "daily",   priority: 0.6 },
 		{ url: `${BASE_URL}/services`,                lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
 		{ url: `${BASE_URL}/contact`,                 lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
 		{ url: `${BASE_URL}/produit`,                 lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },

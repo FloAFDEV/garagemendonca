@@ -44,7 +44,8 @@ export interface VehicleListFilters {
   minYear?:      number;
   maxYear?:      number;
   maxMileage?:   number;
-  category?:     string;
+  category?:     string;   // slug — déprécié, utiliser categoryId si possible
+  categoryId?:   string;   // UUID FK → vehicle_categories.id (source de vérité)
   featured?:     boolean;
   sortBy?:       VehicleSortBy; // tri catalogue public
   limit?:        number;
@@ -75,7 +76,7 @@ function applyPublicFilters(q: Q, filters: Omit<VehicleListFilters, "limit" | "o
   if (filters.minYear)      q = q.gte("year", filters.minYear);
   if (filters.maxYear)      q = q.lte("year", filters.maxYear);
   if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
-  if (filters.category)     q = q.contains("categories", [filters.category]);
+  if (filters.categoryId)   q = q.eq("category_id", filters.categoryId);
 
   if (filters.search) {
     const tokens = normalizeSearch(filters.search)
@@ -127,7 +128,7 @@ export const vehicleDb = {
     if (filters.maxYear)      q = q.lte("year", filters.maxYear);
     if (filters.maxMileage)   q = q.lte("mileage", filters.maxMileage);
     if (filters.featured)     q = q.eq("featured", true);
-    if (filters.category)     q = q.contains("categories", [filters.category]);
+    if (filters.categoryId)   q = q.eq("category_id", filters.categoryId);
     if (filters.limit)        q = q.limit(filters.limit);
     if (filters.offset)       q = q.range(filters.offset, filters.offset + (filters.limit ?? 20) - 1);
 
@@ -230,6 +231,18 @@ export const vehicleDb = {
     if (error) return [];
     return ((data ?? []) as { slug: string | null; id: string; updated_at: string | null }[])
       .filter((r): r is { slug: string; id: string; updated_at: string | null } => r.slug !== null);
+  },
+
+  async listSlugsWithCategory(garageId: string): Promise<{ slug: string; id: string; updated_at: string | null; categories: string[] }[]> {
+    const { data, error } = await anonDb()
+      .from("vehicles")
+      .select("id, slug, updated_at, categories")
+      .eq("garage_id", garageId)
+      .not("slug", "is", null)
+      .in("status", ["published", "scheduled", "sold"]);
+    if (error) return [];
+    return ((data ?? []) as { slug: string | null; id: string; updated_at: string | null; categories: string[] }[])
+      .filter((r): r is { slug: string; id: string; updated_at: string | null; categories: string[] } => r.slug !== null);
   },
 
   async listAdmin(garageId: string): Promise<Vehicle[]> {

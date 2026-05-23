@@ -173,6 +173,7 @@ export interface VehicleRow {
   featured: boolean;
   featured_order: number | null;
   categories: string[];
+  category_id?: string | null;
   features: DbVehicleFeatures;
   options: DbVehicleOptions;
   slug: string | null;
@@ -300,6 +301,7 @@ export type VehicleInsert = Omit<VehicleRow, "id" | "created_at" | "updated_at">
   featured?: boolean;
   featured_order?: number | null;
   categories?: string[];
+  category_id?: string | null;   // FK optionnel à l'insertion
   features?: DbVehicleFeatures;
   options?: DbVehicleOptions;
   slug?: string | null;

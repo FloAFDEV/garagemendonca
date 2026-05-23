@@ -75,7 +75,7 @@ interface VehicleForm {
 	published_at: string;
 	featured: boolean;
 	options: VehicleOptions;
-	categories: string[];
+	categoryId: string;
 	finition: string;
 	critAir: string;
 	garantie: string;
@@ -109,7 +109,7 @@ const emptyForm: VehicleForm = {
 	published_at: "",
 	featured: false,
 	options: {},
-	categories: [],
+	categoryId: "",
 	finition: "",
 	critAir: "",
 	garantie: "",
@@ -312,7 +312,7 @@ export default function NewVehiclePage() {
 			published_at: form.published_at || undefined,
 			featured: form.featured,
 			options: form.options,
-			categories: form.categories.length > 0 ? form.categories : undefined,
+			categoryId: form.categoryId || undefined,
 			critAir: form.critAir || undefined,
 			features: {
 				...(form.finition ? { Finition: form.finition } : {}),
@@ -833,33 +833,33 @@ export default function NewVehiclePage() {
 						</div>
 					</div>
 
-					{/* ── Catégories ─────────────────────────────────────── */}
+					{/* ── Catégorie ──────────────────────────────────────── */}
 					{availableCategories.length > 0 && (
 						<div className={sectionClass}>
 							<h3 className={`font-heading font-normal ${t.txt} mb-4 tracking-widest`}>
-								Catégories
+								Catégorie
 							</h3>
-							<div className="flex flex-wrap gap-3">
-								{availableCategories.map((cat) => {
-									const checked = form.categories.includes(cat.slug);
-									return (
-										<label key={cat.slug} className={`flex items-center gap-2 px-3 py-2 rounded-xl border cursor-pointer transition-all text-sm select-none ${checked ? "border-brand-500 bg-brand-500/10 text-brand-600 font-medium" : `${t.border} ${t.surface} ${t.txtMuted} hover:border-brand-300`}`}>
-											<input
-												type="checkbox"
-												checked={checked}
-												onChange={() => {
-													const next = checked
-														? form.categories.filter((s) => s !== cat.slug)
-														: [...form.categories, cat.slug];
-													set("categories", next);
-												}}
-												className="sr-only"
-											/>
-											{cat.icon && <span aria-hidden="true">{cat.icon}</span>}
-											{cat.label}
-										</label>
-									);
-								})}
+							<div className="max-w-xs">
+								<label className={t.labelClass} htmlFor="categoryId-new">
+									Catégorie principale
+								</label>
+								<select
+									id="categoryId-new"
+									name="categoryId"
+									value={form.categoryId}
+									onChange={handleChange}
+									className={selectClass}
+								>
+									<option value="">— Aucune catégorie —</option>
+									{availableCategories.map((cat) => (
+										<option key={cat.id} value={cat.id}>
+											{cat.icon ? `${cat.icon} ` : ""}{cat.label}
+										</option>
+									))}
+								</select>
+								<p className={`${t.txtSubtle} text-xs mt-1.5`}>
+									Définit l&apos;URL canonique : /occasions/[catégorie]/[véhicule]
+								</p>
 							</div>
 						</div>
 					)}
