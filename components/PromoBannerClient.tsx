@@ -144,7 +144,7 @@ export default function PromoBannerClient({
 					<div className="flex items-center gap-2 sm:gap-4 justify-center min-w-0">
 						{/* Message de bienvenue — masqué sur mobile */}
 						<div className="hidden sm:flex sm:items-center gap-2.5 min-w-0">
-							<p className="text-sm font-medium leading-snug text-white sm:tracking-wide">
+							<p className="text-sm sm:text-[15px] font-medium leading-snug text-white sm:tracking-[0.015em]">
 								{banner.message}
 							</p>
 							{banner.sub_message && (
