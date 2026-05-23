@@ -373,7 +373,7 @@ export default function VehicleFiltersBar({
   // Sync si l'URL change (ex: bouton "retour")
   useEffect(() => { setSearchInput(qUrl); }, [qUrl]);
 
-  const hasFilters = !!(qUrl || brandsStr || fuel || transmission || maxKm || maxPrice || minPrice || minYear || maxYear || sort || category);
+  const hasFilters = !!(qUrl || brandsStr || fuel || transmission || maxKm || maxPrice || minPrice || minYear || maxYear || category);
 
   // Fonction centrale : met à jour des paramètres et revient toujours à /vehicules (page 1)
   const pushFilters = useCallback(
@@ -406,7 +406,7 @@ export default function VehicleFiltersBar({
   return (
     <div className="mb-8 space-y-4">
       {/* ── Onglets catégories ── */}
-      {categories.length > 0 && (
+      {categories.length > 1 && (
         <div className="flex items-center gap-2 flex-wrap -mb-1">
           <button
             type="button"
