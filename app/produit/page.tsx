@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
-import { vehicleDb } from "@/lib/db/vehicle.repository";
+import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import VehicleCard from "@/components/vehicles/VehicleCard";
+import QualityControlPopover from "@/components/ui/QualityControlPopover";
+import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getActiveGarageId } from "@/lib/config/garage";
+import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
 import {
 	Car,
 	ShieldCheck,
@@ -14,70 +17,87 @@ import {
 	Phone,
 	ArrowRight,
 	Star,
+	Info,
 } from "lucide-react";
 
 export const metadata: Metadata = {
-	title: "Véhicules d'occasion — Garage Mendonca",
+	title: "Notre offre — Véhicules d'occasion révisés et garantis",
 	description:
-		"Découvrez nos véhicules d'occasion soigneusement sélectionnés, révisés et garantis. Toutes marques, financement disponible. Garage Mendonca à Drémil-Lafage.",
+		"Véhicules d'occasion soigneusement sélectionnés, inspectés en 160 points, révisés et garantis 6 à 12 mois. Japonaises, boîtes automatiques. Garage Mendonca à Drémil-Lafage (31).",
 	alternates: {
 		canonical: "https://www.garagemendonca.com/produit",
 	},
 	openGraph: {
-		title: "Véhicules d'occasion — Garage Auto Mendonca · Drémil-Lafage",
+		title: "Notre offre — Véhicules d'occasion · Garage Auto Mendonca",
 		description:
-			"Sélection de véhicules d'occasion révisés et garantis. Japonaises, boîtes automatiques, financement disponible.",
+			"Sélection VO révisée et garantie. Inspection 160 points, japonaises, boîtes automatiques. Financement et reprise étudiés.",
 		type: "website",
 		locale: "fr_FR",
 		url: "https://www.garagemendonca.com/produit",
 		siteName: "Garage Auto Mendonca",
-		images: [{ url: "/images/og-image.webp", width: 1200, height: 630, alt: "Véhicules d'occasion Garage Mendonca" }],
+		images: [
+			{
+				url: "/images/og-image.webp",
+				width: 1200,
+				height: 630,
+				alt: "Véhicules d'occasion Garage Mendonca",
+			},
+		],
 	},
 };
 
-// Constante module-level : évite de créer un nouveau tableau à chaque render
 const FIVE_STARS = [0, 1, 2, 3, 4] as const;
-
-const guarantees = [
-	{
-		Icon: ShieldCheck,
-		title: "Garantie incluse",
-		desc: "6 à 12 mois kilométrage illimité sur chaque véhicule.",
-	},
-	{
-		Icon: Wrench,
-		title: "Révision complète",
-		desc: "Chaque véhicule est entièrement révisé avant mise en vente.",
-	},
-	{
-		Icon: FileCheck2,
-		title: "Carnet d'entretien",
-		desc: "Historique d'entretien vérifié et transparent.",
-	},
-	{
-		Icon: BadgeCheck,
-		title: "160 points de contrôle",
-		desc: "Inspection technique rigoureuse à chaque entrée en stock.",
-	},
-];
-
 const GARAGE_ID = getActiveGarageId();
 const BASE_URL = "https://www.garagemendonca.com";
 
+// Badges de garantie — le badge "160 points" est rendu interactif dans JSX
+const guarantees = [
+	{
+		id: "garantie",
+		Icon: ShieldCheck,
+		title: "Garantie incluse",
+		desc: "6 à 12 mois kilométrage illimité sur chaque véhicule.",
+		interactive: false,
+	},
+	{
+		id: "revision",
+		Icon: Wrench,
+		title: "Révision complète",
+		desc: "Chaque véhicule est entièrement révisé avant mise en vente.",
+		interactive: false,
+	},
+	{
+		id: "carnet",
+		Icon: FileCheck2,
+		title: "Carnet d'entretien",
+		desc: "Historique d'entretien vérifié et transparent.",
+		interactive: false,
+	},
+	{
+		id: "controle",
+		Icon: BadgeCheck,
+		title: `${QUALITY_CONTROL.total} points de contrôle`,
+		desc: "CT standard + charte qualité interne Garage Mendonça.",
+		interactive: true,
+	},
+] as const;
+
 export default async function ProduitPage() {
-	const [featured, allRecent] = await Promise.all([
-		vehicleDb.getFeatured(GARAGE_ID, 3).catch(() => []),
-		vehicleDb.listPaginated(GARAGE_ID, 1, 6, {}).catch(() => []),
-	]);
+	// FeaturedVehicles gère son propre fetch (4 véhicules, source unique).
+	// Ici on charge uniquement les non-featured pour la section "Autres véhicules".
+	const allRecent = await vehicleDb
+		.listPaginated(GARAGE_ID, 1, 8, {})
+		.catch(() => []);
 	const rest = allRecent.filter((v) => !v.featured).slice(0, 3);
 
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "ItemList",
-		name: "Véhicules d'occasion — Garage Mendonça",
-		description: "Sélection de véhicules d'occasion révisés et garantis",
+		name: "Notre offre — Véhicules d'occasion · Garage Mendonça",
+		description:
+			"Sélection de véhicules d'occasion inspectés en 160 points, révisés et garantis",
 		url: `${BASE_URL}/produit`,
-		itemListElement: [...featured, ...rest].map((v, i) => ({
+		itemListElement: rest.map((v, i) => ({
 			"@type": "ListItem",
 			position: i + 1,
 			url: `${BASE_URL}/vehicules/${v.slug ?? v.id}`,
@@ -91,6 +111,7 @@ export default async function ProduitPage() {
 				type="application/ld+json"
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 			/>
+
 			{/* ── Hero ── */}
 			<section className="relative bg-[#0f172a] pt-36 pb-24 overflow-hidden">
 				<div
@@ -110,28 +131,40 @@ export default async function ProduitPage() {
 						</div>
 						<h1 className="ty-display text-white text-5xl md:text-6xl mb-6">
 							Occasion de qualité,{" "}
-							<span className="text-brand-500">
-								garantie incluse
-							</span>
+							<span className="text-brand-500">garantie incluse</span>
 						</h1>
-						<p className="text-slate-300 text-xl leading-relaxed max-w-2xl mb-10">
-							Chaque véhicule de notre stock est inspecté selon
-							160 points de contrôle, révisé par nos mécaniciens
-							et garanti. Financement et reprise étudiés ensemble.
+						<p className="text-slate-300 text-xl leading-relaxed max-w-2xl mb-4">
+							Chaque véhicule est inspecté selon{" "}
+							<QualityControlPopover triggerClassName="inline-flex items-center gap-1 underline decoration-brand-500 decoration-dotted underline-offset-4 text-white hover:text-brand-400 transition-colors cursor-pointer font-medium">
+								{QUALITY_CONTROL.total} points de contrôle
+								<Info
+									size={14}
+									className="text-brand-400"
+									aria-hidden="true"
+								/>
+							</QualityControlPopover>
+							, révisé par nos mécaniciens et garanti. Financement
+							et reprise étudiés ensemble.
+						</p>
+						<p className="text-slate-400 text-sm leading-relaxed max-w-xl mb-10">
+							Notre protocole va au-delà du contrôle technique
+							standard&nbsp;: nous y ajoutons une charte qualité
+							interne qui couvre le confort, les équipements
+							électroniques et les finitions.
 						</p>
 						<div className="flex flex-col sm:flex-row gap-4">
 							<Link
 								href="/vehicules"
 								className="btn-primary text-base py-4 px-8"
 							>
-								<Car size={18} />
+								<Car size={18} aria-hidden="true" />
 								Voir tout le stock
 							</Link>
 							<a
 								href="tel:0532002038"
 								className="btn-outline text-base py-4 px-8"
 							>
-								<Phone size={18} />
+								<Phone size={18} aria-hidden="true" />
 								Nous contacter
 							</a>
 						</div>
@@ -139,73 +172,61 @@ export default async function ProduitPage() {
 				</Container>
 			</section>
 
-			{/* ── Garanties ── */}
+			{/* ── Badges garanties ── */}
 			<section className="py-16 bg-white border-b border-slate-200">
 				<Container>
 					<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-						{guarantees.map(({ Icon, title, desc }) => (
-							<div key={title} className="text-center">
-								<div
-									className="w-12 h-12 bg-brand-50 border border-brand-100 rounded-xl flex items-center justify-center mx-auto mb-4"
-									aria-hidden="true"
-								>
-									<Icon
-										className="h-5 w-5 text-brand-500"
-										strokeWidth={1.75}
-									/>
+						{guarantees.map(({ id, Icon, title, desc, interactive }) => {
+							const card = (
+								<div className="text-center">
+									<div
+										className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 transition-colors ${
+											interactive
+												? "bg-brand-500 border border-brand-600 group-hover:bg-brand-600"
+												: "bg-brand-50 border border-brand-100"
+										}`}
+										aria-hidden="true"
+									>
+										<Icon
+											className={`h-5 w-5 ${interactive ? "text-white" : "text-brand-500"}`}
+											strokeWidth={1.75}
+										/>
+									</div>
+									<h3 className="ty-subheading text-[#0f172a] text-sm mb-1 flex items-center justify-center gap-1.5 flex-wrap">
+										{title}
+										{interactive && (
+											<Info
+												size={12}
+												className="text-brand-400 flex-shrink-0"
+												aria-hidden="true"
+											/>
+										)}
+									</h3>
+									<p className="text-[#475569] text-xs leading-relaxed">
+										{desc}
+									</p>
 								</div>
-								<h3 className="ty-subheading text-[#0f172a] text-sm mb-1">
-									{title}
-								</h3>
-								<p className="text-[#475569] text-xs leading-relaxed">
-									{desc}
-								</p>
-							</div>
-						))}
+							);
+
+							if (interactive) {
+								return (
+									<QualityControlPopover
+										key={id}
+										triggerClassName="group block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 rounded-xl"
+									>
+										{card}
+									</QualityControlPopover>
+								);
+							}
+
+							return <div key={id}>{card}</div>;
+						})}
 					</div>
 				</Container>
 			</section>
 
-			{/* ── Véhicules à la une ── */}
-			{featured.length > 0 && (
-				<section className="py-20 bg-[#f8fafc]">
-					<Container>
-						<div className="flex items-end justify-between mb-10">
-							<div>
-								<div className="section-divider" />
-								<span className="eyebrow">
-									Sélection du moment
-								</span>
-								<h2 className="section-title">
-									Véhicules{" "}
-									<span className="text-brand-500">
-										à la une
-									</span>
-								</h2>
-							</div>
-							<Link
-								href="/vehicules"
-								className="hidden sm:inline-flex items-center gap-2 text-brand-600 hover:text-brand-700 font-normal text-sm transition-colors group"
-							>
-								Tout voir
-								<ArrowRight
-									size={14}
-									className="group-hover:translate-x-1 transition-transform"
-								/>
-							</Link>
-						</div>
-
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-							{featured.map((vehicle) => (
-								<VehicleCard
-									key={vehicle.id}
-									vehicle={vehicle}
-								/>
-							))}
-						</div>
-					</Container>
-				</section>
-			)}
+			{/* ── Véhicules à la une — même composant que la homepage ── */}
+			<FeaturedVehicles />
 
 			{/* ── Autres véhicules ── */}
 			{rest.length > 0 && (
@@ -225,10 +246,7 @@ export default async function ProduitPage() {
 
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
 							{rest.map((vehicle) => (
-								<VehicleCard
-									key={vehicle.id}
-									vehicle={vehicle}
-								/>
+								<VehicleCard key={vehicle.id} vehicle={vehicle} />
 							))}
 						</div>
 
@@ -237,7 +255,7 @@ export default async function ProduitPage() {
 								href="/vehicules"
 								className="btn-primary text-base px-10 py-4"
 							>
-								<Car size={18} />
+								<Car size={18} aria-hidden="true" />
 								Voir tous les véhicules
 							</Link>
 						</div>
@@ -341,7 +359,7 @@ export default async function ProduitPage() {
 							href="tel:0532002038"
 							className="btn-primary text-base py-4 px-8"
 						>
-							<Phone size={18} />
+							<Phone size={18} aria-hidden="true" />
 							05 32 00 20 38
 						</a>
 						<Link
@@ -349,7 +367,7 @@ export default async function ProduitPage() {
 							className="btn-outline text-base py-4 px-8"
 						>
 							Demander des infos
-							<ArrowRight size={17} />
+							<ArrowRight size={17} aria-hidden="true" />
 						</Link>
 					</div>
 				</Container>
