@@ -210,6 +210,37 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
         </Container>
       </section>
 
+      {/* ── Filtre catégories ── (uniquement si plusieurs catégories actives) */}
+      {allCategories.length > 1 && (
+        <div className="border-b border-slate-200 bg-white">
+          <Container>
+            <div className="flex items-center gap-1.5 py-3 overflow-x-auto">
+              <Link
+                href="/occasions"
+                className="shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors whitespace-nowrap"
+              >
+                Toutes les catégories
+              </Link>
+              {allCategories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/occasions/${cat.slug}`}
+                  aria-current={cat.slug === categorySlug ? "page" : undefined}
+                  className={
+                    cat.slug === categorySlug
+                      ? "shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium bg-brand-600 text-white whitespace-nowrap"
+                      : "shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors whitespace-nowrap"
+                  }
+                >
+                  {cat.icon && <span className="mr-1" aria-hidden="true">{cat.icon}</span>}
+                  {cat.label}
+                </Link>
+              ))}
+            </div>
+          </Container>
+        </div>
+      )}
+
       {/* ── Listing ── */}
       <section className="py-12 bg-[#f8fafc]">
         <Container>

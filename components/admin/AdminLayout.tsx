@@ -18,6 +18,7 @@ import {
 	Inbox,
 	Clock,
 	ChevronUp,
+	Tag,
 } from "lucide-react";
 import clsx from "clsx";
 import { useAdminTokens, useAdminThemeActions } from "@/contexts/AdminThemeContext";
@@ -39,6 +40,7 @@ const navItems = [
 		Icon: Plus,
 	},
 	{ href: "/admin/messages", label: "Messages", Icon: Inbox },
+	{ href: "/admin/categories", label: "Catégories", Icon: Tag },
 	{ href: "/admin/services", label: "Services", Icon: Wrench },
 	{ href: "/admin/banniere", label: "Bannière promo", Icon: Megaphone },
 	{ href: "/admin/horaires", label: "Horaires", Icon: Clock },
