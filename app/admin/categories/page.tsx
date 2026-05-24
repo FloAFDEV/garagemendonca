@@ -177,7 +177,7 @@ function CategoryCard({
 					</div>
 
 					{/* Statut + actions */}
-					<div className="flex items-center gap-2 flex-shrink-0">
+					<div className="flex items-center gap-1.5 flex-shrink-0">
 						<span className={cat.is_active ? adminUI.badgePublished : adminUI.badgeDraft}>
 							{cat.is_active ? "Actif" : "Inactif"}
 						</span>
@@ -295,13 +295,14 @@ export default function CategoriesPage() {
 			<div className="max-w-2xl mx-auto space-y-5">
 				{/* ── Header ── */}
 				<div className="flex items-center justify-between gap-4">
-					<div>
+					<div className="min-w-0">
 						<h1 className={clsx("text-xl font-heading font-semibold flex items-center gap-2", t.txt)}>
-							<Tag size={18} className="text-brand-500" aria-hidden="true" />
+							<Tag size={18} className="text-brand-500 flex-shrink-0" aria-hidden="true" />
 							Catégories
 						</h1>
-						<p className={clsx("text-sm mt-0.5", t.txtSubtle)}>
-							Définit les URLs <span className="font-mono">/occasions/[catégorie]</span>
+						<p className={clsx("text-sm mt-0.5 break-all", t.txtSubtle)}>
+							Définit les URLs{" "}
+							<span className="font-mono">/occasions/[catégorie]</span>
 						</p>
 					</div>
 					{!showCreate && (
