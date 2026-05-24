@@ -51,7 +51,7 @@ import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { extractShortId, buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
-import { buildVehicleFallbackCanonical, buildVehicleMetadata } from "@/lib/seo/vehicle";
+import { buildVehicleFallbackCanonical, buildVehicleMetadata, buildVehicleJsonLd } from "@/lib/seo/vehicle";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
@@ -127,33 +127,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const vehicleLabel = `${vehicleName} · ${vehicle.price.toLocaleString("fr-FR")} €`;
 	const vehicleCanonical = `https://www.garagemendonca.com${buildVehicleUrl(vSlug, vehicle.id)}`;
 
-	const jsonLdCar = {
-		"@context": "https://schema.org",
-		"@type": "Car",
-		name: vehicleName,
-		url: vehicleCanonical,
-		description: vehicle.meta_description ?? (vehicle.description_marketing ?? vehicle.description ?? "").slice(0, 200),
-		image: `${vehicleCanonical}/opengraph-image`,
-		brand: { "@type": "Brand", name: vehicle.brand },
-		model: vehicle.model,
-		modelDate: vehicle.year.toString(),
-		mileageFromOdometer: { "@type": "QuantitativeValue", value: vehicle.mileage, unitCode: "KMT" },
-		fuelType: vehicle.fuel,
-		vehicleTransmission: vehicle.transmission,
-		numberOfDoors: vehicle.doors,
-		color: displayColor ?? undefined,
-		vehicleEngine: vehicle.power
-			? { "@type": "EngineSpecification", enginePower: { "@type": "QuantitativeValue", value: vehicle.power, unitCode: "BHP" } }
-			: undefined,
-		offers: {
-			"@type": "Offer",
-			url: vehicleCanonical,
-			priceCurrency: "EUR",
-			price: vehicle.price,
-			availability: isAvailable ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
-			seller: { "@type": "AutoDealer", name: "Garage Auto Mendonça" },
-		},
-	};
+	const jsonLdCar = buildVehicleJsonLd(vehicle, vehicleCanonical, displayColor);
 
 	return (
 		<MainLayout>
