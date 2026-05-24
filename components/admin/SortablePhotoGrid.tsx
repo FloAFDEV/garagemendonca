@@ -18,8 +18,6 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import { useSignedImage } from "@/lib/hooks/useVehicleImage";
-import { extractStoragePath } from "@/lib/utils/storage";
 
 // ─── Élément draggable ───────────────────────────────────────────
 
@@ -43,12 +41,9 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhot
     zIndex: isDragging ? 10 : undefined,
   };
 
-  // blob:// = preview local upload — never sign
-  // extractStoragePath: local "/" paths → undefined, Supabase URLs → path segment, plain paths → as-is
-  const storagePath = src.startsWith("blob:") ? undefined : extractStoragePath(src);
-  // Hook only receives a real storage_path — render layer uses raw src as last resort
-  const { url: signedUrl } = useSignedImage(storagePath);
-  const displayUrl = signedUrl ?? (src.startsWith("blob:") ? src : undefined);
+  // vehicle-images bucket is public — use src directly.
+  // blob:// = local preview from upload (also fine directly).
+  const displayUrl = src;
 
   return (
     <div
@@ -60,7 +55,7 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhot
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={displayUrl ?? src}
+        src={displayUrl}
         alt={`Photo ${index + 1}`}
         className="w-full h-full object-cover pointer-events-none"
         loading={index === 0 ? "eager" : "lazy"}
