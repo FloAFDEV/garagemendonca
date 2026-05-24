@@ -13,6 +13,8 @@ import {
 	createCategoryAction,
 	updateCategoryAction,
 } from "./actions";
+import CategoryIconPicker from "@/components/admin/CategoryIconPicker";
+import { getCategoryIcon } from "@/lib/data/categoryIcons";
 
 // ── Slug helper ───────────────────────────────────────────────────────────────
 function slugify(str: string): string {
@@ -59,29 +61,20 @@ function EditCard({
 
 	return (
 		<div className="space-y-3 p-1">
-			<div className="grid grid-cols-2 gap-3">
-				<div>
-					<label className={labelClass} htmlFor={`edit-icon-${cat.id}`}>Icône</label>
-					<input
-						id={`edit-icon-${cat.id}`}
-						value={icon}
-						onChange={(e) => setIcon(e.target.value)}
-						placeholder="🚗"
-						className={clsx(inputClass, "text-xl text-center")}
-						aria-label="Icône emoji"
-					/>
-				</div>
-				<div>
-					<label className={labelClass} htmlFor={`edit-order-${cat.id}`}>Ordre</label>
-					<input
-						id={`edit-order-${cat.id}`}
-						value={order}
-						onChange={(e) => setOrder(e.target.value)}
-						type="number"
-						className={inputClass}
-						aria-label="Ordre"
-					/>
-				</div>
+			<div>
+				<label className={labelClass}>Icône</label>
+				<CategoryIconPicker value={icon} onChange={setIcon} />
+			</div>
+			<div>
+				<label className={labelClass} htmlFor={`edit-order-${cat.id}`}>Ordre d'affichage</label>
+				<input
+					id={`edit-order-${cat.id}`}
+					value={order}
+					onChange={(e) => setOrder(e.target.value)}
+					type="number"
+					className={inputClass}
+					aria-label="Ordre"
+				/>
 			</div>
 			<div>
 				<label className={labelClass} htmlFor={`edit-label-${cat.id}`}>Nom *</label>
@@ -159,8 +152,16 @@ function CategoryCard({
 			) : (
 				<div className="flex items-center gap-3 px-4 py-3.5">
 					{/* Icône */}
-					<div className="w-10 h-10 flex-shrink-0 flex items-center justify-center text-2xl">
-						{cat.icon || <Tag size={18} className={t.txtFaint} />}
+					<div className={clsx(
+						"w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl",
+						t.isDark ? "bg-dark-700" : "bg-slate-100",
+					)}>
+						{(() => {
+							const Icon = getCategoryIcon(cat.icon);
+							return Icon
+								? <Icon size={18} className="text-brand-500" aria-hidden="true" />
+								: <Tag size={18} className={t.txtFaint} aria-hidden="true" />;
+						})()}
 					</div>
 
 					{/* Infos */}
@@ -322,31 +323,23 @@ export default function CategoriesPage() {
 							Nouvelle catégorie
 						</h2>
 						<form onSubmit={handleCreate} className="space-y-4">
-							<div className="grid grid-cols-2 gap-3">
-								<div>
-									<label className={t.labelClass} htmlFor="cat-label">Nom *</label>
-									<input
-										id="cat-label"
-										required
-										value={newLabel}
-										onChange={(e) => {
-											setNewLabel(e.target.value);
-											if (!slugTouched) setNewSlug(slugify(e.target.value));
-										}}
-										placeholder="Voitures"
-										className={t.inputClass}
-									/>
-								</div>
-								<div>
-									<label className={t.labelClass} htmlFor="cat-icon">Icône</label>
-									<input
-										id="cat-icon"
-										value={newIcon}
-										onChange={(e) => setNewIcon(e.target.value)}
-										placeholder="🚗"
-										className={clsx(t.inputClass, "text-xl text-center")}
-									/>
-								</div>
+							<div>
+								<label className={t.labelClass} htmlFor="cat-label">Nom *</label>
+								<input
+									id="cat-label"
+									required
+									value={newLabel}
+									onChange={(e) => {
+										setNewLabel(e.target.value);
+										if (!slugTouched) setNewSlug(slugify(e.target.value));
+									}}
+									placeholder="Voitures"
+									className={t.inputClass}
+								/>
+							</div>
+							<div>
+								<label className={t.labelClass}>Icône</label>
+								<CategoryIconPicker value={newIcon} onChange={setNewIcon} />
 							</div>
 							<div>
 								<label className={t.labelClass} htmlFor="cat-slug">Slug URL *</label>
