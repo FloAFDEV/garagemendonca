@@ -13,7 +13,8 @@
 		"migrate-images": "npx tsx scripts/migrate-images.ts",
 		"migrate-images:dry": "DRY_RUN=true npx tsx scripts/migrate-images.ts",
 		"sync-lbc": "npx tsx scripts/sync-lbc-order.ts",
-		"sync-lbc:dry": "npx tsx scripts/sync-lbc-order.ts --dry-run"
+		"sync-lbc:dry": "npx tsx scripts/sync-lbc-order.ts --dry-run",
+		"verify:images": "tsx scripts/verify-image-pipeline.ts"
 	},
 	"dependencies": {
 		"@dnd-kit/core": "^6.3.1",

@@ -4,8 +4,6 @@ import { getUser } from "@/lib/auth/getSession";
 import { getOriginalPath } from "@/lib/utils/storage";
 
 const VEHICLE_BUCKET = "vehicle-images";
-// Signed upload URL expires after 5 minutes — enough for any connection
-const SIGNED_URL_EXPIRES_IN = 300;
 
 /**
  * POST /api/images/upload-url

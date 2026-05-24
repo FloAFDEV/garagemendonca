@@ -19,8 +19,8 @@ import { isColorUnknown } from "@/lib/utils/detectVehicleColor";
 //  Si présentes, elles priment sur vehicles.images[] (legacy).
 // ─────────────────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type VehicleRowWithImages = VehicleRow & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   vehicle_images?: any[];
   // Résultat du JOIN vehicle_categories!category_id(slug) — source de vérité pour le routing
   vehicle_categories?: { slug: string } | null;
