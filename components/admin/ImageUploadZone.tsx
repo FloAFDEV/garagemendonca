@@ -27,26 +27,16 @@ interface ImageUploadZoneProps {
   className?: string;
 }
 
-// ─── HEIC conversion (client-side, lazy-loaded) ───────────────────
-// heic2any is a large library — only imported when a HEIC file is detected.
+// ─── HEIC detection ───────────────────────────────────────────────
+// Client-side conversion via heic2any was removed: heic2any internally uses
+// `new Function()` which is blocked by the production Content-Security-Policy.
+// HEIC files are now uploaded raw to Supabase; Sharp on the server decodes
+// them via libheif (v1.20.2) and converts to WebP variants server-side.
 
 function isHeic(file: File): boolean {
   if (file.type === "image/heic" || file.type === "image/heif") return true;
   const ext = file.name.split(".").pop()?.toLowerCase();
   return ext === "heic" || ext === "heif";
-}
-
-async function convertHeicToJpeg(file: File): Promise<File> {
-  // Dynamic import to avoid loading heic2any for non-HEIC files
-  const heic2any = (await import("heic2any")).default;
-  const blob = await heic2any({
-    blob: file,
-    toType: "image/jpeg",
-    quality: 0.92,
-  });
-  const converted = Array.isArray(blob) ? blob[0] : blob;
-  const name = file.name.replace(/\.(heic|heif)$/i, ".jpg");
-  return new File([converted], name, { type: "image/jpeg" });
 }
 
 // ─── Legacy canvas resize (service / banner only) ─────────────────
@@ -99,10 +89,7 @@ async function uploadVehicle(
   file: File,
   entityId: string,
 ): Promise<{ url: string; storagePath: string }> {
-  // 1. Normalize HEIC → JPEG
-  const normalized = isHeic(file) ? await convertHeicToJpeg(file) : file;
-
-  // 2. Request signed upload URL
+  // 1. Request signed upload URL
   const urlRes = await fetch("/api/images/upload-url", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -118,17 +105,18 @@ async function uploadVehicle(
     originalPath: string;
   };
 
-  // 3. PUT directly to Supabase Storage (no Vercel limit)
+  // 2. PUT directly to Supabase Storage (no Vercel limit).
+  // HEIC files are sent raw — Sharp decodes them server-side via libheif.
   const putRes = await fetch(signedUrl, {
     method: "PUT",
-    headers: { "Content-Type": normalized.type || "image/jpeg" },
-    body: normalized,
+    headers: { "Content-Type": file.type || "image/jpeg" },
+    body: file,
   });
   if (!putRes.ok) {
     throw new Error(`Upload Supabase échoué (${putRes.status})`);
   }
 
-  // 4. Server-side Sharp processing → 3 variants
+  // 3. Server-side Sharp processing → 3 variants (handles HEIC input via libheif)
   const processRes = await fetch("/api/images/process", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

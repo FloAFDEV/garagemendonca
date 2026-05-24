@@ -13,7 +13,6 @@
  * supprimer le rendu et laisser uniquement le permanentRedirect.
  */
 import type { Metadata } from "next";
-import type React from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";

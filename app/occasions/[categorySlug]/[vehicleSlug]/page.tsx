@@ -23,7 +23,6 @@ import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { buildOccasionUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import { buildVehicleMetadata, buildVehicleOccasionCanonical, buildVehicleJsonLd } from "@/lib/seo/vehicle";
-import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
 
