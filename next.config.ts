@@ -82,6 +82,14 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        // Pages ISR occasions — CDN cache 5 min, revalidation en arrière-plan
+        // (revalidate=3600 côté Next.js ; le CDN re-demande toutes les 300s)
+        source: "/occasions/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=300, stale-while-revalidate=3600" },
+        ],
+      },
+      {
         // Pages ISR véhicules — CDN cache 60 s, revalidation en arrière-plan
         source: "/vehicules/:path*",
         headers: [
