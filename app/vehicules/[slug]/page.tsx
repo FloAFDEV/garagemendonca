@@ -15,16 +15,15 @@
 import type { Metadata } from "next";
 import type React from "react";
 import { notFound, permanentRedirect } from "next/navigation";
-import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehicleGallery from "@/components/vehicles/VehicleGallery";
-import VehicleCard from "@/components/vehicles/VehicleCard";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
 import BackToListingButton from "@/components/vehicles/BackToListingButton";
 import VehiclePriceSidebar from "@/components/vehicles/detail/VehiclePriceSidebar";
 import MobileVehicleFooter from "@/components/vehicles/detail/MobileVehicleFooter";
 import VehicleContactSection from "@/components/vehicles/detail/VehicleContactSection";
+import VehicleRelatedSection from "@/components/vehicles/detail/VehicleRelatedSection";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
@@ -165,17 +164,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					/>
 
 					{relatedVehicles.length > 0 && (
-						<section className="mt-16 border-t border-slate-100 pt-12">
-							<div className="flex items-center justify-between mb-6">
-								<h2 className="ty-heading text-[#0f172a] text-3xl">Suggestions</h2>
-								<Link href="/vehicules" className="text-sm font-normal text-brand-600 hover:text-brand-700 underline underline-offset-4">
-									Voir tout le stock
-								</Link>
-							</div>
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-								{relatedVehicles.map((v) => <VehicleCard key={v.id} vehicle={v} />)}
-							</div>
-						</section>
+						<VehicleRelatedSection vehicles={relatedVehicles} />
 					)}
 				</Container>
 			</div>
