@@ -37,6 +37,7 @@ function DashboardContent() {
 			icon: Car,
 			color: "text-brand-500",
 			bg: "bg-brand-500/10",
+			href: undefined,
 		},
 		{
 			label: "Demandes reçues",
@@ -47,6 +48,7 @@ function DashboardContent() {
 			icon: Mail,
 			color: "text-emerald-500",
 			bg: "bg-emerald-500/10",
+			href: "/admin/messages" as const,
 		},
 		{
 			label: "Véhicules vendus",
@@ -55,6 +57,7 @@ function DashboardContent() {
 			icon: TrendingUp,
 			color: "text-violet-500",
 			bg: "bg-violet-500/10",
+			href: undefined,
 		},
 	];
 
@@ -81,44 +84,40 @@ function DashboardContent() {
 
 			{/* Stats */}
 			<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-				{stats.map(({ label, value, change, icon: Icon, color, bg }) => (
-					<div
-						key={label}
-						className={clsx("rounded-2xl border p-4", t.surface, t.border)}
-					>
-						<div className="flex items-center justify-between mb-3">
-							<div
-								className={clsx(
-									"w-10 h-10 rounded-xl flex items-center justify-center",
-									bg,
-								)}
-							>
-								<Icon size={20} className={color} />
+				{stats.map(({ label, value, change, icon: Icon, color, bg, href }) => {
+					const inner = (
+						<>
+							<div className="flex items-center justify-between mb-3">
+								<div className={clsx("w-10 h-10 rounded-xl flex items-center justify-center", bg)}>
+									<Icon size={20} className={color} />
+								</div>
+								{href && <ArrowRight size={14} className={clsx(t.txtSubtle)} aria-hidden="true" />}
 							</div>
-						</div>
-						<div
-							className={clsx(
-								"font-heading font-light text-2xl mb-1 tracking-tight",
-								t.txt,
-							)}
+							<div className={clsx("font-heading font-light text-2xl mb-1 tracking-tight", t.txt)}>
+								{value}
+							</div>
+							<div className={clsx("text-sm", t.txtMuted)}>{label}</div>
+							<div className={clsx("text-xs mt-1", t.txtSubtle)}>{change}</div>
+						</>
+					);
+					return href ? (
+						<Link
+							key={label}
+							href={href}
+							className={clsx("rounded-2xl border p-4 transition-colors", t.surface, t.border, t.tableRowHover)}
 						>
-							{value}
+							{inner}
+						</Link>
+					) : (
+						<div key={label} className={clsx("rounded-2xl border p-4", t.surface, t.border)}>
+							{inner}
 						</div>
-						<div className={clsx("text-sm", t.txtMuted)}>{label}</div>
-						<div className={clsx("text-xs mt-1", t.txtSubtle)}>{change}</div>
-					</div>
-				))}
+					);
+				})}
 			</div>
 
-			<div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-				{/* Recent vehicles */}
-				<div
-					className={clsx(
-						"xl:col-span-2 rounded-2xl border p-5",
-						t.surface,
-						t.border,
-					)}
-				>
+			{/* Recent vehicles */}
+			<div className={clsx("rounded-2xl border p-5", t.surface, t.border)}>
 					<div className="flex items-center justify-between mb-4">
 						<h3
 							className={clsx(
@@ -203,33 +202,6 @@ function DashboardContent() {
 							</Link>
 						))}
 					</div>
-				</div>
-
-				{/* Colonne latérale */}
-				<div className="flex flex-col gap-5">
-					{/* Messagerie */}
-					<div
-						className={clsx(
-							"rounded-2xl border p-5 flex flex-col items-center justify-center gap-3 text-center",
-							t.surface,
-							t.border,
-						)}
-					>
-						<Mail size={28} className={t.txtMuted} aria-hidden="true" />
-						<div>
-							<p className={clsx("font-normal text-sm", t.txt)}>Messagerie</p>
-							<p className={clsx("text-xs mt-1", t.txtSubtle)}>
-								Consultez les demandes de contact
-							</p>
-						</div>
-						<Link
-							href="/admin/messages"
-							className="btn-secondary text-xs py-2 px-4"
-						>
-							Voir les messages
-						</Link>
-					</div>
-				</div>
 			</div>
 		</div>
 	);
