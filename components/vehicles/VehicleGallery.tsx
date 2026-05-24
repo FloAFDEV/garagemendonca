@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
 import type { VehicleImage } from "@/types";
+import { toLargeUrl } from "@/lib/utils/vehicle-images";
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -29,9 +30,10 @@ export default function VehicleGallery({
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
 
-	// URLs publiques déjà calculées server-side (mapper vehicleFromDb)
-	// vehicleImages utilisé uniquement pour les alt texts SEO
+	// Slider uses medium URLs (900×675) — already computed by vehicleFromDb
 	const displayUrls = images;
+	// Lightbox uses large URLs (1600×1200) for best quality — derived from medium
+	const lightboxUrls = images.map(toLargeUrl);
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const thumbsRef = useRef<HTMLDivElement>(null);
@@ -316,7 +318,7 @@ export default function VehicleGallery({
 			{/* ── Lightbox via portal ─────────────────────────── */}
 			{lightboxOpen && (
 				<Lightbox
-					images={displayUrls}
+					images={lightboxUrls}
 					initialIndex={activeIdx}
 					vehicleName={vehicleName}
 					onClose={() => setLightboxOpen(false)}

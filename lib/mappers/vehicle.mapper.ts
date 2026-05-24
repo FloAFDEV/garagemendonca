@@ -51,20 +51,22 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
       : undefined;
 
   // vehicle_images jointes → source canonique des URLs.
-  // Toujours normaliser vers URL publique permanente (évite les signed URLs expirés).
+  // images[] = medium variant (900×675) — used for gallery slider.
+  // thumbnailUrl = thumb variant (480×360) — used for VehicleCard.
   const images = joinedImages
     ? joinedImages.map((i) =>
         i.storage_path
-          ? getVehiclePublicUrl(i.storage_path)
-          : resolveVehicleImageUrl(i.url),
+          ? getVehiclePublicUrl(i.storage_path, "medium")
+          : resolveVehicleImageUrl(i.url, "medium"),
       )
-    : (row.images ?? []).map(resolveVehicleImageUrl);
+    : (row.images ?? []).map((u) => resolveVehicleImageUrl(u, "medium"));
 
   const primaryImage = joinedImages?.find((i) => i.is_primary) ?? joinedImages?.[0];
   const rawThumb = primaryImage?.url ?? row.thumbnail_url ?? undefined;
+  // Use thumb variant (480×360) for card display — much lighter than medium
   const thumbnailUrl = primaryImage?.storage_path
-    ? getVehiclePublicUrl(primaryImage.storage_path)
-    : (rawThumb ? resolveVehicleImageUrl(rawThumb) : undefined);
+    ? getVehiclePublicUrl(primaryImage.storage_path, "thumb")
+    : (rawThumb ? resolveVehicleImageUrl(rawThumb, "thumb") : undefined);
 
   return {
     id:               row.id,

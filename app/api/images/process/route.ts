@@ -17,13 +17,41 @@ const VARIANTS: { key: ImageVariant; width: number; height: number; quality: num
   { key: "large",  width: 1600, height: 1200, quality: 85 },
 ];
 
+// ─── Retry helper ─────────────────────────────────────────────────
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  attempts = 3,
+  baseDelayMs = 300,
+): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (i < attempts - 1) await sleep(baseDelayMs * 2 ** i); // 300ms, 600ms
+    }
+  }
+  throw lastErr;
+}
+
 /**
  * POST /api/images/process
  *
  * Fetches the original image from Supabase Storage, generates 3 WebP variants
  * (thumb/medium/large) using Sharp with smart-crop, then uploads them atomically.
- * If any upload fails, all successfully uploaded variants are rolled back.
- * The temporary original file is deleted after processing.
+ *
+ * Properties:
+ * - **Idempotent**: if medium variant already exists, skips re-processing and
+ *   returns the existing URLs immediately (safe to retry from the client).
+ * - **Atomic**: if any upload fails after up to 3 retries, all successfully
+ *   uploaded variants are deleted before returning an error.
+ * - **Original cleanup**: the temporary original is deleted only after all 3
+ *   variants are confirmed uploaded. Non-blocking — a dangling orig file is
+ *   harmless (just wasted storage, not a broken image).
  *
  * Body (JSON): { basePath }
  * Response:    { url, storagePath, variants: { thumb, medium, large } }
@@ -50,7 +78,32 @@ export async function POST(request: NextRequest) {
   const originalPath = getOriginalPath(basePath);
   const variantPaths = getVariantPaths(basePath);
 
-  // ── 1. Download the original ─────────────────────────────────────
+  // ── 1. Idempotence check ──────────────────────────────────────────
+  // If medium variant already exists, all 3 were already generated — return immediately.
+  try {
+    const { error: existCheck } = await supabase.storage
+      .from(VEHICLE_BUCKET)
+      .download(variantPaths.medium);
+
+    if (!existCheck) {
+      // Medium exists → processing already completed (possibly a duplicate call)
+      const mediumUrl = getStoragePublicUrl(VEHICLE_BUCKET, variantPaths.medium);
+      return NextResponse.json({
+        url:         mediumUrl,
+        storagePath: basePath,
+        variants: {
+          thumb:  getStoragePublicUrl(VEHICLE_BUCKET, variantPaths.thumb),
+          medium: mediumUrl,
+          large:  getStoragePublicUrl(VEHICLE_BUCKET, variantPaths.large),
+        },
+        cached: true,
+      });
+    }
+  } catch {
+    // Download threw — medium doesn't exist, proceed with processing
+  }
+
+  // ── 2. Download the original ──────────────────────────────────────
   const { data: origData, error: downloadError } = await supabase.storage
     .from(VEHICLE_BUCKET)
     .download(originalPath);
@@ -70,8 +123,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Lecture du fichier original échouée" }, { status: 500 });
   }
 
-  // ── 2. Generate variant buffers via Sharp ─────────────────────────
-  const baseSharp = sharp(inputBuffer).rotate(); // auto-rotate EXIF once
+  // ── 3. Generate variant buffers via Sharp ─────────────────────────
+  // auto-rotate EXIF once, then clone per variant
+  const baseSharp = sharp(inputBuffer).rotate();
 
   const uploadedPaths: string[] = [];
 
@@ -89,7 +143,7 @@ export async function POST(request: NextRequest) {
         .toBuffer();
     } catch (err) {
       console.error(`[process] sharp error for ${variant.key}:`, err);
-      // Rollback uploaded variants
+      // Rollback all uploaded variants
       if (uploadedPaths.length > 0) {
         await supabase.storage.from(VEHICLE_BUCKET).remove(uploadedPaths).catch(() => null);
       }
@@ -100,17 +154,27 @@ export async function POST(request: NextRequest) {
     }
 
     const storagePath = variantPaths[variant.key];
-    const { error: uploadError } = await supabase.storage
-      .from(VEHICLE_BUCKET)
-      .upload(storagePath, variantBuffer, {
-        contentType: "image/webp",
-        upsert: true,
-        cacheControl: "public, max-age=31536000, immutable",
+
+    // Retry upload up to 3 times with exponential backoff (300ms, 600ms)
+    let uploadError: { message: string } | null = null;
+    try {
+      await withRetry(async () => {
+        const { error } = await supabase.storage
+          .from(VEHICLE_BUCKET)
+          .upload(storagePath, variantBuffer, {
+            contentType: "image/webp",
+            upsert: true,
+            cacheControl: "public, max-age=31536000, immutable",
+          });
+        if (error) throw error;
       });
+    } catch (err) {
+      uploadError = err as { message: string };
+    }
 
     if (uploadError) {
-      console.error(`[process] upload error for ${variant.key}:`, uploadError);
-      // Rollback
+      console.error(`[process] upload failed for ${variant.key} after retries:`, uploadError);
+      // Rollback all variants uploaded so far
       if (uploadedPaths.length > 0) {
         await supabase.storage.from(VEHICLE_BUCKET).remove(uploadedPaths).catch(() => null);
       }
@@ -123,13 +187,13 @@ export async function POST(request: NextRequest) {
     uploadedPaths.push(storagePath);
   }
 
-  // ── 3. Delete the temporary original ─────────────────────────────
-  await supabase.storage.from(VEHICLE_BUCKET).remove([originalPath]).catch((err) => {
-    // Non-blocking — worst case is a dangling orig file
-    console.warn("[process] original deletion failed:", err);
+  // ── 4. All 3 variants confirmed → delete temporary original ───────
+  // Non-blocking: dangling orig file = wasted storage, not a user-facing error.
+  supabase.storage.from(VEHICLE_BUCKET).remove([originalPath]).catch((err) => {
+    console.warn("[process] original deletion failed (non-blocking):", err);
   });
 
-  // ── 4. Return medium URL as canonical URL ─────────────────────────
+  // ── 5. Return medium URL as canonical URL ─────────────────────────
   const mediumUrl = getStoragePublicUrl(VEHICLE_BUCKET, variantPaths.medium);
 
   return NextResponse.json({
