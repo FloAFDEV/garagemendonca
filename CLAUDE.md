@@ -85,7 +85,75 @@ Schémas Zod dans `lib/validation/` (`vehicle.schema.ts`, `garage.schema.ts`, et
 
 `draft` → non visible | `published` → visible | `scheduled` → visible si `published_at` passé | `sold` → visible avec badge "Vendu". La logique de visibilité publique est dans `lib/vehicles.ts:isPubliclyVisible()`.
 
-## Conventions pages
+## Architecture images véhicule — règles figées (Phase 1-3 terminées)
+
+> **⚠️ Cette architecture est stabilisée. Ne pas modifier sans validation globale.**
+
+### Règle unique d'accès aux URLs image
+
+**`resolveVehicleUrl(source, variant?)` est le seul point d'entrée pour résoudre une URL image.**
+
+```typescript
+import { resolveVehicleUrl } from "@/lib/utils/vehicle-images";
+
+resolveVehicleUrl(storagePath, "thumb")   // → VehicleCard, grilles admin
+resolveVehicleUrl(storagePath, "medium")  // → galerie slider (défaut)
+resolveVehicleUrl(storagePath, "large")   // → lightbox uniquement
+```
+
+Cette fonction gère **tous les formats de manière transparente** — le code appelant ne doit jamais connaître le format :
+- basePath (no extension) → `{base}-{variant}.webp`
+- variant path (`-medium.webp`) → extrait basePath, applique le variant demandé
+- legacy single-file (`.webp`, `.jpg`) → retourne l'URL directe, variant ignoré gracieusement
+- URL Supabase complète → extrait le path, récurse
+- path local (`/images/…`) → retourné tel quel
+
+### Interdictions strictes
+
+- ❌ Ne jamais importer depuis `@/lib/utils/storage` dans les composants UI
+- ❌ Ne jamais créer un helper image parallèle (même "temporaire")
+- ❌ Ne jamais introduire de logique `isLegacyPath()` / `VARIANT_SUFFIX_RE` dans les composants
+- ❌ Ne jamais bypass `resolveVehicleUrl` avec une construction d'URL manuelle
+
+### Format DB
+
+- `vehicle_images.storage_path` = **basePath uniquement** (pas d'extension, pas de suffixe variant)
+  - Exemple : `garageId/vehicles/vehicleId/uuid`
+  - Migration 027 a normalisé les éventuels écarts
+- `vehicle_images.url` = URL medium complète Supabase (fallback display, source canonique historique)
+- `vehicles.images[]` JSONB = **legacy fallback uniquement**, conservé temporairement
+
+### Pipeline upload véhicule
+
+```
+[client] HEIC→JPEG (heic2any) → POST /api/images/upload-url → signed URL + basePath
+→ PUT direct Supabase (bypass Vercel 4.5MB)
+→ POST /api/images/process → Sharp génère 3 variants (thumb/medium/large), upsert, retry 3×
+→ onUploaded(mediumUrl, basePath)
+→ syncVehicleImages() → vehicle_images rows avec storage_path = basePath
+```
+
+### Variants
+
+| Variant | Dimensions | Qualité | Usage |
+|---------|-----------|---------|-------|
+| `thumb` | 480×360 | 75% | VehicleCard (`thumbnailUrl`), grilles admin |
+| `medium` | 900×675 | 82% | Galerie slider, URL stockée en DB |
+| `large` | 1600×1200 | 85% | Lightbox uniquement |
+
+### Outillage admin
+
+- `GET /api/admin/storage` — audit DB storage : orphelins, null paths, chemins non normalisés
+  - **Read-only**, requiert auth admin, ne jamais appeler en prod automatiquement
+  - Retourne JSON exploitable pour cleanup batch manuel
+
+### Buckets Supabase
+
+- `vehicle-images` — **public** (CDN permanent, no signed URLs)
+- `service-images` — privé (signed URLs via `useVehicleImage` dans l'admin services)
+- `banner-images` — privé (pipeline legacy `/api/upload-image`)
+
+
 
 - Pages publiques = Server Components (metadata, JSON-LD SEO)
 - Pages admin = `"use client"` (pas de metadata)

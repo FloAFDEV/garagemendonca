@@ -102,8 +102,32 @@ export async function GET() {
 
   console.log("[storage-audit]", JSON.stringify({ garage_id: GARAGE_ID, ...stats }));
 
+  // ── Cleanup candidates — ready-to-use payload for batch deletion ──────────
+  // Orphan images have no matching vehicle and can be deleted without data loss.
+  // Each entry includes all 3 variant paths (new format) or the single path (legacy).
+  const cleanupCandidates = orphanImages
+    .filter((img) => img.storage_path)
+    .map((img) => {
+      const sp = img.storage_path!;
+      if (isLegacyPath(sp) && !VARIANT_SUFFIX_RE.test(sp)) {
+        // Legacy single file
+        return { image_id: img.id, vehicle_id: img.vehicle_id, paths: [sp], format: "legacy" as const };
+      }
+      // New format: basePath → 3 variants to delete
+      const base = sp.replace(VARIANT_SUFFIX_RE, ""); // normalize just in case
+      return {
+        image_id:   img.id,
+        vehicle_id: img.vehicle_id,
+        paths: [`${base}-thumb.webp`, `${base}-medium.webp`, `${base}-large.webp`],
+        format: "multi-variant" as const,
+      };
+    });
+
   return NextResponse.json({
     stats,
+    // Actionable cleanup list — feed to a batch deletion script
+    cleanup_candidates: cleanupCandidates,
+    // Detail views for manual investigation
     orphan_images: orphanImages.map((img) => ({
       id:           img.id,
       vehicle_id:   img.vehicle_id,
