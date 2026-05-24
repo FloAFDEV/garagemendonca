@@ -228,7 +228,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 							<VehicleGallery images={getVehicleImages(vehicle)} vehicleName={vehicleName} vehicleImages={vehicle.vehicleImages} />
 
 							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-8">
-								<h2 className="ty-subheading text-[#0f172a] text-lg mb-4 sm:mb-5">Description du véhicule</h2>
 								<FormatVehicleDescription text={vehicle.description_marketing ?? vehicle.description ?? ""} />
 								<div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
 									{([
