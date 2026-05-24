@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Search, X, RotateCcw, ChevronDown, Check, SlidersHorizontal } from "lucide-react";
 import { getLogoSrc } from "@/lib/brandLogos";
 import type { VehicleCategory } from "@/types";
+import { getCategoryIcon } from "@/lib/data/categoryIcons";
 
 function normalizeText(s: string): string {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
@@ -432,7 +433,7 @@ export default function VehicleFiltersBar({
                   : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-600",
               ].join(" ")}
             >
-              {cat.icon && <span aria-hidden="true">{cat.icon}</span>}
+              {(() => { const I = getCategoryIcon(cat.icon); return I ? <I size={13} className="flex-shrink-0" aria-hidden="true" /> : null; })()}
               {cat.label}
             </button>
           ))}

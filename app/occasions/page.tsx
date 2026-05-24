@@ -7,6 +7,7 @@ import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getActiveGarageId } from "@/lib/config/garage";
+import { getCategoryIcon } from "@/lib/data/categoryIcons";
 
 export const metadata: Metadata = {
 	title: "Occasions — Véhicules d'occasion à Drémil-Lafage (31)",
@@ -115,22 +116,18 @@ export default async function OccasionsPage() {
 										href={`/occasions/${cat.slug}`}
 										className="group flex flex-col items-center text-center p-5 rounded-2xl border border-slate-100 bg-[#f8fafc] hover:border-brand-200 hover:bg-white hover:shadow-md transition-all duration-200"
 									>
-										{cat.icon ? (
-											<span
-												className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200"
-												aria-hidden="true"
-											>
-												{cat.icon}
-											</span>
-										) : (
-											<span
-												className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200"
-												style={{ backgroundColor: `${color}18`, color }}
-												aria-hidden="true"
-											>
-												<Car size={18} />
-											</span>
-										)}
+										{(() => {
+											const CatIcon = getCategoryIcon(cat.icon);
+											return (
+												<span
+													className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200"
+													style={{ backgroundColor: `${color}18`, color }}
+													aria-hidden="true"
+												>
+													{CatIcon ? <CatIcon size={18} /> : <Car size={18} />}
+												</span>
+											);
+										})()}
 										<span className="font-heading font-semibold text-[#0f172a] text-sm group-hover:text-brand-600 transition-colors">
 											{cat.label}
 										</span>

@@ -11,6 +11,7 @@ import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { buildPaginationMeta, paginationRange, VEHICLES_PER_PAGE } from "@/lib/vehicles/pagination";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { resolveVehicleHref } from "@/lib/utils/slug";
+import { getCategoryIcon } from "@/lib/data/categoryIcons";
 
 const GARAGE_ID = getActiveGarageId();
 const BASE_URL  = "https://www.garagemendonca.com";
@@ -186,7 +187,7 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
               </span>
             </div>
             <h1 className="ty-display text-white text-4xl sm:text-5xl md:text-6xl mb-5">
-              {category.icon && <span className="mr-3" aria-hidden="true">{category.icon}</span>}
+              {(() => { const I = getCategoryIcon(category.icon); return I ? <I size={40} className="inline-block mr-3 align-middle text-brand-400" aria-hidden="true" /> : null; })()}
               {category.label}{" "}
               <span className="text-brand-500">d&apos;occasion</span>
             </h1>
@@ -232,7 +233,7 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
                       : "shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors whitespace-nowrap"
                   }
                 >
-                  {cat.icon && <span className="mr-1" aria-hidden="true">{cat.icon}</span>}
+                  {(() => { const I = getCategoryIcon(cat.icon); return I ? <I size={13} className="mr-1 inline-block" aria-hidden="true" /> : null; })()}
                   {cat.label}
                 </Link>
               ))}
@@ -297,15 +298,9 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
                   href={`/occasions/${cat.slug}`}
                   className="group flex flex-col items-center text-center p-5 rounded-2xl border border-slate-100 bg-[#f8fafc] hover:border-brand-200 hover:bg-white hover:shadow-md transition-all duration-200"
                 >
-                  {cat.icon ? (
-                    <span className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-200" aria-hidden="true">
-                      {cat.icon}
-                    </span>
-                  ) : (
-                    <span className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-brand-50 text-brand-500 group-hover:scale-110 transition-transform duration-200" aria-hidden="true">
-                      <Car size={18} />
-                    </span>
-                  )}
+                  <span className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-brand-50 text-brand-500 group-hover:scale-110 transition-transform duration-200" aria-hidden="true">
+                    {(() => { const I = getCategoryIcon(cat.icon); return I ? <I size={18} /> : <Car size={18} />; })()}
+                  </span>
                   <span className="font-heading font-semibold text-[#0f172a] text-sm group-hover:text-brand-600 transition-colors">
                     {cat.label}
                   </span>
