@@ -25,9 +25,9 @@ import Link from "next/link";
 import clsx from "clsx";
 import { adminUI } from "@/lib/admin-ui";
 import {
-	updateVehicleStatus,
-	deleteVehicleAction,
-} from "./actions";
+	useDeleteVehicle,
+	useUpdateVehicleStatus,
+} from "@/lib/mutations/useVehicleMutations";
 
 const ADMIN_PER_PAGE = 20;
 
@@ -333,11 +333,10 @@ function VehicleThumb({
 /* ── Page ───────────────────────────────────────────────────────── */
 export default function AdminVehiclesPage() {
 	const router = useRouter();
-	const { data: fetchedVehicles = [], isLoading, isFetching } = useAdminVehiclesList();
-	const [localVehicles, setLocalVehicles] = useState<Vehicle[] | null>(null);
+	const { data: vehicles = [], isLoading } = useAdminVehiclesList();
 	const loading = isLoading;
-	// localVehicles sert aux optimistic updates (delete/status) sans perdre le cache RQ
-	const vehicles = localVehicles ?? fetchedVehicles;
+	const deleteMutation = useDeleteVehicle();
+	const statusMutation = useUpdateVehicleStatus();
 	function ss<T>(key: string, fallback: T): T {
 		if (typeof window === "undefined") return fallback;
 		const v = sessionStorage.getItem(key);
@@ -480,27 +479,13 @@ export default function AdminVehiclesPage() {
 	);
 
 	const handleDelete = useCallback((id: string) => {
-		setLocalVehicles((prev) => (prev ?? fetchedVehicles).filter((v) => v.id !== id));
 		setDeleteConfirm(null);
-		deleteVehicleAction(id).catch(console.error);
-	}, [fetchedVehicles]);
+		deleteMutation.mutate(id);
+	}, [deleteMutation]);
 
 	const handleStatusChange = useCallback((id: string, status: VehicleStatus) => {
-		setLocalVehicles((prev) =>
-			(prev ?? fetchedVehicles).map((v) =>
-				v.id === id
-					? {
-							...v,
-							status,
-							...(status === "sold"
-								? { sold_at: new Date().toISOString() }
-								: {}),
-						}
-					: v,
-			),
-		);
-		updateVehicleStatus(id, status).catch(console.error);
-	}, [fetchedVehicles]);
+		statusMutation.mutate({ id, status });
+	}, [statusMutation]);
 
 	const actionBtn = clsx(
 		"flex-1 flex items-center justify-center gap-1.5 p-2 rounded-lg transition-colors text-xs",
