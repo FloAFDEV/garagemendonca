@@ -94,8 +94,11 @@ export default function VehicleCard({
 			className="group flex flex-col h-full bg-white rounded-xl border border-black/[0.07] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_14px_rgba(0,0,0,0.06)] transition-all duration-200 hover:shadow-[0_6px_14px_rgba(0,0,0,0.07),0_18px_38px_rgba(0,0,0,0.09)] hover:-translate-y-[5px] focus-visible:ring-2 focus-visible:ring-brand-400"
 			aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
 		>
-			{/* Image */}
-			<div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
+			{/* ── Image ──
+			    Mobile  (< sm) : aspect-[2/1]  — image ≈ 50 % de la largeur, plus compacte
+			    Desktop (sm +) : aspect-[4/3]  — format original inchangé
+			*/}
+			<div className="relative aspect-[2/1] sm:aspect-[4/3] overflow-hidden bg-slate-200">
 				{imgSrc ? (
 					<Image
 						src={imgSrc}
@@ -156,23 +159,28 @@ export default function VehicleCard({
 				)}
 			</div>
 
-			{/* Contenu */}
+			{/* ── Contenu ── */}
 			<div className="p-2 sm:p-3 flex flex-col flex-grow">
-				{/* Marque + modèle + finition */}
-				<div className="flex items-start gap-2 mb-2">
-					{/* Logo — fond transparent, sans bordure */}
-					<div className="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0 flex items-center justify-center">
+
+				{/* Marque + modèle + finition
+				    Mobile  : logo plus petit, couleur masquée, année inline avec le titre
+				    Desktop : logo standard, couleur affichée sous le titre
+				*/}
+				<div className="flex items-start gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+					{/* Logo — taille réduite sur mobile */}
+					<div className="w-5 h-5 sm:w-7 sm:h-7 flex-shrink-0 flex items-center justify-center mt-0.5">
 						<Image
 							src={getLogoSrc(vehicle.brand)}
 							alt=""
 							aria-hidden
-							width={24}
-							height={24}
+							width={20}
+							height={20}
 							className="object-contain w-full h-full"
 						/>
 					</div>
-					<div className="min-w-0 overflow-hidden">
-						<h3 className="ty-subheading text-[#0f172a] text-sm font-medium leading-tight line-clamp-2">
+					<div className="min-w-0 overflow-hidden flex-1">
+						{/* Desktop : marque + modèle (sans année dans le titre) */}
+						<h3 className="hidden sm:block ty-subheading text-[#0f172a] text-sm font-medium leading-tight line-clamp-2">
 							{vehicle.brand} {vehicle.model}
 							{finition && (
 								<span className="text-brand-600 font-semibold ml-1 text-[12px]">
@@ -180,16 +188,36 @@ export default function VehicleCard({
 								</span>
 							)}
 						</h3>
+						{/* Mobile : marque + modèle + année sur une ligne, truncate */}
+						<h3 className="sm:hidden text-[#0f172a] text-xs font-semibold leading-tight truncate">
+							{vehicle.brand} {vehicle.model}{" "}
+							<span className="font-normal text-[#64748b]">{vehicle.year}</span>
+							{finition && (
+								<span className="text-brand-600 font-semibold ml-1 text-[10px]">
+									{finition}
+								</span>
+							)}
+						</h3>
+						{/* Couleur — masquée sur mobile pour gagner de la hauteur */}
 						{colorLabel && (
-							<p className="text-[#64748b] text-[11px] mt-0.5 truncate">
+							<p className="hidden sm:block text-[#64748b] text-[11px] mt-0.5 truncate">
 								{colorLabel}
 							</p>
 						)}
 					</div>
+					{/* Mobile : prix affiché en haut à droite, priorité visuelle maximale */}
+					<div className="sm:hidden ml-auto flex-shrink-0 text-right">
+						<span
+							className="block font-bold text-[#0f172a] text-base leading-tight"
+							aria-label={priceLabel}
+						>
+							{vehicle.price.toLocaleString("fr-FR")} €
+						</span>
+					</div>
 				</div>
 
-				{/* Specs */}
-				<div className="grid grid-cols-3 gap-1.5 mb-2">
+				{/* ── Specs desktop : grille 3 colonnes avec icônes (inchangée) ── */}
+				<div className="hidden sm:grid grid-cols-3 gap-1.5 mb-2">
 					<div className="flex flex-col items-center bg-[#f8fafc] rounded-lg py-1.5 px-1">
 						<Calendar size={12} className="text-brand-500 mb-0.5" aria-hidden="true" />
 						<span className="text-xs font-normal text-[#334155]">{vehicle.year}</span>
@@ -208,32 +236,27 @@ export default function VehicleCard({
 					</div>
 				</div>
 
-				{/* Mobile : tous les tags en ligne horizontale scrollable */}
-				<div className="sm:hidden overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] mb-2">
-					<div className="flex items-center gap-1.5 flex-nowrap">
-						<span className="flex-none text-[10px] px-1.5 py-0.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-md font-medium whitespace-nowrap">
-							{toSentenceCase(vehicle.transmission)}
-						</span>
-						<span className="flex-none text-[10px] px-1.5 py-0.5 bg-slate-50 border border-slate-100 text-slate-600 rounded-md font-medium whitespace-nowrap">
-							{vehicle.power} ch
-						</span>
-						{garantie && (
-							<span className="flex-none text-[10px] px-1.5 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-md font-medium whitespace-nowrap">
-								Garantie {garantie}
-							</span>
-						)}
-						{optionHits.map((k) => (
-							<span
-								key={k}
-								className="flex-none text-[10px] px-1.5 py-0.5 bg-slate-50 border border-slate-100 text-slate-500 rounded-md font-medium whitespace-nowrap"
-							>
-								{HIGHLIGHT_LABELS[k]}
-							</span>
-						))}
-					</div>
+				{/* ── Specs mobile : km · carburant · transmission sur une ligne ──
+				    Max 3 infos, affichage horizontal compact, zéro verticalisation
+				*/}
+				<div className="sm:hidden flex items-center gap-1.5 text-[11px] text-[#64748b] mb-1.5 flex-wrap">
+					<span>{vehicle.mileage.toLocaleString("fr-FR")} km</span>
+					<span className="text-slate-300" aria-hidden="true">·</span>
+					<span>{vehicle.fuel}</span>
+					<span className="text-slate-300" aria-hidden="true">·</span>
+					<span>{toSentenceCase(vehicle.transmission)}</span>
 				</div>
 
-				{/* Desktop : badges boîte + puissance + garantie */}
+				{/* ── Badge mobile : garantie uniquement (1 badge max) ── */}
+				{garantie && (
+					<div className="sm:hidden mb-1.5">
+						<span className="inline-flex items-center text-[10px] px-1.5 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-md font-medium whitespace-nowrap">
+							Garantie {garantie}
+						</span>
+					</div>
+				)}
+
+				{/* Desktop : badges boîte + puissance + garantie (inchangés) */}
 				<div className="hidden sm:flex items-center gap-1.5 mb-2">
 					<Badge variant="gray" className="flex-1 justify-center normal-case">
 						{toSentenceCase(vehicle.transmission)}
@@ -248,7 +271,7 @@ export default function VehicleCard({
 					)}
 				</div>
 
-				{/* Desktop : options highlights */}
+				{/* Desktop : options highlights (inchangées) */}
 				<div className="hidden sm:flex flex-wrap gap-1 flex-grow content-start" aria-label="Équipements principaux">
 					{optionHits.length > 0 && (() => {
 						const shown   = optionHits.slice(0, 4);
@@ -273,10 +296,13 @@ export default function VehicleCard({
 					})()}
 				</div>
 
-				{/* Prix + CTA */}
-				<div className="mt-auto pt-2 border-t border-slate-100 space-y-2">
+				{/* ── Prix + CTA desktop (inchangés) ──
+				    Sur mobile, le prix est déjà affiché en haut à droite.
+				    Ce bloc est masqué sur mobile.
+				*/}
+				<div className="hidden sm:block mt-auto pt-2 border-t border-slate-100 space-y-2">
 					<span
-						className="block text-center sm:text-left font-heading font-semibold text-[#0f172a] text-lg leading-tight"
+						className="block text-left font-heading font-semibold text-[#0f172a] text-lg leading-tight"
 						aria-label={priceLabel}
 					>
 						{vehicle.price.toLocaleString("fr-FR")} €
@@ -286,8 +312,7 @@ export default function VehicleCard({
 							Vendue
 						</div>
 					) : (
-						/* Masqué sur mobile : la carte entière est un lien */
-						<div className="hidden sm:flex w-full bg-brand-500/90 group-hover:bg-brand-600/95 text-white font-medium text-sm py-2.5 rounded-lg items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all duration-300">
+						<div className="flex w-full bg-brand-500/90 group-hover:bg-brand-600/95 text-white font-medium text-sm py-2.5 rounded-lg items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all duration-300">
 							Voir le véhicule
 							<ArrowRight
 								size={13}
@@ -296,6 +321,15 @@ export default function VehicleCard({
 						</div>
 					)}
 				</div>
+
+				{/* ── Statut vendu mobile (indicateur minimaliste) ── */}
+				{vehicle.status === "sold" && (
+					<div className="sm:hidden mt-auto pt-1.5 border-t border-slate-100">
+						<div className="w-full bg-slate-100 text-slate-500 text-[11px] py-1 rounded-md text-center font-medium">
+							Vendue
+						</div>
+					</div>
+				)}
 			</div>
 		</Link>
 	);

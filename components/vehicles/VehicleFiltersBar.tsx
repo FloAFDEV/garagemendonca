@@ -370,11 +370,24 @@ export default function VehicleFiltersBar({
 
   // État local du champ texte (débounce avant écriture URL)
   const [searchInput, setSearchInput] = useState(qUrl);
+  // État du panneau filtres mobile
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   // Sync si l'URL change (ex: bouton "retour")
   useEffect(() => { setSearchInput(qUrl); }, [qUrl]);
 
+  // Verrouillage du scroll body quand le panneau mobile est ouvert
+  useEffect(() => {
+    if (mobileFiltersOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileFiltersOpen]);
+
   const hasFilters = !!(qUrl || brandsStr || fuel || transmission || maxKm || maxPrice || minPrice || minYear || maxYear || category);
+
+  // Nombre de filtres actifs hors recherche texte — pour le badge du bouton Filtres
+  const activeFilterCount = [brandsStr, fuel, transmission, maxKm, maxPrice, minPrice, minYear, maxYear, sort]
+    .filter(Boolean).length;
 
   // Fonction centrale : met à jour des paramètres et revient toujours à /vehicules (page 1)
   const pushFilters = useCallback(
@@ -404,80 +417,132 @@ export default function VehicleFiltersBar({
     router.push("/vehicules", { scroll: false });
   };
 
-  return (
-    <div className="mb-8 space-y-4">
-      {/* ── Onglets catégories ── */}
-      {categories.length > 1 && (
-        <div className="flex items-center gap-2 flex-wrap -mb-1">
+  // ─── Chips filtres actifs (partagées mobile + desktop) ────────────
+
+  const ActiveChips = ({ compact = false }: { compact?: boolean }) => (
+    <>
+      {selectedBrands.map((b) => (
+        <span
+          key={b}
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-xs text-brand-700"
+        >
+          <BrandLogo brand={b} size={14} />
+          {b}
           <button
-            type="button"
-            onClick={() => pushFilters({ category: "" })}
-            className={[
-              "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border",
-              !category
-                ? "bg-brand-500 text-white border-brand-500 shadow-sm"
-                : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-600",
-            ].join(" ")}
+            onClick={() => pushFilters({ brands: selectedBrands.filter((x) => x !== b).join(",") })}
+            className="hover:text-red-500"
+            aria-label={`Supprimer le filtre ${b}`}
           >
-            Tous
+            <X size={10} />
           </button>
-          {categories.map((cat) => (
+        </span>
+      ))}
+      {qUrl && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          «{qUrl}»
+          <button onClick={() => { setSearchInput(""); pushFilters({ q: "" }); }} className="hover:text-red-500" aria-label="Supprimer la recherche"><X size={10} /></button>
+        </span>
+      )}
+      {fuel && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          {fuel}
+          <button onClick={() => pushFilters({ fuel: "" })} className="hover:text-red-500" aria-label="Supprimer le filtre carburant"><X size={10} /></button>
+        </span>
+      )}
+      {transmission && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          {transmission}
+          <button onClick={() => pushFilters({ transmission: "" })} className="hover:text-red-500" aria-label="Supprimer le filtre boîte"><X size={10} /></button>
+        </span>
+      )}
+      {maxKm && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          &lt; {parseInt(maxKm).toLocaleString("fr-FR")} km
+          <button onClick={() => pushFilters({ maxKm: "" })} className="hover:text-red-500" aria-label="Supprimer le filtre kilométrage"><X size={10} /></button>
+        </span>
+      )}
+      {minPrice && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          ≥ {parseInt(minPrice).toLocaleString("fr-FR")} €
+          <button onClick={() => pushFilters({ minPrice: "" })} className="hover:text-red-500" aria-label="Supprimer le filtre prix min"><X size={10} /></button>
+        </span>
+      )}
+      {maxPrice && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          &lt; {parseInt(maxPrice).toLocaleString("fr-FR")} €
+          <button onClick={() => pushFilters({ maxPrice: "" })} className="hover:text-red-500" aria-label="Supprimer le filtre prix max"><X size={10} /></button>
+        </span>
+      )}
+      {(minYear || maxYear) && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          {minYear && maxYear ? `${minYear} – ${maxYear}` : minYear ? `≥ ${minYear}` : `≤ ${maxYear}`}
+          <button onClick={() => pushFilters({ minYear: "", maxYear: "" })} className="hover:text-red-500" aria-label="Supprimer le filtre année"><X size={10} /></button>
+        </span>
+      )}
+      {sort && (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          {SORT_OPTIONS.find((o) => o.value === sort)?.label ?? sort}
+          <button onClick={() => pushFilters({ sort: "" })} className="hover:text-red-500" aria-label="Supprimer le tri"><X size={10} /></button>
+        </span>
+      )}
+      {compact && hasFilters && (
+        <button
+          onClick={resetAll}
+          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 border border-red-100 text-xs text-red-500 hover:text-red-700 transition-colors"
+        >
+          <RotateCcw size={9} />
+          Tout effacer
+        </button>
+      )}
+    </>
+  );
+
+  return (
+    <div className="mb-6 sm:mb-8">
+
+      {/* ════════════════════════════════════════════════════════════
+          MOBILE (< md) — Structure compacte : search + action bar
+          ════════════════════════════════════════════════════════════ */}
+      <div className="md:hidden space-y-2">
+
+        {/* Onglets catégories — scrollable horizontal, compact */}
+        {categories.length > 1 && (
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 [scrollbar-width:none] [-ms-overflow-style:none]">
             <button
-              key={cat.slug}
               type="button"
-              onClick={() => pushFilters({ category: cat.slug })}
+              onClick={() => pushFilters({ category: "" })}
               className={[
-                "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border",
-                category === cat.slug
+                "flex-none inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-all whitespace-nowrap",
+                !category
                   ? "bg-brand-500 text-white border-brand-500 shadow-sm"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-600",
+                  : "bg-white text-slate-600 border-slate-200",
               ].join(" ")}
             >
-              {(() => { const I = getCategoryIcon(cat.icon); return I ? <I size={13} className="flex-shrink-0" aria-hidden="true" /> : null; })()}
-              {cat.label}
+              Tous
             </button>
-          ))}
-        </div>
-      )}
-
-      {/* Compteur + tri */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        {hasFilters ? (
-          <p className="text-sm font-normal text-slate-800 uppercase tracking-wide">
-            <span className="text-brand-600 text-lg font-semibold">{totalCount}</span>{" "}
-            résultat{totalCount !== 1 ? "s" : ""}
-          </p>
-        ) : (
-          <p className="text-sm font-normal text-slate-500 uppercase tracking-wide">
-            Tous nos véhicules
-          </p>
+            {categories.map((cat) => (
+              <button
+                key={cat.slug}
+                type="button"
+                onClick={() => pushFilters({ category: cat.slug })}
+                className={[
+                  "flex-none inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-all whitespace-nowrap",
+                  category === cat.slug
+                    ? "bg-brand-500 text-white border-brand-500 shadow-sm"
+                    : "bg-white text-slate-600 border-slate-200",
+                ].join(" ")}
+              >
+                {(() => { const I = getCategoryIcon(cat.icon); return I ? <I size={11} className="flex-shrink-0" aria-hidden="true" /> : null; })()}
+                {cat.label}
+              </button>
+            ))}
+          </div>
         )}
 
-        {/* Tri */}
-        <div className="flex items-center gap-2">
-          <label htmlFor="sort-select" className="text-xs text-slate-500 hidden sm:inline whitespace-nowrap">
-            Trier par
-          </label>
-          <select
-            id="sort-select"
-            value={sort}
-            onChange={(e) => pushFilters({ sort: e.target.value })}
-            className="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 ring-brand-500/20 bg-white text-slate-700 cursor-pointer transition-all hover:border-slate-300"
-            aria-label="Trier les véhicules"
-          >
-            {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Barre de filtres */}
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        {/* ── Recherche texte ── */}
-        <div className="relative flex-1 min-w-[160px] max-w-xs">
+        {/* Search bar — padding réduit */}
+        <div className="relative">
           <Search
-            size={15}
+            size={14}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
           />
           <input
@@ -486,7 +551,7 @@ export default function VehicleFiltersBar({
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Marque, modèle…"
             aria-label="Rechercher un véhicule"
-            className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-brand-500 ring-brand-500/20 transition-all [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-ms-clear]:hidden"
+            className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-brand-500 ring-brand-500/20 transition-all"
           />
           {searchInput && (
             <button
@@ -499,143 +564,453 @@ export default function VehicleFiltersBar({
           )}
         </div>
 
-        {/* ── Multi-select marques ── */}
-        <BrandMultiSelect
-          selected={selectedBrands}
-          onChange={(brands) => pushFilters({ brands: brands.join(",") })}
-          availableBrands={availableBrands}
-        />
+        {/* Action bar : compteur à gauche, bouton Filtres à droite */}
+        <div className="flex items-center justify-between gap-3">
+          {/* Compteur */}
+          {hasFilters ? (
+            <p className="text-sm text-slate-800">
+              <span className="text-brand-600 font-semibold">{totalCount}</span>{" "}
+              résultat{totalCount !== 1 ? "s" : ""}
+            </p>
+          ) : (
+            <p className="text-sm text-slate-500">
+              <span className="font-medium text-slate-700">{totalCount}</span>{" "}
+              véhicule{totalCount !== 1 ? "s" : ""}
+            </p>
+          )}
 
-        {/* ── Carburant ── */}
-        <select
-          value={fuel}
-          onChange={(e) => pushFilters({ fuel: e.target.value })}
-          aria-label="Filtrer par carburant"
-          className={selectClass(!!fuel)}
-        >
-          <option value="">Carburant</option>
-          {FUELS.map((f) => <option key={f} value={f}>{f}</option>)}
-        </select>
-
-        {/* ── Boîte ── */}
-        <select
-          value={transmission}
-          onChange={(e) => pushFilters({ transmission: e.target.value })}
-          aria-label="Filtrer par boîte de vitesses"
-          className={selectClass(!!transmission)}
-        >
-          <option value="">Boîte auto / manuelle</option>
-          {TRANSMISSIONS.map((t) => <option key={t} value={t}>{t}</option>)}
-        </select>
-
-        {/* ── Km max ── */}
-        <select
-          value={maxKm}
-          onChange={(e) => pushFilters({ maxKm: e.target.value })}
-          aria-label="Kilométrage maximum"
-          className={selectClass(!!maxKm)}
-        >
-          {KM_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
-        </select>
-
-        {/* ── Prix max ── */}
-        <select
-          value={maxPrice}
-          onChange={(e) => pushFilters({ maxPrice: e.target.value })}
-          aria-label="Prix maximum"
-          className={selectClass(!!maxPrice)}
-        >
-          {PRICE_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
-        </select>
-
-        {/* ── Plus de filtres (année + prix min) ── */}
-        <MoreFiltersPanel
-          minYear={minYear}
-          maxYear={maxYear}
-          minPrice={minPrice}
-          yearOptions={YEAR_OPTIONS}
-          onUpdate={(vals) => pushFilters(vals)}
-        />
-
-        {/* ── Reset ── */}
-        {hasFilters && (
+          {/* Bouton Filtres */}
           <button
-            onClick={resetAll}
-            className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-            aria-label="Réinitialiser tous les filtres"
-            title="Réinitialiser"
+            type="button"
+            onClick={() => setMobileFiltersOpen(true)}
+            className={[
+              "flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all",
+              activeFilterCount > 0
+                ? "border-brand-500 bg-brand-50 text-brand-700"
+                : "border-slate-200 bg-white text-slate-700",
+            ].join(" ")}
+            aria-label={`Ouvrir les filtres${activeFilterCount > 0 ? ` (${activeFilterCount} actif${activeFilterCount > 1 ? "s" : ""})` : ""}`}
           >
-            <RotateCcw size={15} />
+            <SlidersHorizontal size={14} />
+            Filtres
+            {activeFilterCount > 0 && (
+              <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-brand-500 text-white text-[10px] font-bold">
+                {activeFilterCount}
+              </span>
+            )}
           </button>
+        </div>
+
+        {/* Chips filtres actifs (mobile) */}
+        {hasFilters && (
+          <div className="flex flex-wrap gap-1.5">
+            <ActiveChips compact />
+          </div>
         )}
       </div>
 
-      {/* Chips filtres actifs */}
-      {hasFilters && (
-        <div className="flex flex-wrap gap-1.5">
-          {selectedBrands.map((b) => (
-            <span
-              key={b}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-xs text-brand-700"
+      {/* ════════════════════════════════════════════════════════════
+          DESKTOP (≥ md) — Layout original inchangé pixel-perfect
+          ════════════════════════════════════════════════════════════ */}
+      <div className="hidden md:block space-y-4">
+
+        {/* Onglets catégories */}
+        {categories.length > 1 && (
+          <div className="flex items-center gap-2 flex-wrap -mb-1">
+            <button
+              type="button"
+              onClick={() => pushFilters({ category: "" })}
+              className={[
+                "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border",
+                !category
+                  ? "bg-brand-500 text-white border-brand-500 shadow-sm"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-600",
+              ].join(" ")}
             >
-              <BrandLogo brand={b} size={14} />
-              {b}
+              Tous
+            </button>
+            {categories.map((cat) => (
               <button
-                onClick={() => pushFilters({ brands: selectedBrands.filter((x) => x !== b).join(",") })}
-                className="hover:text-red-500"
+                key={cat.slug}
+                type="button"
+                onClick={() => pushFilters({ category: cat.slug })}
+                className={[
+                  "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all border",
+                  category === cat.slug
+                    ? "bg-brand-500 text-white border-brand-500 shadow-sm"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-600",
+                ].join(" ")}
               >
-                <X size={10} />
+                {(() => { const I = getCategoryIcon(cat.icon); return I ? <I size={13} className="flex-shrink-0" aria-hidden="true" /> : null; })()}
+                {cat.label}
               </button>
-            </span>
-          ))}
-          {qUrl && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              «{qUrl}»
-              <button onClick={() => { setSearchInput(""); pushFilters({ q: "" }); }} className="hover:text-red-500"><X size={10} /></button>
-            </span>
+            ))}
+          </div>
+        )}
+
+        {/* Compteur + tri */}
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          {hasFilters ? (
+            <p className="text-sm font-normal text-slate-800 uppercase tracking-wide">
+              <span className="text-brand-600 text-lg font-semibold">{totalCount}</span>{" "}
+              résultat{totalCount !== 1 ? "s" : ""}
+            </p>
+          ) : (
+            <p className="text-sm font-normal text-slate-500 uppercase tracking-wide">
+              Tous nos véhicules
+            </p>
           )}
-          {fuel && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              {fuel}
-              <button onClick={() => pushFilters({ fuel: "" })} className="hover:text-red-500"><X size={10} /></button>
-            </span>
+
+          {/* Tri */}
+          <div className="flex items-center gap-2">
+            <label htmlFor="sort-select" className="text-xs text-slate-500 hidden sm:inline whitespace-nowrap">
+              Trier par
+            </label>
+            <select
+              id="sort-select"
+              value={sort}
+              onChange={(e) => pushFilters({ sort: e.target.value })}
+              className="text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 ring-brand-500/20 bg-white text-slate-700 cursor-pointer transition-all hover:border-slate-300"
+              aria-label="Trier les véhicules"
+            >
+              {SORT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Barre de filtres */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          {/* Recherche texte */}
+          <div className="relative flex-1 min-w-[160px] max-w-xs">
+            <Search
+              size={15}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Marque, modèle…"
+              aria-label="Rechercher un véhicule"
+              className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-brand-500 ring-brand-500/20 transition-all [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-ms-clear]:hidden"
+            />
+            {searchInput && (
+              <button
+                onClick={() => { setSearchInput(""); pushFilters({ q: "" }); }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                aria-label="Effacer la recherche"
+              >
+                <X size={13} />
+              </button>
+            )}
+          </div>
+
+          {/* Multi-select marques */}
+          <BrandMultiSelect
+            selected={selectedBrands}
+            onChange={(brands) => pushFilters({ brands: brands.join(",") })}
+            availableBrands={availableBrands}
+          />
+
+          {/* Carburant */}
+          <select
+            value={fuel}
+            onChange={(e) => pushFilters({ fuel: e.target.value })}
+            aria-label="Filtrer par carburant"
+            className={selectClass(!!fuel)}
+          >
+            <option value="">Carburant</option>
+            {FUELS.map((f) => <option key={f} value={f}>{f}</option>)}
+          </select>
+
+          {/* Boîte */}
+          <select
+            value={transmission}
+            onChange={(e) => pushFilters({ transmission: e.target.value })}
+            aria-label="Filtrer par boîte de vitesses"
+            className={selectClass(!!transmission)}
+          >
+            <option value="">Boîte auto / manuelle</option>
+            {TRANSMISSIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+
+          {/* Km max */}
+          <select
+            value={maxKm}
+            onChange={(e) => pushFilters({ maxKm: e.target.value })}
+            aria-label="Kilométrage maximum"
+            className={selectClass(!!maxKm)}
+          >
+            {KM_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
+          </select>
+
+          {/* Prix max */}
+          <select
+            value={maxPrice}
+            onChange={(e) => pushFilters({ maxPrice: e.target.value })}
+            aria-label="Prix maximum"
+            className={selectClass(!!maxPrice)}
+          >
+            {PRICE_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
+          </select>
+
+          {/* Plus de filtres (année + prix min) */}
+          <MoreFiltersPanel
+            minYear={minYear}
+            maxYear={maxYear}
+            minPrice={minPrice}
+            yearOptions={YEAR_OPTIONS}
+            onUpdate={(vals) => pushFilters(vals)}
+          />
+
+          {/* Reset */}
+          {hasFilters && (
+            <button
+              onClick={resetAll}
+              className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+              aria-label="Réinitialiser tous les filtres"
+              title="Réinitialiser"
+            >
+              <RotateCcw size={15} />
+            </button>
           )}
-          {transmission && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              {transmission}
-              <button onClick={() => pushFilters({ transmission: "" })} className="hover:text-red-500"><X size={10} /></button>
-            </span>
-          )}
-          {maxKm && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              &lt; {parseInt(maxKm).toLocaleString("fr-FR")} km
-              <button onClick={() => pushFilters({ maxKm: "" })} className="hover:text-red-500"><X size={10} /></button>
-            </span>
-          )}
-          {minPrice && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              ≥ {parseInt(minPrice).toLocaleString("fr-FR")} €
-              <button onClick={() => pushFilters({ minPrice: "" })} className="hover:text-red-500"><X size={10} /></button>
-            </span>
-          )}
-          {maxPrice && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              &lt; {parseInt(maxPrice).toLocaleString("fr-FR")} €
-              <button onClick={() => pushFilters({ maxPrice: "" })} className="hover:text-red-500"><X size={10} /></button>
-            </span>
-          )}
-          {(minYear || maxYear) && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              {minYear && maxYear ? `${minYear} – ${maxYear}` : minYear ? `≥ ${minYear}` : `≤ ${maxYear}`}
-              <button onClick={() => pushFilters({ minYear: "", maxYear: "" })} className="hover:text-red-500"><X size={10} /></button>
-            </span>
-          )}
-          {sort && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
-              {SORT_OPTIONS.find((o) => o.value === sort)?.label ?? sort}
-              <button onClick={() => pushFilters({ sort: "" })} className="hover:text-red-500"><X size={10} /></button>
-            </span>
-          )}
+        </div>
+
+        {/* Chips filtres actifs (desktop) */}
+        {hasFilters && (
+          <div className="flex flex-wrap gap-1.5">
+            <ActiveChips />
+          </div>
+        )}
+      </div>
+
+      {/* ════════════════════════════════════════════════════════════
+          PANNEAU FILTRES MOBILE — Bottom sheet (fixed, z-50)
+          Ouvert via le bouton "Filtres" dans l'action bar mobile.
+          Contient tous les filtres dans des sections organisées.
+          ════════════════════════════════════════════════════════════ */}
+      {mobileFiltersOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMobileFiltersOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Sheet */}
+          <div
+            className="relative bg-white rounded-t-2xl max-h-[85vh] flex flex-col shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Filtres de recherche"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 flex-shrink-0">
+              <h2 className="font-semibold text-[#0f172a] text-base">Filtres</h2>
+              <button
+                type="button"
+                onClick={() => setMobileFiltersOpen(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 -mr-1 rounded-lg"
+                aria-label="Fermer les filtres"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Contenu scrollable */}
+            <div className="overflow-y-auto flex-1 px-5 py-5 space-y-6">
+
+              {/* ── Trier par ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Trier par</p>
+                <div className="flex flex-wrap gap-2">
+                  {SORT_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => pushFilters({ sort: o.value })}
+                      className={[
+                        "px-3 py-2 rounded-xl border text-sm transition-all",
+                        sort === o.value
+                          ? "bg-brand-500 text-white border-brand-500 font-medium"
+                          : "bg-white text-slate-700 border-slate-200",
+                      ].join(" ")}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Marque ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Marque</p>
+                <div className="flex flex-wrap gap-2 max-h-44 overflow-y-auto">
+                  {availableBrands.map((brand) => {
+                    const active = selectedBrands.includes(brand);
+                    return (
+                      <button
+                        key={brand}
+                        type="button"
+                        onClick={() => {
+                          const next = active
+                            ? selectedBrands.filter((b) => b !== brand)
+                            : [...selectedBrands, brand];
+                          pushFilters({ brands: next.join(",") });
+                        }}
+                        className={[
+                          "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-sm transition-all",
+                          active
+                            ? "bg-brand-500 text-white border-brand-500 font-medium"
+                            : "bg-white text-slate-700 border-slate-200",
+                        ].join(" ")}
+                      >
+                        <BrandLogo brand={brand} size={16} />
+                        {brand}
+                        {active && <Check size={12} className="flex-shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ── Carburant ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Carburant</p>
+                <div className="flex flex-wrap gap-2">
+                  {["", ...FUELS].map((f) => (
+                    <button
+                      key={f || "all"}
+                      type="button"
+                      onClick={() => pushFilters({ fuel: f })}
+                      className={[
+                        "px-3 py-2 rounded-xl border text-sm transition-all",
+                        fuel === f
+                          ? "bg-brand-500 text-white border-brand-500 font-medium"
+                          : "bg-white text-slate-700 border-slate-200",
+                      ].join(" ")}
+                    >
+                      {f || "Tous"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Boîte de vitesses ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Boîte de vitesses</p>
+                <div className="flex flex-wrap gap-2">
+                  {["", ...TRANSMISSIONS].map((t) => (
+                    <button
+                      key={t || "all"}
+                      type="button"
+                      onClick={() => pushFilters({ transmission: t })}
+                      className={[
+                        "px-3 py-2 rounded-xl border text-sm transition-all",
+                        transmission === t
+                          ? "bg-brand-500 text-white border-brand-500 font-medium"
+                          : "bg-white text-slate-700 border-slate-200",
+                      ].join(" ")}
+                    >
+                      {t || "Toutes"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* ── Kilométrage max ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Kilométrage maximum</p>
+                <select
+                  value={maxKm}
+                  onChange={(e) => pushFilters({ maxKm: e.target.value })}
+                  aria-label="Kilométrage maximum"
+                  className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 bg-white text-slate-700 focus:outline-none focus:ring-2 ring-brand-500/20 cursor-pointer appearance-none"
+                >
+                  {KM_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
+                </select>
+              </div>
+
+              {/* ── Prix maximum ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Prix maximum</p>
+                <select
+                  value={maxPrice}
+                  onChange={(e) => pushFilters({ maxPrice: e.target.value })}
+                  aria-label="Prix maximum"
+                  className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 bg-white text-slate-700 focus:outline-none focus:ring-2 ring-brand-500/20 cursor-pointer appearance-none"
+                >
+                  {PRICE_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
+                </select>
+              </div>
+
+              {/* ── Budget minimum ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Budget minimum</p>
+                <select
+                  value={minPrice}
+                  onChange={(e) => pushFilters({ minPrice: e.target.value })}
+                  aria-label="Prix minimum"
+                  className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 bg-white text-slate-700 focus:outline-none focus:ring-2 ring-brand-500/20 cursor-pointer appearance-none"
+                >
+                  {PRICE_MIN_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
+                </select>
+              </div>
+
+              {/* ── Année ── */}
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Année</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <select
+                    value={minYear}
+                    onChange={(e) => pushFilters({ minYear: e.target.value })}
+                    className="text-sm border border-slate-200 rounded-xl px-3 py-2.5 bg-white text-slate-700 focus:outline-none focus:ring-2 ring-brand-500/20 cursor-pointer appearance-none"
+                    aria-label="Année minimum"
+                  >
+                    <option value="">De…</option>
+                    {YEAR_OPTIONS.slice().reverse().map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={maxYear}
+                    onChange={(e) => pushFilters({ maxYear: e.target.value })}
+                    className="text-sm border border-slate-200 rounded-xl px-3 py-2.5 bg-white text-slate-700 focus:outline-none focus:ring-2 ring-brand-500/20 cursor-pointer appearance-none"
+                    aria-label="Année maximum"
+                  >
+                    <option value="">À…</option>
+                    {YEAR_OPTIONS.map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer — boutons Réinitialiser + Voir les résultats */}
+            <div className="flex-shrink-0 px-5 py-4 border-t border-slate-100 flex gap-3">
+              {hasFilters && (
+                <button
+                  type="button"
+                  onClick={() => { resetAll(); setMobileFiltersOpen(false); }}
+                  className="flex-none flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-600 font-medium hover:bg-slate-50 transition-colors"
+                >
+                  <RotateCcw size={14} />
+                  Réinitialiser
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setMobileFiltersOpen(false)}
+                className="flex-1 px-4 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold transition-colors"
+              >
+                Voir {totalCount} résultat{totalCount !== 1 ? "s" : ""}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
