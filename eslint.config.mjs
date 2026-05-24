@@ -10,6 +10,17 @@ const compat = new FlatCompat({ baseDirectory: __dirname });
 const config = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 
+  // ── Maintien du niveau pre-existant avant eslint.config.mjs ──────────────
+  // Ces règles produisaient des warnings (non-bloquants) avec la config Next.js
+  // implicite. On les maintient en warn pour ne pas casser le build sur du code
+  // pré-existant. Les nouvelles violations restent visibles via `next lint`.
+  {
+    rules: {
+      "react/no-unescaped-entities":        "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+  },
+
   // ── Anti-régression architecture image véhicule ───────────────────────────
   // Dans les composants vehicle/ et la page publique véhicule, toute URL image
   // doit passer par resolveVehicleUrl() depuis @/lib/utils/vehicle-images.

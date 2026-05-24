@@ -36,14 +36,8 @@ export async function GET() {
   const db = createSupabaseAdminClient();
 
   // ── 1. Orphan images (vehicle_images rows without a matching vehicle) ────
-  const { data: orphans, error: orphanErr } = await db
-    .from("vehicle_images")
-    .select("id, vehicle_id, storage_path, url, created_at")
-    .eq("garage_id", GARAGE_ID)
-    .is("vehicle_id", null);
-
-  // Also find rows pointing to deleted vehicles via LEFT JOIN approach
-  // (Supabase client doesn't support LEFT JOIN — do a separate query)
+  // Find rows pointing to deleted vehicles — two queries since Supabase client
+  // doesn't support LEFT JOIN directly.
   const { data: allVehicleIds, error: vidErr } = await db
     .from("vehicles")
     .select("id")
@@ -54,8 +48,8 @@ export async function GET() {
     .select("id, vehicle_id, storage_path, url, created_at")
     .eq("garage_id", GARAGE_ID);
 
-  if (orphanErr || vidErr || imgErr) {
-    console.error("[storage-audit] query error:", orphanErr ?? vidErr ?? imgErr);
+  if (vidErr || imgErr) {
+    console.error("[storage-audit] query error:", vidErr ?? imgErr);
     return NextResponse.json({ error: "Erreur requête DB" }, { status: 500 });
   }
 
