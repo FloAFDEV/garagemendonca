@@ -51,6 +51,7 @@ import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { extractShortId, buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import VehicleBreadcrumb from "@/components/vehicles/detail/VehicleBreadcrumb";
 import { buildVehicleFallbackCanonical, buildVehicleMetadata, buildVehicleJsonLd } from "@/lib/seo/vehicle";
 import type { Vehicle } from "@/types";
 
@@ -135,15 +136,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 			<div className="bg-[#f8fafc] min-h-screen">
 				<Container className="pt-20 sm:pt-28 pb-28 sm:pb-8">
-					<nav aria-label="Fil d'Ariane" className="hidden sm:block mb-3">
-						<ol className="flex items-center gap-2 text-xs text-[#64748b]">
-							<li><Link href="/" className="hover:text-brand-600 transition-colors">Accueil</Link></li>
-							<li aria-hidden="true">/</li>
-							<li><Link href="/occasions" className="hover:text-brand-600 transition-colors">Occasions</Link></li>
-							<li aria-hidden="true">/</li>
-							<li className="text-[#0f172a] font-medium truncate max-w-[120px] sm:max-w-[200px]">{vehicleName}</li>
-						</ol>
-					</nav>
+					<VehicleBreadcrumb vehicleName={vehicleName} />
 
 					<BackToListingButton className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-3 sm:mb-5 text-sm font-medium" />
 
