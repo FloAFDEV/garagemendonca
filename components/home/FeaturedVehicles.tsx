@@ -10,9 +10,8 @@ import { getActiveGarageId } from "@/lib/config/garage";
 const GARAGE_ID = getActiveGarageId();
 
 export default async function FeaturedVehicles() {
-	const [featured, totalCount] = await Promise.all([
+	const [featured] = await Promise.all([
 		vehicleDb.getFeatured(GARAGE_ID, 4).catch(() => []),
-		vehicleDb.countPublic(GARAGE_ID).catch(() => 0),
 	]);
 
 	const displayed = featured.length > 0
@@ -73,7 +72,7 @@ export default async function FeaturedVehicles() {
 								<Link
 									href="/vehicules"
 									className="sm:hidden flex-shrink-0 inline-flex items-center gap-1 text-brand-600 text-sm font-medium whitespace-nowrap"
-									aria-label={`Voir les ${totalCount} véhicules disponibles`}
+
 								>
 									Voir tout
 									<ArrowRight size={14} aria-hidden="true" />
@@ -166,9 +165,8 @@ export default async function FeaturedVehicles() {
 							<Link
 								href="/vehicules"
 								className="btn-primary text-sm sm:text-base py-2.5 sm:py-3 flex-shrink-0 inline-flex items-center gap-2 group"
-								aria-label="Voir tous les véhicules disponibles"
 							>
-								Voir tous nos véhicules ({totalCount})
+								Voir tous nos véhicules
 								<ArrowRight
 									size={14}
 									className="transition-transform group-hover:translate-x-1"
