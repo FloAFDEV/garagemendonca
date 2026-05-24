@@ -44,7 +44,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const totalCount = await vehicleDb.countPublic(GARAGE_ID, { category: category.slug }).catch(() => 0);
 
   const baseUrl  = `${BASE_URL}/occasions/${category.slug}`;
-  // Canonical = page 1 (hub de catégorie). Les pages 2+ sont noindex + follow.
+  // Canonical = page 1 (hub de catégorie). Pages 2+ indexées avec canonical → page 1.
   const canonical = baseUrl;
 
   const title = pageNum === 1
@@ -58,8 +58,6 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   return {
     title,
     description,
-    // Pages 2+ : noindex pour éviter la contradiction canonical → page 1 / index = true
-    robots: { index: pageNum === 1, follow: true },
     alternates: { canonical },
     openGraph: {
       title,
