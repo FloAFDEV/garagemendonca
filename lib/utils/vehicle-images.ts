@@ -101,25 +101,5 @@ export function getVehicleImages(
     .filter((url): url is string => Boolean(url));
 }
 
-// ─── Backward-compat alias (used in non-vehicle contexts) ────────
-
-/**
- * @deprecated Use resolveVehicleUrl() instead.
- * Kept for legacy call sites that pass a raw Supabase URL or storage path.
- */
-export function resolveVehicleImageUrl(urlOrPath: string): string {
-  return resolveVehicleUrl(urlOrPath, "medium") ?? urlOrPath;
-}
-
-/**
- * @deprecated Use resolveVehicleUrl() instead.
- */
-export function getVehiclePublicUrl(
-  storagePath: string,
-  variant: ImageVariant = "medium",
-): string {
-  return resolveVehicleUrl(storagePath, variant) ?? storagePath;
-}
-
 // ─── Re-export for callers importing from this module ─────────────
 export { normalizeSupabaseUrl };

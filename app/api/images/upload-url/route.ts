@@ -48,12 +48,14 @@ export async function POST(request: NextRequest) {
     .createSignedUploadUrl(originalPath, { upsert: false });
 
   if (error || !data) {
-    console.error("[upload-url] signed URL error:", error);
+    console.error("[upload-url] signed URL error", { garageId, vehicleId, error: error?.message });
     return NextResponse.json(
       { error: error?.message ?? "Impossible de générer l'URL signée" },
       { status: 500 },
     );
   }
+
+  console.log("[upload-url] ok", { garageId, vehicleId, basePath });
 
   return NextResponse.json({
     signedUrl:    data.signedUrl,
