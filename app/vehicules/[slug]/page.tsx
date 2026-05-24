@@ -25,12 +25,13 @@ import MobileVehicleFooter from "@/components/vehicles/detail/MobileVehicleFoote
 import VehicleContactSection from "@/components/vehicles/detail/VehicleContactSection";
 import VehicleRelatedSection from "@/components/vehicles/detail/VehicleRelatedSection";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { getVehicleBySlugParam } from "@/lib/db/vehicle.helpers";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
-import { extractShortId, buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import VehicleBreadcrumb from "@/components/vehicles/detail/VehicleBreadcrumb";
 import VehicleDetailHeader from "@/components/vehicles/detail/VehicleDetailHeader";
 import VehicleQualityCard from "@/components/vehicles/detail/VehicleQualityCard";
@@ -43,14 +44,6 @@ const GARAGE_ID = getActiveGarageId();
 // ISR — revalidation toutes les heures pour détecter l'assignation d'une catégorie
 export const revalidate = 3600;
 
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-async function getVehicle(slugParam: string): Promise<Vehicle | null> {
-	const shortId = extractShortId(slugParam);
-	if (shortId) return vehicleDb.getByShortId(GARAGE_ID, shortId).catch(() => null);
-	if (UUID_RE.test(slugParam)) return vehicleDb.getById(slugParam).catch(() => null);
-	return vehicleDb.getBySlug(GARAGE_ID, slugParam).catch(() => null);
-}
 
 interface PageProps {
 	params: Promise<{ slug: string }>;
@@ -58,7 +51,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const vehicle = await getVehicle(slug);
+	const vehicle = await getVehicleBySlugParam(slug, GARAGE_ID);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
 	// Route toujours noindex — Google indexe /occasions/[cat]/[slug] uniquement.
@@ -79,7 +72,7 @@ export async function generateStaticParams() {
 
 export default async function VehicleDetailPage({ params }: PageProps) {
 	const { slug } = await params;
-	const vehicle = await getVehicle(slug);
+	const vehicle = await getVehicleBySlugParam(slug, GARAGE_ID);
 	if (!vehicle) notFound();
 
 	const vSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
