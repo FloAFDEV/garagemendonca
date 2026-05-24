@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import type React from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
@@ -12,31 +11,17 @@ import Image from "next/image";
 import { getLogoSrc } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
 import BackToListingButton from "@/components/vehicles/BackToListingButton";
-import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 import OccasionsBreadcrumb from "@/components/vehicles/detail/OccasionsBreadcrumb";
 import VehicleDetailHeader from "@/components/vehicles/detail/VehicleDetailHeader";
-import {
-	Phone,
-	MessageSquare,
-	CheckCircle2,
-	ShieldCheck,
-	CalendarDays,
-	Gauge,
-	Zap,
-	Settings2,
-	Activity,
-	Palette,
-	DoorOpen,
-	Leaf,
-	ClipboardList,
-} from "lucide-react";
+import VehicleQualityCard from "@/components/vehicles/detail/VehicleQualityCard";
+import VehicleTechSpecs from "@/components/vehicles/detail/VehicleTechSpecs";
+import { Phone, MessageSquare, ShieldCheck } from "lucide-react";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getVehicleBySlugParam } from "@/lib/db/vehicle.helpers";
 import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
-import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { buildOccasionUrl, generateVehicleSlug } from "@/lib/utils/slug";
@@ -140,63 +125,16 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 						<div className="space-y-8 min-w-0">
 							<VehicleGallery images={getVehicleImages(vehicle)} vehicleName={vehicleName} vehicleImages={vehicle.vehicleImages} />
 
-							{/* Description & Confiance */}
-							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-8">
-								<FormatVehicleDescription text={vehicle.description_marketing ?? vehicle.description ?? ""} />
-								<div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
-									{([
-										"Contrôle technique à jour",
-										"Révision effectuée",
-										<QualityControlTooltip key="qc" variant="inline" triggerClassName="text-sm font-normal text-slate-700">
-											Vérification 160 points
-										</QualityControlTooltip>,
-										(vehicle.features?.garantie || (vehicle.features as Record<string, unknown> | undefined)?.["Garantie"])
-											? `Garantie ${vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown>)["Garantie"]}`
-											: "Garantie 6 à 12 mois",
-									] as React.ReactNode[]).map((item, idx) => (
-										<div key={idx} className="flex items-center gap-3 text-sm font-normal text-slate-700">
-											<CheckCircle2 size={16} className="text-emerald-500" /> {item}
-										</div>
-									))}
-								</div>
-							</div>
+							<VehicleQualityCard
+								descriptionText={descriptionText}
+								garantieLabel={garantieLabel}
+							/>
 
 							{vehicle.options && Object.keys(vehicle.options).length > 0 && (
 								<VehicleOptionsDisplay options={vehicle.options} />
 							)}
 
-							{/* FICHE TECHNIQUE */}
-							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-4 sm:p-6 md:p-8">
-								<div className="flex items-center gap-3 mb-6 sm:mb-8">
-									<div className="flex-shrink-0 w-9 h-9 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center">
-										<ClipboardList size={16} className="text-brand-500" aria-hidden="true" />
-									</div>
-									<h2 className="font-heading font-medium text-[#0f172a] text-lg sm:text-xl tracking-tight">Fiche Technique</h2>
-									<div className="h-px flex-1 bg-slate-100" aria-hidden="true" />
-								</div>
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
-									{([
-										{ icon: CalendarDays, label: "Année",        value: String(vehicle.year) },
-										{ icon: Gauge,        label: "Kilométrage",  value: `${vehicle.mileage.toLocaleString("fr-FR")} km` },
-										{ icon: Zap,          label: "Énergie",      value: vehicle.fuel },
-										{ icon: Settings2,    label: "Transmission", value: vehicle.transmission },
-										...(vehicle.power ? [{ icon: Activity, label: "Puissance", value: `${vehicle.power} ch` }] : []),
-										...(displayColor    ? [{ icon: Palette,  label: "Teinte",    value: displayColor }] : []),
-										{ icon: DoorOpen, label: "Portes", value: `${vehicle.doors} portes` },
-										...(vehicle.critAir ? [{ icon: Leaf, label: "Crit'Air", value: `Classe ${vehicle.critAir}` }] : []),
-									] as { icon: React.ElementType; label: string; value: string }[]).map(({ icon: Icon, label, value }) => (
-										<div key={label} className="group flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-brand-200 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-default">
-											<div className="flex-shrink-0 w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:border-brand-200 group-hover:bg-brand-50 transition-colors duration-200">
-												<Icon size={16} className="text-slate-400 group-hover:text-brand-500 transition-colors duration-200" aria-hidden="true" />
-											</div>
-											<div className="min-w-0 flex-1">
-												<p className="text-[10px] font-medium uppercase tracking-widest text-slate-400 leading-none mb-1">{label}</p>
-												<p className="text-sm font-medium text-[#0f172a] leading-tight truncate">{value}</p>
-											</div>
-										</div>
-									))}
-								</div>
-							</div>
+							<VehicleTechSpecs vehicle={vehicle} displayColor={displayColor} />
 						</div>
 
 						{/* ════ Colonne droite STICKY ════ */}
