@@ -102,6 +102,14 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
 	const vehicleLabel = `${vehicleName} · ${vehicle.price.toLocaleString("fr-FR")} €`;
 
+	const marketingBadge = getMarketingBadge(vehicle.features as Record<string, unknown>);
+	// Logique originale || / ?? préservée — comportement falsy intentionnel (identique à /vehicules)
+	const garantieRaw = (vehicle.features?.garantie || (vehicle.features as Record<string, unknown> | undefined)?.["Garantie"])
+		? (vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown>)["Garantie"] as string)
+		: null;
+	const garantieLabel = garantieRaw ? `Garantie ${garantieRaw}` : "Garantie 6 à 12 mois";
+	const descriptionText = vehicle.description_marketing ?? vehicle.description ?? "";
+
 	const vehicleCanonical = buildVehicleOccasionCanonical(vehicleCategorySlug, vehicle);
 	const jsonLdCar = buildVehicleJsonLd(vehicle, vehicleCanonical, displayColor);
 
