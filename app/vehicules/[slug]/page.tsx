@@ -164,7 +164,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 					/>
 
 					{relatedVehicles.length > 0 && (
-						<VehicleRelatedSection vehicles={relatedVehicles} />
+						<VehicleRelatedSection
+							vehicles={relatedVehicles}
+							listHref="/vehicules"
+							listLabel="Voir tout le stock"
+						/>
 					)}
 				</Container>
 			</div>
