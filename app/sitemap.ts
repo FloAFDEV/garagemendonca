@@ -4,6 +4,10 @@ import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRep
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getActiveGarageId } from "@/lib/config/garage";
 
+// Sitemap regénéré toutes les 12h — évite de requêter Supabase
+// à chaque fetch Googlebot (généralement quotidien).
+export const revalidate = 43200;
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.garagemendonca.com";
 const GARAGE_ID = getActiveGarageId();

@@ -16,6 +16,9 @@ import { getCategoryIcon } from "@/lib/data/categoryIcons";
 const GARAGE_ID = getActiveGarageId();
 const BASE_URL  = "https://www.garagemendonca.com";
 
+// ISR — revalide toutes les heures pour publier les nouveaux véhicules
+export const revalidate = 3600;
+
 type Props = {
   params: Promise<{ categorySlug: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -30,25 +33,36 @@ export async function generateStaticParams() {
 
 // ─── Metadata ────────────────────────────────────────────────────
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { categorySlug } = await params;
+  const sp = await searchParams;
+  const pageNum = Math.max(1, parseInt(typeof sp.page === "string" ? sp.page : "1", 10) || 1);
+
   const category = await vehicleCategoryRepository.getBySlug(GARAGE_ID, categorySlug).catch(() => null);
   if (!category) return { title: "Catégorie introuvable" };
 
   const totalCount = await vehicleDb.countPublic(GARAGE_ID, { category: category.slug }).catch(() => 0);
 
-  const title       = `${category.label} d'occasion — Garage Mendonça · Drémil-Lafage`;
-  const description = `Découvrez nos ${totalCount} ${category.label.toLowerCase()} d'occasion révisés et garantis au Garage Mendonça (Drémil-Lafage, 31). Inspection 160 points, garantie 6 à 12 mois, financement personnalisé.`;
-  const url         = `${BASE_URL}/occasions/${category.slug}`;
+  const baseUrl  = `${BASE_URL}/occasions/${category.slug}`;
+  // Canonical = page 1 (hub de catégorie). Pages 2+ indexées avec canonical → page 1.
+  const canonical = baseUrl;
+
+  const title = pageNum === 1
+    ? `${category.label} d'occasion — Garage Mendonça · Drémil-Lafage`
+    : `${category.label} d'occasion — Page ${pageNum} | Garage Mendonça`;
+
+  const description = pageNum === 1
+    ? `Découvrez nos ${totalCount} ${category.label.toLowerCase()} d'occasion révisés et garantis au Garage Mendonça (Drémil-Lafage, 31). Inspection 160 points, garantie 6 à 12 mois, financement personnalisé.`
+    : `${category.label} d'occasion — page ${pageNum}. ${totalCount} véhicules disponibles au Garage Mendonça, Drémil-Lafage. Garantie 6–12 mois, révision complète incluse.`;
 
   return {
     title,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
-      url,
+      url: canonical,
       type:     "website",
       locale:   "fr_FR",
       siteName: "Garage Auto Mendonca",

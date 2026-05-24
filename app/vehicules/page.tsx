@@ -101,6 +101,7 @@ export async function generateMetadata({
       type: "website",
       siteName: "Garage Mendonça",
       locale: "fr_FR",
+      images: [{ url: "/images/og-image.webp", width: 1200, height: 630, alt: "Voitures d'occasion Garage Mendonça" }],
     },
     twitter: { card: "summary_large_image", title: "Voitures d'occasion — Garage Mendonça", description: desc },
   };
