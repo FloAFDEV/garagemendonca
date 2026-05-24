@@ -26,11 +26,9 @@ import Image from "next/image";
 import { getLogoSrc } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
 import BackToListingButton from "@/components/vehicles/BackToListingButton";
-import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 import {
 	Phone,
 	MessageSquare,
-	CheckCircle2,
 	ShieldCheck,
 	CalendarDays,
 	Gauge,
@@ -46,12 +44,12 @@ import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
-import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { extractShortId, buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import VehicleBreadcrumb from "@/components/vehicles/detail/VehicleBreadcrumb";
 import VehicleDetailHeader from "@/components/vehicles/detail/VehicleDetailHeader";
+import VehicleQualityCard from "@/components/vehicles/detail/VehicleQualityCard";
 import { buildVehicleFallbackCanonical, buildVehicleMetadata, buildVehicleJsonLd } from "@/lib/seo/vehicle";
 import type { Vehicle } from "@/types";
 
@@ -127,6 +125,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
 	const vehicleLabel = `${vehicleName} · ${vehicle.price.toLocaleString("fr-FR")} €`;
 	const marketingBadge = getMarketingBadge(vehicle.features as Record<string, unknown>);
+	// Logique originale || / ?? préservée — comportement falsy intentionnel
+	const garantieRaw = (vehicle.features?.garantie || (vehicle.features as Record<string, unknown> | undefined)?.["Garantie"])
+		? (vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown>)["Garantie"] as string)
+		: null;
+	const garantieLabel = garantieRaw ? `Garantie ${garantieRaw}` : "Garantie 6 à 12 mois";
+	const descriptionText = vehicle.description_marketing ?? vehicle.description ?? "";
 	const vehicleCanonical = `https://www.garagemendonca.com${buildVehicleUrl(vSlug, vehicle.id)}`;
 
 	const jsonLdCar = buildVehicleJsonLd(vehicle, vehicleCanonical, displayColor);
@@ -151,25 +155,10 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 						<div className="space-y-8 min-w-0">
 							<VehicleGallery images={getVehicleImages(vehicle)} vehicleName={vehicleName} vehicleImages={vehicle.vehicleImages} />
 
-							<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-8">
-								<FormatVehicleDescription text={vehicle.description_marketing ?? vehicle.description ?? ""} />
-								<div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
-									{([
-										"Contrôle technique à jour",
-										"Révision effectuée",
-										<QualityControlTooltip key="qc" variant="inline" triggerClassName="text-sm font-normal text-slate-700">
-											Vérification 160 points
-										</QualityControlTooltip>,
-										(vehicle.features?.garantie || (vehicle.features as Record<string, unknown> | undefined)?.["Garantie"])
-											? `Garantie ${vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown>)["Garantie"]}`
-											: "Garantie 6 à 12 mois",
-									] as React.ReactNode[]).map((item, idx) => (
-										<div key={idx} className="flex items-center gap-3 text-sm font-normal text-slate-700">
-											<CheckCircle2 size={16} className="text-emerald-500" /> {item}
-										</div>
-									))}
-								</div>
-							</div>
+							<VehicleQualityCard
+								descriptionText={descriptionText}
+								garantieLabel={garantieLabel}
+							/>
 
 							{vehicle.options && Object.keys(vehicle.options).length > 0 && (
 								<VehicleOptionsDisplay options={vehicle.options} />
