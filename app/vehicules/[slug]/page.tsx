@@ -51,6 +51,7 @@ import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { extractShortId, buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { buildVehicleFallbackCanonical, buildVehicleMetadata } from "@/lib/seo/vehicle";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
@@ -76,23 +77,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const vehicle = await getVehicle(slug);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
-	const vSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
-	const categorySlug = vehicle.categorySlug;
-	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} € | Garage Mendonça`;
-	const desc = vehicle.meta_description ??
-		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, boîte ${vehicle.transmission}. Révisé et garanti. Garage Mendonça.`;
-
-	// Canonical = /occasions/[cat]/[slug] si catégorie connue, sinon self-canonical temporaire
-	const canonical = categorySlug
-		? `https://www.garagemendonca.com${buildOccasionUrl(categorySlug, vSlug, vehicle.id)}`
-		: `https://www.garagemendonca.com${buildVehicleUrl(vSlug, vehicle.id)}`;
-
-	return {
-		title,
-		// Toujours noindex — Google doit indexer /occasions/[cat]/[slug] uniquement
-		robots: { index: false, follow: true },
-		alternates: { canonical },
-	};
+	// Route toujours noindex — Google indexe /occasions/[cat]/[slug] uniquement.
+	// Canonical → /occasions/[cat]/[slug] si catégorie connue, sinon self-canonical.
+	const canonical = buildVehicleFallbackCanonical(vehicle);
+	return buildVehicleMetadata(vehicle, { canonical, noindex: true });
 }
 
 export async function generateStaticParams() {
