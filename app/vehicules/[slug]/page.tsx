@@ -32,7 +32,6 @@ import {
 	MessageSquare,
 	CheckCircle2,
 	ShieldCheck,
-	Star,
 	CalendarDays,
 	Gauge,
 	Zap,
@@ -52,6 +51,7 @@ import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { extractShortId, buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import VehicleBreadcrumb from "@/components/vehicles/detail/VehicleBreadcrumb";
+import VehicleDetailHeader from "@/components/vehicles/detail/VehicleDetailHeader";
 import { buildVehicleFallbackCanonical, buildVehicleMetadata, buildVehicleJsonLd } from "@/lib/seo/vehicle";
 import type { Vehicle } from "@/types";
 
@@ -126,6 +126,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const isAvailable = vehicle.status !== "sold";
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
 	const vehicleLabel = `${vehicleName} · ${vehicle.price.toLocaleString("fr-FR")} €`;
+	const marketingBadge = getMarketingBadge(vehicle.features as Record<string, unknown>);
 	const vehicleCanonical = `https://www.garagemendonca.com${buildVehicleUrl(vSlug, vehicle.id)}`;
 
 	const jsonLdCar = buildVehicleJsonLd(vehicle, vehicleCanonical, displayColor);
@@ -140,43 +141,11 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 					<BackToListingButton className="inline-flex items-center gap-1.5 text-[#64748b] hover:text-brand-600 transition-colors mb-3 sm:mb-5 text-sm font-medium" />
 
-					<div className="flex flex-wrap items-start justify-between gap-3 mb-3 sm:mb-6">
-						<div className="flex items-start gap-3">
-							<div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-1.5 sm:p-2 flex items-center justify-center">
-								<Image src={getLogoSrc(vehicle.brand)} alt={vehicle.brand} width={48} height={48} className="object-contain" />
-							</div>
-							<div>
-								<div className="flex items-center flex-wrap gap-2 mb-1.5">
-									{vehicle.featured && (
-										<span className="inline-flex items-center gap-1 bg-brand-500 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
-											<Star size={10} fill="currentColor" /> À la une
-										</span>
-									)}
-									<span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full ${isAvailable ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-500"}`}>
-										<span className={`w-1.5 h-1.5 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-slate-400"}`} />
-										{isAvailable ? "Disponible" : "Vendue"}
-									</span>
-									{(() => {
-										const badge = getMarketingBadge(vehicle.features as Record<string, unknown>);
-										if (!badge) return null;
-										return (
-											<span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full ${badge.variant === "arrivage" ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"}`}>
-												{badge.label}
-											</span>
-										);
-									})()}
-								</div>
-								<h1 className="ty-heading text-[#0f172a] text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight">
-									{vehicle.brand} {vehicle.model}
-									{vehicle.features?.["Finition"] && (
-										<span className="text-slate-400 font-medium text-base sm:text-xl ml-2">
-											{" — "}{vehicle.features["Finition"]}
-										</span>
-									)}
-								</h1>
-							</div>
-						</div>
-					</div>
+					<VehicleDetailHeader
+						vehicle={vehicle}
+						isAvailable={isAvailable}
+						marketingBadge={marketingBadge}
+					/>
 
 					<div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 sm:gap-8 lg:gap-10 items-start relative">
 						<div className="space-y-8 min-w-0">
