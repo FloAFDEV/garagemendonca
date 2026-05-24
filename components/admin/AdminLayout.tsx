@@ -75,7 +75,7 @@ export default function AdminLayout({
 
 	return (
 		<div
-			className={clsx("min-h-screen flex", bg)}
+			className={clsx("min-h-screen w-full overflow-x-hidden flex", bg)}
 			data-admin-theme={isDark ? "dark" : "light"}
 		>
 				{/* Sidebar overlay (mobile) */}
