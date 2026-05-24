@@ -30,6 +30,7 @@ import {
 	ClipboardList,
 } from "lucide-react";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
+import { getVehicleBySlugParam } from "@/lib/db/vehicle.helpers";
 import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { getVehicleImages } from "@/lib/utils/vehicle-images";
@@ -37,22 +38,13 @@ import { getActiveGarageId } from "@/lib/config/garage";
 import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
-import { extractShortId, buildOccasionUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { buildOccasionUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { buildVehicleMetadata, buildVehicleOccasionCanonical, buildVehicleJsonLd } from "@/lib/seo/vehicle";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
-const BASE_URL  = "https://www.garagemendonca.com";
 
 export const revalidate = 3600;
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
-async function getVehicle(slugParam: string): Promise<Vehicle | null> {
-	const shortId = extractShortId(slugParam);
-	if (shortId) return vehicleDb.getByShortId(GARAGE_ID, shortId).catch(() => null);
-	if (UUID_RE.test(slugParam)) return vehicleDb.getById(slugParam).catch(() => null);
-	return vehicleDb.getBySlug(GARAGE_ID, slugParam).catch(() => null);
-}
 
 interface PageProps {
 	params: Promise<{ categorySlug: string; vehicleSlug: string }>;
@@ -60,29 +52,12 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { categorySlug, vehicleSlug } = await params;
-	const vehicle = await getVehicle(vehicleSlug);
+	const vehicle = await getVehicleBySlugParam(vehicleSlug, GARAGE_ID);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
-	const vSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
-	const canonical = `${BASE_URL}${buildOccasionUrl(categorySlug, vSlug, vehicle.id)}`;
-	const title = `${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${vehicle.price.toLocaleString("fr-FR")} € | Garage Mendonça`;
-	const desc = vehicle.meta_description ??
-		`${vehicle.brand} ${vehicle.model} ${vehicle.year}, ${vehicle.mileage.toLocaleString("fr-FR")} km, ${vehicle.fuel}, boîte ${vehicle.transmission}. Révisé et garanti. Garage Mendonça.`;
-	const ogImage = `${canonical}/opengraph-image`;
-
-	return {
-		title,
-		description: desc,
-		keywords: [vehicle.brand, vehicle.model, `${vehicle.brand} ${vehicle.model} occasion`, vehicle.fuel, vehicle.transmission],
-		robots: { index: vehicle.status !== "draft", follow: true },
-		alternates: { canonical },
-		openGraph: {
-			title, description: desc, url: canonical, type: "website",
-			siteName: "Garage Mendonça", locale: "fr_FR",
-			images: [{ url: ogImage, width: 1200, height: 630, alt: `${vehicle.brand} ${vehicle.model} ${vehicle.year}` }],
-		},
-		twitter: { card: "summary_large_image", title, description: desc, images: [ogImage] },
-	};
+	// Route indexable — canonical depuis les params (plus fiable que vehicle.categorySlug).
+	const canonical = buildVehicleOccasionCanonical(categorySlug, vehicle);
+	return buildVehicleMetadata(vehicle, { canonical, noindex: false });
 }
 
 export async function generateStaticParams() {
@@ -98,7 +73,7 @@ export async function generateStaticParams() {
 
 export default async function OccasionsVehicleDetailPage({ params }: PageProps) {
 	const { categorySlug, vehicleSlug } = await params;
-	const vehicle = await getVehicle(vehicleSlug);
+	const vehicle = await getVehicleBySlugParam(vehicleSlug, GARAGE_ID);
 	if (!vehicle) notFound();
 
 	const vSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
@@ -127,34 +102,8 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 	const vehicleName = `${vehicle.brand} ${vehicle.model} ${vehicle.year}`;
 	const vehicleLabel = `${vehicleName} · ${vehicle.price.toLocaleString("fr-FR")} €`;
 
-	const vehicleCanonical = `${BASE_URL}${buildOccasionUrl(vehicleCategorySlug, vSlug, vehicle.id)}`;
-	const jsonLdCar = {
-		"@context": "https://schema.org",
-		"@type": "Car",
-		name: vehicleName,
-		url: vehicleCanonical,
-		description: vehicle.meta_description ?? (vehicle.description_marketing ?? vehicle.description ?? "").slice(0, 200),
-		image: `${vehicleCanonical}/opengraph-image`,
-		brand: { "@type": "Brand", name: vehicle.brand },
-		model: vehicle.model,
-		modelDate: vehicle.year.toString(),
-		mileageFromOdometer: { "@type": "QuantitativeValue", value: vehicle.mileage, unitCode: "KMT" },
-		fuelType: vehicle.fuel,
-		vehicleTransmission: vehicle.transmission,
-		numberOfDoors: vehicle.doors,
-		color: displayColor ?? undefined,
-		vehicleEngine: vehicle.power
-			? { "@type": "EngineSpecification", enginePower: { "@type": "QuantitativeValue", value: vehicle.power, unitCode: "BHP" } }
-			: undefined,
-		offers: {
-			"@type": "Offer",
-			url: vehicleCanonical,
-			priceCurrency: "EUR",
-			price: vehicle.price,
-			availability: isAvailable ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
-			seller: { "@type": "AutoDealer", name: "Garage Auto Mendonça" },
-		},
-	};
+	const vehicleCanonical = buildVehicleOccasionCanonical(vehicleCategorySlug, vehicle);
+	const jsonLdCar = buildVehicleJsonLd(vehicle, vehicleCanonical, displayColor);
 
 	return (
 		<MainLayout>
