@@ -14,7 +14,7 @@ import type { UIVehicleFilters } from "@/types/ui";
 export const vehicleKeys = {
   all:    ()                        => ["vehicles"]                    as const,
   lists:  ()                        => ["vehicles", "list"]            as const,
-  list:   (filters?: UIVehicleFilters) => ["vehicles", "list", filters ?? {}] as const,
+  list:   (filters?: UIVehicleFilters) => ["vehicles", "list", JSON.stringify(filters ?? null)] as const,
   admin:  (garageId: string)        => ["vehicles", "admin", garageId] as const,
   detail: (slug: string)            => ["vehicles", "detail", slug]    as const,
 };
