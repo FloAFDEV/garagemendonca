@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehicleGallery from "@/components/vehicles/VehicleGallery";
-import VehicleCard from "@/components/vehicles/VehicleCard";
-import VehicleContactFormLazy from "@/components/vehicles/VehicleContactFormLazy";
-import GarageAddressBlock from "@/components/layout/GarageAddressBlock";
-import Image from "next/image";
-import { getLogoSrc } from "@/lib/brandLogos";
 import VehicleOptionsDisplay from "@/components/vehicles/VehicleOptionsDisplay";
 import BackToListingButton from "@/components/vehicles/BackToListingButton";
 import OccasionsBreadcrumb from "@/components/vehicles/detail/OccasionsBreadcrumb";
 import VehicleDetailHeader from "@/components/vehicles/detail/VehicleDetailHeader";
 import VehicleQualityCard from "@/components/vehicles/detail/VehicleQualityCard";
 import VehicleTechSpecs from "@/components/vehicles/detail/VehicleTechSpecs";
-import { Phone, MessageSquare, ShieldCheck } from "lucide-react";
+import VehiclePriceSidebar from "@/components/vehicles/detail/VehiclePriceSidebar";
+import VehicleContactSection from "@/components/vehicles/detail/VehicleContactSection";
+import VehicleRelatedSection from "@/components/vehicles/detail/VehicleRelatedSection";
+import MobileVehicleFooter from "@/components/vehicles/detail/MobileVehicleFooter";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { getVehicleBySlugParam } from "@/lib/db/vehicle.helpers";
 import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
@@ -137,90 +134,28 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 							<VehicleTechSpecs vehicle={vehicle} displayColor={displayColor} />
 						</div>
 
-						{/* ════ Colonne droite STICKY ════ */}
-						<aside className="lg:sticky lg:top-[120px] space-y-6 self-start h-fit">
-							<div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-5 sm:p-8">
-								<div className="mb-4 pb-4 border-b border-slate-100">
-									<div className="mt-4 m-4 flex items-center gap-3">
-										<Image src={getLogoSrc(vehicle.brand)} alt={vehicle.brand} width={44} height={44} className="object-contain border rounded-md p-1 bg-white flex-shrink-0" />
-										<div>
-											<p className="font-medium text-[#0f172a] leading-tight">{vehicle.brand} {vehicle.model}</p>
-											<p className="text-slate-400 text-sm leading-tight mt-0.5">{vehicle.year}</p>
-										</div>
-									</div>
-									<div className="ty-value font-heading text-3xl sm:text-4xl">{vehicle.price.toLocaleString("fr-FR")} €</div>
-									<p className="text-slate-500 text-sm mt-1 font-medium">{vehicle.mileage.toLocaleString("fr-FR")} km</p>
-									{(() => {
-										const garantie = vehicle.features?.garantie ?? (vehicle.features as Record<string, unknown> | undefined)?.["Garantie"] as string | undefined;
-										if (!garantie) return null;
-										return (
-											<span className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold px-3 py-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full">
-												<ShieldCheck size={12} className="text-emerald-500" /> Garantie {garantie}
-											</span>
-										);
-									})()}
-								</div>
-								<div className="space-y-4">
-									<a href="tel:0532002038" className="btn-primary w-full justify-center py-4 text-base shadow-lg shadow-brand-500/20">
-										<Phone size={18} /> 05 32 00 20 38
-									</a>
-									<a href="#contact-vehicule" className="btn-secondary w-full justify-center py-4 text-sm border-2 border-brand-500 text-brand-600 bg-transparent hover:bg-brand-50">
-										<MessageSquare size={17} /> Envoyer un message
-									</a>
-								</div>
-								<ul className="mt-5 space-y-3">
-									{["Essai possible sur RDV", "Reprise de votre véhicule", "Financement personnalisé", "Spécialiste boîte auto"].map((item) => (
-										<li key={item} className="flex items-center gap-3 text-sm font-light text-slate-600">
-											<ShieldCheck size={18} className="text-brand-500" /> {item}
-										</li>
-									))}
-								</ul>
-							</div>
-							<GarageAddressBlock />
-						</aside>
+						<VehiclePriceSidebar vehicle={vehicle} />
 					</div>
 
-					{/* ── Formulaire de contact ── */}
-					<section id="contact-vehicule" className="mt-16 scroll-mt-24 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-100 py-16">
-						<div className="max-w-2xl mx-auto">
-							<div className="mb-8 text-center">
-								<div className="inline-flex items-center gap-2 bg-brand-50 border border-brand-100 rounded-full px-4 py-1.5 text-brand-600 text-xs font-medium mb-4">
-									<MessageSquare size={13} /> Demande d&apos;information
-								</div>
-								<h2 className="ty-heading text-[#0f172a] text-2xl sm:text-3xl mb-3">Intéressé par ce véhicule ?</h2>
-								<p className="text-slate-500 text-base">Envoyez-nous un message — nous vous répondons sous 24 h.</p>
-							</div>
-							<div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xl">
-								<VehicleContactFormLazy vehicleId={vehicle.id} vehicleName={vehicleName} vehicleLabel={vehicleLabel} garageId={GARAGE_ID} isAvailable={isAvailable} />
-							</div>
-						</div>
-					</section>
+					<VehicleContactSection
+						vehicleId={vehicle.id}
+						vehicleName={vehicleName}
+						vehicleLabel={vehicleLabel}
+						garageId={GARAGE_ID}
+						isAvailable={isAvailable}
+					/>
 
-					{/* Véhicules similaires */}
 					{relatedVehicles.length > 0 && (
-						<section className="mt-16 border-t border-slate-100 pt-12">
-							<div className="flex items-center justify-between mb-6">
-								<h2 className="ty-heading text-[#0f172a] text-3xl">Suggestions</h2>
-								<Link href={`/occasions/${vehicleCategorySlug}`} className="text-sm font-normal text-brand-600 hover:text-brand-700 underline underline-offset-4">
-									Voir plus de {category?.label?.toLowerCase() ?? "véhicules"}
-								</Link>
-							</div>
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-								{relatedVehicles.map((v) => <VehicleCard key={v.id} vehicle={v} />)}
-							</div>
-						</section>
+						<VehicleRelatedSection
+							vehicles={relatedVehicles}
+							listHref={`/occasions/${vehicleCategorySlug}`}
+							listLabel={`Voir plus de ${category?.label?.toLowerCase() ?? "véhicules"}`}
+						/>
 					)}
 				</Container>
 			</div>
 
-			{/* CTA Mobile Sticky */}
-			<div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 sm:px-6 pt-3 flex items-center gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
-				<div className="flex-1">
-					<p className="ty-value font-heading text-2xl leading-none">{vehicle.price.toLocaleString("fr-FR")} €</p>
-				</div>
-				<a href="tel:0532002038" className="btn-primary py-3.5 px-6 shadow-md shadow-brand-500/20"><Phone size={18} /></a>
-				<a href="#contact-vehicule" className="btn-secondary py-3.5 px-4"><MessageSquare size={18} /></a>
-			</div>
+			<MobileVehicleFooter price={vehicle.price} />
 		</MainLayout>
 	);
 }
