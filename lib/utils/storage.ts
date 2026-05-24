@@ -1,5 +1,81 @@
 const SUPABASE_BASE = () => process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
+const VEHICLE_BUCKET = "vehicle-images";
+
+// ─── Variant types ────────────────────────────────────────────────
+
+export type ImageVariant = "thumb" | "medium" | "large";
+
+// ─── Legacy detection ─────────────────────────────────────────────
+
+/**
+ * Returns true if the storage_path points to a legacy single file
+ * (path ends with an image extension like .webp, .jpg, .jpeg, .png).
+ * New multi-variant paths have NO extension (they are base paths).
+ */
+export function isLegacyPath(storagePath: string): boolean {
+  return /\.(webp|jpg|jpeg|png|gif)$/i.test(storagePath);
+}
+
+// ─── Variant paths ────────────────────────────────────────────────
+
+/**
+ * Given a base path (no extension), returns the three variant storage paths.
+ * e.g. "abc/vehicles/uuid/img-id" →
+ *   { thumb: "…-thumb.webp", medium: "…-medium.webp", large: "…-large.webp" }
+ */
+export function getVariantPaths(basePath: string): Record<ImageVariant, string> {
+  return {
+    thumb:  `${basePath}-thumb.webp`,
+    medium: `${basePath}-medium.webp`,
+    large:  `${basePath}-large.webp`,
+  };
+}
+
+/** Storage path for the temporary original file during processing. */
+export function getOriginalPath(basePath: string): string {
+  return `${basePath}-orig`;
+}
+
+/**
+ * Extracts the base path from a variant storage path or URL.
+ * - `{base}-medium.webp` → `{base}`
+ * - `{base}-thumb.webp`  → `{base}`
+ * - `{base}-large.webp`  → `{base}`
+ * - Already a base path  → returned as-is
+ * - Full Supabase URL    → extracts storage path first, then strips suffix
+ */
+export function extractBasePath(urlOrPath: string): string {
+  // Resolve full URL to storage path
+  const storagePath = urlOrPath.startsWith("http")
+    ? (extractStoragePath(urlOrPath) ?? urlOrPath)
+    : urlOrPath;
+
+  // Strip variant suffixes
+  return storagePath.replace(/-(?:thumb|medium|large|orig)\.webp$/i, "");
+}
+
+// ─── Public URL helpers ───────────────────────────────────────────
+
+/**
+ * Returns the public CDN URL for a vehicle image.
+ * - Legacy path (ends with extension) → direct public URL
+ * - New base path + variant           → variant public URL
+ * - Fallback: medium variant
+ */
+export function getVehicleImageUrl(
+  storagePath: string | null | undefined,
+  variant: ImageVariant = "medium",
+): string | null {
+  if (!storagePath) return null;
+
+  const path = isLegacyPath(storagePath)
+    ? storagePath
+    : getVariantPaths(storagePath)[variant];
+
+  return getStoragePublicUrl(VEHICLE_BUCKET, path);
+}
+
 /**
  * Extracts the storage_path from a Supabase Storage URL or plain path.
  * - Full Supabase URL (public or signed) → path segment after the bucket name
