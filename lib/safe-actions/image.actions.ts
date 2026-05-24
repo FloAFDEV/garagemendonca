@@ -60,11 +60,18 @@ export async function syncVehicleImages(
     .filter((img) => !urlsToKeep.has(img.url) && img.storage_path)
     .map((img) => img.storage_path as string);
 
+  console.log("[syncVehicleImages] start", {
+    vehicleId,
+    incoming: imageUrls.length,
+    toDelete: pathsToDelete.length,
+  });
+
   // Delete storage files (handles both legacy single-file and multi-variant)
   for (const storagePath of pathsToDelete) {
     await deleteVehicleStoragePaths(db, storagePath).catch((err) => {
-      console.warn("[syncVehicleImages] storage delete failed:", storagePath, err);
+      console.warn("[syncVehicleImages] storage delete failed", { storagePath, error: String(err) });
     });
+    console.log("[syncVehicleImages] deleted", { storagePath, isLegacy: isLegacyPath(storagePath) });
   }
 
   // Remplace toutes les entrées
@@ -95,15 +102,22 @@ export async function syncVehicleImages(
 
     const { error } = await db.from("vehicle_images").insert(rows);
     if (error) throw error;
+
+    // Log how many images are new-format (basePath) vs legacy
+    const newFormatCount = rows.filter((r) => r.storage_path && !isLegacyPath(r.storage_path)).length;
+    const legacyCount    = rows.filter((r) => r.storage_path && isLegacyPath(r.storage_path)).length;
+    console.log("[syncVehicleImages] inserted", { vehicleId, total: rows.length, newFormat: newFormatCount, legacy: legacyCount });
   }
 
   // Met aussi à jour vehicles.images[] (légacy — fallback)
+  // Note: this JSONB column is kept as fallback for vehicles with no vehicle_images join.
+  // Safe to remove once all vehicles have vehicle_images rows and a clean migration is confirmed.
   const { error: legacyErr } = await db
     .from("vehicles")
     .update({ images: imageUrls, thumbnail_url: imageUrls[0] ?? null })
     .eq("id", vehicleId);
   if (legacyErr) {
-    console.warn("[syncVehicleImages] legacy vehicles.images update failed:", legacyErr.message);
+    console.warn("[syncVehicleImages] legacy vehicles.images update failed", { vehicleId, error: legacyErr.message });
   }
 
   revalidatePath("/vehicules");

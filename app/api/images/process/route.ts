@@ -92,6 +92,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Lecture de l'original échouée" }, { status: 500 });
   }
 
+  console.log("[process] start", { basePath, originalSize: inputBuffer.length });
+
   // ── 2. Generate & upload each variant ────────────────────────────
   const baseSharp = sharp(inputBuffer).rotate(); // auto-rotate EXIF once
 
@@ -123,9 +125,10 @@ export async function POST(request: NextRequest) {
           })
           .then(({ error }) => { if (error) throw error; }),
       );
+      console.log("[process] variant ok", { basePath, variant: variant.key, size: variantBuffer.length });
     } catch (err) {
       const msg = (err as Error).message;
-      console.error(`[process] upload failed for ${variant.key}:`, msg);
+      console.error("[process] upload failed", { basePath, variant: variant.key, error: msg });
       // Return error — client retries. Already-uploaded variants are safe (upsert).
       return NextResponse.json(
         { error: `Upload ${variant.key} échoué : ${msg}` },
@@ -140,6 +143,7 @@ export async function POST(request: NextRequest) {
 
   // ── 4. Return medium URL as canonical identifier ──────────────────
   const mediumUrl = getStoragePublicUrl(VEHICLE_BUCKET, variantPaths.medium);
+  console.log("[process] complete", { basePath, mediumUrl });
 
   return NextResponse.json({
     url:         mediumUrl,
