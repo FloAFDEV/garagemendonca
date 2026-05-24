@@ -8,7 +8,7 @@
 import type { Vehicle, VehicleFeatures, VehicleOptions, VehicleImage } from "@/types";
 import type { VehicleRow, VehicleInsert, VehicleUpdate } from "@/lib/supabase/database.types";
 import type { VehicleCreateInput, VehicleUpdateInput } from "@/lib/validation/vehicle.schema";
-import { getVehiclePublicUrl, resolveVehicleImageUrl } from "@/lib/utils/vehicle-images";
+import { resolveVehicleUrl } from "@/lib/utils/vehicle-images";
 import { isColorUnknown } from "@/lib/utils/detectVehicleColor";
 
 // ─────────────────────────────────────────────────────────────────
@@ -50,23 +50,16 @@ export function vehicleFromDb(row: VehicleRowWithImages): Vehicle {
       ? mapVehicleImages(row.vehicle_images)
       : undefined;
 
-  // vehicle_images jointes → source canonique des URLs.
-  // images[] = medium variant (900×675) — used for gallery slider.
-  // thumbnailUrl = thumb variant (480×360) — used for VehicleCard.
+  // images[] = medium variant (900×675) — gallery slider canonical URLs
+  // thumbnailUrl = thumb variant (480×360) — VehicleCard, ~4× lighter than medium
+  // resolveVehicleUrl handles legacy/basePath/full-URL transparently
   const images = joinedImages
-    ? joinedImages.map((i) =>
-        i.storage_path
-          ? getVehiclePublicUrl(i.storage_path, "medium")
-          : resolveVehicleImageUrl(i.url, "medium"),
-      )
-    : (row.images ?? []).map((u) => resolveVehicleImageUrl(u, "medium"));
+    ? joinedImages.map((i) => resolveVehicleUrl(i.storage_path ?? i.url, "medium")).filter(Boolean) as string[]
+    : (row.images ?? []).map((u) => resolveVehicleUrl(u, "medium")).filter(Boolean) as string[];
 
   const primaryImage = joinedImages?.find((i) => i.is_primary) ?? joinedImages?.[0];
-  const rawThumb = primaryImage?.url ?? row.thumbnail_url ?? undefined;
-  // Use thumb variant (480×360) for card display — much lighter than medium
-  const thumbnailUrl = primaryImage?.storage_path
-    ? getVehiclePublicUrl(primaryImage.storage_path, "thumb")
-    : (rawThumb ? resolveVehicleImageUrl(rawThumb, "thumb") : undefined);
+  const primarySource = primaryImage?.storage_path ?? primaryImage?.url ?? row.thumbnail_url ?? null;
+  const thumbnailUrl = resolveVehicleUrl(primarySource, "thumb") ?? undefined;
 
   return {
     id:               row.id,

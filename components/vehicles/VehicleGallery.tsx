@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
 import type { VehicleImage } from "@/types";
-import { toLargeUrl } from "@/lib/utils/vehicle-images";
+import { resolveVehicleUrl } from "@/lib/utils/vehicle-images";
 
 /* ─────────────────────────────────────────────────────────────
    Types
@@ -30,10 +30,13 @@ export default function VehicleGallery({
 	const [activeIdx, setActiveIdx] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
 
-	// Slider uses medium URLs (900×675) — already computed by vehicleFromDb
+	// Slider: medium URLs pre-computed by vehicleFromDb (900×675)
 	const displayUrls = images;
-	// Lightbox uses large URLs (1600×1200) for best quality — derived from medium
-	const lightboxUrls = images.map(toLargeUrl);
+	// Lightbox: large URLs (1600×1200) — resolveVehicleUrl handles all formats,
+	// no format knowledge required here. Legacy images gracefully fall back.
+	const lightboxUrls = vehicleImages?.length
+		? vehicleImages.map((img) => resolveVehicleUrl(img.storage_path ?? img.url, "large") ?? img.url)
+		: images.map((url) => resolveVehicleUrl(url, "large") ?? url);
 
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const thumbsRef = useRef<HTMLDivElement>(null);
