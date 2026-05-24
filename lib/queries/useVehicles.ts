@@ -17,11 +17,12 @@ import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 
 export function useVehicles(filters?: UIVehicleFilters) {
   return useQuery<UIVehicle[]>({
-    queryKey:  vehicleKeys.list(filters),
-    queryFn:   () => fetchVehiclesAction(GARAGE_ID, filters),
-    staleTime: STALE_TIMES.PUBLIC,
-    gcTime:    GC_TIMES.PUBLIC,
-    enabled:   !!GARAGE_ID,
+    queryKey:            vehicleKeys.list(filters),
+    queryFn:             () => fetchVehiclesAction(GARAGE_ID, filters),
+    staleTime:           STALE_TIMES.PUBLIC,
+    gcTime:              GC_TIMES.PUBLIC,
+    enabled:             !!GARAGE_ID,
+    refetchOnWindowFocus: false, // pas de rechargement intempestif au focus
   });
 }
 
@@ -31,11 +32,13 @@ export function useVehicles(filters?: UIVehicleFilters) {
 
 export function useAdminVehiclesList() {
   return useQuery<Vehicle[]>({
-    queryKey:  ["vehicles", "admin-list", GARAGE_ID],
-    queryFn:   getAdminVehicles,
-    staleTime: STALE_TIMES.ADMIN,   // 30s — données fraîches en background
-    gcTime:    GC_TIMES.ADMIN,      // 2min — cache conservé après navigation
-    enabled:   !!GARAGE_ID,
+    queryKey:            ["vehicles", "admin-list", GARAGE_ID],
+    queryFn:             getAdminVehicles,
+    staleTime:           STALE_TIMES.ADMIN_LIST, // 3 min — cache chaud pour retour liste
+    gcTime:              GC_TIMES.ADMIN_LIST,    // 10 min — survit aller-retour fiche
+    enabled:             !!GARAGE_ID,
+    refetchOnMount:      false, // affiche immédiatement le cache au retour
+    refetchOnWindowFocus: false, // pas de re-fetch sur focus fenêtre
   });
 }
 

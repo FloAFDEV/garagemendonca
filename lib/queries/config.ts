@@ -11,13 +11,15 @@
  */
 
 export const STALE_TIMES = {
-  PUBLIC:  5 * 60 * 1000,   // 5 min  — catalogue véhicules, fiche véhicule
-  ADMIN:   30 * 1000,        // 30 s   — messages, liste admin véhicules
-  STATIC:  60 * 60 * 1000,  // 1 h    — config garage, catégories
+  PUBLIC:     5 * 60 * 1000,  // 5 min  — catalogue véhicules, fiche véhicule
+  ADMIN:      30 * 1000,       // 30 s   — messages, données temps réel
+  ADMIN_LIST: 3  * 60 * 1000, // 3 min  — liste admin véhicules (back-nav UX)
+  STATIC:     60 * 60 * 1000, // 1 h    — config garage, catégories
 } as const;
 
 export const GC_TIMES = {
-  PUBLIC:  10 * 60 * 1000,  // 10 min
-  ADMIN:   2  * 60 * 1000,  // 2 min
-  STATIC:  24 * 60 * 60 * 1000, // 24 h
+  PUBLIC:     10 * 60 * 1000,      // 10 min
+  ADMIN:      2  * 60 * 1000,      // 2 min
+  ADMIN_LIST: 10 * 60 * 1000,      // 10 min — cache survit les navigations aller-retour
+  STATIC:     24 * 60 * 60 * 1000, // 24 h
 } as const;

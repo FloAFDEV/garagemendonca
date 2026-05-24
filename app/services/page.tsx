@@ -72,7 +72,7 @@ export default async function ServicesPage() {
 				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 			/>
 			{/* ── Hero page ── */}
-			<section className="relative bg-dark-900 overflow-hidden pt-36 pb-20">
+			<section className="relative bg-dark-900 overflow-hidden pt-24 pb-14">
 				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/5 rounded-full blur-[180px] pointer-events-none" aria-hidden="true" />
 				<Container className="relative">
 					<div className="flex items-start justify-between gap-6">
