@@ -78,7 +78,8 @@ function DashboardContent() {
 					className="btn-primary text-sm shrink-0"
 				>
 					<Plus size={16} aria-hidden="true" />
-					Ajouter un véhicule
+					<span className="hidden sm:inline">Ajouter un véhicule</span>
+					<span className="sm:hidden">Ajouter</span>
 				</Link>
 			</div>
 
