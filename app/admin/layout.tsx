@@ -49,5 +49,19 @@ export default async function AdminRootLayout({
     }
   }
 
-  return <AdminThemeRoot>{children}</AdminThemeRoot>;
+  return (
+    <>
+      {/*
+       * Script bloquant exécuté avant hydratation React.
+       * Lit localStorage et applique immédiatement la classe "dark" sur <html>
+       * → évite tout FOUC (flash of unstyled content) au rechargement.
+       */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `(function(){try{var t=localStorage.getItem('admin-theme');document.documentElement.classList.toggle('dark',t!=='light')}catch(e){}})()`,
+        }}
+      />
+      <AdminThemeRoot>{children}</AdminThemeRoot>
+    </>
+  );
 }

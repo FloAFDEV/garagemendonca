@@ -77,6 +77,7 @@ export default function AdminLayout({
 		<div
 			className={clsx("min-h-screen w-full overflow-x-hidden flex", bg)}
 			data-admin-theme={isDark ? "dark" : "light"}
+			suppressHydrationWarning
 		>
 				{/* Sidebar overlay (mobile) */}
 				{sidebarOpen && (
@@ -329,7 +330,7 @@ export default function AdminLayout({
 
 						<h1
 							className={clsx(
-								"font-normal text-base tracking-wide",
+								"font-normal text-base tracking-wide truncate min-w-0 flex-1 px-2",
 								t.txt,
 							)}
 						>
