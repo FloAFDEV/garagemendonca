@@ -429,7 +429,7 @@ function MessageDetail({
 
 				{/* Message original */}
 				<div className="bg-dark-900 rounded-xl p-4 border border-dark-800">
-					<p className="text-sm text-dark-400 leading-relaxed whitespace-pre-wrap">
+					<p className="text-sm text-dark-400 leading-relaxed whitespace-pre-wrap break-words overflow-hidden">
 						{message.message}
 					</p>
 				</div>
@@ -494,7 +494,7 @@ function MessageDetail({
 											: "bg-dark-800 text-slate-300 border border-dark-700 rounded-bl-sm",
 									)}
 								>
-									<p className="leading-relaxed whitespace-pre-wrap">
+									<p className="leading-relaxed whitespace-pre-wrap break-words overflow-hidden">
 										{reply.content}
 									</p>
 									<p
