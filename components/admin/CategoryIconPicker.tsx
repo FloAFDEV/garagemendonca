@@ -15,7 +15,7 @@ export default function CategoryIconPicker({ value, onChange }: Props) {
 
   return (
     <div className="space-y-2">
-      <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
+      <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-8 gap-1.5">
         {CATEGORY_ICON_LIST.map(({ name, label, Icon }) => {
           const selected = value === name;
           return (
