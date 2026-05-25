@@ -260,7 +260,7 @@ export default async function VehiculesPage({
 
           {vehicles.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
                 {vehicles.map((vehicle, i) =>
                   // Les 4 premières cartes sont above-the-fold : pas d'AnimateOnScroll
                   // (évite opacity:0 SSR qui exclut ces éléments du calcul LCP)
