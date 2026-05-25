@@ -304,7 +304,10 @@ export default function AdminLayout({
 				</aside>
 
 				{/* ── Main content ───────────────────────────────── */}
-				<div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
+				{/* min-w-0 : empêche le flex item d'avoir min-width:auto sur iOS Safari
+				    (bug connu : sans min-w-0, le contenu qui charge après ~1s via TanStack Query
+				    fait recalculer le flex item plus large que le viewport → overflow droite) */}
+				<div className="flex-1 min-w-0 lg:ml-64 flex flex-col min-h-screen">
 					{/* Top bar */}
 					<header
 						className={clsx(
@@ -377,7 +380,7 @@ export default function AdminLayout({
 					</header>
 
 					{/* Page content */}
-					<main className="flex-1 p-4 md:p-5">{children}</main>
+					<main className="flex-1 min-w-0 overflow-x-hidden p-4 md:p-5">{children}</main>
 				</div>
 			</div>
 	);

@@ -19,6 +19,7 @@
 		@apply bg-[#f8fafc] text-[#0f172a] font-sans antialiased;
 		font-weight: 400;
 		letter-spacing: 0.01em;
+		overflow-x: hidden; /* évite le scroll horizontal parasite sur iOS Safari */
 	}
 
 	h1,
