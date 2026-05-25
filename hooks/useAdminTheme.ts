@@ -18,6 +18,22 @@ function readStored(): AdminTheme {
 	return DEFAULT_THEME;
 }
 
+/**
+ * Lit la préférence depuis le DOM plutôt que depuis localStorage.
+ *
+ * Le script bloquant dans app/layout.tsx applique la classe "dark" sur <html>
+ * AVANT tout paint, de façon synchrone. En lisant depuis le DOM au moment
+ * où useState s'initialise (côté client, pendant l'hydratation), on obtient
+ * la valeur correcte dès le premier rendu client — sans useEffect, sans flash.
+ *
+ * Côté serveur (window absent) : retourne "dark" comme valeur de sécurité
+ * pour correspondre au rendu SSR (évite les avertissements d'hydratation).
+ */
+function readFromDOM(): AdminTheme {
+	if (typeof window === "undefined") return DEFAULT_THEME;
+	return document.documentElement.classList.contains("dark") ? "dark" : "light";
+}
+
 function applyTheme(theme: AdminTheme) {
 	document.documentElement.classList.toggle("dark", theme === "dark");
 	try {
@@ -28,9 +44,9 @@ function applyTheme(theme: AdminTheme) {
 }
 
 export function useAdminTheme() {
-	// Initialise synchronously from localStorage → pas de FOUC post-hydration
-	const [theme, setThemeState] = useState<AdminTheme>(readStored);
-	const [mounted, setMounted] = useState(false);
+	// Initialise depuis le DOM (valeur déjà correcte grâce au script bloquant)
+	// → évite le flash post-useEffect qui causait le « layout casse en 2 temps »
+	const [theme, setThemeState] = useState<AdminTheme>(readFromDOM);
 
 	// Applique immédiatement au DOM + sauvegarde
 	const setTheme = useCallback((next: AdminTheme) => {
@@ -43,12 +59,13 @@ export function useAdminTheme() {
 	}, [theme, setTheme]);
 
 	useEffect(() => {
-		// Réconcilie l'état React (initialisé côté serveur = "dark")
-		// avec la valeur réelle de localStorage (lue côté client).
+		// Cas limite : si le script bloquant n'a pas pu s'exécuter (rare),
+		// réconcilie avec la valeur réelle de localStorage.
 		const stored = readStored();
-		setThemeState(stored);
-		applyTheme(stored);
-		setMounted(true);
+		if (stored !== theme) {
+			setThemeState(stored);
+			applyTheme(stored);
+		}
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	// Synchronisation cross-onglets via l'événement "storage"
@@ -65,5 +82,5 @@ export function useAdminTheme() {
 		return () => window.removeEventListener("storage", handler);
 	}, []);
 
-	return { theme, setTheme, toggleTheme, mounted };
+	return { theme, setTheme, toggleTheme };
 }
