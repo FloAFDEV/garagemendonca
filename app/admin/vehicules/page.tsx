@@ -280,7 +280,9 @@ function StatusSelect({
 					/>
 					<div
 						className={clsx(
-							"absolute left-0 z-20 w-full rounded-xl shadow-xl overflow-hidden border",
+							// right-0 : ancré au bord droit du badge, s'étend vers la gauche
+							// min-w-[130px] : assez large pour "Brouillon ✓" / "Programmé ✓"
+							"absolute right-0 z-20 min-w-[130px] rounded-xl shadow-xl overflow-hidden border",
 							openUp ? "bottom-full mb-1" : "top-full mt-1",
 							t.dropdownBg,
 							t.dropdownBorder,
@@ -791,8 +793,10 @@ export default function AdminVehiclesPage() {
 							<p className={clsx("text-sm", t.txtSubtle)}>Aucun véhicule trouvé</p>
 						</div>
 					) : (
-						<div className={clsx("rounded-2xl border overflow-hidden", t.surface, t.border)}>
-							{paginated.map((vehicle) => (
+						/* overflow-hidden retiré : il clipperait les dropdowns absolute.
+						   Rounded corners sur le row button directement (1er/dernier item). */
+						<div className={clsx("rounded-2xl border", t.surface, t.border)}>
+							{paginated.map((vehicle, mobileIdx) => (
 								<div key={vehicle.id} className={clsx("border-b last:border-0", t.border)}>
 									{/* Main row — tap to edit */}
 									<div
@@ -802,6 +806,10 @@ export default function AdminVehiclesPage() {
 										onKeyDown={(e) => e.key === "Enter" && navigateToVehicle(vehicle.id)}
 										className={clsx(
 											"flex items-center gap-3 px-4 py-3 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-500",
+											// Coins arrondis sur le row hover (pas sur le wrapper) : évite overflow-hidden
+											// qui clipperait les dropdowns absolute z-20
+											mobileIdx === 0 && "rounded-t-2xl",
+											mobileIdx === paginated.length - 1 && "rounded-b-2xl",
 											t.tableRowHover,
 										)}
 									>
