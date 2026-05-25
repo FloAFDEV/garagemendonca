@@ -623,7 +623,7 @@ export default function AdminBannierePage() {
               {/* Pages d'affichage */}
               <div>
                 <label className={labelClass}>Pages d&apos;affichage</label>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                   {(
                     [
                       ["all", "Toutes les pages"],
@@ -671,13 +671,12 @@ export default function AdminBannierePage() {
           </div>
 
           {/* Submit */}
-          <div className="flex items-center justify-between gap-4 pt-2 pb-8">
-            <div />
+          <div className="pt-2 pb-8">
             <button
               type="submit"
               disabled={saveStatus !== "idle"}
               aria-busy={saveStatus === "saving"}
-              className="btn-primary text-sm py-2.5 px-7"
+              className="btn-primary w-full sm:w-auto sm:px-7 text-sm py-2.5 justify-center"
             >
               {saveStatus === "saving" ? (
                 <>

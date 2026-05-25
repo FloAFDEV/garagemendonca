@@ -301,19 +301,32 @@ export default function AdminHorairesPage() {
 											<div className="hidden lg:block" />
 										)}
 
-										{/* Closed badge desktop */}
+										{/* Badge "Fermé" — mobile : inline sous le toggle / desktop : colonne droite */}
 										{!open && (
-											<div className="hidden items-center justify-end lg:flex">
+											<>
+												{/* Mobile (< lg) : visible dans la colonne unique */}
 												<span
 													className={clsx(
-														"rounded-full px-3 py-1 text-xs font-medium",
+														"block lg:hidden self-start rounded-full px-3 py-1 text-xs font-medium w-fit",
 														"bg-slate-100 dark:bg-slate-700",
 														t.txtSubtle,
 													)}
 												>
 													Fermé
 												</span>
-											</div>
+												{/* Desktop (lg+) : colonne droite */}
+												<div className="hidden items-center justify-end lg:flex">
+													<span
+														className={clsx(
+															"rounded-full px-3 py-1 text-xs font-medium",
+															"bg-slate-100 dark:bg-slate-700",
+															t.txtSubtle,
+														)}
+													>
+														Fermé
+													</span>
+												</div>
+											</>
 										)}
 									</div>
 								);

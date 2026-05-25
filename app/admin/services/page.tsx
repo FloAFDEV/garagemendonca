@@ -21,6 +21,8 @@ export default function AdminServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  // Confirmation inline — remplace window.confirm() (bloquant + UX mobile mauvaise)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
     getServicesForAdminAction().then(setServices).catch(console.error);
@@ -44,9 +46,8 @@ export default function AdminServicesPage() {
     await reorderServicesAction(next.map((s) => s.slug));
   };
 
-  const handleDelete = async (service: Service) => {
-    if (!confirm(`Supprimer le service "${service.title}" ? Cette action est irréversible.`)) return;
-    const slug = service.slug;
+  const handleDelete = async (slug: string) => {
+    setDeleteConfirm(null);
     setDeleting(slug);
     const result = await deleteServiceAction(slug);
     if (result.ok) {
@@ -78,16 +79,17 @@ export default function AdminServicesPage() {
           {services.map((service, index) => {
             const slug = service.slug;
             const isLoading = loading === slug;
+            const isConfirming = deleteConfirm === slug;
             return (
               <div key={service.id} className={clsx("rounded-2xl border p-5 flex items-start gap-5", t.surface, t.border)}>
-                {/* Reorder arrows */}
-                <div className="flex flex-col gap-0.5 flex-shrink-0 pt-1">
+                {/* Reorder arrows — p-2 pour zone tactile 40px */}
+                <div className="flex flex-col gap-0.5 flex-shrink-0 pt-0.5">
                   <button
                     type="button"
                     onClick={() => moveService(index, "up")}
                     disabled={index === 0}
                     aria-label="Monter"
-                    className={clsx("p-1 rounded transition-colors", t.txtMuted, t.hoverTxt, index === 0 && "opacity-20 cursor-not-allowed")}
+                    className={clsx("p-2 rounded transition-colors", t.txtMuted, t.hoverTxt, index === 0 && "opacity-20 cursor-not-allowed")}
                   >
                     <ChevronUp size={14} />
                   </button>
@@ -96,7 +98,7 @@ export default function AdminServicesPage() {
                     onClick={() => moveService(index, "down")}
                     disabled={index === services.length - 1}
                     aria-label="Descendre"
-                    className={clsx("p-1 rounded transition-colors", t.txtMuted, t.hoverTxt, index === services.length - 1 && "opacity-20 cursor-not-allowed")}
+                    className={clsx("p-2 rounded transition-colors", t.txtMuted, t.hoverTxt, index === services.length - 1 && "opacity-20 cursor-not-allowed")}
                   >
                     <ChevronDown size={14} />
                   </button>
@@ -110,7 +112,7 @@ export default function AdminServicesPage() {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3 flex-wrap">
-                    <div>
+                    <div className="min-w-0">
                       <h3 className={clsx("font-medium text-base", t.txt)}>{service.title}</h3>
                       <p className={clsx("text-xs mt-1 line-clamp-2", t.txtMuted)}>{service.short_description}</p>
                     </div>
@@ -135,8 +137,9 @@ export default function AdminServicesPage() {
                         target="_blank"
                         className={clsx("p-2 rounded-lg transition-colors", t.txtMuted, t.hoverBgStrong, t.hoverTxt, adminUI.focusGhost)}
                         title="Voir sur le site"
+                        aria-label={`Voir ${service.title} sur le site`}
                       >
-                        <Eye size={15} />
+                        <Eye size={15} aria-hidden="true" />
                       </Link>
 
                       {/* Edit */}
@@ -144,23 +147,44 @@ export default function AdminServicesPage() {
                         href={`/admin/services/${slug}`}
                         className={clsx("p-2 rounded-lg transition-colors", t.txtMuted, t.hoverBgStrong, t.hoverTxt, adminUI.focusGhost)}
                         title="Modifier"
+                        aria-label={`Modifier ${service.title}`}
                       >
-                        <Pencil size={15} />
+                        <Pencil size={15} aria-hidden="true" />
                       </Link>
 
-                      {/* Delete */}
-                      <button
-                        onClick={() => handleDelete(service)}
-                        disabled={deleting === slug}
-                        className={clsx(
-                          "p-2 rounded-lg transition-colors text-red-400 hover:text-red-500 hover:bg-red-500/10",
-                          deleting === slug && "opacity-40 cursor-wait",
-                          adminUI.focusGhost,
-                        )}
-                        title="Supprimer"
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                      {/* Delete — confirmation inline (pas de window.confirm) */}
+                      {isConfirming ? (
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleDelete(slug)}
+                            disabled={deleting === slug}
+                            className={clsx(adminUI.btnDangerSm, "whitespace-nowrap")}
+                          >
+                            Confirmer
+                          </button>
+                          <button
+                            onClick={() => setDeleteConfirm(null)}
+                            className={clsx("px-2 py-1.5 text-xs rounded-lg transition-colors", t.txtSubtle, t.hoverTxt)}
+                            aria-label="Annuler"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setDeleteConfirm(slug)}
+                          disabled={deleting === slug}
+                          className={clsx(
+                            "p-2 rounded-lg transition-colors text-red-400 hover:text-red-500 hover:bg-red-500/10",
+                            deleting === slug && "opacity-40 cursor-wait",
+                            adminUI.focusGhost,
+                          )}
+                          title="Supprimer"
+                          aria-label={`Supprimer ${service.title}`}
+                        >
+                          <Trash2 size={15} aria-hidden="true" />
+                        </button>
+                      )}
                     </div>
                   </div>
 

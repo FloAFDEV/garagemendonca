@@ -316,7 +316,7 @@ export default function AdminLayout({
 						<button
 							onClick={() => setSidebarOpen(true)}
 							className={clsx(
-								"lg:hidden p-1.5 rounded-lg transition-colors",
+								"lg:hidden p-2.5 rounded-lg transition-colors",
 								t.txtMuted,
 								t.hoverBg,
 								t.hoverTxt,
@@ -327,25 +327,23 @@ export default function AdminLayout({
 							<Menu size={20} />
 						</button>
 
-						<div className="hidden lg:block">
-							<h1
-								className={clsx(
-									"font-normal text-base tracking-wide",
-									t.txt,
-								)}
-							>
-								{navItems.find(
-									(n) =>
-										pathname === n.href ||
-										(n.href === "/admin/vehicules" &&
-											pathname.startsWith(
-												"/admin/vehicules/",
-											) &&
-											pathname !==
-												"/admin/vehicules/nouveau"),
-								)?.label ?? "Admin"}
-							</h1>
-						</div>
+						<h1
+							className={clsx(
+								"font-normal text-base tracking-wide",
+								t.txt,
+							)}
+						>
+							{navItems.find(
+								(n) =>
+									pathname === n.href ||
+									(n.href === "/admin/vehicules" &&
+										pathname.startsWith(
+											"/admin/vehicules/",
+										) &&
+										pathname !==
+											"/admin/vehicules/nouveau"),
+							)?.label ?? "Admin"}
+						</h1>
 
 						<div className="flex items-center gap-2">
 							{/* Sélecteur de thème */}

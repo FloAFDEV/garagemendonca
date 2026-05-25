@@ -585,9 +585,10 @@ function MessageDetail({
 						className="w-full bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-brand-500 transition-colors"
 					/>
 					<div className="flex items-center justify-between mt-2">
-						<span className="text-xs text-slate-600">
-							⌘ + Entrée pour envoyer
+						<span className="hidden sm:block text-xs text-slate-600">
+							⌘/Ctrl + Entrée pour envoyer
 						</span>
+						<span className="sm:hidden text-xs text-slate-600" aria-hidden="true" />
 						<button
 							onClick={() => replyMut.mutate()}
 							disabled={
@@ -693,8 +694,9 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		);
 	}), [messages, filter, vehicleOnly, search]);
 
+	// dvh = dynamic viewport height — adapts when mobile browser chrome shows/hides
 	return (
-		<div className="flex h-[calc(100vh-80px)] bg-dark-950 rounded-xl overflow-hidden border border-dark-800">
+	<div className="flex h-[calc(100dvh-80px)] bg-dark-950 rounded-xl overflow-hidden border border-dark-800">
 			{/* ── Panneau gauche : liste ─────────────────────────────── */}
 			<div
 				className={clsx(
