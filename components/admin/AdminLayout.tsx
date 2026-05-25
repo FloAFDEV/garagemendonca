@@ -330,6 +330,7 @@ export default function AdminLayout({
 
 						<h1
 							className={clsx(
+
 								"font-normal text-base tracking-wide truncate min-w-0 flex-1 px-2",
 								t.txt,
 							)}
