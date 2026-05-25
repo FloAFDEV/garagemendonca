@@ -25,8 +25,8 @@ export default function AdminThemeRoot({
 }: {
 	children: React.ReactNode;
 }) {
-	const { theme, toggleTheme, mounted } = useAdminTheme();
-	const isDark = !mounted || theme === "dark";
+	const { theme, toggleTheme } = useAdminTheme();
+	const isDark = theme === "dark";
 	const tokens = useMemo(() => buildTokens(isDark), [isDark]);
 
 	return (
