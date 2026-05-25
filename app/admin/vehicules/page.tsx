@@ -598,7 +598,7 @@ export default function AdminVehiclesPage() {
 						)}
 					>
 						<SlidersHorizontal size={15} />
-						<span className="hidden sm:inline">Filtres</span>
+						<span>Filtres</span>
 						{hasActiveFilters && (
 							<span className="w-5 h-5 rounded-full bg-white/20 text-white text-[10px] flex items-center justify-center font-medium">
 								{
@@ -1203,7 +1203,7 @@ export default function AdminVehiclesPage() {
 											className={clsx(
 												"w-9 h-9 rounded-xl text-sm border transition-colors",
 												p === safePage
-													? "text-pink-700 border-gray-600"
+													? "bg-brand-600 text-white border-brand-600"
 													: clsx(
 															t.border,
 															t.txtMuted,

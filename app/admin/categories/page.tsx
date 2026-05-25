@@ -184,17 +184,17 @@ function CategoryCard({
 						<button
 							onClick={onEdit}
 							className={clsx(
-								"w-9 h-9 flex items-center justify-center rounded-xl transition-colors",
+								"w-10 h-10 flex items-center justify-center rounded-xl transition-colors",
 								t.txtSubtle, t.hoverBgStrong, t.hoverTxt,
 							)}
 							aria-label={`Modifier ${cat.label}`}
 						>
-							<Pencil size={15} />
+							<Pencil size={15} aria-hidden="true" />
 						</button>
 						<button
 							onClick={() => onToggle(cat)}
 							className={clsx(
-								"w-9 h-9 flex items-center justify-center rounded-xl transition-colors",
+								"w-10 h-10 flex items-center justify-center rounded-xl transition-colors",
 								cat.is_active
 									? "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
 									: clsx(t.txtSubtle, t.hoverBgStrong),
@@ -202,7 +202,7 @@ function CategoryCard({
 							aria-label={cat.is_active ? `Désactiver ${cat.label}` : `Activer ${cat.label}`}
 							title={cat.is_active ? "Désactiver" : "Activer"}
 						>
-							<Power size={15} />
+							<Power size={15} aria-hidden="true" />
 						</button>
 					</div>
 				</div>
@@ -309,10 +309,10 @@ export default function CategoriesPage() {
 						<button
 							onClick={() => setShowCreate(true)}
 							className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium transition-colors"
+							aria-label="Nouvelle catégorie"
 						>
-							<Plus size={16} />
-							<span className="hidden xs:inline">Nouvelle</span>
-							<span className="xs:hidden sr-only">Nouvelle catégorie</span>
+							<Plus size={16} aria-hidden="true" />
+							<span>Nouvelle</span>
 						</button>
 					)}
 				</div>
