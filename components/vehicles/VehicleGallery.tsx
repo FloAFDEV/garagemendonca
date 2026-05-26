@@ -107,8 +107,12 @@ export default function VehicleGallery({
 				<div
 					className={[
 						"relative group bg-slate-100",
-						"h-[60dvh] rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.10)]",
-						"sm:h-auto sm:aspect-[16/9] sm:rounded-2xl sm:border sm:border-slate-200 sm:shadow-[0_2px_12px_rgba(0,0,0,0.08)]",
+						// aspect-[4/3] = ratio exact des images traitées (900×675)
+						// → object-cover ne croppe plus rien, véhicule visible en entier
+						// Avant : h-[60dvh] mobile (portrait → crop 46% largeur)
+						//         sm:aspect-[16/9] desktop (→ crop 25% hauteur)
+						"aspect-[4/3] rounded-xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.10)]",
+						"sm:rounded-2xl sm:border sm:border-slate-200 sm:shadow-[0_2px_12px_rgba(0,0,0,0.08)]",
 					].join(" ")}
 					role="region"
 					aria-label={`Galerie photo — ${vehicleName}`}
