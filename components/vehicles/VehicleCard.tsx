@@ -121,7 +121,6 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 						alt={imgAlt}
 						fill
 						sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-						photoType={vehicle.vehicleImages?.[0]?.photo_type ?? null}
 						priority={priority}
 						quality={75}
 						className={`transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}

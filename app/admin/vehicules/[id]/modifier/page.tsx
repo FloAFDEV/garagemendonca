@@ -273,7 +273,6 @@ export default function EditVehiclePage({
 	});
 
 	const [images, setImages] = useState<string[]>([]);
-	const [vehicleImagesData, setVehicleImagesData] = useState<import("@/types").VehicleImage[]>([]);
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [saveStatus, setSaveStatus] = useState<
 		"idle" | "saving" | "saved" | "error"
@@ -363,7 +362,6 @@ export default function EditVehiclePage({
 				});
 				initialFeatured.current = vehicle.featured ?? false;
 				setImages(getVehicleImages(vehicle));
-				setVehicleImagesData(vehicle.vehicleImages ?? []);
 				setLoadState("ready");
 			})
 			.catch(() => setLoadState("notfound"));
@@ -1100,14 +1098,6 @@ export default function EditVehiclePage({
 								<SortablePhotoGrid
 									images={images}
 									onChange={setImages}
-									vehicleImagesData={vehicleImagesData}
-									onPhotoTypeChange={async (imageId, photoType) => {
-										await fetch("/api/admin/images/type", {
-											method: "PATCH",
-											headers: { "Content-Type": "application/json" },
-											body: JSON.stringify({ imageId, photoType }),
-										});
-									}}
 								/>
 							</div>
 						)}

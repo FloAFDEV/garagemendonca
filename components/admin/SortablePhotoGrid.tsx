@@ -18,7 +18,6 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { X, GripVertical } from "lucide-react";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
-import type { VehicleImage, PhotoType } from "@/types";
 
 // ─── Élément draggable ───────────────────────────────────────────
 
@@ -28,11 +27,9 @@ interface SortablePhotoItemProps {
   index: number;
   onRemove: () => void;
   onSetMain: () => void;
-  photoType?: PhotoType;
-  onTypeChange?: (type: PhotoType) => void;
 }
 
-function SortablePhotoItem({ id, src, index, onRemove, onSetMain, photoType, onTypeChange }: SortablePhotoItemProps) {
+function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhotoItemProps) {
   const t = useAdminTokens();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id });
@@ -99,38 +96,6 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain, photoType, onT
           Définir principale
         </button>
       )}
-
-      {/* Type toggle — visible au hover (sm+) ou toujours sur mobile */}
-      {onTypeChange && (
-        <button
-          type="button"
-          onClick={() => {
-            const cycle: PhotoType[] = [null, "exterior", "interior", "detail"];
-            const currentIdx = cycle.indexOf(photoType ?? null);
-            const next = cycle[(currentIdx + 1) % cycle.length];
-            onTypeChange(next);
-          }}
-          className={`absolute bottom-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md z-10 sm:opacity-0 sm:group-hover:opacity-100 opacity-100 transition-all ${
-            photoType === "interior"
-              ? "bg-indigo-600 text-white"
-              : photoType === "exterior"
-              ? "bg-emerald-600 text-white"
-              : photoType === "detail"
-              ? "bg-amber-500 text-white"
-              : "bg-dark-900/70 text-slate-400"
-          }`}
-          title={`Type : ${photoType ?? "auto"} — cliquer pour changer`}
-          aria-label={`Type de photo : ${photoType ?? "non défini"}`}
-        >
-          {photoType === "interior"
-            ? "INT"
-            : photoType === "exterior"
-            ? "EXT"
-            : photoType === "detail"
-            ? "DÉT"
-            : "···"}
-        </button>
-      )}
     </div>
   );
 }
@@ -140,22 +105,13 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain, photoType, onT
 interface SortablePhotoGridProps {
   images: string[];
   onChange: (images: string[]) => void;
-  /** Données complètes vehicle_images (id + photo_type) pour le tag de type */
-  vehicleImagesData?: VehicleImage[];
-  /** Callback déclenché quand l'admin change le type d'une photo */
-  onPhotoTypeChange?: (imageId: string, type: PhotoType) => void;
 }
 
-export default function SortablePhotoGrid({ images, onChange, vehicleImagesData, onPhotoTypeChange }: SortablePhotoGridProps) {
+export default function SortablePhotoGrid({ images, onChange }: SortablePhotoGridProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor),
   );
-
-  // Map URL → VehicleImage for type lookup
-  const imageDataByUrl = vehicleImagesData
-    ? Object.fromEntries(vehicleImagesData.map((img) => [img.url, img]))
-    : {};
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -172,30 +128,21 @@ export default function SortablePhotoGrid({ images, onChange, vehicleImagesData,
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={images} strategy={rectSortingStrategy}>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {images.map((img, idx) => {
-            const imgData = imageDataByUrl[img];
-            return (
-              <SortablePhotoItem
-                key={img}
-                id={img}
-                src={img}
-                index={idx}
-                photoType={imgData?.photo_type ?? null}
-                onRemove={() => onChange(images.filter((_, i) => i !== idx))}
-                onSetMain={() => {
-                  const next = [...images];
-                  next.splice(idx, 1);
-                  next.unshift(img);
-                  onChange(next);
-                }}
-                onTypeChange={
-                  imgData && onPhotoTypeChange
-                    ? (type) => onPhotoTypeChange(imgData.id, type)
-                    : undefined
-                }
-              />
-            );
-          })}
+          {images.map((img, idx) => (
+            <SortablePhotoItem
+              key={img}
+              id={img}
+              src={img}
+              index={idx}
+              onRemove={() => onChange(images.filter((_, i) => i !== idx))}
+              onSetMain={() => {
+                const next = [...images];
+                next.splice(idx, 1);
+                next.unshift(img);
+                onChange(next);
+              }}
+            />
+          ))}
         </div>
       </SortableContext>
     </DndContext>

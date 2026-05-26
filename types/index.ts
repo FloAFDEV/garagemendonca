@@ -233,8 +233,6 @@ export interface VehicleCategory {
 //
 //  Remplace progressivement le tableau vehicles.images[]
 // ─────────────────────────────────────────────
-export type PhotoType = 'exterior' | 'interior' | 'detail' | null;
-
 export interface VehicleImage {
   id: string;
   vehicle_id: string;
@@ -244,7 +242,6 @@ export interface VehicleImage {
   alt?: string;
   sort_order: number;
   is_primary: boolean;
-  photo_type?: PhotoType;
   created_at?: string;
 }
 
