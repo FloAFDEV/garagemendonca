@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import Lightbox from "./Lightbox";
+import VehiclePhotoImage from "@/components/vehicles/VehiclePhotoImage";
 import type { VehicleImage } from "@/types";
 import { resolveVehicleUrl } from "@/lib/utils/vehicle-images";
 
@@ -130,26 +130,15 @@ export default function VehicleGallery({
 								key={`slide-${idx}-${src}`}
 								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
 							>
-										{idx === 0 ? (
-									<Image
-										src={src}
-										alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
-										fill
-										className="object-cover object-center"
-										priority
-										quality={85}
-										sizes="(max-width: 640px) 100vw, (max-width: 1280px) 75vw, 900px"
-									/>
-								) : (
-									/* eslint-disable-next-line @next/next/no-img-element */
-									<img
-										src={src}
-										alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
-										className="absolute inset-0 w-full h-full object-cover object-center"
-										loading="lazy"
-										decoding="async"
-									/>
-								)}
+								<VehiclePhotoImage
+									src={src}
+									alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
+									fill
+									photoType={vehicleImages?.[idx]?.photo_type ?? null}
+									priority={idx === 0}
+									quality={85}
+									sizes="(max-width: 640px) 100vw, (max-width: 1280px) 75vw, 900px"
+								/>
 							</div>
 						))}
 					</div>
