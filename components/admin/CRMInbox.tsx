@@ -40,6 +40,7 @@ import { replyToMessageAction } from "@/lib/safe-actions/replyToMessage";
 import type { UIMessage } from "@/types/ui";
 import type { MessageStatusInput } from "@/lib/validation/message.schema";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import { useAdminTokens } from "@/contexts/AdminThemeContext";
 
 // ─────────────────────────────────────────────────────────────────
 //  Constants
@@ -133,19 +134,26 @@ function MessageListItem({
 	isSelected: boolean;
 	onClick: () => void;
 }) {
-	const isDark = true; // CRM always dark
+	const { isDark } = useAdminTokens();
 
 	return (
 		<button
 			type="button"
 			onClick={onClick}
 			className={clsx(
-				"w-full text-left px-4 py-3 border-b border-dark-800 transition-colors",
+				"w-full text-left px-4 py-3 border-b transition-colors",
+				isDark ? "border-dark-800" : "border-slate-100",
 				isSelected
-					? "bg-dark-800 border-l-2 border-l-brand-500"
+					? isDark
+						? "bg-dark-800 border-l-2 border-l-brand-500"
+						: "bg-rose-50 border-l-2 border-l-brand-500"
 					: !message.is_read
-						? "bg-dark-850 hover:bg-dark-800"
-						: "hover:bg-dark-800/50",
+						? isDark
+							? "bg-dark-850 hover:bg-dark-800"
+							: "bg-blue-50 hover:bg-blue-100/80"
+						: isDark
+							? "hover:bg-dark-800/50"
+							: "hover:bg-slate-50",
 			)}
 		>
 			<div className="flex items-start gap-3">
@@ -165,13 +173,16 @@ function MessageListItem({
 							className={clsx(
 								"text-sm font-semibold truncate",
 								!message.is_read
-									? "text-slate-100"
-									: "text-dark-400",
+									? isDark ? "text-slate-100" : "text-slate-900"
+									: isDark ? "text-dark-400" : "text-slate-600",
 							)}
 						>
 							{message.firstname} {message.lastname}
 						</span>
-						<span className="text-xs text-slate-500 shrink-0">
+						<span className={clsx(
+							"text-xs shrink-0",
+							isDark ? "text-slate-500" : "text-slate-400",
+						)}>
 							{message.formattedDate}
 						</span>
 					</div>
@@ -183,7 +194,10 @@ function MessageListItem({
 								aria-label="Non lu"
 							/>
 						)}
-						<span className="text-xs text-slate-400 truncate">
+						<span className={clsx(
+							"text-xs truncate",
+							isDark ? "text-slate-400" : "text-slate-500",
+						)}>
 							{message.subject ?? "Sans sujet"}
 						</span>
 					</div>
@@ -198,7 +212,10 @@ function MessageListItem({
 						</div>
 					)}
 
-					<p className="text-xs text-slate-500 truncate leading-relaxed">
+					<p className={clsx(
+						"text-xs truncate leading-relaxed",
+						isDark ? "text-slate-500" : "text-slate-400",
+					)}>
 						{message.message}
 					</p>
 				</div>
