@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import VehiclePhotoImage from "@/components/vehicles/VehiclePhotoImage";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
@@ -115,14 +116,14 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 			    Desktop (sm+) : aspect-[4/3] — format original inchangé             */}
 			<div className="relative aspect-[3/2] sm:aspect-[4/3] overflow-hidden bg-slate-200">
 				{imgSrc ? (
-					<Image
+					<VehiclePhotoImage
 						src={imgSrc}
 						alt={imgAlt}
 						fill
 						sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-						className={`object-cover object-center transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 						priority={priority}
 						quality={75}
+						className={`transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 					/>
 				) : marketingBadge?.variant === "arrivage" ? (
 					<Image
@@ -167,7 +168,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 				{marketingBadge && (
 					<div className="absolute bottom-2 left-2 right-2">
 						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm text-white text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md w-full justify-center ${
-							marketingBadge.variant === "arrivage" ? "bg-amber-600/90" : "bg-slate-700/90"
+							marketingBadge.variant === "arrivage" ? "bg-brand-600/90" : "bg-slate-700/90"
 						}`}>
 							{marketingBadge.label}
 						</span>
@@ -178,38 +179,33 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 			{/* ── Contenu ─────────────────────────────────────────────────────────── */}
 			<div className="flex flex-col flex-grow">
 
-				{/* ══ MOBILE (< sm) : marque/modèle → finition → couleur → prix → année·km ══
+				{/* ══ MOBILE (< sm) : marque/modèle → finition → badge boîte → prix → année·km ══
 				    Structure strictement identique sur toutes les annonces.            */}
 				<div className="sm:hidden flex flex-col gap-0.5 px-2.5 pt-2.5 pb-2">
-					{/* Ligne 1 : [Marque Modèle] (propre, sans technique) + badge transmission */}
-					<div className="flex items-center justify-between gap-1">
-						<p className="text-[12px] font-semibold text-[#0f172a] leading-tight truncate">
-							{vehicle.brand} {cleanModelText(vehicle.model, finition)}
-						</p>
-						{/* Badge transmission — jamais "BVA"/"BVM" */}
-						<span
-							className={`flex-shrink-0 whitespace-nowrap text-[9px] font-semibold rounded-full px-1.5 py-0.5 leading-none ${
-								vehicle.transmission === "Automatique"
-									? "text-[#e11d48] bg-[#fff1f2] border border-[#fecdd3]"
-									: "text-slate-500 bg-slate-100 border border-slate-200"
-							}`}
-							aria-label={vehicle.transmission === "Automatique" ? "Boîte automatique" : "Boîte manuelle"}
-						>
-							{vehicle.transmission === "Automatique" ? "Boîte auto" : "Manuelle"}
-						</span>
-					</div>
+					{/* Ligne 1 : [Marque Modèle] — titre seul, sans badge */}
+					<p className="text-[12px] font-semibold text-[#0f172a] leading-tight truncate">
+						{vehicle.brand} {cleanModelText(vehicle.model, finition)}
+					</p>
 					{/* Ligne 2 : Finition — même taille/graisse que le titre, rouge bordeaux */}
 					{finition && (
 						<p className="text-[12px] font-semibold text-brand-600 leading-tight truncate">
 							{finition}
 						</p>
 					)}
-					{/* Ligne 3 : Couleur — discrète, gris */}
-					{colorLabel && (
-						<p className="text-[10px] text-[#94a3b8] leading-tight truncate">
-							{colorLabel}
-						</p>
-					)}
+					{/* Ligne 3 : Badge transmission — "Boîte auto" si automatique.
+					    Si manuelle : span invisible pour préserver la hauteur de ligne
+					    et garantir l'alignement du prix dans la grille.              */}
+					<span
+						className={`self-start whitespace-nowrap text-[9px] font-semibold rounded-full px-1.5 py-0.5 leading-none ${
+							vehicle.transmission === "Automatique"
+								? "text-[#e11d48] bg-[#fff1f2] border border-[#fecdd3]"
+								: "invisible"
+						}`}
+						aria-label={vehicle.transmission === "Automatique" ? "Boîte automatique" : undefined}
+						aria-hidden={vehicle.transmission !== "Automatique" ? true : undefined}
+					>
+						Boîte auto
+					</span>
 					{/* Ligne 4 : Prix */}
 					<span className="font-bold text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
 						{vehicle.price.toLocaleString("fr-FR")} €
