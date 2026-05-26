@@ -44,9 +44,6 @@ const HIGHLIGHT_LABELS: Partial<Record<keyof VehicleOptions, string>> = {
 	bluetooth:                 "Bluetooth",
 };
 
-const toSentenceCase = (s: string | null | undefined): string =>
-	s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : (s ?? "");
-
 /**
  * cleanModelText — retire les détails techniques superflus du champ `model`.
  * Les données DB contiennent parfois "Jazz 1.2i 85 ch Boîte automatique" :
@@ -278,7 +275,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 						</div>
 					</div>
 
-					{/* Badges boîte + puissance + garantie */}
+					{/* Badges boîte + garantie (puissance retirée — déjà dans le titre) */}
 					<div className="flex items-center gap-1.5 mb-2">
 						{/* Transmission — texte adaptatif selon breakpoint, jamais "BVA"/"BVM" */}
 						<Badge variant="gray" className="flex-1 justify-center normal-case whitespace-nowrap">
@@ -294,9 +291,6 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 									<span className="hidden lg:inline">Boîte manuelle</span>
 								</>
 							)}
-						</Badge>
-						<Badge variant="gray" className="flex-1 justify-center normal-case">
-							{vehicle.power} ch
 						</Badge>
 						{garantie && (
 							<span className="flex-1 text-center text-[11px] px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full font-medium leading-5 whitespace-nowrap">
