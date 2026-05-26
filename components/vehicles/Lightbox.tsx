@@ -315,7 +315,7 @@ export default function Lightbox({
 								<img
 									src={src}
 									alt=""
-									className="absolute inset-0 w-full h-full object-cover object-top"
+									className="absolute inset-0 w-full h-full object-cover object-[center_60%]"
 									loading="eager"
 								/>
 							</button>

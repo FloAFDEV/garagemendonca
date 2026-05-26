@@ -139,7 +139,7 @@ export default function VehicleGallery({
 										src={src}
 										alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
 										fill
-										className="object-cover object-center"
+										className="object-cover object-[center_60%]"
 										priority
 										quality={85}
 										sizes="(max-width: 640px) 100vw, (max-width: 1280px) 75vw, 900px"
@@ -149,7 +149,7 @@ export default function VehicleGallery({
 									<img
 										src={src}
 										alt={vehicleImages?.[idx]?.alt ?? `${vehicleName} — photo ${idx + 1} sur ${displayUrls.length}`}
-										className="absolute inset-0 w-full h-full object-cover object-center"
+										className="absolute inset-0 w-full h-full object-cover object-[center_60%]"
 										loading="lazy"
 										decoding="async"
 									/>
@@ -271,7 +271,7 @@ export default function VehicleGallery({
 									<img
 										src={src}
 										alt=""
-										className="absolute inset-0 w-full h-full object-cover object-center"
+										className="absolute inset-0 w-full h-full object-cover object-[center_60%]"
 										loading="lazy"
 										decoding="async"
 									/>
@@ -306,7 +306,7 @@ export default function VehicleGallery({
 									<img
 										src={src}
 										alt=""
-										className="absolute inset-0 w-full h-full object-cover object-center"
+										className="absolute inset-0 w-full h-full object-cover object-[center_60%]"
 										loading="lazy"
 										decoding="async"
 									/>

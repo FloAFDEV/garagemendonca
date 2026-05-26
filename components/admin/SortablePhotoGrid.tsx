@@ -57,7 +57,7 @@ function SortablePhotoItem({ id, src, index, onRemove, onSetMain }: SortablePhot
       <img
         src={displayUrl}
         alt={`Photo ${index + 1}`}
-        className="w-full h-full object-cover pointer-events-none"
+        className="w-full h-full object-cover object-[center_60%] pointer-events-none"
         loading={index === 0 ? "eager" : "lazy"}
       />
 
