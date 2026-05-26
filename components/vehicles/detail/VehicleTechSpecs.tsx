@@ -39,7 +39,7 @@ export default function VehicleTechSpecs({ vehicle, displayColor }: VehicleTechS
 		...(vehicle.power    ? [{ icon: Activity, label: "Puissance", value: `${vehicle.power} ch` }] : []),
 		...(displayColor     ? [{ icon: Palette,  label: "Teinte",    value: displayColor }] : []),
 		{ icon: DoorOpen, label: "Portes", value: `${vehicle.doors} portes` },
-		...(vehicle.critAir  ? [{ icon: Leaf,     label: "Crit'Air",  value: `Classe ${vehicle.critAir}` }] : []),
+		...(vehicle.critAir  ? [{ icon: Leaf,     label: "Crit'Air",  value: String(vehicle.critAir) }] : []),
 	];
 
 	return (

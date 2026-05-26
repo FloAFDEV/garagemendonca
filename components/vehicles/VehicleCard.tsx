@@ -95,7 +95,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 						alt={imgAlt}
 						fill
 						sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-						className={`object-cover transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
+						className={`object-cover object-[center_65%] transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 						priority={priority}
 						quality={75}
 					/>
@@ -132,7 +132,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 				{/* À la une — compact sur mobile */}
 				{vehicle.featured && vehicle.status !== "sold" && (
 					<div className="absolute top-1.5 left-1.5">
-						<span className="inline-flex items-center gap-0.5 sm:gap-1 bg-brand-600/90 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-medium tracking-wide px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm">
+						<span className="inline-flex items-center gap-0.5 sm:gap-1 bg-brand-600/90 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-medium tracking-wide px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm ring-1 ring-white/20">
 							<Star size={8} className="fill-current" aria-hidden="true" />
 							À la une
 						</span>
@@ -153,30 +153,30 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 			{/* ── Contenu ─────────────────────────────────────────────────────────── */}
 			<div className="flex flex-col flex-grow">
 
-				{/* ══ MOBILE (< sm) : prix → marque/modèle → finition → année·km ═══
+				{/* ══ MOBILE (< sm) : marque/modèle → finition → prix → année·km ═══
 				    Badge BVA visible uniquement si boîte automatique              */}
-				<div className="sm:hidden flex flex-col gap-0.5 px-2 pt-2 pb-2">
-					{/* Ligne 1 : Prix + badge BVA */}
+				<div className="sm:hidden flex flex-col gap-0.5 px-2.5 pt-2.5 pb-2">
+					{/* Ligne 1 : Marque + modèle + badge BVA */}
 					<div className="flex items-center justify-between gap-1">
-						<span className="font-bold text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
-							{vehicle.price.toLocaleString("fr-FR")} €
-						</span>
+						<p className="text-[12px] font-semibold text-[#0f172a] leading-tight truncate">
+							{vehicle.brand} {vehicle.model}
+						</p>
 						{vehicle.transmission === "Automatique" && (
 							<span className="flex-shrink-0 text-[9px] font-bold tracking-wider text-[#e11d48] bg-[#fff1f2] border border-[#fecdd3] rounded-full px-1.5 py-0.5 leading-none uppercase" aria-label="Boîte automatique">
 								BVA
 							</span>
 						)}
 					</div>
-					{/* Ligne 2 : Marque + modèle */}
-					<p className="text-[11px] font-semibold text-[#0f172a] leading-tight truncate">
-						{vehicle.brand} {vehicle.model}
-					</p>
-					{/* Ligne 3 : Finition / version — 2 lignes max si disponible */}
+					{/* Ligne 2 : Finition / version — 2 lignes max si disponible */}
 					{finition && (
 						<p className="text-[10px] text-[#475569] leading-snug line-clamp-2">
 							{finition}
 						</p>
 					)}
+					{/* Ligne 3 : Prix */}
+					<span className="font-bold text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
+						{vehicle.price.toLocaleString("fr-FR")} €
+					</span>
 					{/* Ligne 4 : Année · km */}
 					<p className="text-[10px] text-[#94a3b8] leading-tight">
 						{vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km

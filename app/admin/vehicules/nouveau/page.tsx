@@ -620,7 +620,7 @@ export default function NewVehiclePage() {
 								>
 									<option value="">— Non renseigné</option>
 									{["0", "1", "2", "3", "4", "5"].map((c) => (
-										<option key={c} value={c}>Classe {c}</option>
+										<option key={c} value={c}>{c}</option>
 									))}
 								</select>
 							</div>
@@ -878,7 +878,7 @@ export default function NewVehiclePage() {
 							entityId={vehicleIdRef.current}
 							type="vehicle"
 							onUploaded={(url) => setImages((p) => [...p, url])}
-							maxFiles={10}
+							maxFiles={15}
 							currentCount={images.length}
 						/>
 						{images.length > 0 && (
