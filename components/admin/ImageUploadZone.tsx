@@ -159,7 +159,7 @@ export default function ImageUploadZone({
   entityId,
   type,
   onUploaded,
-  maxFiles = 10,
+  maxFiles = 15,
   currentCount = 0,
   disabled = false,
   className = "",
