@@ -119,11 +119,14 @@ export default function VehicleGallery({
 					tabIndex={0}
 					onKeyDown={handleKeyDown}
 				>
-					{/* Scroll container */}
+					{/* Scroll container
+					    ⚠️ PAS de h-full ici : height: 100% sur un flex container
+					    ne résout pas fiablement la hauteur d'un parent aspect-ratio.
+					    La hauteur vient des slides (aspect-[4/3] auto-porté). */}
 					<div
 						ref={sliderRef}
 						className={[
-							"h-full flex overflow-x-auto",
+							"flex overflow-x-auto",
 							"[scroll-snap-type:x_mandatory]",
 							"[-webkit-overflow-scrolling:touch]",
 							"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
@@ -132,7 +135,7 @@ export default function VehicleGallery({
 						{displayUrls.map((src, idx) => (
 							<div
 								key={`slide-${idx}-${src}`}
-								className="relative flex-shrink-0 w-full h-full [scroll-snap-align:center] [scroll-snap-stop:always]"
+								className="relative flex-shrink-0 w-full aspect-[4/3] [scroll-snap-align:center] [scroll-snap-stop:always]"
 							>
 										{idx === 0 ? (
 									<Image
