@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import VehiclePhotoImage from "@/components/vehicles/VehiclePhotoImage";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
 import type { VehicleOptions } from "@/types";
@@ -115,14 +116,14 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 			    Desktop (sm+) : aspect-[4/3] — format original inchangé             */}
 			<div className="relative aspect-[3/2] sm:aspect-[4/3] overflow-hidden bg-slate-200">
 				{imgSrc ? (
-					<Image
+					<VehiclePhotoImage
 						src={imgSrc}
 						alt={imgAlt}
 						fill
 						sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-						className={`object-cover object-center transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 						priority={priority}
 						quality={75}
+						className={`transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 					/>
 				) : marketingBadge?.variant === "arrivage" ? (
 					<Image
