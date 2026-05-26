@@ -119,7 +119,9 @@ export default function VehicleOptionsDisplay({ options }: Props) {
 		});
 	};
 
-	if (activeCategories.length === 0 && !options.autres_options) return null;
+	// Aucune case cochée ET pas de texte libre → section masquée
+	const autresOptionsTrimmed = options.autres_options?.trim() ?? "";
+	if (activeCategories.length === 0 && !autresOptionsTrimmed) return null;
 
 	return (
 		<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-10">
@@ -162,7 +164,7 @@ export default function VehicleOptionsDisplay({ options }: Props) {
 			</div>
 
 			{/* Options libres — toujours en dernier */}
-			{options.autres_options && (
+			{autresOptionsTrimmed && (
 				<div className="mt-8 pt-8 border-t border-slate-50">
 					<div className="flex items-center gap-2 mb-3">
 						<span className="ty-label text-slate-400">
@@ -170,7 +172,7 @@ export default function VehicleOptionsDisplay({ options }: Props) {
 						</span>
 					</div>
 					<p className="text-sm text-slate-600 leading-relaxed">
-						{options.autres_options}
+						{autresOptionsTrimmed}
 					</p>
 				</div>
 			)}
