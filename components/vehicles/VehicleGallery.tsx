@@ -120,13 +120,15 @@ export default function VehicleGallery({
 					onKeyDown={handleKeyDown}
 				>
 					{/* Scroll container
-					    ⚠️ PAS de h-full ici : height: 100% sur un flex container
-					    ne résout pas fiablement la hauteur d'un parent aspect-ratio.
-					    La hauteur vient des slides (aspect-[4/3] auto-porté). */}
+					    ⚠️ PAS de h-full : height:100% ne résout pas fiablement
+					    la hauteur d'un parent aspect-ratio en contexte flex.
+					    ⚠️ items-start OBLIGATOIRE : sans ça, align-items:stretch
+					    (défaut flex) écrase aspect-[4/3] sur les slides.
+					    La hauteur de chaque slide vient de son propre aspect-[4/3]. */}
 					<div
 						ref={sliderRef}
 						className={[
-							"flex overflow-x-auto",
+							"flex items-start overflow-x-auto",
 							"[scroll-snap-type:x_mandatory]",
 							"[-webkit-overflow-scrolling:touch]",
 							"[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
