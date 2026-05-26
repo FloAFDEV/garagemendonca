@@ -9,14 +9,14 @@ import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 export const metadata: Metadata = {
 	title: "Contact et Devis",
 	description:
-		"Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message pour un devis gratuit. Réponse sous 24h.",
+		"Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message pour un devis personnalisé. Atelier spécialiste depuis 2003.",
 	alternates: {
 		canonical: "https://www.garagemendonca.com/contact",
 	},
 	openGraph: {
 		title: "Contact & Devis — Garage Auto Mendonca · Drémil-Lafage",
 		description:
-			"Appelez le 05 32 00 20 38 ou envoyez un message. Devis gratuit, réponse sous 24h. Spécialiste japonaises et boîtes automatiques.",
+			"Appelez le 05 32 00 20 38 ou envoyez un message. Devis personnalisé sans engagement. Spécialiste japonaises et boîtes automatiques depuis 2003.",
 		type: "website",
 		locale: "fr_FR",
 		url: "https://www.garagemendonca.com/contact",
@@ -119,13 +119,13 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							<h1 className="ty-display text-white text-3xl sm:text-4xl md:text-5xl mb-4">
 								Contactez-nous —{" "}
 								<span className="text-brand-500">
-									devis gratuit sous 24h
+									un devis personnalisé
 								</span>
 							</h1>
 							<p className="text-slate-300 text-lg leading-relaxed max-w-2xl">
 								Appelez-nous directement ou envoyez-nous un message.
-								Nous répondons sous 24h et vous proposons un devis
-								gratuit et détaillé.
+								Nous vous proposons un devis
+								personnalisé et détaillé.
 							</p>
 						</div>
 						<GmBadge size="lg" className="hidden sm:block opacity-90 flex-shrink-0 self-center" />

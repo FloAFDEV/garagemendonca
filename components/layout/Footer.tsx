@@ -269,7 +269,7 @@ export default async function Footer() {
 								aria-hidden="true"
 							/>
 							<span className="font-light text-xs text-slate-300">
-								Avec ou sans rendez-vous
+								Sur rendez-vous · Accueil du lundi au vendredi
 							</span>
 						</div>
 						{isClosureActive && (

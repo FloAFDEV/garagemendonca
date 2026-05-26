@@ -78,7 +78,7 @@ const reassuranceItems = [
 	},
 	{
 		label: "98 % de clients satisfaits",
-		desc: "Accueil avec ou sans rendez-vous, service fiable et bienveillant.",
+		desc: "Service fiable, bienveillant et attentionné à chaque visite.",
 		icon: (
 			<svg
 				width="20"
