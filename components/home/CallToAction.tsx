@@ -3,7 +3,7 @@ import { Phone, MessageSquare, CalendarDays, ShieldCheck } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
 
-const reassurances = ["Devis 100% gratuit", "Réponse sous 24h", "Avec ou sans RDV", "Prix transparents"];
+const reassurances = ["Devis sans engagement", "Expertise depuis 2003", "Prix transparents", "Travail soigné"];
 
 export default function CallToAction() {
   return (
@@ -41,7 +41,7 @@ export default function CallToAction() {
               <p className="font-light text-slate-300 text-sm leading-relaxed mb-6">
                 Contactez-nous par téléphone ou via notre formulaire.
                 Nous intervenons sur tous types de véhicules et établissons
-                un devis détaillé et transparent sous 24h.
+                un devis détaillé et transparent.
               </p>
 
               {/* Réassurances */}

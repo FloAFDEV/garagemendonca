@@ -717,7 +717,7 @@ export default function EditServicePage({
 											className={
 												inputClass + " resize-none"
 											}
-											placeholder="Accueil en atelier, diagnostic offert…"
+											placeholder="Accueil en atelier sur rendez-vous, bilan technique inclus…"
 										/>
 									</div>
 								</div>
@@ -895,7 +895,7 @@ export default function EditServicePage({
 												)
 											}
 											className={inputClass}
-											placeholder="Peut-on venir sans rendez-vous ?"
+											placeholder="Comment prendre rendez-vous ?"
 										/>
 									</div>
 									<div>

@@ -106,7 +106,7 @@ export const FAQ_CATEGORIES: FaqCategory[] = [
 			{
 				question: "Combien de temps dure un diagnostic ?",
 				answer:
-					"Notre diagnostic électronique standard prend environ 10 minutes. Il couvre l'ensemble des calculateurs du véhicule (moteur, boîte, ABS, airbags…). Ce diagnostic est gratuit et sans engagement lors de tout achat ou prise en charge au garage. Il nous permet de chiffrer précisément toute intervention.",
+					"Notre diagnostic électronique couvre l'ensemble des calculateurs du véhicule (moteur, boîte, ABS, airbags…) grâce à des outils professionnels de dernière génération. Ce bilan technique complet nous permet de chiffrer précisément toute intervention nécessaire.",
 			},
 		],
 	},

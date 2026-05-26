@@ -16,7 +16,7 @@ const trustBadges = [
 		Icon: ShieldCheck,
 		text: "Devis pièce & main-d'œuvre avant toute intervention",
 	},
-	{ Icon: Clock, text: "Accueil avec ou sans rendez-vous" },
+	{ Icon: Clock, text: "Prise en charge soignée, sur rendez-vous" },
 	{ Icon: Award, text: "Spécialiste japonaises · boîte automatique" },
 ];
 

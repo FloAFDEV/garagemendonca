@@ -153,16 +153,32 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 			{/* ── Contenu ─────────────────────────────────────────────────────────── */}
 			<div className="flex flex-col flex-grow">
 
-				{/* ══ MOBILE (< sm) : prix → marque/modèle → année·km ══════════════
-				    3 lignes, zéro icône, zéro badge — lisibilité maximale en 2-col  */}
+				{/* ══ MOBILE (< sm) : prix → marque/modèle → finition → année·km ═══
+				    Badge BVA visible uniquement si boîte automatique              */}
 				<div className="sm:hidden flex flex-col gap-0.5 px-2 pt-2 pb-2">
-					<span className="font-bold text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
-						{vehicle.price.toLocaleString("fr-FR")} €
-					</span>
+					{/* Ligne 1 : Prix + badge BVA */}
+					<div className="flex items-center justify-between gap-1">
+						<span className="font-bold text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
+							{vehicle.price.toLocaleString("fr-FR")} €
+						</span>
+						{vehicle.transmission === "Automatique" && (
+							<span className="flex-shrink-0 text-[9px] font-bold tracking-wider text-[#e11d48] bg-[#fff1f2] border border-[#fecdd3] rounded-full px-1.5 py-0.5 leading-none uppercase" aria-label="Boîte automatique">
+								BVA
+							</span>
+						)}
+					</div>
+					{/* Ligne 2 : Marque + modèle */}
 					<p className="text-[11px] font-semibold text-[#0f172a] leading-tight truncate">
 						{vehicle.brand} {vehicle.model}
 					</p>
-					<p className="text-[11px] text-[#64748b] leading-tight">
+					{/* Ligne 3 : Finition / version — 2 lignes max si disponible */}
+					{finition && (
+						<p className="text-[10px] text-[#475569] leading-snug line-clamp-2">
+							{finition}
+						</p>
+					)}
+					{/* Ligne 4 : Année · km */}
+					<p className="text-[10px] text-[#94a3b8] leading-tight">
 						{vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km
 					</p>
 				</div>

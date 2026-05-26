@@ -283,7 +283,7 @@ export default function VehicleContactForm({
 			</button>
 
 			<p className="text-center text-xs text-slate-400">
-				Réponse sous 24 h · Ou appelez le{" "}
+				Ou appelez-nous directement au{" "}
 				<a
 					href="tel:0532002038"
 					className="text-brand-600 font-medium hover:underline"

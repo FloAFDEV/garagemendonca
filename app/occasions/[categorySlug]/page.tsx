@@ -336,7 +336,7 @@ export default async function OccasionsCategoryPage({ params, searchParams }: Pr
             Une question sur un véhicule ?
           </h2>
           <p className="text-slate-300 text-lg mb-8 max-w-xl mx-auto">
-            Contactez-nous pour un essai, un financement ou une reprise. Réponse sous 24h.
+            Contactez-nous pour un essai, un financement ou une reprise.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="tel:0532002038" className="btn-primary text-base py-4 px-8">
