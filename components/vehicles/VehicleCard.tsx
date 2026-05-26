@@ -47,6 +47,34 @@ const HIGHLIGHT_LABELS: Partial<Record<keyof VehicleOptions, string>> = {
 const toSentenceCase = (s: string | null | undefined): string =>
 	s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : (s ?? "");
 
+/**
+ * cleanModelText — retire les détails techniques superflus du champ `model`.
+ * Les données DB contiennent parfois "Jazz 1.2i 85 ch Boîte automatique" :
+ * on extrait uniquement la dénomination commerciale "Jazz".
+ * La puissance, la cylindrée et la boîte ont chacune leur badge dédié.
+ */
+function cleanModelText(raw: string, finition?: string | null): string {
+	let s = raw
+		// Cylindrée : "1.2i", "1.5 VVT-i", "2.0 THP", "0.9 TCe" etc.
+		.replace(/\s+\d+[.,]\d+[a-z]{0,3}\b/gi, "")
+		// Puissance isolée : "100 ch", "85 CV", "125 kW", "90hp"
+		.replace(/\s+\d{2,4}\s*(ch|cv|kw|hp|bhp)\b/gi, "")
+		// Mention boîte dans le modèle
+		.replace(/\s*(boîte\s+)?(automatique|manuelle)\b/gi, "")
+		// Acronymes transmission
+		.replace(/\s*\b(bva|bvm)\b/gi, "")
+		.replace(/\s+/g, " ")
+		.trim();
+
+	// Si la finition se retrouve doublonnée dans le champ modèle, on la retire
+	if (finition) {
+		const esc = finition.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+		s = s.replace(new RegExp(`\\s*\\b${esc}\\b\\s*`, "gi"), " ").trim();
+	}
+
+	return s;
+}
+
 interface VehicleCardProps {
 	vehicle: Vehicle;
 	priority?: boolean;
@@ -153,31 +181,43 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 			{/* ── Contenu ─────────────────────────────────────────────────────────── */}
 			<div className="flex flex-col flex-grow">
 
-				{/* ══ MOBILE (< sm) : marque/modèle → finition → prix → année·km ═══
-				    Badge BVA visible uniquement si boîte automatique              */}
+				{/* ══ MOBILE (< sm) : marque/modèle → finition → couleur → prix → année·km ══
+				    Structure strictement identique sur toutes les annonces.            */}
 				<div className="sm:hidden flex flex-col gap-0.5 px-2.5 pt-2.5 pb-2">
-					{/* Ligne 1 : Marque + modèle + badge BVA */}
+					{/* Ligne 1 : [Marque Modèle] (propre, sans technique) + badge transmission */}
 					<div className="flex items-center justify-between gap-1">
 						<p className="text-[12px] font-semibold text-[#0f172a] leading-tight truncate">
-							{vehicle.brand} {vehicle.model}
+							{vehicle.brand} {cleanModelText(vehicle.model, finition)}
 						</p>
-						{vehicle.transmission === "Automatique" && (
-							<span className="flex-shrink-0 text-[9px] font-bold tracking-wider text-[#e11d48] bg-[#fff1f2] border border-[#fecdd3] rounded-full px-1.5 py-0.5 leading-none uppercase" aria-label="Boîte automatique">
-								BVA
-							</span>
-						)}
+						{/* Badge transmission — jamais "BVA"/"BVM" */}
+						<span
+							className={`flex-shrink-0 whitespace-nowrap text-[9px] font-semibold rounded-full px-1.5 py-0.5 leading-none ${
+								vehicle.transmission === "Automatique"
+									? "text-[#e11d48] bg-[#fff1f2] border border-[#fecdd3]"
+									: "text-slate-500 bg-slate-100 border border-slate-200"
+							}`}
+							aria-label={vehicle.transmission === "Automatique" ? "Boîte automatique" : "Boîte manuelle"}
+						>
+							{vehicle.transmission === "Automatique" ? "Boîte auto" : "Manuelle"}
+						</span>
 					</div>
-					{/* Ligne 2 : Finition / version — 2 lignes max si disponible */}
+					{/* Ligne 2 : Finition — même taille/graisse que le titre, rouge bordeaux */}
 					{finition && (
-						<p className="text-[10px] text-[#475569] leading-snug line-clamp-2">
+						<p className="text-[12px] font-semibold text-brand-600 leading-tight truncate">
 							{finition}
 						</p>
 					)}
-					{/* Ligne 3 : Prix */}
+					{/* Ligne 3 : Couleur — discrète, gris */}
+					{colorLabel && (
+						<p className="text-[10px] text-[#94a3b8] leading-tight truncate">
+							{colorLabel}
+						</p>
+					)}
+					{/* Ligne 4 : Prix */}
 					<span className="font-bold text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
 						{vehicle.price.toLocaleString("fr-FR")} €
 					</span>
-					{/* Ligne 4 : Année · km */}
+					{/* Ligne 5 : Année · km */}
 					<p className="text-[10px] text-[#94a3b8] leading-tight">
 						{vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km
 					</p>
@@ -199,14 +239,19 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 							/>
 						</div>
 						<div className="min-w-0 overflow-hidden">
-							<h3 className="ty-subheading text-[#0f172a] text-sm font-medium leading-tight line-clamp-2">
-								{vehicle.brand} {vehicle.model}
+							{/* Titre : "[Marque] [Modèle]" nettoyé + finition en rouge bordeaux
+							    même taille (text-sm) et graisse (font-medium) que le titre */}
+							<h3 className="ty-subheading text-sm font-medium leading-tight line-clamp-2">
+								<span className="text-[#0f172a]">
+									{vehicle.brand} {cleanModelText(vehicle.model, finition)}
+								</span>
 								{finition && (
-									<span className="text-brand-600 font-semibold ml-1 text-[12px]">
+									<span className="text-brand-600 ml-1">
 										{finition}
 									</span>
 								)}
 							</h3>
+							{/* Couleur — sous-titre discret gris, comme "Gris Anthracite" */}
 							{colorLabel && (
 								<p className="text-[#64748b] text-[11px] mt-0.5 truncate">{colorLabel}</p>
 							)}
@@ -235,8 +280,20 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 
 					{/* Badges boîte + puissance + garantie */}
 					<div className="flex items-center gap-1.5 mb-2">
-						<Badge variant="gray" className="flex-1 justify-center normal-case">
-							{toSentenceCase(vehicle.transmission)}
+						{/* Transmission — texte adaptatif selon breakpoint, jamais "BVA"/"BVM" */}
+						<Badge variant="gray" className="flex-1 justify-center normal-case whitespace-nowrap">
+							{vehicle.transmission === "Automatique" ? (
+								<>
+									<span className="md:hidden">Auto</span>
+									<span className="hidden md:inline lg:hidden">Boîte auto</span>
+									<span className="hidden lg:inline">Boîte automatique</span>
+								</>
+							) : (
+								<>
+									<span className="lg:hidden">Manuelle</span>
+									<span className="hidden lg:inline">Boîte manuelle</span>
+								</>
+							)}
 						</Badge>
 						<Badge variant="gray" className="flex-1 justify-center normal-case">
 							{vehicle.power} ch
