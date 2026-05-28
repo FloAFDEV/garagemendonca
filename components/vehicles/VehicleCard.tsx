@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import VehiclePhotoImage from "@/components/vehicles/VehiclePhotoImage";
 import { Fuel, Gauge, Calendar, ArrowRight, Star } from "lucide-react";
 import { Vehicle } from "@/types";
@@ -101,6 +102,12 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 	const optionHits = vehicle.options
 		? HIGHLIGHT_KEYS.filter((k) => vehicle.options![k] === true)
 		: [];
+
+	// Eager prefetch for above-the-fold cards — fired once on mount so the
+	// detail page RSC payload is ready before the user taps.
+	useEffect(() => {
+		if (priority) router.prefetch(href);
+	}, [priority, href, router]);
 
 	return (
 		<Link

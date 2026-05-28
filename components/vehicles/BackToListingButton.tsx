@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { FILTER_SESSION_KEY } from "./FilterStatePreserver";
 
@@ -16,11 +17,14 @@ interface BackToListingButtonProps {
  */
 export default function BackToListingButton({ className }: BackToListingButtonProps) {
 	const [href, setHref] = useState("/vehicules");
+	const router = useRouter();
 
 	useEffect(() => {
 		const saved = sessionStorage.getItem(FILTER_SESSION_KEY);
+		const target = saved ?? "/vehicules";
 		if (saved) setHref(saved);
-	}, []);
+		router.prefetch(target);
+	}, [router]);
 
 	return (
 		<Link

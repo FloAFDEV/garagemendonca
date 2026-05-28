@@ -37,7 +37,11 @@ export default function AnimateOnScroll({ children, className = "", delay = 0 }:
           observer.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+      // threshold bas + rootMargin positif = déclenche 80px AVANT que la card
+      // n'entre dans le viewport → illusion de pré-chargement instantané.
+      // Supprime aussi le flash opacity:0 au retour arrière (les cards
+      // sont déjà "dans la zone" et se déclenchent dès le premier paint).
+      { threshold: 0.05, rootMargin: "0px 0px 80px 0px" }
     );
 
     observer.observe(el);
