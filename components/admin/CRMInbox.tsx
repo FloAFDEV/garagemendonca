@@ -113,11 +113,11 @@ function StatusBadge({ status }: { status: string }) {
 	return (
 		<span
 			className={clsx(
-				"inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
+				"inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium shrink-0 whitespace-nowrap",
 				cfg.color,
 			)}
 		>
-			<Icon size={11} />
+			<Icon size={10} className="shrink-0" />
 			{cfg.label}
 		</span>
 	);
@@ -207,8 +207,8 @@ function MessageListItem({
 					{/* Véhicule concerné — visible directement dans la liste */}
 					{message.vehicleName && (
 						<div className="flex items-center gap-1 mb-1">
-							<Car size={11} className="text-brand-400 flex-shrink-0" />
-							<span className="text-xs text-brand-400 truncate font-medium">
+							<Car size={11} className={clsx(isDark ? "text-brand-400" : "text-brand-600", "flex-shrink-0")} />
+							<span className={clsx("text-xs truncate font-medium", isDark ? "text-brand-400" : "text-brand-600")}>
 								{message.vehicleName}
 							</span>
 						</div>
@@ -444,7 +444,7 @@ function MessageDetail({
 				<div className="bg-dark-900 rounded-xl border border-dark-800 overflow-hidden">
 					{message.vehicleId && (
 						<div className="flex items-center gap-2 px-4 py-2.5 border-b border-dark-800 bg-dark-900/60">
-							<Car size={12} className="text-brand-500 flex-shrink-0" />
+							<Car size={12} className="text-brand-400 flex-shrink-0" />
 							{message.vehicleHref ? (
 								<Link
 									href={message.vehicleHref}
