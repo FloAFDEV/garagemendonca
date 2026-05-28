@@ -56,15 +56,15 @@ export default function VehicleTechSpecs({ vehicle, displayColor }: VehicleTechS
 			</div>
 
 			{/* Grille de caractéristiques */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
+			<div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5">
 				{specs.map(({ icon: Icon, label, value }) => (
 					<div
 						key={label}
-						className="group flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-brand-200 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-default"
+						className="group flex items-center gap-2.5 p-3 sm:p-3.5 rounded-2xl bg-slate-50 border border-slate-100 hover:border-brand-200 hover:bg-white hover:shadow-sm transition-all duration-200 cursor-default"
 					>
-						<div className="flex-shrink-0 w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:border-brand-200 group-hover:bg-brand-50 transition-colors duration-200">
+						<div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center group-hover:border-brand-200 group-hover:bg-brand-50 transition-colors duration-200">
 							<Icon
-								size={16}
+								size={14}
 								className="text-slate-400 group-hover:text-brand-500 transition-colors duration-200"
 								aria-hidden="true"
 							/>
