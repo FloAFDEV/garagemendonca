@@ -6,17 +6,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Suspense, cache } from "react";
+import { Suspense } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
 import { FilterStatePreserver } from "@/components/vehicles/FilterStatePreserver";
 import { VehicleGridServer, VehicleGridFallback } from "@/components/vehicles/VehicleGridServer";
-import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
 import {
   listBrandsCached,
   listCategoriesCached,
+  countPublicCached,
 } from "@/lib/cache/vehicleStaticData";
 import {
   buildPaginationMeta,
@@ -30,13 +30,6 @@ import { getActiveGarageId } from "@/lib/config/garage";
 import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 
 const GARAGE_ID = getActiveGarageId();
-
-// cache() déduplique countPublic entre generateMetadata et le page component
-// sur la même requête serveur (scope : durée de vie du render).
-const countPublicCached = cache(
-  (garageId: string, filters: Parameters<typeof vehicleDb.countPublic>[1]) =>
-    vehicleDb.countPublic(garageId, filters),
-);
 
 // ─────────────────────────────────────────────────────────────────
 //  Types

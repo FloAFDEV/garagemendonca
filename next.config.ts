@@ -2,6 +2,14 @@ import type { NextConfig } from "next";
 import { SIMPLE_REDIRECTS } from "./redirects-simple";
 
 const nextConfig: NextConfig = {
+	// Restaure le Router Cache client-side (30s) pour les pages dynamiques.
+	// Next.js 15 a changé staleTimes.dynamic de 30→0, cassant le cache "retour liste".
+	// Résultat : retour /vehicules sans re-fetch RSC pendant 30s après la première visite.
+	experimental: {
+		staleTimes: {
+			dynamic: 30,
+		},
+	},
 	images: {
 		// unoptimized: bypass /_next/image entirely.
 		// Vercel Hobby plan caps Image Optimization at ~1000 source images/month;
