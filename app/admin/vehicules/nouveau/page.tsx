@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { createVehicleAction, getFeaturedCount, fetchCategoriesAction } from "@/app/admin/vehicules/actions";
@@ -185,7 +186,7 @@ function Combobox({
 						<button
 							key={s}
 							type="button"
-							onMouseDown={() => { onChange(s); setOpen(false); }}
+							onPointerDown={(e) => { e.preventDefault(); onChange(s); setOpen(false); }}
 							className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${t.dropdownItemHover} ${
 								s === value ? `${t.txt} bg-brand-500/10 font-medium` : t.dropdownItemTxt
 							}`}
@@ -202,7 +203,7 @@ function Combobox({
 					{showFreeOption && (
 						<button
 							type="button"
-							onMouseDown={() => { onChange(value.trim()); setOpen(false); }}
+							onPointerDown={(e) => { e.preventDefault(); onChange(value.trim()); setOpen(false); }}
 							className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-1.5 border-t ${t.dropdownBorder} ${t.dropdownItemHover} text-brand-400`}
 						>
 							<span className="text-xs">↵</span>
@@ -226,6 +227,7 @@ function Combobox({
 export default function NewVehiclePage() {
 	const t = useAdminTokens();
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const [form, setForm] = useState<VehicleForm>(emptyForm);
 	const [images, setImages] = useState<string[]>([]);
@@ -333,6 +335,7 @@ export default function NewVehiclePage() {
 			);
 		}
 		setSaveStatus("saved");
+		queryClient.invalidateQueries({ queryKey: ["vehicles"] });
 		setTimeout(() => router.push("/admin/vehicules"), 1200);
 	};
 

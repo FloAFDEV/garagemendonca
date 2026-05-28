@@ -37,7 +37,7 @@ export function useAdminVehiclesList() {
     staleTime:           STALE_TIMES.ADMIN_LIST, // 3 min — cache chaud pour retour liste
     gcTime:              GC_TIMES.ADMIN_LIST,    // 10 min — survit aller-retour fiche
     enabled:             !!GARAGE_ID,
-    refetchOnMount:      false, // affiche immédiatement le cache au retour
+    refetchOnMount:      true,  // refetch si données stale au retour (après invalidation post-save)
     refetchOnWindowFocus: false, // pas de re-fetch sur focus fenêtre
   });
 }

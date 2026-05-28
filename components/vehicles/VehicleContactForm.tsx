@@ -121,7 +121,7 @@ export default function VehicleContactForm({
 				<div className="w-14 h-14 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-center mb-4">
 					<CheckCircle className="text-emerald-500" size={26} />
 				</div>
-				<h3 className="text-lg font-semibold text-[#0f172a] mb-2">
+				<h3 className="text-lg font-normal text-[#0f172a] mb-2">
 					Message envoyé !
 				</h3>
 				<p className="text-slate-500 text-sm max-w-xs leading-relaxed">
@@ -151,7 +151,7 @@ export default function VehicleContactForm({
 					<p className="text-xs text-brand-500 font-medium uppercase tracking-wide">
 						Votre demande concerne
 					</p>
-					<p className="text-sm font-semibold text-[#0f172a] truncate">
+					<p className="text-sm font-light text-[#0f172a] truncate">
 						{vehicleLabel}
 					</p>
 				</div>

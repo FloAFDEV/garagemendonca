@@ -18,7 +18,7 @@ interface VehicleStatusBadgeProps {
 export default function VehicleStatusBadge({ garantie }: VehicleStatusBadgeProps) {
 	if (!garantie) return null;
 	return (
-		<span className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold px-3 py-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full">
+		<span className="inline-flex items-center gap-1.5 mt-2 text-xs font-light px-3 py-1 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full">
 			<ShieldCheck size={12} className="text-emerald-500" /> Garantie {garantie}
 		</span>
 	);

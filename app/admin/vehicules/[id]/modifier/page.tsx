@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, use, useEffect, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import {
@@ -181,7 +182,8 @@ function Combobox({
 						<button
 							key={s}
 							type="button"
-							onMouseDown={() => {
+							onPointerDown={(e) => {
+								e.preventDefault();
 								onChange(s);
 								setOpen(false);
 							}}
@@ -208,7 +210,8 @@ function Combobox({
 					{showFreeOption && (
 						<button
 							type="button"
-							onMouseDown={() => {
+							onPointerDown={(e) => {
+								e.preventDefault();
 								onChange(value.trim());
 								setOpen(false);
 							}}
@@ -240,6 +243,7 @@ export default function EditVehiclePage({
 	const t = useAdminTokens();
 	const { id } = use(params);
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const [loadState, setLoadState] = useState<
 		"loading" | "ready" | "notfound"
@@ -503,6 +507,7 @@ export default function EditVehiclePage({
 				`${form.brand} ${form.model}`,
 			);
 			setSaveStatus("saved");
+			queryClient.invalidateQueries({ queryKey: ["vehicles"] });
 			setTimeout(() => router.push("/admin/vehicules"), 1200);
 		} catch (err) {
 			console.error("[handleSubmit] save error:", err);
