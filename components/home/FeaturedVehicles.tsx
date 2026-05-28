@@ -55,6 +55,15 @@ export default async function FeaturedVehicles() {
 		);
 	}
 
+	// Colonnes desktop adaptées au nombre d'items :
+	// 1 → card centrée · 2 → 2 cols · 3 → 2→3 cols · 4 → 2→3→4 cols
+	// Chaînes littérales complètes → Tailwind JIT les détecte toutes.
+	const desktopGridCols =
+		displayed.length === 1 ? "sm:grid-cols-1 sm:max-w-sm sm:mx-auto" :
+		displayed.length === 2 ? "sm:grid-cols-2" :
+		displayed.length === 3 ? "sm:grid-cols-2 lg:grid-cols-3" :
+		                         "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+
 	return (
 		<section className="py-12 sm:py-20 lg:py-24 bg-white">
 			<Container>
@@ -108,7 +117,7 @@ export default async function FeaturedVehicles() {
 				</div>
 
 				{/* ── Desktop : Grille ── */}
-				<div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
+				<div className={`hidden sm:grid gap-4 sm:gap-6 mb-8 ${desktopGridCols}`}>
 					{displayed.map((vehicle, i) =>
 						i === 0 ? (
 							<VehicleCard key={vehicle.id} vehicle={vehicle} priority />
