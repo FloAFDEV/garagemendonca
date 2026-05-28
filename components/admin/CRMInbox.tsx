@@ -56,20 +56,20 @@ const STATUS_LABELS: Record<
 		icon: React.ComponentType<{ size?: number; className?: string }>;
 	}
 > = {
-	new: { label: "Nouveau", color: "bg-blue-100 text-blue-700", icon: Mail },
+	new: { label: "Nouveau", color: "bg-blue-100 text-blue-800 border border-blue-200", icon: Mail },
 	in_progress: {
 		label: "En cours",
-		color: "bg-amber-100 text-amber-700",
+		color: "bg-amber-100 text-amber-800 border border-amber-300",
 		icon: AlertCircle,
 	},
 	answered: {
 		label: "Répondu",
-		color: "bg-emerald-100 text-emerald-700",
+		color: "bg-emerald-100 text-emerald-800 border border-emerald-200",
 		icon: CheckCircle,
 	},
 	archived: {
 		label: "Archivé",
-		color: "bg-slate-100 text-slate-500",
+		color: "bg-slate-100 text-slate-600 border border-slate-200",
 		icon: Archive,
 	},
 };
@@ -352,13 +352,11 @@ function MessageDetail({
 				</div>
 
 				<div className="flex-1 min-w-0">
-					<div className="flex items-center gap-2 min-w-0">
-						<h2 className={clsx("font-semibold truncate text-sm", isDark ? "text-dark-300" : "text-slate-800")}>
-							{message.firstname} {message.lastname}
-						</h2>
+					<h2 className={clsx("font-semibold truncate text-sm", isDark ? "text-dark-300" : "text-slate-800")}>
+						{message.firstname} {message.lastname}
+					</h2>
+					<div className={clsx("flex items-center flex-wrap gap-x-3 gap-y-1 text-xs mt-0.5", isDark ? "text-dark-500" : "text-slate-500")}>
 						<StatusBadge status={displayed.status} />
-					</div>
-					<div className={clsx("flex items-center gap-3 text-xs", isDark ? "text-dark-500" : "text-slate-500")}>
 						<a
 							href={`mailto:${message.email}`}
 							className="hover:text-brand-400 truncate"
