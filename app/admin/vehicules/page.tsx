@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminVehicleRow } from "@/components/admin/AdminVehicleRow";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useAdminVehiclesList } from "@/lib/queries/useVehicles";
 import { Vehicle, VehicleStatus } from "@/types";
@@ -813,30 +814,17 @@ export default function AdminVehiclesPage() {
 											t.tableRowHover,
 										)}
 									>
-										<div className="w-12 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-700 flex items-center justify-center">
-											<VehicleThumb vehicle={vehicle} className="w-full h-full object-cover" />
-										</div>
-										<div className="flex-1 min-w-0">
-											<p className={clsx("font-normal text-sm truncate flex items-center gap-1", t.txt)}>
-												{vehicle.featured && (
-													<Star size={10} className="text-amber-400 flex-shrink-0" aria-hidden="true" />
-												)}
-												{vehicle.brand} {vehicle.model}
-											</p>
-											<p className={clsx("text-xs mt-0.5 truncate", t.txtSubtle)}>
-												{vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km · {vehicle.fuel}
-											</p>
-										</div>
-										<div className="flex flex-col items-end gap-1.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-											<span className="font-heading font-medium text-brand-400 text-sm">
-												{vehicle.price.toLocaleString("fr-FR")} €
-											</span>
-											<StatusSelect
-												vehicleId={vehicle.id}
-												current={vehicle.status ?? "draft"}
-												onChange={handleStatusChange}
-											/>
-										</div>
+										<AdminVehicleRow
+											vehicle={vehicle}
+											statusSlot={
+												<StatusSelect
+													vehicleId={vehicle.id}
+													current={vehicle.status ?? "draft"}
+													onChange={handleStatusChange}
+												/>
+											}
+											stopRightPropagation
+										/>
 									</div>
 									{/* Action bar */}
 									<div
@@ -957,13 +945,14 @@ export default function AdminVehiclesPage() {
 											<div>
 												<div
 													className={clsx(
-														"font-normal text-brand-500 text-sm flex items-center gap-1.5",
+														"font-medium text-sm flex items-center gap-1.5",
+														t.txt,
 													)}
 												>
 													{vehicle.featured && (
 														<Star
 															size={11}
-															className="text-amber-500 flex-shrink-0"
+															className="text-amber-400 fill-amber-400 flex-shrink-0"
 														/>
 													)}
 													{vehicle.brand}{" "}
@@ -1033,7 +1022,7 @@ export default function AdminVehiclesPage() {
 											km
 										</td>
 										<td className="px-4 py-2.5">
-											<span className="font-heading font-medium text-brand-400 text-sm">
+											<span className="font-heading font-medium text-brand-500 text-sm">
 												{vehicle.price.toLocaleString(
 													"fr-FR",
 												)}{" "}

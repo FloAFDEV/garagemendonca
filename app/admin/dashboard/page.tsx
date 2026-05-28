@@ -1,6 +1,8 @@
 "use client";
 
 import AdminLayout from "@/components/admin/AdminLayout";
+import { AdminVehicleRow } from "@/components/admin/AdminVehicleRow";
+import { VehicleStatusBadge } from "@/components/admin/VehicleStatusBadge";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useVehiclesAdmin } from "@/lib/queries/useVehicles";
 import { useUser } from "@/lib/auth/useUser";
@@ -158,47 +160,27 @@ function DashboardContent() {
 									t.tableRowHover,
 								)}
 							>
-								{/* Thumbnail */}
-								<div className="w-12 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-700 flex items-center justify-center">
-									{(v.thumbnailUrl ?? v.images?.[0]) ? (
-										// eslint-disable-next-line @next/next/no-img-element
-										<img
-											src={v.thumbnailUrl ?? v.images[0]}
-											alt=""
-											className="w-full h-full object-cover"
+								<AdminVehicleRow
+									vehicle={v}
+									statusSlot={<VehicleStatusBadge status={v.status} />}
+									afterPrice={
+										v.createdAt ? (
+											<span className={clsx("text-[10px]", t.txtSubtle)}>
+												{new Date(v.createdAt).toLocaleDateString("fr-FR", {
+													day: "2-digit",
+													month: "2-digit",
+													year: "2-digit",
+												})}
+											</span>
+										) : undefined
+									}
+									trailingSlot={
+										<ArrowRight
+											size={14}
+											className={clsx("transition-colors flex-shrink-0", t.txtSubtle, "group-hover/row:text-brand-500")}
+											aria-hidden="true"
 										/>
-									) : (
-										<Car size={14} className={t.txtFaint} aria-hidden="true" />
-									)}
-								</div>
-								{/* Info */}
-								<div className="flex-1 min-w-0">
-									<div className={clsx("font-medium text-sm truncate", t.txt)}>
-										{v.brand} {v.model}
-									</div>
-									<div className={clsx("text-xs mt-0.5 truncate", t.txtSubtle)}>
-										{v.year} · {v.mileage.toLocaleString("fr-FR")} km · {v.fuel}
-										{v.color ? ` · ${v.color}` : ""}
-									</div>
-								</div>
-								<div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-									<span className="font-heading font-medium text-brand-500 text-sm">
-										{v.price.toLocaleString("fr-FR")} €
-									</span>
-									{v.createdAt && (
-										<span className={clsx("text-[10px]", t.txtSubtle)}>
-											{new Date(v.createdAt).toLocaleDateString("fr-FR", {
-												day: "2-digit",
-												month: "2-digit",
-												year: "2-digit",
-											})}
-										</span>
-									)}
-								</div>
-								<ArrowRight
-									size={14}
-									className={clsx("transition-colors flex-shrink-0", t.txtSubtle, "group-hover/row:text-brand-500")}
-									aria-hidden="true"
+									}
 								/>
 							</Link>
 						))}
