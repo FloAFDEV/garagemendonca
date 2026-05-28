@@ -234,14 +234,19 @@ function DescriptionEditorInner({
   // ── Auto-grow textarea to match content height ──────────────────────
   const minH = `${minRows * 1.65}rem`;
 
-  useEffect(() => {
+  // Impératif : appelé directement sur chaque input ET via useEffect.
+  // onInput bypasse le cycle React pour une réponse immédiate sur mobile (IME, dictée).
+  const adjustHeight = useCallback(() => {
     const el = textareaRef.current;
     if (!el) return;
-    // Reset to auto to measure scroll height, then set to content height
     el.style.height = "auto";
-    const minPx = minRows * 1.65 * parseFloat(getComputedStyle(document.documentElement).fontSize || "16");
+    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize || "16");
+    const minPx = minRows * 1.65 * rootFontSize;
     el.style.height = `${Math.max(el.scrollHeight, minPx)}px`;
-  }, [value, minRows]);
+  }, [minRows]);
+
+  // Sync quand value change depuis l'extérieur (undo/redo, paste, valeur initiale)
+  useEffect(() => { adjustHeight(); }, [value, adjustHeight]);
 
   // ── Selection tracking ──────────────────────────────────────────────
   const saveSelection = useCallback(() => {
@@ -575,6 +580,7 @@ function DescriptionEditorInner({
             name={name}
             value={value}
             onChange={handleChange}
+            onInput={adjustHeight}
             onPaste={handlePaste}
             onKeyDown={handleKeyDown}
             onSelect={saveSelection}
@@ -588,7 +594,9 @@ function DescriptionEditorInner({
             }
             className={clsx(
               "flex-1 w-full focus:outline-none text-sm leading-[1.75]",
-              "px-4 py-4 resize-none overflow-hidden",
+              // overflow-y-auto : fallback scroll si l'auto-grow lag (mobile, IME).
+              // overflow-hidden bloquait le scroll interne sur iOS/Android.
+              "px-4 py-4 resize-none overflow-y-auto",
               bgEditor,
               t.txt,
               isDark
