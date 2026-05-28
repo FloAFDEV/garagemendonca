@@ -87,7 +87,7 @@ const footerLinks = {
 	],
 	navigation: [
 		{ href: "/", label: "Accueil" },
-		{ href: "/vehicules", label: "Occasions" },
+		{ href: "/vehicules", label: "Véhicules" },
 		{ href: "/produit", label: "Notre offre" },
 		{ href: "/contact", label: "Contact" },
 		{ href: "/faq", label: "FAQ" },

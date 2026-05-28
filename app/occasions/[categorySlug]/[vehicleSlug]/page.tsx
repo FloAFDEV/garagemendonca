@@ -154,8 +154,8 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 					{relatedVehicles.length > 0 && (
 						<VehicleRelatedSection
 							vehicles={relatedVehicles}
-							listHref={`/occasions/${vehicleCategorySlug}`}
-							listLabel={`Voir plus de ${category?.label?.toLowerCase() ?? "véhicules"}`}
+							listHref="/vehicules"
+							listLabel="Voir tout le stock"
 						/>
 					)}
 				</Container>

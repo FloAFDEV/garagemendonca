@@ -11,7 +11,7 @@ import { HeaderSearchButton } from "@/components/search/HeaderSearch";
 
 const navLinks = [
 	{ href: "/", label: "Accueil" },
-	{ href: "/vehicules", label: "Occasions" },
+	{ href: "/vehicules", label: "Véhicules" },
 	{ href: "/services", label: "Services" },
 	{ href: "/contact", label: "Contact" },
 ];

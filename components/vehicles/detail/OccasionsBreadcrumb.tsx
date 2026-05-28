@@ -39,13 +39,13 @@ export default function OccasionsBreadcrumb({
 				</li>
 				<li aria-hidden="true">/</li>
 				<li>
-					<Link href="/occasions" className="hover:text-brand-600 transition-colors">
-						Occasions
+					<Link href="/vehicules" className="hover:text-brand-600 transition-colors">
+						Véhicules
 					</Link>
 				</li>
 				<li aria-hidden="true">/</li>
 				<li>
-					<Link href={`/occasions/${categorySlug}`} className="hover:text-brand-600 transition-colors">
+					<Link href="/vehicules" className="hover:text-brand-600 transition-colors">
 						{categoryLabel}
 					</Link>
 				</li>
