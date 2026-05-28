@@ -27,11 +27,8 @@ export default function MobileVehicleFooter({ price, year, mileage, garantie }: 
 		>
 			<div className="flex-1 min-w-0">
 				<p className="ty-value font-heading text-xl leading-none tabular-nums">{price.toLocaleString("fr-FR")} €</p>
-				<p className="text-[11px] text-slate-500 mt-0.5 tabular-nums leading-none truncate">
-					{year}
-					{" · "}
-					{mileage.toLocaleString("fr-FR")} km
-					{garantie ? ` · ${garantie}` : ""}
+				<p className="text-xs text-slate-500 mt-1 tabular-nums leading-none truncate">
+					{year} · {mileage.toLocaleString("fr-FR")} km{garantie ? ` · ${garantie}` : ""}
 				</p>
 			</div>
 			<a href="tel:0532002038" className="btn-primary py-3 px-5 shadow-md shadow-brand-500/20 shrink-0"><Phone size={18} /></a>
