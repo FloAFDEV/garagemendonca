@@ -44,7 +44,7 @@
 @layer components {
 	/* BUTTON PRIMARY (ROUGE) */
 	.btn-primary {
-		@apply inline-flex items-center gap-2
+		@apply inline-flex items-center justify-center gap-2
 		bg-[#e11d48] hover:bg-[#be123c] active:bg-[#9f1239]
 		text-white font-medium px-5 py-2.5 rounded-lg
 		transition-all duration-200
@@ -53,10 +53,20 @@
 
 	/* BUTTON SECONDARY */
 	.btn-secondary {
-		@apply inline-flex items-center gap-2
+		@apply inline-flex items-center justify-center gap-2
 		bg-white border border-slate-200
 		text-[#0f172a] font-medium px-5 py-2.5 rounded-lg
 		hover:bg-slate-50 transition-all duration-200;
+	}
+
+	/* BUTTON OUTLINE — fond sombre uniquement (hero, CTA dark) */
+	.btn-outline {
+		@apply inline-flex items-center justify-center gap-2
+		border border-white/25 hover:border-white/50
+		text-white bg-transparent hover:bg-white/5
+		font-medium px-5 py-2.5 rounded-lg
+		transition-all duration-200
+		hover:-translate-y-[2px] active:translate-y-0;
 	}
 
 	/* TITRES SECTION */

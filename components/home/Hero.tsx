@@ -126,14 +126,14 @@ export default function Hero() {
 						<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-xs mx-auto sm:max-w-full sm:mx-0 mb-6 animate-slide-up">
 							<a
 								href="tel:0532002038"
-								className="btn-primary w-full sm:w-auto text-sm sm:text-base py-2.5 px-5 sm:py-3 sm:px-7 flex justify-center items-center gap-2 shadow-brand-lg"
+								className="btn-primary w-full sm:w-auto text-sm sm:text-base py-2.5 px-5 sm:py-3 sm:px-7 shadow-brand-lg"
 							>
 								<Phone size={16} aria-hidden="true" />
 								Nous contacter
 							</a>
 							<Link
 								href="/contact"
-								className="btn-outline w-full sm:w-auto text-white sm:text-base py-2.5 px-5 sm:py-3 sm:px-7 flex justify-center items-center gap-2"
+								className="btn-outline w-full sm:w-auto sm:text-base py-2.5 px-5 sm:py-3 sm:px-7"
 							>
 								Nous écrire
 								<ArrowRight size={17} aria-hidden="true" />

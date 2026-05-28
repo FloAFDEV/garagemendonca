@@ -37,14 +37,14 @@ export default async function FeaturedVehicles() {
 						<div className="flex flex-col sm:flex-row items-center gap-3">
 							<Link
 								href="/contact"
-								className="btn-primary text-sm py-2.5 px-6 inline-flex items-center gap-2 group"
+								className="btn-primary text-sm py-2.5 px-6 group"
 							>
 								Nous contacter
 								<ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
 							</Link>
 							<a
 								href="tel:0532002038"
-								className="btn-secondary text-sm py-2.5 px-6 inline-flex items-center gap-2"
+								className="btn-secondary text-sm py-2.5 px-6"
 							>
 								05 32 00 20 38
 							</a>
@@ -173,7 +173,7 @@ export default async function FeaturedVehicles() {
 
 							<Link
 								href="/vehicules"
-								className="btn-primary text-sm sm:text-base py-2.5 sm:py-3 flex-shrink-0 inline-flex items-center gap-2 group"
+								className="btn-primary text-sm sm:text-base py-2.5 sm:py-3 flex-shrink-0 group"
 							>
 								Voir tous nos véhicules
 								<ArrowRight
