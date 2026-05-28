@@ -14,10 +14,10 @@ export default function ServiceCTA({ cta_label, cta_url, phone }: Props) {
 	return (
 		<div className="bg-brand-500 rounded-2xl px-8 py-10 text-center">
 			<h3 className="ty-heading text-xl sm:text-2xl text-white mb-2">
-				Besoin d&apos;un devis ?
+				Une question ou un renseignement ?
 			</h3>
 			<p className="text-brand-50 text-sm mb-8">
-				Devis personnalisé · Sans engagement · Expertise certifiée
+				Réponse rapide · Sans engagement · Expertise certifiée
 			</p>
 			<div className="flex flex-col sm:flex-row items-center justify-center gap-3">
 				<a

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 			"Garage Auto Mendonca — Garagiste Drémil-Lafage (31) — Mécanique, Carrosserie, Vente",
 	},
 	description:
-		"Garage auto à Drémil-Lafage (31) depuis 2003 — mécanique, carrosserie, diagnostic et vente VO. Spécialiste japonaises & boîte automatique. Devis personnalisé, 9 véhicules de prêt. ☎ 05 32 00 20 38.",
+		"Garage auto à Drémil-Lafage (31) depuis 2003 — mécanique, carrosserie, diagnostic et vente VO. Spécialiste japonaises & boîte automatique. Prix transparents, 9 véhicules de prêt. ☎ 05 32 00 20 38.",
 	alternates: {
 		canonical: "https://www.garagemendonca.com",
 	},

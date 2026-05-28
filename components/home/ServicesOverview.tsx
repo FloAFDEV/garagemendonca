@@ -57,7 +57,7 @@ const reassuranceItems = [
 		),
 	},
 	{
-		label: "Devis transparent avant intervention",
+		label: "Prix transparents avant intervention",
 		desc: "Prix pièce et main-d'œuvre communiqué systématiquement avant tout travail.",
 		icon: (
 			<svg
@@ -117,7 +117,7 @@ export default async function ServicesOverview() {
 								la carrosserie et la vente
 							</h2>
 							<p className="section-subtitle mt-3 max-w-lg text-sm leading-relaxed">
-								Depuis 2003, Vitor Mendonca et son équipe interviennent sur tous types de véhicules. Devis pièce et main-d&apos;œuvre systématique avant toute intervention, spécialistes des véhicules japonais et boîtes automatiques.
+								Depuis 2003, Vitor Mendonca et son équipe interviennent sur tous types de véhicules. Prix pièce et main-d&apos;œuvre communiqués avant toute intervention. Spécialistes des véhicules japonais et boîtes automatiques.
 							</p>
 						</div>
 						<Link
