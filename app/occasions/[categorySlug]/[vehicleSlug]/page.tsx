@@ -23,7 +23,7 @@ import { getActiveGarageId } from "@/lib/config/garage";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
 import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
-import { buildVehicleMetadata, buildVehicleOccasionCanonical, buildVehicleJsonLd, SITE_BASE_URL } from "@/lib/seo/vehicle";
+import { buildVehicleMetadata, buildVehicleCanonical, buildVehicleJsonLd, SITE_BASE_URL } from "@/lib/seo/vehicle";
 
 const GARAGE_ID = getActiveGarageId();
 
@@ -40,11 +40,11 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const { categorySlug, vehicleSlug } = await params;
+	const { vehicleSlug } = await params;
 	const vehicle = await getVehicleCached(vehicleSlug, GARAGE_ID);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
-	const canonical = buildVehicleOccasionCanonical(categorySlug, vehicle);
+	const canonical = buildVehicleCanonical(vehicle);
 	return buildVehicleMetadata(vehicle, { canonical, noindex: false });
 }
 

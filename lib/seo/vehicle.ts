@@ -4,14 +4,12 @@
  * Centralise la génération de métadonnées (title, description, canonical,
  * OG, Twitter) et du JSON-LD Schema.org (type Car).
  *
- * Utilisé par :
- *   - app/occasions/[categorySlug]/[vehicleSlug]/page.tsx  (canonical, indexé)
- *   - app/vehicules/[slug]/page.tsx                        (transitional, noindex)
+ * URL canonique unique : /vehicules/[slug]-[shortId]
  */
 
 import type { Metadata } from "next";
 import type { Vehicle } from "@/types";
-import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Constantes
@@ -37,27 +35,11 @@ export function buildVehicleDescription(vehicle: Vehicle): string {
 }
 
 /**
- * URL canonique pour la route /occasions/[cat]/[slug] (route indexée principale).
+ * URL canonique absolue pour une fiche véhicule — toujours /vehicules/[slug]-[shortId].
  */
-export function buildVehicleOccasionCanonical(
-	categorySlug: string,
-	vehicle: Vehicle,
-): string {
+export function buildVehicleCanonical(vehicle: Vehicle): string {
 	const vSlug =
 		vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
-	return `${SITE_BASE_URL}${buildOccasionUrl(categorySlug, vSlug, vehicle.id)}`;
-}
-
-/**
- * URL canonique pour la route /vehicules/[slug] (route de transition, noindex).
- * Pointe vers /occasions si la catégorie est connue, sinon self-canonical.
- */
-export function buildVehicleFallbackCanonical(vehicle: Vehicle): string {
-	const vSlug =
-		vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
-	if (vehicle.categorySlug) {
-		return `${SITE_BASE_URL}${buildOccasionUrl(vehicle.categorySlug, vSlug, vehicle.id)}`;
-	}
 	return `${SITE_BASE_URL}${buildVehicleUrl(vSlug, vehicle.id)}`;
 }
 
@@ -69,8 +51,8 @@ interface BuildVehicleMetadataOptions {
 	/** URL canonique absolue de la page. */
 	canonical: string;
 	/**
-	 * true  → robots noindex + follow (route de transition /vehicules/[slug])
-	 * false → robots index selon vehicle.status (route canonique /occasions/…)
+	 * true  → robots noindex + follow
+	 * false → robots index selon vehicle.status (défaut pour /vehicules/[slug])
 	 */
 	noindex?: boolean;
 }

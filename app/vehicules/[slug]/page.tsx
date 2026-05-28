@@ -1,16 +1,6 @@
 /**
- * /vehicules/[slug] — route de transition SEO
- *
- * Toujours noindex + follow. Jamais indexée directement.
- * L'URL canonique déclarée est /occasions/[cat]/[slug] dès que la catégorie est connue.
- *
- * Comportements :
- * 1. Véhicule avec catégorie → 301 permanent vers /occasions/[cat]/[slug]
- * 2. Véhicule sans catégorie → rendu complet (UX fallback) + noindex
- *    canonical = self (/vehicules/[slug]) en attendant l'assignation
- *
- * Transition finale : quand tous les vehicles ont un category_id,
- * supprimer le rendu et laisser uniquement le permanentRedirect.
+ * /vehicules/[slug] — URL canonique unique pour toutes les fiches véhicule.
+ * Indexée, canonical = self. /occasions/* redirige ici (next.config.ts).
  */
 import type { Metadata } from "next";
 import { cache } from "react";
@@ -36,7 +26,7 @@ import VehicleBreadcrumb from "@/components/vehicles/detail/VehicleBreadcrumb";
 import VehicleDetailHeader from "@/components/vehicles/detail/VehicleDetailHeader";
 import VehicleQualityCard from "@/components/vehicles/detail/VehicleQualityCard";
 import VehicleTechSpecs from "@/components/vehicles/detail/VehicleTechSpecs";
-import { buildVehicleFallbackCanonical, buildVehicleMetadata, buildVehicleJsonLd } from "@/lib/seo/vehicle";
+import { buildVehicleCanonical, buildVehicleMetadata, buildVehicleJsonLd } from "@/lib/seo/vehicle";
 import type { Vehicle } from "@/types";
 
 const GARAGE_ID = getActiveGarageId();
@@ -60,10 +50,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const vehicle = await getVehicleCached(slug, GARAGE_ID);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
-	// Route toujours noindex — Google indexe /occasions/[cat]/[slug] uniquement.
-	// Canonical → /occasions/[cat]/[slug] si catégorie connue, sinon self-canonical.
-	const canonical = buildVehicleFallbackCanonical(vehicle);
-	return buildVehicleMetadata(vehicle, { canonical, noindex: true });
+	const canonical = buildVehicleCanonical(vehicle);
+	return buildVehicleMetadata(vehicle, { canonical, noindex: false });
 }
 
 export async function generateStaticParams() {
