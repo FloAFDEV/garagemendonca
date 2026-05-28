@@ -243,6 +243,7 @@ function MessageDetail({
 	onClose: () => void;
 }) {
 	const qc = useQueryClient();
+	const { isDark } = useAdminTokens();
 	const [replyText, setReplyText] = useState("");
 	const [notes, setNotes] = useState(message.admin_notes ?? "");
 	const [notesDirty, setNotesDirty] = useState(false);
@@ -330,12 +331,12 @@ function MessageDetail({
 	const replies = displayed.replies ?? [];
 
 	return (
-		<div className="flex flex-col h-full bg-dark-950">
+		<div className={clsx("flex flex-col h-full", isDark ? "bg-dark-950" : "bg-slate-50")}>
 			{/* Header */}
-			<div className="flex items-center gap-3 px-4 py-3 border-b border-dark-800 bg-dark-900 shrink-0">
+			<div className={clsx("flex items-center gap-3 px-4 py-3 border-b shrink-0", isDark ? "bg-dark-900 border-dark-800" : "bg-white border-slate-200")}>
 				<button
 					onClick={onClose}
-					className="lg:hidden p-2 rounded-lg hover:bg-dark-800 text-slate-400"
+					className={clsx("lg:hidden p-2 rounded-lg text-slate-400", isDark ? "hover:bg-dark-800" : "hover:bg-slate-100")}
 					aria-label="Retour à la liste"
 				>
 					<ArrowLeft size={18} />
@@ -352,12 +353,12 @@ function MessageDetail({
 
 				<div className="flex-1 min-w-0">
 					<div className="flex items-center gap-2 min-w-0">
-						<h2 className="font-semibold text-dark-300 truncate text-sm">
+						<h2 className={clsx("font-semibold truncate text-sm", isDark ? "text-dark-300" : "text-slate-800")}>
 							{message.firstname} {message.lastname}
 						</h2>
 						<StatusBadge status={displayed.status} />
 					</div>
-					<div className="flex items-center gap-3 text-xs text-dark-500">
+					<div className={clsx("flex items-center gap-3 text-xs", isDark ? "text-dark-500" : "text-slate-500")}>
 						<a
 							href={`mailto:${message.email}`}
 							className="hover:text-brand-400 truncate"
@@ -381,7 +382,7 @@ function MessageDetail({
 						<button
 							onClick={() => statusMut.mutate("archived")}
 							disabled={statusMut.isPending}
-							className="p-2 rounded-lg hover:bg-dark-800 text-slate-400 hover:text-slate-200 transition-colors"
+							className={clsx("p-2 rounded-lg text-slate-400 hover:text-slate-200 transition-colors", isDark ? "hover:bg-dark-800" : "hover:bg-slate-100")}
 							title="Archiver"
 						>
 							<Archive size={16} />
@@ -390,7 +391,7 @@ function MessageDetail({
 						<button
 							onClick={() => statusMut.mutate("new")}
 							disabled={statusMut.isPending}
-							className="p-2 rounded-lg hover:bg-dark-800 text-slate-400 hover:text-slate-200 transition-colors"
+							className={clsx("p-2 rounded-lg text-slate-400 hover:text-slate-200 transition-colors", isDark ? "hover:bg-dark-800" : "hover:bg-slate-100")}
 							title="Restaurer"
 						>
 							<Inbox size={16} />
@@ -444,28 +445,28 @@ function MessageDetail({
 				</div>
 
 				{/* Message original */}
-				<div className="bg-dark-900 rounded-xl border border-dark-800 overflow-hidden">
+				<div className={clsx("rounded-xl border overflow-hidden", isDark ? "bg-dark-900 border-dark-800" : "bg-white border-slate-200")}>
 					{message.vehicleId && (
-						<div className="flex items-center gap-2 px-4 py-2.5 border-b border-dark-800 bg-dark-900/60">
-							<Car size={12} className="text-brand-400 flex-shrink-0" />
+						<div className={clsx("flex items-center gap-2 px-4 py-2.5 border-b", isDark ? "border-dark-800 bg-dark-900/60" : "border-brand-100 bg-brand-50")}>
+							<Car size={12} className={clsx("flex-shrink-0", isDark ? "text-brand-400" : "text-brand-600")} />
 							{message.vehicleHref ? (
 								<Link
 									href={message.vehicleHref}
 									target="_blank"
 									rel="noreferrer"
-									className="flex items-center gap-1 text-xs text-brand-400 hover:text-brand-300 font-medium transition-colors"
+									className={clsx("flex items-center gap-1 text-xs font-medium transition-colors", isDark ? "text-brand-400 hover:text-brand-300" : "text-brand-600 hover:text-brand-700")}
 								>
 									{message.vehicleName ?? "Véhicule lié"}
 									<ExternalLink size={10} />
 								</Link>
 							) : (
-								<span className="text-xs text-brand-400 font-medium">
+								<span className={clsx("text-xs font-medium", isDark ? "text-brand-400" : "text-brand-600")}>
 									{message.vehicleName ?? "Véhicule lié"}
 								</span>
 							)}
 						</div>
 					)}
-					<p className="text-sm text-dark-400 leading-relaxed whitespace-pre-wrap break-words overflow-hidden px-4 py-4">
+					<p className={clsx("text-sm leading-relaxed whitespace-pre-wrap break-words overflow-hidden px-4 py-4", isDark ? "text-dark-400" : "text-slate-700")}>
 						{message.message}
 					</p>
 				</div>
@@ -488,8 +489,10 @@ function MessageDetail({
 							className={clsx(
 								"px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors",
 								displayed.status === s
-									? "border-brand-500 text-brand-400 bg-brand-500/10"
-									: "border-dark-700 text-slate-400 hover:border-dark-600 hover:text-slate-300",
+									? "border-brand-500 text-brand-600 bg-brand-500/10"
+									: isDark
+										? "border-dark-700 text-slate-400 hover:border-dark-600 hover:text-slate-300"
+										: "border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700",
 							)}
 						>
 							{STATUS_LABELS[s]?.label}
@@ -527,7 +530,9 @@ function MessageDetail({
 										"max-w-[80%] rounded-xl px-4 py-3 text-sm",
 										reply.sender_type === "admin"
 											? "bg-brand-600 text-white rounded-br-sm"
-											: "bg-dark-800 text-slate-300 border border-dark-700 rounded-bl-sm",
+											: isDark
+												? "bg-dark-800 text-slate-300 border border-dark-700 rounded-bl-sm"
+												: "bg-slate-100 text-slate-700 border border-slate-200 rounded-bl-sm",
 									)}
 								>
 									<p className="leading-relaxed whitespace-pre-wrap break-words overflow-hidden">
@@ -553,10 +558,10 @@ function MessageDetail({
 				)}
 
 				{/* Notes internes */}
-				<div className="border border-dark-700 rounded-xl overflow-hidden">
+				<div className={clsx("border rounded-xl overflow-hidden", isDark ? "border-dark-700" : "border-slate-200")}>
 					<button
 						onClick={() => setShowNotes((v) => !v)}
-						className="w-full flex items-center justify-between px-4 py-3 bg-dark-900 text-xs font-medium text-slate-400 hover:text-slate-300 hover:bg-dark-800 transition-colors"
+						className={clsx("w-full flex items-center justify-between px-4 py-3 text-xs font-medium transition-colors", isDark ? "bg-dark-900 text-slate-400 hover:text-slate-300 hover:bg-dark-800" : "bg-slate-50 text-slate-500 hover:text-slate-700 hover:bg-slate-100")}
 					>
 						<span className="flex items-center gap-2">
 							<StickyNote size={13} />
@@ -571,7 +576,7 @@ function MessageDetail({
 						/>
 					</button>
 					{showNotes && (
-						<div className="p-3 bg-dark-950">
+						<div className={clsx("p-3", isDark ? "bg-dark-950" : "bg-white")}>
 							<textarea
 								rows={4}
 								value={notes}
@@ -581,7 +586,7 @@ function MessageDetail({
 								}}
 								onBlur={saveNotes}
 								placeholder="Notes privées (non visibles par le client)…"
-								className="w-full bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-slate-300 placeholder-slate-600 resize-none focus:outline-none focus:border-brand-500 transition-colors"
+								className={clsx("w-full border rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:border-brand-500 transition-colors", isDark ? "bg-dark-900 border-dark-700 text-slate-300 placeholder-slate-600" : "bg-white border-slate-200 text-slate-700 placeholder-slate-400")}
 							/>
 							{notesDirty && (
 								<button
@@ -598,7 +603,7 @@ function MessageDetail({
 
 			{/* Zone de réponse */}
 			{displayed.status !== "archived" && (
-				<div className="shrink-0 border-t border-dark-800 bg-dark-900 p-4">
+				<div className={clsx("shrink-0 border-t p-4", isDark ? "border-dark-800 bg-dark-900" : "border-slate-200 bg-white")}>
 					<label htmlFor={`reply-${message.id}`} className="sr-only">
 						Répondre au client
 					</label>
@@ -618,7 +623,7 @@ function MessageDetail({
 							}
 						}}
 						placeholder="Répondre au client (envoyé par email)…"
-						className="w-full bg-dark-800 border border-dark-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 resize-none focus:outline-none focus:border-brand-500 transition-colors"
+						className={clsx("w-full border rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:border-brand-500 transition-colors", isDark ? "bg-dark-800 border-dark-700 text-slate-200 placeholder-slate-600" : "bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400")}
 					/>
 					<div className="flex items-center justify-between mt-2">
 						<span className="hidden sm:block text-xs text-slate-600">
