@@ -491,7 +491,7 @@ export default function AdminVehiclesPage() {
 	}, [statusMutation]);
 
 	const actionBtn = clsx(
-		"flex-1 flex items-center justify-center gap-1.5 p-2 rounded-lg transition-colors text-xs",
+		"flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg transition-colors text-xs",
 		t.txtMuted,
 		t.hoverBgStrong,
 	);
@@ -898,7 +898,7 @@ export default function AdminVehiclesPage() {
 										<th
 											key={th}
 											className={clsx(
-												"text-left px-4 py-3 text-xs font-normal uppercase tracking-widest",
+												"text-left px-4 py-3 text-[11px] font-medium uppercase tracking-wide",
 												th === "Photo" && "w-16",
 												t.txtMuted,
 											)}
@@ -912,13 +912,13 @@ export default function AdminVehiclesPage() {
 								{loading ? (
 									Array.from({ length: 6 }).map((_, i) => (
 										<tr key={i} className={clsx("border-b last:border-0 animate-pulse", t.border)}>
-											<td className="px-3 py-2.5"><div className={clsx("w-12 h-10 rounded-lg", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
-											<td className="px-4 py-2.5"><div className={clsx("h-4 rounded-lg w-40 mb-1.5", t.isDark ? "bg-dark-800" : "bg-slate-200")} /><div className={clsx("h-3 rounded-lg w-28", t.isDark ? "bg-dark-700" : "bg-slate-100")} /></td>
-											<td className="px-4 py-2.5"><div className={clsx("h-4 rounded-lg w-16", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
-											<td className="px-4 py-2.5"><div className={clsx("h-4 rounded-lg w-20", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
-											<td className="px-4 py-2.5"><div className={clsx("h-6 rounded-xl w-24", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
-											<td className="px-4 py-2.5"><div className={clsx("h-3 rounded-lg w-16", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
-											<td className="px-4 py-2.5"><div className={clsx("h-8 rounded-lg w-20", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-3 py-3"><div className={clsx("w-12 h-10 rounded-lg", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-4 py-3"><div className={clsx("h-4 rounded-lg w-40 mb-1.5", t.isDark ? "bg-dark-800" : "bg-slate-200")} /><div className={clsx("h-3 rounded-lg w-28", t.isDark ? "bg-dark-700" : "bg-slate-100")} /></td>
+											<td className="px-4 py-3"><div className={clsx("h-4 rounded-lg w-16", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-4 py-3"><div className={clsx("h-4 rounded-lg w-20", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-4 py-3"><div className={clsx("h-6 rounded-xl w-24", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-4 py-3"><div className={clsx("h-3 rounded-lg w-16", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
+											<td className="px-4 py-3"><div className={clsx("h-8 rounded-lg w-20", t.isDark ? "bg-dark-800" : "bg-slate-200")} /></td>
 										</tr>
 									))
 								) : paginated.map((vehicle) => (
@@ -933,7 +933,7 @@ export default function AdminVehiclesPage() {
 											t.tableRowHover,
 										)}
 									>
-										<td className="px-3 py-2.5">
+										<td className="px-3 py-3">
 											<div className="w-12 h-9 rounded-lg overflow-hidden bg-slate-700 flex-shrink-0 flex items-center justify-center">
 												<VehicleThumb
 													vehicle={vehicle}
@@ -941,7 +941,7 @@ export default function AdminVehiclesPage() {
 												/>
 											</div>
 										</td>
-										<td className="px-4 py-2.5">
+										<td className="px-4 py-3">
 											<div>
 												<div
 													className={clsx(
@@ -960,20 +960,14 @@ export default function AdminVehiclesPage() {
 													{vehicle.features?.[
 														"Finition"
 													] && (
-														<span className="text-brand-500 text-xs font-normal ml-1">
-															—{" "}
-															{
-																vehicle
-																	.features[
-																	"Finition"
-																]
-															}
+														<span className="inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-brand-500/10 text-brand-600 dark:text-brand-400 ml-1.5 align-middle leading-none">
+															{vehicle.features["Finition"]}
 														</span>
 													)}
 												</div>
 												<div
 													className={clsx(
-														"text-xs mt-0.5",
+														"text-xs mt-0.5 tabular-nums",
 														t.txtSubtle,
 													)}
 												>
@@ -1012,7 +1006,7 @@ export default function AdminVehiclesPage() {
 										</td>
 										<td
 											className={clsx(
-												"px-4 py-2.5 text-sm",
+												"px-4 py-3 text-sm tabular-nums",
 												t.txtMuted,
 											)}
 										>
@@ -1021,15 +1015,15 @@ export default function AdminVehiclesPage() {
 											)}{" "}
 											km
 										</td>
-										<td className="px-4 py-2.5">
-											<span className="font-heading font-medium text-brand-500 text-sm">
+										<td className="px-4 py-3">
+											<span className="font-heading font-medium text-brand-500 text-sm tabular-nums">
 												{vehicle.price.toLocaleString(
 													"fr-FR",
 												)}{" "}
 												€
 											</span>
 										</td>
-										<td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
+										<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
 											<StatusSelect
 												vehicleId={vehicle.id}
 												current={
@@ -1040,7 +1034,7 @@ export default function AdminVehiclesPage() {
 										</td>
 										<td
 											className={clsx(
-												"px-4 py-2.5 text-xs",
+												"px-4 py-3 text-xs",
 												t.txtSubtle,
 											)}
 										>
@@ -1057,7 +1051,7 @@ export default function AdminVehiclesPage() {
 													)
 												: "—"}
 										</td>
-										<td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
+										<td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
 											<div className="flex items-center gap-1">
 												<Link
 													href={vehiclePreviewHref(vehicle)}

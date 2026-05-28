@@ -45,7 +45,12 @@ function DashboardContent() {
 			label: "Demandes reçues",
 			value: msgStats ? msgStats.total.toString() : "—",
 			change: msgStats && msgStats.unread > 0
-				? `${msgStats.unread} non lu${msgStats.unread > 1 ? "s" : ""}`
+				? (
+					<span className="flex items-center gap-1.5">
+						<span className="w-1.5 h-1.5 rounded-full bg-red-400 motion-safe:animate-pulse inline-block flex-shrink-0" />
+						{msgStats.unread} non lu{msgStats.unread > 1 ? "s" : ""}
+					</span>
+				)
 				: "voir messagerie",
 			icon: Mail,
 			color: "text-emerald-500",
@@ -94,9 +99,15 @@ function DashboardContent() {
 								<div className={clsx("w-10 h-10 rounded-xl flex items-center justify-center", bg)}>
 									<Icon size={20} className={color} />
 								</div>
-								{href && <ArrowRight size={14} className={clsx(t.txtSubtle)} aria-hidden="true" />}
+								{href && (
+									<ArrowRight
+										size={14}
+										className={clsx(t.txtSubtle, "motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5")}
+										aria-hidden="true"
+									/>
+								)}
 							</div>
-							<div className={clsx("font-heading font-light text-2xl mb-1 tracking-tight", t.txt)}>
+							<div className={clsx("font-heading font-light text-3xl mb-1 tracking-tight tabular-nums", t.txt)}>
 								{value}
 							</div>
 							<div className={clsx("text-sm", t.txtMuted)}>{label}</div>
@@ -107,7 +118,7 @@ function DashboardContent() {
 						<Link
 							key={label}
 							href={href}
-							className={clsx("rounded-2xl border p-4 transition-colors", t.surface, t.border, t.tableRowHover)}
+							className={clsx("rounded-2xl border p-4 transition-colors group", t.surface, t.border, t.tableRowHover)}
 						>
 							{inner}
 						</Link>
