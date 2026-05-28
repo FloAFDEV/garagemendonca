@@ -61,9 +61,9 @@ export async function VehicleGridServer({
         i < 4 ? (
           <VehicleCard key={vehicle.id} vehicle={vehicle} priority />
         ) : (
-          // Délai plafonné à 180ms : évite les cascades lentes sur les grands grids.
-        // Formule : 25ms × rang au-delà des 4 cards prioritaires, max 180ms.
-        <AnimateOnScroll key={vehicle.id} delay={Math.min((i - 4) * 25, 180)}>
+          // Délai plafonné à 80ms : cascade rapide, perception instantanée au retour nav.
+        // Formule : 15ms × rang au-delà des 4 cards prioritaires, max 80ms.
+        <AnimateOnScroll key={vehicle.id} delay={Math.min((i - 4) * 15, 80)}>
             <VehicleCard vehicle={vehicle} />
           </AnimateOnScroll>
         ),
@@ -79,7 +79,7 @@ export async function VehicleGridServer({
  */
 function CardSkeleton() {
   return (
-    <div className="flex flex-col bg-white rounded-xl border border-slate-200 overflow-hidden animate-pulse">
+    <div className="flex flex-col h-full bg-white rounded-xl border border-black/[0.07] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_14px_rgba(0,0,0,0.06)] animate-pulse">
       {/* Image — même ratio que VehicleCard */}
       <div className="aspect-[3/2] sm:aspect-[4/3] bg-slate-200" />
 

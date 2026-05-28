@@ -57,8 +57,8 @@ export default function AnimateOnScroll({ children, className = "", delay = 0 }:
           ? undefined
           : {
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(20px)",
-              transition: `opacity 0.6s ease-out ${delay}ms, transform 0.6s ease-out ${delay}ms`,
+              transform: visible ? "translateY(0)" : "translateY(10px)",
+              transition: `opacity 0.4s ease-out ${delay}ms, transform 0.4s ease-out ${delay}ms`,
             }
       }
     >
