@@ -169,6 +169,8 @@ function BrandSearchSelect({
 								<input
 									ref={queryInputRef}
 									type="text"
+									id="admin-brand-search"
+									name="brand-search"
 									value={query}
 									onChange={(e) => setQuery(e.target.value)}
 									onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
@@ -643,6 +645,7 @@ export default function AdminVehiclesPage() {
 						</div>
 						<div>
 							<label
+								htmlFor="admin-filter-year"
 								className={clsx(
 									"text-xs mb-1 block",
 									t.txtMuted,
@@ -651,6 +654,8 @@ export default function AdminVehiclesPage() {
 								Année
 							</label>
 							<input
+								id="admin-filter-year"
+								name="filterYear"
 								type="number"
 								placeholder="2019"
 								min="1990"
@@ -667,6 +672,7 @@ export default function AdminVehiclesPage() {
 						</div>
 						<div>
 							<label
+								htmlFor="admin-filter-price-max"
 								className={clsx(
 									"text-xs mb-1 block",
 									t.txtMuted,
@@ -675,6 +681,8 @@ export default function AdminVehiclesPage() {
 								Prix max (€)
 							</label>
 							<select
+								id="admin-filter-price-max"
+								name="filterPriceMax"
 								value={filterPriceMax}
 								onChange={(e) =>
 									setFilterPriceMax(e.target.value)
@@ -693,6 +701,7 @@ export default function AdminVehiclesPage() {
 						</div>
 						<div>
 							<label
+								htmlFor="admin-filter-status"
 								className={clsx(
 									"text-xs mb-1 block",
 									t.txtMuted,
@@ -701,6 +710,8 @@ export default function AdminVehiclesPage() {
 								Statut
 							</label>
 							<select
+								id="admin-filter-status"
+								name="filterStatus"
 								value={filterStatus}
 								onChange={(e) =>
 									setFilterStatus(e.target.value)
@@ -717,6 +728,7 @@ export default function AdminVehiclesPage() {
 						<div className="col-span-2 sm:col-span-4 flex items-center justify-between pt-1">
 							<div>
 								<label
+									htmlFor="admin-sort"
 									className={clsx(
 										"text-xs mb-1 block",
 										t.txtMuted,
@@ -725,6 +737,8 @@ export default function AdminVehiclesPage() {
 									Trier par
 								</label>
 								<select
+									id="admin-sort"
+									name="sortBy"
 									value={sortBy}
 									onChange={(e) =>
 										setSortBy(e.target.value as SortKey)

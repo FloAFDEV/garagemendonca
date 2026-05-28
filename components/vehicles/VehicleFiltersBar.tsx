@@ -175,6 +175,8 @@ function BrandMultiSelect({
               <input
                 ref={searchRef}
                 type="text"
+                name="brand-search"
+                autoComplete="off"
                 value={brandSearch}
                 onChange={(e) => setBrandSearch(e.target.value)}
                 placeholder="Rechercher une marque…"
@@ -292,6 +294,7 @@ function MoreFiltersPanel({
             <label className="text-xs font-medium text-slate-600">Année</label>
             <div className="grid grid-cols-2 gap-2">
               <select
+                name="minYear"
                 value={minYear}
                 onChange={(e) => onUpdate({ minYear: e.target.value })}
                 className="text-sm border border-slate-200 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 ring-brand-500/20 bg-white text-slate-700 cursor-pointer"
@@ -303,6 +306,7 @@ function MoreFiltersPanel({
                 ))}
               </select>
               <select
+                name="maxYear"
                 value={maxYear}
                 onChange={(e) => onUpdate({ maxYear: e.target.value })}
                 className="text-sm border border-slate-200 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 ring-brand-500/20 bg-white text-slate-700 cursor-pointer"
@@ -320,6 +324,7 @@ function MoreFiltersPanel({
           <div className="space-y-2">
             <label className="text-xs font-medium text-slate-600">Budget minimum</label>
             <select
+              name="minPrice"
               value={minPrice}
               onChange={(e) => onUpdate({ minPrice: e.target.value })}
               className="w-full text-sm border border-slate-200 rounded-lg px-2 py-2 focus:outline-none focus:ring-2 ring-brand-500/20 bg-white text-slate-700 cursor-pointer"
@@ -468,6 +473,8 @@ export default function VehicleFiltersBar({
           />
           <input
             type="text"
+            name="q"
+            autoComplete="off"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Marque, modèle…"
@@ -505,6 +512,7 @@ export default function VehicleFiltersBar({
 
           {/* Tri — select natif, léger */}
           <select
+            name="sort"
             value={sort}
             onChange={(e) => pushFilters({ sort: e.target.value })}
             aria-label="Trier les véhicules"
@@ -551,6 +559,7 @@ export default function VehicleFiltersBar({
             {/* Carburant + Boîte */}
             <div className="grid grid-cols-2 gap-2">
               <select
+                name="fuel"
                 value={fuel}
                 onChange={(e) => pushFilters({ fuel: e.target.value })}
                 aria-label="Carburant"
@@ -560,6 +569,7 @@ export default function VehicleFiltersBar({
                 {FUELS.map((f) => <option key={f} value={f}>{f}</option>)}
               </select>
               <select
+                name="transmission"
                 value={transmission}
                 onChange={(e) => pushFilters({ transmission: e.target.value })}
                 aria-label="Boîte de vitesses"
@@ -573,6 +583,7 @@ export default function VehicleFiltersBar({
             {/* Km max + Prix max */}
             <div className="grid grid-cols-2 gap-2">
               <select
+                name="maxKm"
                 value={maxKm}
                 onChange={(e) => pushFilters({ maxKm: e.target.value })}
                 aria-label="Kilométrage maximum"
@@ -581,6 +592,7 @@ export default function VehicleFiltersBar({
                 {KM_OPTIONS.map((o) => <option key={o.label} value={o.value}>{o.label}</option>)}
               </select>
               <select
+                name="maxPrice"
                 value={maxPrice}
                 onChange={(e) => pushFilters({ maxPrice: e.target.value })}
                 aria-label="Prix maximum"
@@ -743,6 +755,8 @@ export default function VehicleFiltersBar({
             />
             <input
               type="text"
+              name="q"
+              autoComplete="off"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Marque, modèle…"
@@ -767,6 +781,7 @@ export default function VehicleFiltersBar({
           />
 
           <select
+            name="fuel"
             value={fuel}
             onChange={(e) => pushFilters({ fuel: e.target.value })}
             aria-label="Filtrer par carburant"
@@ -777,6 +792,7 @@ export default function VehicleFiltersBar({
           </select>
 
           <select
+            name="transmission"
             value={transmission}
             onChange={(e) => pushFilters({ transmission: e.target.value })}
             aria-label="Filtrer par boîte de vitesses"
@@ -787,6 +803,7 @@ export default function VehicleFiltersBar({
           </select>
 
           <select
+            name="maxKm"
             value={maxKm}
             onChange={(e) => pushFilters({ maxKm: e.target.value })}
             aria-label="Kilométrage maximum"
@@ -796,6 +813,7 @@ export default function VehicleFiltersBar({
           </select>
 
           <select
+            name="maxPrice"
             value={maxPrice}
             onChange={(e) => pushFilters({ maxPrice: e.target.value })}
             aria-label="Prix maximum"
