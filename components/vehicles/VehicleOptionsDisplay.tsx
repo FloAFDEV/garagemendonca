@@ -103,9 +103,7 @@ export default function VehicleOptionsDisplay({ options }: Props) {
 		return { ...cat, activeItems };
 	}).filter((cat) => cat.activeItems.length > 0);
 
-	const [openIds, setOpenIds] = useState<Set<string>>(
-		() => new Set(activeCategories.map((cat) => cat.id))
-	);
+	const [openIds, setOpenIds] = useState<Set<string>>(() => new Set());
 
 	const toggle = (id: string) => {
 		setOpenIds((prev) => {
