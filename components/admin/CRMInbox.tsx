@@ -22,7 +22,9 @@ import {
 	ChevronDown,
 	X,
 	Inbox,
+	ExternalLink,
 } from "lucide-react";
+import Link from "next/link";
 import clsx from "clsx";
 import { toast } from "sonner";
 
@@ -432,10 +434,23 @@ function MessageDetail({
 						{message.formattedDate}
 					</span>
 					{message.vehicleId && (
-						<span className="flex items-center gap-1 text-brand-400 bg-brand-950/30 px-2 py-0.5 rounded-md border border-brand-800/40">
-							<Car size={12} />
-							{message.vehicleName ?? "Véhicule lié"}
-						</span>
+						message.vehicleHref ? (
+							<Link
+								href={message.vehicleHref}
+								target="_blank"
+								rel="noreferrer"
+								className="flex items-center gap-1 text-brand-400 hover:text-brand-300 bg-brand-950/30 hover:bg-brand-900/40 px-2 py-0.5 rounded-md border border-brand-800/40 transition-colors"
+							>
+								<Car size={12} />
+								{message.vehicleName ?? "Véhicule lié"}
+								<ExternalLink size={10} />
+							</Link>
+						) : (
+							<span className="flex items-center gap-1 text-brand-400 bg-brand-950/30 px-2 py-0.5 rounded-md border border-brand-800/40">
+								<Car size={12} />
+								{message.vehicleName ?? "Véhicule lié"}
+							</span>
+						)
 					)}
 					{message.subject && (
 						<span className="text-slate-400 font-medium">

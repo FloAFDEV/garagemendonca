@@ -328,6 +328,7 @@ export interface Message {
   garage_id?: string;
   vehicle_id?: string;
   vehicleName?: string; // enrichi par JOIN vehicles(brand, model, year) dans messageDb.list()
+  vehicleHref?: string; // URL publique /vehicules/[slug] — calculée dans messageFromDb
   firstname: string;
   lastname: string;
   name: string;         // dérivé : firstname + ' ' + lastname
