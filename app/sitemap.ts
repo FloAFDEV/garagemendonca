@@ -17,10 +17,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	if (SUPABASE_ENABLED && GARAGE_ID) {
 		const slugs = await vehicleDb.listSlugsWithCategory(GARAGE_ID).catch(() => []);
 
-		// URLs canoniques véhicules : /occasions/[cat]/[slug] reste l'URL indexable.
-		// /occasions et /occasions/[cat] sont redirigés 301 → /vehicules (next.config.ts)
-		// et donc absents du sitemap. Les pages véhicule restent sous /occasions/[cat]/[slug]
-		// car /vehicules/[slug] redirige vers elles — inverser créerait une boucle.
+		// URL canonique unique : /vehicules/[slug]-[shortId].
+		// /occasions/* est redirigé → /vehicules (next.config.ts).
 		vehicleEntries = slugs
 			.filter(({ categorySlug }) => !!categorySlug)
 			.map(({ slug, id, updated_at }) => ({
