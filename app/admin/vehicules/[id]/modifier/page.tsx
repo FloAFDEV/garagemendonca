@@ -181,7 +181,8 @@ function Combobox({
 						<button
 							key={s}
 							type="button"
-							onMouseDown={() => {
+							onPointerDown={(e) => {
+								e.preventDefault();
 								onChange(s);
 								setOpen(false);
 							}}
@@ -208,7 +209,8 @@ function Combobox({
 					{showFreeOption && (
 						<button
 							type="button"
-							onMouseDown={() => {
+							onPointerDown={(e) => {
+								e.preventDefault();
 								onChange(value.trim());
 								setOpen(false);
 							}}

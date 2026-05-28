@@ -296,7 +296,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 							)}
 						</Badge>
 						{garantie && (
-							<span className="flex-1 text-center text-[11px] px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full font-medium leading-5 whitespace-nowrap">
+							<span className="flex-1 text-center text-[11px] px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full font-light leading-5 whitespace-nowrap">
 								Garantie {garantie}
 							</span>
 						)}
