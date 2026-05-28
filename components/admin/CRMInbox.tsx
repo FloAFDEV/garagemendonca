@@ -206,7 +206,10 @@ function MessageListItem({
 
 					{/* Véhicule concerné — visible directement dans la liste */}
 					{message.vehicleName && (
-						<div className="flex items-center gap-1 mb-1">
+						<div className={clsx(
+							"inline-flex items-center gap-1 mb-1 rounded px-1.5 py-0.5 max-w-full",
+							isDark ? "bg-transparent" : "bg-brand-50 border border-brand-200",
+						)}>
 							<Car size={11} className={clsx(isDark ? "text-brand-400" : "text-brand-600", "flex-shrink-0")} />
 							<span className={clsx("text-xs truncate font-medium", isDark ? "text-brand-400" : "text-brand-600")}>
 								{message.vehicleName}
