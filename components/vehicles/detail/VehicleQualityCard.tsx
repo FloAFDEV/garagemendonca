@@ -9,7 +9,7 @@
  */
 
 import type React from "react";
-import { CheckCircle2, ShieldCheck } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { FormatVehicleDescription } from "@/lib/utils/formatVehicleDescription";
 import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 
@@ -27,7 +27,7 @@ export default function VehicleQualityCard({
 	const checklistItems: React.ReactNode[] = [
 		"Contrôle technique à jour",
 		"Révision effectuée",
-		<QualityControlTooltip key="qc" variant="inline" triggerClassName="text-sm font-normal text-emerald-800">
+		<QualityControlTooltip key="qc" variant="inline" triggerClassName="text-sm font-normal text-slate-700">
 			Vérification 160 points
 		</QualityControlTooltip>,
 		garantieLabel,
@@ -36,21 +36,12 @@ export default function VehicleQualityCard({
 	return (
 		<div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 sm:p-6 md:p-8">
 			<FormatVehicleDescription text={descriptionText} />
-			<div className="mt-6 pt-5 border-t border-slate-50">
-				<div className="flex items-center gap-2 mb-3">
-					<ShieldCheck size={14} className="text-emerald-500 flex-shrink-0" aria-hidden="true" />
-					<span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-						État &amp; entretien
-					</span>
-				</div>
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-					{checklistItems.map((item, idx) => (
-						<div key={idx} className="flex items-center gap-2.5 text-sm font-normal text-emerald-800 bg-emerald-50 border border-emerald-100 px-3 py-2.5 rounded-xl">
-							<CheckCircle2 size={14} className="text-emerald-500 flex-shrink-0" aria-hidden="true" />
-							{item}
-						</div>
-					))}
-				</div>
+			<div className="mt-6 pt-6 border-t border-slate-50 grid grid-cols-1 sm:grid-cols-2 gap-4">
+				{checklistItems.map((item, idx) => (
+					<div key={idx} className="flex items-center gap-3 text-sm font-normal text-slate-700">
+						<CheckCircle2 size={16} className="text-emerald-500" /> {item}
+					</div>
+				))}
 			</div>
 		</div>
 	);
