@@ -116,7 +116,7 @@ export default function FaqPage() {
 							</p>
 							<p className="text-slate-500 text-sm mb-7 max-w-md mx-auto">
 								Appelez-nous directement ou envoyez-nous un
-								message — nous répondons sous 24&nbsp;h.
+								message — nous vous répondons rapidement.
 							</p>
 							<div className="flex flex-col sm:flex-row items-center justify-center gap-3">
 								<a

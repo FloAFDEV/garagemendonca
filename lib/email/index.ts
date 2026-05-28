@@ -72,7 +72,7 @@ export async function sendContactConfirmation(opts: {
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px">
         <h2 style="color:#0f172a">Bonjour ${name},</h2>
         <p>Nous avons bien reçu votre message${subjectLine}.</p>
-        <p>Notre équipe vous répondra dans les plus brefs délais, généralement sous <strong>24 heures ouvrables</strong>.</p>
+        <p>Notre équipe vous répondra dans les plus brefs délais.</p>
         <p>Si votre demande est urgente, n'hésitez pas à nous appeler directement :</p>
         <p><a href="tel:0532002038" style="color:#2563eb;font-weight:bold">05 32 00 20 38</a></p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0"/>
@@ -85,7 +85,7 @@ export async function sendContactConfirmation(opts: {
       `Bonjour ${opts.firstname},`,
       "",
       `Nous avons bien reçu votre message${opts.subject ? ` concernant « ${opts.subject} »` : ""}.`,
-      "Notre équipe vous répondra dans les plus brefs délais, généralement sous 24 heures ouvrables.",
+      "Notre équipe vous répondra dans les plus brefs délais.",
       "",
       "Si votre demande est urgente, appelez-nous directement : 05 32 00 20 38",
       "",
