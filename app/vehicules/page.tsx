@@ -6,19 +6,19 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense, cache } from "react";
+import { Suspense } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import GmBadge from "@/components/ui/GmBadge";
 import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
 import { FilterStatePreserver } from "@/components/vehicles/FilterStatePreserver";
 import { VehicleGridServer, VehicleGridFallback } from "@/components/vehicles/VehicleGridServer";
-import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
 import {
   listBrandsCached,
   listCategoriesCached,
   listActiveCategoryIdsCached,
+  countPublicCached,
 } from "@/lib/cache/vehicleStaticData";
 import {
   buildPaginationMeta,
@@ -53,14 +53,6 @@ function buildItemListJsonLd(totalCount: number): object {
 }
 
 const GARAGE_ID = getActiveGarageId();
-
-// ─── Cache helpers ────────────────────────────────────────────────
-// cache() : déduplique countPublic dans la même requête (metadata + page)
-// Les données statiques (brands, catégories) viennent du module partagé.
-const countPublicCached = cache(
-  (garageId: string, filters: Parameters<typeof vehicleDb.countPublic>[1]) =>
-    vehicleDb.countPublic(garageId, filters),
-);
 
 // ─── Types ───────────────────────────────────────────────────────
 

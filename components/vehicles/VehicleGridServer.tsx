@@ -15,8 +15,8 @@
 import Link from "next/link";
 import VehicleCard from "@/components/vehicles/VehicleCard";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
-import { vehicleDb, type VehicleListFilters } from "@/lib/db/vehicle.repository";
-import { VEHICLES_PER_PAGE } from "@/lib/vehicles/pagination";
+import type { VehicleListFilters } from "@/lib/db/vehicle.repository";
+import { listPaginatedCached } from "@/lib/cache/vehicleStaticData";
 
 interface VehicleGridServerProps {
   garageId: string;
@@ -33,12 +33,10 @@ export async function VehicleGridServer({
   emptyHref = "/vehicules",
   emptyExtra,
 }: VehicleGridServerProps) {
-  const vehicles = await vehicleDb
-    .listPaginated(garageId, page, VEHICLES_PER_PAGE, filters)
-    .catch((err) => {
-      console.error("[VehicleGridServer] listPaginated failed:", err);
-      return [];
-    });
+  const vehicles = await listPaginatedCached(garageId, page, filters).catch((err) => {
+    console.error("[VehicleGridServer] listPaginated failed:", err);
+    return [];
+  });
 
   if (vehicles.length === 0) {
     return (
