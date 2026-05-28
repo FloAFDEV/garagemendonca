@@ -159,7 +159,7 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 				</Container>
 			</div>
 
-			<MobileVehicleFooter price={vehicle.price} />
+			<MobileVehicleFooter price={vehicle.price} year={vehicle.year} mileage={vehicle.mileage} garantie={garantieRaw} />
 		</MainLayout>
 	);
 }
