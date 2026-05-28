@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound, permanentRedirect } from "next/navigation";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
@@ -28,13 +29,19 @@ const GARAGE_ID = getActiveGarageId();
 
 export const revalidate = 3600;
 
+// Déduplique getVehicleBySlugParam entre generateMetadata et OccasionsVehicleDetailPage
+// sur la même requête serveur → 1 seul hit Supabase par accès à la fiche.
+const getVehicleCached = cache((slug: string, garageId: string) =>
+  getVehicleBySlugParam(slug, garageId),
+);
+
 interface PageProps {
 	params: Promise<{ categorySlug: string; vehicleSlug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { categorySlug, vehicleSlug } = await params;
-	const vehicle = await getVehicleBySlugParam(vehicleSlug, GARAGE_ID);
+	const vehicle = await getVehicleCached(vehicleSlug, GARAGE_ID);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
 	// Route indexable — canonical depuis les params (plus fiable que vehicle.categorySlug).
@@ -55,7 +62,7 @@ export async function generateStaticParams() {
 
 export default async function OccasionsVehicleDetailPage({ params }: PageProps) {
 	const { categorySlug, vehicleSlug } = await params;
-	const vehicle = await getVehicleBySlugParam(vehicleSlug, GARAGE_ID);
+	const vehicle = await getVehicleCached(vehicleSlug, GARAGE_ID);
 	if (!vehicle) notFound();
 
 	const vSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);

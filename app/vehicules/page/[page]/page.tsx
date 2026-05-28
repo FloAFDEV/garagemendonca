@@ -1,32 +1,42 @@
-// Rendu dynamique : les filtres URL invalident le cache statique
-export const dynamic = "force-dynamic";
+// Note : force-dynamic supprimé intentionnellement.
+// Les searchParams rendent déjà la page dynamique par détection automatique Next.js.
+// Sans force-dynamic, le RSC router cache (30 s) fonctionne sur /vehicules/page/N sans filtres :
+// retour liste → pas de _rsc si l'utilisateur revient dans la fenêtre cache.
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
-import VehicleCard from "@/components/vehicles/VehicleCard";
-import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
 import { FilterStatePreserver } from "@/components/vehicles/FilterStatePreserver";
+import { VehicleGridServer, VehicleGridFallback } from "@/components/vehicles/VehicleGridServer";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
-import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
+import {
+  listBrandsCached,
+  listCategoriesCached,
+} from "@/lib/cache/vehicleStaticData";
 import {
   buildPaginationMeta,
   paginationRange,
   listingCanonical,
   listingTitle,
   listingDescription,
-  VEHICLES_PER_PAGE,
 } from "@/lib/vehicles/pagination";
 import { ChevronLeft, ChevronRight, ShieldCheck, ClipboardCheck, Wrench, BookOpen } from "lucide-react";
 import { getActiveGarageId } from "@/lib/config/garage";
 import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 
 const GARAGE_ID = getActiveGarageId();
+
+// cache() déduplique countPublic entre generateMetadata et le page component
+// sur la même requête serveur (scope : durée de vie du render).
+const countPublicCached = cache(
+  (garageId: string, filters: Parameters<typeof vehicleDb.countPublic>[1]) =>
+    vehicleDb.countPublic(garageId, filters),
+);
 
 // ─────────────────────────────────────────────────────────────────
 //  Types
@@ -49,8 +59,16 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   if (isNaN(page) || page < 1) return { title: "Page introuvable" };
 
   const sp = await searchParams;
-  const filters = parsePageFilters(sp);
-  const totalCount = await vehicleDb.countPublic(GARAGE_ID, filters).catch(() => 0);
+  const rawFilters = parsePageFilters(sp);
+  // Résoudre slug → categoryId pour que React.cache() déduplique l'appel
+  // à countPublic entre generateMetadata et le page component.
+  let categoryId: string | undefined;
+  if (rawFilters.category) {
+    const cats = await listCategoriesCached(GARAGE_ID).catch(() => []);
+    categoryId = cats.find((c) => c.slug === rawFilters.category)?.id;
+  }
+  const filters = { ...rawFilters, category: undefined, categoryId };
+  const totalCount = await countPublicCached(GARAGE_ID, filters).catch(() => 0);
   const meta = buildPaginationMeta(page, totalCount);
   const canonical = `https://www.garagemendonca.com${listingCanonical(page)}`;
 
@@ -77,25 +95,14 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
 //  JSON-LD
 // ─────────────────────────────────────────────────────────────────
 
-function buildItemListJsonLd(
-  vehicles: Awaited<ReturnType<typeof vehicleDb.listPaginated>>,
-  page: number,
-  totalCount: number,
-): object {
-  const baseUrl = "https://www.garagemendonca.com";
+function buildItemListJsonLd(page: number, totalCount: number): object {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: `Voitures d'occasion — Page ${page}`,
-    description: `Catalogue de véhicules d'occasion révisés et garantis`,
-    url: `${baseUrl}${listingCanonical(page)}`,
+    description: "Catalogue de véhicules d'occasion révisés et garantis",
+    url: `https://www.garagemendonca.com${listingCanonical(page)}`,
     numberOfItems: totalCount,
-    itemListElement: vehicles.map((v, i) => ({
-      "@type": "ListItem",
-      position: (page - 1) * VEHICLES_PER_PAGE + i + 1,
-      url: `${baseUrl}/vehicules/${v.slug ?? v.id}`,
-      name: `${v.brand} ${v.model} ${v.year}`,
-    })),
   };
 }
 
@@ -189,33 +196,29 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
   const rawFilters = parsePageFilters(sp);
   const filterQuery = filtersToQs(sp);
 
-  const [availableBrands, categories] = await Promise.all([
-    vehicleDb.listBrands(GARAGE_ID).catch(() => []),
-    vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
+  // Données quasi-statiques depuis le cache partagé (TTL 5 min, commun avec page 1)
+  const [availableBrands, allCategories] = await Promise.all([
+    listBrandsCached(GARAGE_ID).catch(() => []),
+    listCategoriesCached(GARAGE_ID).catch(() => []),
   ]);
 
-  // Résolution slug → categoryId (FK source de vérité, pas TEXT[])
-  const categoryId = rawFilters.category
-    ? categories.find((c) => c.slug === rawFilters.category)?.id
-    : undefined;
+  // Résolution slug → categoryId via Map (O(1))
+  const categoryMap = new Map(allCategories.map((c) => [c.slug, c.id]));
+  const categoryId = rawFilters.category ? categoryMap.get(rawFilters.category) : undefined;
   const filters = { ...rawFilters, category: undefined, categoryId };
 
-  const [vehicles, totalCount] = await Promise.all([
-    vehicleDb.listPaginated(GARAGE_ID, page, VEHICLES_PER_PAGE, filters).catch((err) => {
-      console.error("[VehiculesPaginatedPage] listPaginated failed:", err);
-      return [];
-    }),
-    vehicleDb.countPublic(GARAGE_ID, filters).catch((err) => {
-      console.error("[VehiculesPaginatedPage] countPublic failed:", err);
-      return 0;
-    }),
-  ]);
+  // countPublic dédupliqué par React.cache() entre generateMetadata et ici
+  const totalCount = await countPublicCached(GARAGE_ID, filters).catch((err) => {
+    console.error("[VehiculesPaginatedPage] countPublic failed:", err);
+    return 0;
+  });
 
   const meta = buildPaginationMeta(page, totalCount);
 
   if (page > meta.totalPages && meta.totalPages > 0) notFound();
 
-  const jsonLd = buildItemListJsonLd(vehicles, page, totalCount);
+  // listPaginated est délégué à VehicleGridServer (Suspense streaming)
+  const jsonLd = buildItemListJsonLd(page, totalCount);
 
   return (
     <MainLayout>
@@ -268,23 +271,22 @@ export default async function VehiculesPaginatedPage({ params, searchParams }: P
               totalCount={totalCount}
               availableBrands={availableBrands}
               currentYear={new Date().getFullYear()}
-              categories={categories}
+              categories={allCategories}
             />
           </Suspense>
 
-          {vehicles.length > 0 ? (
+          {totalCount > 0 ? (
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-                {vehicles.map((vehicle, i) =>
-                  i < 4 ? (
-                    <VehicleCard key={vehicle.id} vehicle={vehicle} priority />
-                  ) : (
-                    <AnimateOnScroll key={vehicle.id} delay={(i - 4) * 60}>
-                      <VehicleCard vehicle={vehicle} />
-                    </AnimateOnScroll>
-                  )
-                )}
-              </div>
+              {/* Grid streamé — hero + filtres + pagination visibles immédiatement */}
+              <Suspense fallback={<VehicleGridFallback />}>
+                <VehicleGridServer
+                  garageId={GARAGE_ID}
+                  page={page}
+                  filters={filters}
+                  emptyHref="/vehicules/page/1"
+                  emptyExtra="Essayez de modifier ou supprimer certains filtres."
+                />
+              </Suspense>
 
               <PaginationNav meta={meta} filterQuery={filterQuery} />
 

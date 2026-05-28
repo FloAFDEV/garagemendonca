@@ -1,29 +1,33 @@
 // Page 1 du catalogue paginé — équivalente à /vehicules/page/1
-// Rendu dynamique pour que les filtres URL soient pris en compte
-export const dynamic = "force-dynamic";
+// Note : force-dynamic supprimé intentionnellement.
+// Les searchParams rendent déjà la page dynamique par détection automatique Next.js.
+// Sans force-dynamic, le RSC router cache (30 s) fonctionne sur /vehicules sans filtres :
+// retour liste → pas de _rsc si l'utilisateur revient dans la fenêtre cache.
 
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense, cache } from "react";
-import { unstable_cache } from "next/cache";
 import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import GmBadge from "@/components/ui/GmBadge";
-import VehicleCard from "@/components/vehicles/VehicleCard";
-import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import VehicleFiltersBar from "@/components/vehicles/VehicleFiltersBar";
 import { FilterStatePreserver } from "@/components/vehicles/FilterStatePreserver";
+import { VehicleGridServer, VehicleGridFallback } from "@/components/vehicles/VehicleGridServer";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
 import { parsePageFilters, filtersToQs } from "@/lib/vehicles/filters";
-import { vehicleCategoryRepository } from "@/lib/repositories/vehicleCategoryRepository";
+import {
+  listBrandsCached,
+  listCategoriesCached,
+  listActiveCategoryIdsCached,
+} from "@/lib/cache/vehicleStaticData";
 import {
   buildPaginationMeta,
   paginationRange,
   listingCanonical,
   listingTitle,
   listingDescription,
-  VEHICLES_PER_PAGE,
 } from "@/lib/vehicles/pagination";
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -37,24 +41,14 @@ import QualityControlTooltip from "@/components/ui/QualityControlTooltip";
 
 // ─── JSON-LD ─────────────────────────────────────────────────────
 
-function buildItemListJsonLd(
-  vehicles: Awaited<ReturnType<typeof vehicleDb.listPaginated>>,
-  totalCount: number,
-): object {
-  const baseUrl = "https://www.garagemendonca.com";
+function buildItemListJsonLd(totalCount: number): object {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "Voitures d'occasion — Garage Mendonça",
     description: "Catalogue de véhicules d'occasion révisés et garantis",
-    url: `${baseUrl}/vehicules`,
+    url: "https://www.garagemendonca.com/vehicules",
     numberOfItems: totalCount,
-    itemListElement: vehicles.map((v, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      url: `${baseUrl}/vehicules/${v.slug ?? v.id}`,
-      name: `${v.brand} ${v.model} ${v.year}`,
-    })),
   };
 }
 
@@ -62,16 +56,10 @@ const GARAGE_ID = getActiveGarageId();
 
 // ─── Cache helpers ────────────────────────────────────────────────
 // cache() : déduplique countPublic dans la même requête (metadata + page)
+// Les données statiques (brands, catégories) viennent du module partagé.
 const countPublicCached = cache(
   (garageId: string, filters: Parameters<typeof vehicleDb.countPublic>[1]) =>
     vehicleDb.countPublic(garageId, filters),
-);
-
-// unstable_cache : marques disponibles — peu volatiles, TTL 5 min
-const listBrandsCached = unstable_cache(
-  (garageId: string) => vehicleDb.listBrands(garageId),
-  ["vehicle-brands"],
-  { revalidate: 300 },
 );
 
 // ─── Types ───────────────────────────────────────────────────────
@@ -86,7 +74,15 @@ export async function generateMetadata({
   searchParams: Promise<SearchParams>;
 }): Promise<Metadata> {
   const sp = await searchParams;
-  const filters = parsePageFilters(sp);
+  const rawFilters = parsePageFilters(sp);
+  // Résoudre slug → categoryId ici aussi pour que React.cache() déduplique
+  // l'appel à countPublic entre generateMetadata et le page component.
+  let categoryId: string | undefined;
+  if (rawFilters.category) {
+    const cats = await listCategoriesCached(GARAGE_ID).catch(() => []);
+    categoryId = cats.find((c) => c.slug === rawFilters.category)?.id;
+  }
+  const filters = { ...rawFilters, category: undefined, categoryId };
   const totalCount = await countPublicCached(GARAGE_ID, filters).catch(() => 0);
   const desc = listingDescription(1, totalCount);
   return {
@@ -178,35 +174,32 @@ export default async function VehiculesPage({
   const rawFilters = parsePageFilters(sp);
   const filterQuery = filtersToQs(sp);
 
-  // Fetch categories first to resolve slug → categoryId (source de vérité)
+  // Données quasi-statiques depuis le cache partagé — 1 hit Supabase / 5 min max
+  // quelle que soit la pagination (page 1, 2, 3… partagent le même cache).
   const [availableBrands, allCategories, activeCatIds] = await Promise.all([
     listBrandsCached(GARAGE_ID).catch(() => []),
-    vehicleCategoryRepository.getAll(GARAGE_ID).catch(() => []),
-    vehicleDb.listActiveCategoryIds(GARAGE_ID).catch((): string[] => []),
+    listCategoriesCached(GARAGE_ID).catch(() => []),
+    listActiveCategoryIdsCached(GARAGE_ID).catch((): string[] => []),
   ]);
   // N'afficher que les catégories ayant au moins un véhicule public
   const categories = allCategories.filter((c) => activeCatIds.includes(c.id));
 
-  // Résolution slug → categoryId pour utiliser le FK (pas TEXT[])
-  const categoryId = rawFilters.category
-    ? categories.find((c) => c.slug === rawFilters.category)?.id
-    : undefined;
+  // Résolution slug → categoryId via Map (O(1) vs Array.find O(n))
+  const categoryMap = new Map(categories.map((c) => [c.slug, c.id]));
+  const categoryId = rawFilters.category ? categoryMap.get(rawFilters.category) : undefined;
   const filters = { ...rawFilters, category: undefined, categoryId };
 
-  const [vehicles, totalCount] = await Promise.all([
-    vehicleDb.listPaginated(GARAGE_ID, 1, VEHICLES_PER_PAGE, filters).catch((err) => {
-      console.error("[VehiculesPage] listPaginated failed:", err);
-      return [];
-    }),
-    countPublicCached(GARAGE_ID, filters).catch((err) => {
-      console.error("[VehiculesPage] countPublic failed:", err);
-      return 0;
-    }),
-  ]);
+  // countPublic dédupliqué par React.cache() entre generateMetadata et ici
+  const totalCount = await countPublicCached(GARAGE_ID, filters).catch((err) => {
+    console.error("[VehiculesPage] countPublic failed:", err);
+    return 0;
+  });
 
   const meta = buildPaginationMeta(1, totalCount);
 
-  const jsonLd = buildItemListJsonLd(vehicles, totalCount);
+  // listPaginated est délégué à VehicleGridServer (Suspense streaming)
+  // → hero + filtres + pagination s'affichent immédiatement
+  const jsonLd = buildItemListJsonLd(totalCount);
 
   return (
     <MainLayout>
@@ -258,21 +251,16 @@ export default async function VehiculesPage({
             />
           </Suspense>
 
-          {vehicles.length > 0 ? (
+          {totalCount > 0 ? (
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-6">
-                {vehicles.map((vehicle, i) =>
-                  // Les 4 premières cartes sont above-the-fold : pas d'AnimateOnScroll
-                  // (évite opacity:0 SSR qui exclut ces éléments du calcul LCP)
-                  i < 4 ? (
-                    <VehicleCard key={vehicle.id} vehicle={vehicle} priority />
-                  ) : (
-                    <AnimateOnScroll key={vehicle.id} delay={(i - 4) * 60}>
-                      <VehicleCard vehicle={vehicle} />
-                    </AnimateOnScroll>
-                  )
-                )}
-              </div>
+              {/* Grid streamé — la page s'affiche sans attendre listPaginated() */}
+              <Suspense fallback={<VehicleGridFallback />}>
+                <VehicleGridServer
+                  garageId={GARAGE_ID}
+                  page={1}
+                  filters={filters}
+                />
+              </Suspense>
 
               <PaginationNav meta={meta} filterQuery={filterQuery} />
 
