@@ -29,21 +29,28 @@ export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
   const widgetIdRef = useRef<string | null>(null);
   const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
 
+  // Refs stables pour les callbacks — évite que renderWidget change à chaque
+  // render du parent, ce qui déclencherait un re-attachement du script inutile.
+  const onVerifyRef = useRef(onVerify);
+  const onExpireRef = useRef(onExpire);
+  useEffect(() => { onVerifyRef.current = onVerify; }, [onVerify]);
+  useEffect(() => { onExpireRef.current = onExpire; }, [onExpire]);
+
   const renderWidget = useCallback(() => {
     if (!containerRef.current || !window.turnstile || !siteKey) return;
     if (widgetIdRef.current) return;
 
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
       sitekey: siteKey,
-      callback: (token: string) => onVerify(token),
+      callback: (token: string) => onVerifyRef.current(token),
       "expired-callback": () => {
         widgetIdRef.current = null;
-        onExpire();
+        onExpireRef.current();
       },
       theme: "dark",
       size: "normal",
     });
-  }, [siteKey, onVerify, onExpire]);
+  }, [siteKey]); // stable — ne dépend plus des callbacks (passés via refs)
 
   useEffect(() => {
     if (!siteKey) return;
@@ -57,6 +64,8 @@ export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
       'script[src*="challenges.cloudflare.com/turnstile"]',
     );
     if (existing) {
+      // Cleanup explicite : retire l'écouteur si le composant est démonté
+      // avant que le script finisse de charger.
       existing.addEventListener("load", renderWidget);
       return () => existing.removeEventListener("load", renderWidget);
     }
@@ -68,6 +77,9 @@ export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
     script.defer = true;
     script.onload = renderWidget;
     document.head.appendChild(script);
+    // Le script est une ressource globale — pas retiré au démontage.
+    // widgetIdRef est remis à null pour permettre un re-render propre si besoin.
+    return () => { widgetIdRef.current = null; };
   }, [siteKey, renderWidget]);
 
   if (!siteKey) return null;
