@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { useRouter } from "next/navigation";
 import { createVehicleAction, getFeaturedCount, fetchCategoriesAction } from "@/app/admin/vehicules/actions";
@@ -226,6 +227,7 @@ function Combobox({
 export default function NewVehiclePage() {
 	const t = useAdminTokens();
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const [form, setForm] = useState<VehicleForm>(emptyForm);
 	const [images, setImages] = useState<string[]>([]);
@@ -333,6 +335,7 @@ export default function NewVehiclePage() {
 			);
 		}
 		setSaveStatus("saved");
+		queryClient.invalidateQueries({ queryKey: ["vehicles"] });
 		setTimeout(() => router.push("/admin/vehicules"), 1200);
 	};
 
