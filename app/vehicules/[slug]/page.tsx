@@ -56,12 +56,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export async function generateStaticParams() {
 	if (!SUPABASE_ENABLED || !GARAGE_ID) return [];
-	// Uniquement les véhicules sans categorySlug — les catégorisés font un 301
-	// et n'ont pas besoin d'être pré-générés à cette URL.
+	// Tous les véhicules — catégorisés et non catégorisés — sont désormais
+	// rendus sur /vehicules/[slug]. Pré-génération complète pour éliminer
+	// l'ISR cold start (2-3s) qui faisait expirer le Router Cache /vehicules.
 	const slugs = await vehicleDb.listSlugsWithCategory(GARAGE_ID).catch(() => []);
-	return slugs
-		.filter(({ categorySlug }) => !categorySlug)
-		.map(({ slug, id }) => ({ slug: `${slug}-${id.slice(0, 8)}` }));
+	return slugs.map(({ slug, id }) => ({ slug: `${slug}-${id.slice(0, 8)}` }));
 }
 
 export default async function VehicleDetailPage({ params }: PageProps) {
@@ -76,8 +75,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	if (slug !== canonicalParam) {
 		permanentRedirect(buildVehicleUrl(vSlug, vehicle.id));
 	}
-
-	// ─── Rendu complet pour véhicules sans catégorie ───────────────
 
 	const [relatedVehicles, detectedColor] = await Promise.all([
 		vehicleDb.getRelated(vehicle.id, GARAGE_ID, 3).catch(() => []),
