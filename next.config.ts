@@ -38,17 +38,15 @@ const nextConfig: NextConfig = {
         destination: "/vehicules",
         permanent: true,
       },
-      // Consolidation SEO : /occasions → /vehicules (hub + listings catégorie)
-      // ⚠️  /occasions/:cat/:slug intentionnellement ABSENT : /vehicules/[slug]
-      //     fait déjà un permanentRedirect vers /occasions/[cat]/[slug] — ajouter
-      //     ce 3ème niveau créerait une boucle de redirection infinie.
+      // Clean cut /occasions → /vehicules : toute URL /occasions/* est morte.
+      // :path* (zero-or-more) couvre /occasions, /occasions/[cat], /occasions/[cat]/[slug].
       {
         source: "/occasions",
         destination: "/vehicules",
         permanent: true,
       },
       {
-        source: "/occasions/:categorySlug",
+        source: "/occasions/:path*",
         destination: "/vehicules",
         permanent: true,
       },

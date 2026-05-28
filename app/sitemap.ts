@@ -23,8 +23,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		// car /vehicules/[slug] redirige vers elles — inverser créerait une boucle.
 		vehicleEntries = slugs
 			.filter(({ categorySlug }) => !!categorySlug)
-			.map(({ slug, id, updated_at, categorySlug }) => ({
-				url: `${BASE_URL}/occasions/${categorySlug}/${slug}-${id.slice(0, 8)}`,
+			.map(({ slug, id, updated_at }) => ({
+				url: `${BASE_URL}/vehicules/${slug}-${id.slice(0, 8)}`,
 				lastModified: updated_at ? new Date(updated_at) : new Date(),
 				changeFrequency: "weekly" as const,
 				priority: 0.9,
