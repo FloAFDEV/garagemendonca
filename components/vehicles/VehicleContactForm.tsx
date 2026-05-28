@@ -127,8 +127,7 @@ export default function VehicleContactForm({
 				<p className="text-slate-500 text-sm max-w-xs leading-relaxed">
 					Nous avons bien reçu votre demande concernant le{" "}
 					<strong className="text-[#0f172a]">{vehicleName}</strong>.
-					Nous vous répondrons dans les plus brefs délais —
-					généralement sous 24 h.
+					Nous vous répondrons dans les plus brefs délais.
 				</p>
 				<a
 					href="tel:0532002038"
@@ -175,7 +174,7 @@ export default function VehicleContactForm({
 					label="Prénom"
 					required
 					autoComplete="given-name"
-					placeholder="John"
+					placeholder="Votre prénom"
 					icon={<User size={15} />}
 					error={errors.firstname}
 				/>
@@ -185,7 +184,7 @@ export default function VehicleContactForm({
 					label="Nom"
 					required
 					autoComplete="family-name"
-					placeholder="Doe"
+					placeholder="Votre nom"
 					icon={<User size={15} />}
 					error={errors.lastname}
 				/>
@@ -199,7 +198,7 @@ export default function VehicleContactForm({
 				label="Email"
 				required
 				autoComplete="email"
-				placeholder="john.doe@email.com"
+				placeholder="Votre adresse email"
 				icon={<Mail size={15} />}
 				error={errors.email}
 			/>

@@ -44,6 +44,9 @@ export default function Lightbox({
 }: LightboxProps) {
 	const [activeIdx, setActiveIdx] = useState(initialIndex);
 	const [visible, setVisible] = useState(false); // animate-in
+	// Portal guard: document.body inaccessible côté SSR.
+	// Le portal ne se monte qu'après hydratation client.
+	const [isMounted, setIsMounted] = useState(false);
 
 	const hasPrev = activeIdx > 0;
 	const hasNext = activeIdx < images.length - 1;
@@ -95,6 +98,9 @@ export default function Lightbox({
 		prevRef.current = () => { if (activeIdx > 0) goToRef.current(activeIdx - 1); };
 		nextRef.current = () => { if (activeIdx < images.length - 1) goToRef.current(activeIdx + 1); };
 	}, [activeIdx, images.length]);
+
+	/* ── Mount (client-only) ────────────────────────────────── */
+	useEffect(() => { setIsMounted(true); }, []);
 
 	/* ── Fade in ──────────────────────────────────────────── */
 	useEffect(() => {
@@ -219,9 +225,12 @@ export default function Lightbox({
 			el.removeEventListener("touchend", onEnd);
 		};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []); // intentionally empty — uses stable refs only
+	}, [isMounted]); // re-run quand le portal est monté — imgWrapRef disponible
 
 	/* ─────────────────────────────────────────────────────── */
+	// Ne pas rendre le portal avant hydratation client
+	if (!isMounted) return null;
+
 	return createPortal(
 		<div
 			className={[

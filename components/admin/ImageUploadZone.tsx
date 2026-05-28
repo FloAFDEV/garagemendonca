@@ -46,6 +46,9 @@ const MAX_DIM = 1200;
 const QUALITY = 0.85;
 
 async function resizeImage(file: File): Promise<File> {
+  // Appelé uniquement depuis des event handlers (jamais au render / SSR).
+  // Guard défensif au cas où le bundle serait évalué côté serveur.
+  if (typeof window === "undefined") return file;
   return new Promise((resolve) => {
     const img = new window.Image();
     img.onload = () => {

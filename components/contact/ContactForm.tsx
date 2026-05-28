@@ -32,11 +32,9 @@ const schema = z.object({
 type FormErrors = Partial<Record<keyof z.infer<typeof schema>, string>>;
 
 const subjects = [
-	"Demande de devis réparation",
 	"Renseignement véhicule",
 	"Prise de rendez-vous",
 	"Demande d'information",
-	"Autre",
 ];
 
 export default function ContactForm({
@@ -147,8 +145,7 @@ export default function ContactForm({
 				</h3>
 				<p className="text-[#475569] max-w-md mx-auto">
 					Merci {form.firstname} ! Notre équipe vous recontactera dans
-					les plus brefs délais, généralement sous 24 heures
-					ouvrables.
+					les plus brefs délais.
 				</p>
 				<button
 					onClick={() => {
@@ -215,7 +212,7 @@ export default function ContactForm({
 						name="firstname"
 						type="text"
 						autoComplete="given-name"
-						placeholder="John"
+						placeholder="Votre prénom"
 						value={form.firstname}
 						onChange={handleChange}
 						className={`input-field ${fieldErrors.firstname ? "border-red-300 focus:ring-red-200" : ""}`}
@@ -244,7 +241,7 @@ export default function ContactForm({
 						name="lastname"
 						type="text"
 						autoComplete="family-name"
-						placeholder="Doe"
+						placeholder="Votre nom"
 						value={form.lastname}
 						onChange={handleChange}
 						className={`input-field ${fieldErrors.lastname ? "border-red-300 focus:ring-red-200" : ""}`}
@@ -277,7 +274,7 @@ export default function ContactForm({
 						name="email"
 						type="email"
 						autoComplete="email"
-						placeholder="john.doe@email.com"
+						placeholder="Votre adresse email"
 						value={form.email}
 						onChange={handleChange}
 						className={`input-field ${fieldErrors.email ? "border-red-300 focus:ring-red-200" : ""}`}

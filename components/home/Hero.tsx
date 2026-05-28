@@ -14,7 +14,7 @@ import Container from "@/components/ui/Container";
 const trustBadges = [
 	{
 		Icon: ShieldCheck,
-		text: "Devis pièce & main-d'œuvre avant toute intervention",
+		text: "Prix transparents pièce & main-d'œuvre avant toute intervention",
 	},
 	{ Icon: Clock, text: "Prise en charge soignée, sur rendez-vous" },
 	{ Icon: Award, text: "Spécialiste japonaises · boîte automatique" },
@@ -105,7 +105,7 @@ export default function Hero() {
 						{/* Sous-titre */}
 						<p className="text-slate-200 font-light text-base md:text-lg leading-relaxed mb-5 max-w-xl animate-slide-up">
 							Mécaniciens qualifiés, équipement dernière
-							génération, devis transparent avant toute
+							génération, prix transparents avant toute
 							intervention.{" "}
 							<br className="hidden lg:block" />
 							Spécialiste japonaises et boîte automatique depuis
@@ -135,7 +135,7 @@ export default function Hero() {
 								href="/contact"
 								className="btn-outline w-full sm:w-auto text-white sm:text-base py-2.5 px-5 sm:py-3 sm:px-7 flex justify-center items-center gap-2"
 							>
-								Demander un devis gratuit
+								Nous écrire
 								<ArrowRight size={17} aria-hidden="true" />
 							</Link>
 						</div>

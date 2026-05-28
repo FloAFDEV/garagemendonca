@@ -7,16 +7,16 @@ import ContactForm from "@/components/contact/ContactForm";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 
 export const metadata: Metadata = {
-	title: "Contact et Devis",
+	title: "Contact",
 	description:
-		"Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message pour un devis personnalisé. Atelier spécialiste depuis 2003.",
+		"Contactez Garage Auto Mendonca à Drémil-Lafage. Appelez le 05 32 00 20 38 ou envoyez-nous un message. Atelier spécialiste depuis 2003.",
 	alternates: {
 		canonical: "https://www.garagemendonca.com/contact",
 	},
 	openGraph: {
-		title: "Contact & Devis — Garage Auto Mendonca · Drémil-Lafage",
+		title: "Contact — Garage Auto Mendonca · Drémil-Lafage",
 		description:
-			"Appelez le 05 32 00 20 38 ou envoyez un message. Devis personnalisé sans engagement. Spécialiste japonaises et boîtes automatiques depuis 2003.",
+			"Appelez le 05 32 00 20 38 ou envoyez un message. Réponse rapide, sans engagement. Spécialiste japonaises et boîtes automatiques depuis 2003.",
 		type: "website",
 		locale: "fr_FR",
 		url: "https://www.garagemendonca.com/contact",
@@ -119,13 +119,13 @@ export default async function ContactPage({ searchParams }: PageProps) {
 							<h1 className="ty-display text-white text-3xl sm:text-4xl md:text-5xl mb-4">
 								Contactez-nous —{" "}
 								<span className="text-brand-500">
-									un devis personnalisé
+									nous vous répondons rapidement
 								</span>
 							</h1>
 							<p className="text-slate-300 text-lg leading-relaxed max-w-2xl">
 								Appelez-nous directement ou envoyez-nous un message.
-								Nous vous proposons un devis
-								personnalisé et détaillé.
+								Notre équipe est disponible du lundi au vendredi
+								pour répondre à toutes vos questions.
 							</p>
 						</div>
 						<GmBadge size="lg" className="hidden sm:block opacity-90 flex-shrink-0 self-center" />

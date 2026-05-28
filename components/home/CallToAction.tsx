@@ -3,7 +3,7 @@ import { Phone, MessageSquare, CalendarDays, ShieldCheck } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
 
-const reassurances = ["Devis sans engagement", "Expertise depuis 2003", "Prix transparents", "Travail soigné"];
+const reassurances = ["Réponse rapide", "Expertise depuis 2003", "Prix transparents", "Travail soigné"];
 
 export default function CallToAction() {
   return (
@@ -28,7 +28,7 @@ export default function CallToAction() {
               <div className="flex items-center gap-3 mb-5">
                 <ShieldCheck size={14} className="text-brand-400" aria-hidden="true" />
                 <span className="text-brand-400 font-normal text-[10px] uppercase tracking-caps">
-                  Devis gratuit · Sans engagement
+                  Réponse rapide · Sans engagement
                 </span>
               </div>
 
@@ -40,8 +40,8 @@ export default function CallToAction() {
 
               <p className="font-light text-slate-300 text-sm leading-relaxed mb-6">
                 Contactez-nous par téléphone ou via notre formulaire.
-                Nous intervenons sur tous types de véhicules et établissons
-                un devis détaillé et transparent.
+                Nous intervenons sur tous types de véhicules avec des prix
+                transparents avant toute intervention.
               </p>
 
               {/* Réassurances */}
