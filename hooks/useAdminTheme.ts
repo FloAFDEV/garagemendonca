@@ -7,17 +7,6 @@ export type AdminTheme = "dark" | "light";
 const STORAGE_KEY = "admin-theme";
 const DEFAULT_THEME: AdminTheme = "dark";
 
-function readStored(): AdminTheme {
-	if (typeof window === "undefined") return DEFAULT_THEME;
-	try {
-		const v = localStorage.getItem(STORAGE_KEY);
-		if (v === "dark" || v === "light") return v;
-	} catch {
-		// localStorage inaccessible (SSR / incognito strict)
-	}
-	return DEFAULT_THEME;
-}
-
 /**
  * Lit la préférence depuis le DOM plutôt que depuis localStorage.
  *
@@ -44,9 +33,13 @@ function applyTheme(theme: AdminTheme) {
 }
 
 export function useAdminTheme() {
-	// Initialise depuis le DOM (valeur déjà correcte grâce au script bloquant)
-	// → évite le flash post-useEffect qui causait le « layout casse en 2 temps »
-	const [theme, setThemeState] = useState<AdminTheme>(readFromDOM);
+	// SSR-safe : démarre toujours avec DEFAULT_THEME ("dark") pour que l'état
+	// initial server === client et éviter React error #418 (hydration mismatch).
+	// En React 19, useState(fn) ré-exécute fn() côté client durant l'hydration :
+	// readFromDOM() retournait "light" pour les utilisateurs light-mode,
+	// causant un mismatch avec le rendu SSR (toujours "dark"). L'useEffect
+	// ci-dessous synchronise vers le thème réel après hydration.
+	const [theme, setThemeState] = useState<AdminTheme>(DEFAULT_THEME);
 
 	// Applique immédiatement au DOM + sauvegarde
 	const setTheme = useCallback((next: AdminTheme) => {
@@ -59,12 +52,13 @@ export function useAdminTheme() {
 	}, [theme, setTheme]);
 
 	useEffect(() => {
-		// Cas limite : si le script bloquant n'a pas pu s'exécuter (rare),
-		// réconcilie avec la valeur réelle de localStorage.
-		const stored = readStored();
-		if (stored !== theme) {
-			setThemeState(stored);
-			applyTheme(stored);
+		// Après hydration : synchronise vers le thème réel.
+		// Priorité : DOM (déjà corrigé par le script anti-FOUC) → localStorage.
+		// Cet useEffect remplace readFromDOM() dans useState pour garantir
+		// server === client à l'hydration (fix React error #418).
+		const actual = readFromDOM();
+		if (actual !== theme) {
+			setThemeState(actual);
 		}
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
