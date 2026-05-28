@@ -316,7 +316,7 @@ export default async function Footer() {
 
 						<a
 							href="tel:0532002038"
-							className="inline-flex items-center gap-2 btn-primary text-sm py-3 w-full justify-center"
+							className="btn-primary text-sm py-3 w-full"
 						>
 							<Phone size={14} aria-hidden="true" />
 							Nous contacter
