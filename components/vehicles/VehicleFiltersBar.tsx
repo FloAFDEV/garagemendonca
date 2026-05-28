@@ -421,9 +421,10 @@ export default function VehicleFiltersBar({
     <div className="mb-6 sm:mb-8">
 
       {/* ════════════════════════════════════════════════════════════
-          MOBILE (< md) — Compact, léger, sans overlay ni animation
+          MOBILE / TABLETTE (< xl = < 1280px)
+          Couvre mobile, tablette portrait et paysage (iPad Pro 1024px inclus).
           ════════════════════════════════════════════════════════════ */}
-      <div className="md:hidden space-y-2">
+      <div className="xl:hidden space-y-2">
 
         {/* Onglets catégories — scroll horizontal, compact */}
         {categories.length > 1 && (
@@ -663,9 +664,9 @@ export default function VehicleFiltersBar({
       </div>
 
       {/* ════════════════════════════════════════════════════════════
-          DESKTOP (≥ md) — Layout original inchangé pixel-perfect
+          DESKTOP (≥ xl = ≥ 1280px) — Layout original inchangé
           ════════════════════════════════════════════════════════════ */}
-      <div className="hidden md:block space-y-4">
+      <div className="hidden xl:block space-y-4">
 
         {/* Onglets catégories */}
         {categories.length > 1 && (
