@@ -11,14 +11,14 @@ import { QUALITY_CONTROL } from "@/lib/data/qualityControl";
 export const metadata: Metadata = {
 	title: "Nos Services",
 	description:
-		"Entretien, réparation mécanique et carrosserie depuis 2003 à Drémil-Lafage. Spécialiste japonaises et boîtes automatiques. Devis gratuit.",
+		"Entretien, réparation mécanique et carrosserie depuis 2003 à Drémil-Lafage. Spécialiste japonaises et boîtes automatiques. Prix transparents avant toute intervention.",
 	alternates: {
 		canonical: "https://www.garagemendonca.com/services",
 	},
 	openGraph: {
 		title: "Nos Services — Garage Auto Mendonca · Drémil-Lafage",
 		description:
-			"Entretien, mécanique, carrosserie depuis 2003. Spécialiste boîtes automatiques et véhicules japonais. Devis gratuit.",
+			"Entretien, mécanique, carrosserie depuis 2003. Spécialiste boîtes automatiques et véhicules japonais. Prix transparents avant toute intervention.",
 		type: "website",
 		locale: "fr_FR",
 		url: "https://www.garagemendonca.com/services",
@@ -93,7 +93,7 @@ export default async function ServicesPage() {
 							<p className="text-dark-300 text-base sm:text-lg leading-relaxed max-w-2xl">
 								Mécaniciens qualifiés et continuellement formés,
 								équipements dernière génération. Diagnostic en 10
-								minutes, devis avant toute intervention.
+								minutes, tarif communiqué avant toute intervention.
 							</p>
 						</div>
 						<GmBadge size="lg" className="mt-8 hidden sm:block opacity-90" />

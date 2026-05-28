@@ -36,7 +36,7 @@ export default function VehicleContactSection({
 						<MessageSquare size={13} /> Demande d&apos;information
 					</div>
 					<h2 className="ty-heading text-[#0f172a] text-2xl sm:text-3xl mb-3">Intéressé par ce véhicule ?</h2>
-					<p className="text-slate-500 text-base">Envoyez-nous un message — nous vous répondons sous 24 h.</p>
+					<p className="text-slate-500 text-base">Envoyez-nous un message — nous vous répondons dans les plus brefs délais.</p>
 				</div>
 				<div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xl">
 					<VehicleContactFormLazy
