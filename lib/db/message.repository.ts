@@ -40,7 +40,7 @@ export const messageDb = {
     // JOIN vehicles pour récupérer brand/model/year dans un seul appel
     let q = adminDb()
       .from("messages")
-      .select("*, vehicles(brand, model, year)")
+      .select("*, vehicles(brand, model, year, slug)")
       .eq("garage_id", garageId)
       .order("created_at", { ascending: false });
 
@@ -72,7 +72,7 @@ export const messageDb = {
   async getById(id: string): Promise<Message | null> {
     const { data, error } = await adminDb()
       .from("messages")
-      .select("*, vehicles(brand, model, year)")
+      .select("*, vehicles(brand, model, year, slug)")
       .eq("id", id)
       .maybeSingle();
     if (error) throw error;

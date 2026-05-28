@@ -31,7 +31,7 @@ import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
-import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
 import VehicleBreadcrumb from "@/components/vehicles/detail/VehicleBreadcrumb";
 import VehicleDetailHeader from "@/components/vehicles/detail/VehicleDetailHeader";
 import VehicleQualityCard from "@/components/vehicles/detail/VehicleQualityCard";
@@ -84,13 +84,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 	const vSlug = vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year);
 	const canonicalParam = `${vSlug}-${vehicle.id.slice(0, 8)}`;
 
-	// Véhicule catégorisé → redirect 301 vers URL canonique /occasions/[cat]/[slug]
-	const categorySlug = vehicle.categorySlug;
-	if (categorySlug) {
-		permanentRedirect(buildOccasionUrl(categorySlug, vSlug, vehicle.id));
-	}
-
-	// Normalisation de l'URL (slug mal formé sans catégorie)
+	// Normalisation de l'URL (slug mal formé)
 	if (slug !== canonicalParam) {
 		permanentRedirect(buildVehicleUrl(vSlug, vehicle.id));
 	}

@@ -8,7 +8,7 @@
  *     Safe-area inset préservé pour les appareils iOS avec barre système.
  */
 
-import { Phone, MessageSquare } from "lucide-react";
+import { Phone, MessageSquare, ShieldCheck } from "lucide-react";
 
 interface MobileVehicleFooterProps {
 	/** Prix brut en euros — formaté en fr-FR dans ce composant (UI layer). */
@@ -27,9 +27,16 @@ export default function MobileVehicleFooter({ price, year, mileage, garantie }: 
 		>
 			<div className="flex-1 min-w-0">
 				<p className="ty-value font-heading text-xl leading-none tabular-nums">{price.toLocaleString("fr-FR")} €</p>
-				<p className="text-xs text-slate-500 mt-1 tabular-nums leading-none truncate">
-					{year} · {mileage.toLocaleString("fr-FR")} km{garantie ? ` · ${garantie}` : ""}
-				</p>
+				<div className="flex items-center gap-1.5 mt-1 min-w-0">
+					<span className="text-xs text-slate-500 tabular-nums leading-none truncate">
+						{year} · {mileage.toLocaleString("fr-FR")} km
+					</span>
+					{garantie && (
+						<span className="inline-flex items-center gap-1 shrink-0 text-[10px] font-light px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full leading-none">
+							<ShieldCheck size={10} className="text-emerald-500" /> {garantie}
+						</span>
+					)}
+				</div>
 			</div>
 			<a href="tel:0532002038" className="btn-primary py-3 px-5 shadow-md shadow-brand-500/20 shrink-0"><Phone size={18} /></a>
 			<a href="#contact-vehicule" className="btn-secondary py-3 px-4 shrink-0"><MessageSquare size={18} /></a>

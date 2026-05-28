@@ -164,17 +164,5 @@ export function resolveVehicleHref(vehicle: {
     vehicle.year ?? 0,
   );
 
-  if (vehicle.categorySlug) {
-    return buildOccasionUrl(vehicle.categorySlug, vSlug, vehicle.id);
-  }
-
-  // Data integrity: categoryId present but JOIN returned no slug → suspect
-  if (vehicle.categoryId && typeof window === "undefined") {
-    // Server-side only — avoids noise in client bundles
-    console.warn(
-      `[SEO] Vehicle ${vehicle.id} has categoryId "${vehicle.categoryId}" but categorySlug JOIN returned null — check vehicle_categories integrity`,
-    );
-  }
-
   return vehicle.slug ? buildVehicleUrl(vSlug, vehicle.id) : `/vehicules/${vehicle.id}`;
 }

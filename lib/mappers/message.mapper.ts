@@ -1,6 +1,7 @@
 import type { Message, ContactReply } from "@/types";
 import type { MessageRow, MessageInsert, MessageUpdate, ContactReplyRow, ContactReplyInsert } from "@/lib/supabase/database.types";
 import type { MessageCreateInput, MessageUpdateInput, ReplyCreateInput } from "@/lib/validation/message.schema";
+import { generateVehicleSlug, buildVehicleUrl } from "@/lib/utils/slug";
 
 // ─── DB → Domaine ─────────────────────────────────────────────────
 
@@ -9,6 +10,7 @@ interface VehicleJoin {
   brand: string;
   model: string;
   year:  number;
+  slug?: string | null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,11 +23,20 @@ export function messageFromDb(row: (MessageRow & { vehicles?: VehicleJoin | null
     ? `${vehicle.brand} ${vehicle.model} ${vehicle.year}`
     : undefined;
 
+  const vehicleId = row.vehicle_id as string | undefined;
+  const vehicleHref = vehicleId && vehicle
+    ? buildVehicleUrl(
+        vehicle.slug ?? generateVehicleSlug(vehicle.brand, vehicle.model, vehicle.year),
+        vehicleId,
+      )
+    : undefined;
+
   return {
     id:           row.id,
     garage_id:    row.garage_id  ?? undefined,
     vehicle_id:   row.vehicle_id ?? undefined,
     vehicleName,
+    vehicleHref,
     firstname,
     lastname,
     name:         row.name || `${firstname} ${lastname}`.trim(),
