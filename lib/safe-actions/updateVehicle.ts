@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { vehicleUpdateSchema, type VehicleUpdateInput } from "@/lib/validation/vehicle.schema";
 import { vehicleToUpdate } from "@/lib/mappers/vehicle.mapper";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
@@ -30,6 +30,7 @@ export async function updateVehicleAction(
     const vehicle = await vehicleDb.update(id, row);
     revalidatePath("/vehicules", "layout"); // invalide /vehicules + tous les /vehicules/[slug]
     revalidatePath("/admin/vehicules");
+    revalidateTag("vehicle-catalogue"); // invalide countPublicCached + listPaginatedCached
     return { data: vehicle };
   } catch (err) {
     return { error: parseSupabaseError(err) };

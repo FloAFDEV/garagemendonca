@@ -1,7 +1,7 @@
 "use server";
 
 import type { Vehicle, VehicleCategory, VehicleStatus, VehicleUpdateInput, VehicleCreateInput } from "@/types";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { SUPABASE_ENABLED } from "@/lib/supabase/readClient";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
 import { vehicleFromDb } from "@/lib/mappers/vehicle.mapper";
@@ -66,6 +66,7 @@ function revalidateAll(_id?: string) {
 	revalidatePath("/vehicules", "layout");      // /vehicules + /vehicules/[slug] + /vehicules/page/[n]
 	revalidatePath("/occasions", "layout");      // /occasions + /occasions/[cat] + /occasions/[cat]/[slug]
 	revalidatePath("/", "page");                 // home (featured vehicles)
+	revalidateTag("vehicle-catalogue");          // invalide countPublicCached + listPaginatedCached
 }
 
 function toDbRow(input: VehicleUpdateInput): Record<string, unknown> {

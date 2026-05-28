@@ -14,7 +14,7 @@
  * Retour : { data: Vehicle } | { error: AppError | ZodFlattenedErrors }
  */
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { vehicleCreateSchema, type VehicleCreateInput } from "@/lib/validation/vehicle.schema";
 import { vehicleToInsert } from "@/lib/mappers/vehicle.mapper";
 import { vehicleDb } from "@/lib/db/vehicle.repository";
@@ -61,6 +61,7 @@ export async function createVehicleAction(
     const vehicle = await vehicleDb.create(row);
     revalidatePath("/vehicules");
     revalidatePath("/admin/vehicules");
+    revalidateTag("vehicle-catalogue"); // invalide countPublicCached + listPaginatedCached
     return { data: vehicle };
   } catch (err) {
     return { error: parseSupabaseError(err) };

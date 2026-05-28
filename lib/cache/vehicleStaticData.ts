@@ -48,7 +48,7 @@ export const countPublicCached = unstable_cache(
   (garageId: string, filters: Omit<VehicleListFilters, "limit" | "offset">) =>
     vehicleDb.countPublic(garageId, filters),
   ["vehicle-count-public"],
-  { revalidate: 60 },
+  { revalidate: 60, tags: ["vehicle-catalogue"] },
 );
 
 /**
@@ -57,10 +57,13 @@ export const countPublicCached = unstable_cache(
  * Centralise le cache du listPaginated (utilisé par VehicleGridServer).
  * Sans cache, cette query Supabase SELECT+JOIN s'exécutait à chaque
  * RSC re-fetch → ~400ms sur le chemin critique du streaming.
+ *
+ * Tag "vehicle-catalogue" : invalidé immédiatement par revalidateTag()
+ * dans les actions admin (create/update/delete véhicule).
  */
 export const listPaginatedCached = unstable_cache(
   (garageId: string, page: number, filters: Omit<VehicleListFilters, "limit" | "offset">) =>
     vehicleDb.listPaginated(garageId, page, VEHICLES_PER_PAGE, filters),
   ["vehicle-list-paginated"],
-  { revalidate: 60 },
+  { revalidate: 60, tags: ["vehicle-catalogue"] },
 );
