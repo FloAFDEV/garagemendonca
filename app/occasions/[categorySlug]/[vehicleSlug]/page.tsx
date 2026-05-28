@@ -22,8 +22,8 @@ import { getVehicleImages } from "@/lib/utils/vehicle-images";
 import { getActiveGarageId } from "@/lib/config/garage";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { detectDominantColor, isColorUnknown } from "@/lib/utils/detectVehicleColor";
-import { buildOccasionUrl, generateVehicleSlug } from "@/lib/utils/slug";
-import { buildVehicleMetadata, buildVehicleOccasionCanonical, buildVehicleJsonLd } from "@/lib/seo/vehicle";
+import { buildOccasionUrl, buildVehicleUrl, generateVehicleSlug } from "@/lib/utils/slug";
+import { buildVehicleMetadata, buildVehicleOccasionCanonical, buildVehicleJsonLd, SITE_BASE_URL } from "@/lib/seo/vehicle";
 
 const GARAGE_ID = getActiveGarageId();
 
@@ -44,7 +44,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	const vehicle = await getVehicleCached(vehicleSlug, GARAGE_ID);
 	if (!vehicle) return { title: "Véhicule introuvable" };
 
-	// Route indexable — canonical depuis les params (plus fiable que vehicle.categorySlug).
 	const canonical = buildVehicleOccasionCanonical(categorySlug, vehicle);
 	return buildVehicleMetadata(vehicle, { canonical, noindex: false });
 }
@@ -99,7 +98,7 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 	const garantieLabel = garantieRaw ? `Garantie ${garantieRaw}` : "Garantie 6 à 12 mois";
 	const descriptionText = vehicle.description_marketing ?? vehicle.description ?? "";
 
-	const vehicleCanonical = buildVehicleOccasionCanonical(vehicleCategorySlug, vehicle);
+	const vehicleCanonical = `${SITE_BASE_URL}${buildVehicleUrl(vSlug, vehicle.id)}`;
 	const jsonLdCar = buildVehicleJsonLd(vehicle, vehicleCanonical, displayColor);
 
 	return (
@@ -109,7 +108,6 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 			<div className="bg-[#f8fafc] min-h-screen">
 				<Container className="pt-20 sm:pt-28 pb-28 sm:pb-8">
 					<OccasionsBreadcrumb
-						categorySlug={vehicleCategorySlug}
 						categoryLabel={category?.label ?? vehicleCategorySlug}
 						vehicleName={vehicleName}
 					/>
@@ -154,8 +152,8 @@ export default async function OccasionsVehicleDetailPage({ params }: PageProps) 
 					{relatedVehicles.length > 0 && (
 						<VehicleRelatedSection
 							vehicles={relatedVehicles}
-							listHref={`/occasions/${vehicleCategorySlug}`}
-							listLabel={`Voir plus de ${category?.label?.toLowerCase() ?? "véhicules"}`}
+							listHref="/vehicules"
+							listLabel="Voir tout le stock"
 						/>
 					)}
 				</Container>

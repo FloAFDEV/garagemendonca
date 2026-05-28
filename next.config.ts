@@ -38,6 +38,18 @@ const nextConfig: NextConfig = {
         destination: "/vehicules",
         permanent: true,
       },
+      // Clean cut /occasions → /vehicules : toute URL /occasions/* est morte.
+      // :path* (zero-or-more) couvre /occasions, /occasions/[cat], /occasions/[cat]/[slug].
+      {
+        source: "/occasions",
+        destination: "/vehicules",
+        permanent: true,
+      },
+      {
+        source: "/occasions/:path*",
+        destination: "/vehicules",
+        permanent: true,
+      },
       ...SIMPLE_REDIRECTS,
     ];
   },
