@@ -348,9 +348,12 @@ function MessageDetail({
 				</div>
 
 				<div className="flex-1 min-w-0">
-					<h2 className="font-semibold text-dark-300 truncate text-sm">
-						{message.firstname} {message.lastname}
-					</h2>
+					<div className="flex items-center gap-2 min-w-0">
+						<h2 className="font-semibold text-dark-300 truncate text-sm">
+							{message.firstname} {message.lastname}
+						</h2>
+						<StatusBadge status={displayed.status} />
+					</div>
 					<div className="flex items-center gap-3 text-xs text-dark-500">
 						<a
 							href={`mailto:${message.email}`}
@@ -361,7 +364,7 @@ function MessageDetail({
 						{message.phone && (
 							<a
 								href={`tel:${message.phone}`}
-								className="hover:text-brand-400 flex items-center gap-1"
+								className="hover:text-brand-400 flex items-center gap-1 shrink-0"
 							>
 								<Phone size={11} />
 								{message.phone}
@@ -371,9 +374,6 @@ function MessageDetail({
 				</div>
 
 				<div className="flex items-center gap-2 shrink-0">
-					<StatusBadge status={displayed.status} />
-
-					{/* Quick actions */}
 					{displayed.status !== "archived" ? (
 						<button
 							onClick={() => statusMut.mutate("archived")}
@@ -433,25 +433,6 @@ function MessageDetail({
 						<Clock size={12} />
 						{message.formattedDate}
 					</span>
-					{message.vehicleId && (
-						message.vehicleHref ? (
-							<Link
-								href={message.vehicleHref}
-								target="_blank"
-								rel="noreferrer"
-								className="flex items-center gap-1 text-brand-400 hover:text-brand-300 bg-brand-950/30 hover:bg-brand-900/40 px-2 py-0.5 rounded-md border border-brand-800/40 transition-colors"
-							>
-								<Car size={12} />
-								{message.vehicleName ?? "Véhicule lié"}
-								<ExternalLink size={10} />
-							</Link>
-						) : (
-							<span className="flex items-center gap-1 text-brand-400 bg-brand-950/30 px-2 py-0.5 rounded-md border border-brand-800/40">
-								<Car size={12} />
-								{message.vehicleName ?? "Véhicule lié"}
-							</span>
-						)
-					)}
 					{message.subject && (
 						<span className="text-slate-400 font-medium">
 							{message.subject}
@@ -460,8 +441,28 @@ function MessageDetail({
 				</div>
 
 				{/* Message original */}
-				<div className="bg-dark-900 rounded-xl p-4 border border-dark-800">
-					<p className="text-sm text-dark-400 leading-relaxed whitespace-pre-wrap break-words overflow-hidden">
+				<div className="bg-dark-900 rounded-xl border border-dark-800 overflow-hidden">
+					{message.vehicleId && (
+						<div className="flex items-center gap-2 px-4 py-2.5 border-b border-dark-800 bg-dark-900/60">
+							<Car size={12} className="text-brand-500 flex-shrink-0" />
+							{message.vehicleHref ? (
+								<Link
+									href={message.vehicleHref}
+									target="_blank"
+									rel="noreferrer"
+									className="flex items-center gap-1 text-xs text-brand-400 hover:text-brand-300 font-medium transition-colors"
+								>
+									{message.vehicleName ?? "Véhicule lié"}
+									<ExternalLink size={10} />
+								</Link>
+							) : (
+								<span className="text-xs text-brand-400 font-medium">
+									{message.vehicleName ?? "Véhicule lié"}
+								</span>
+							)}
+						</div>
+					)}
+					<p className="text-sm text-dark-400 leading-relaxed whitespace-pre-wrap break-words overflow-hidden px-4 py-4">
 						{message.message}
 					</p>
 				</div>
