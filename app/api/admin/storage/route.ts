@@ -28,9 +28,12 @@ const GARAGE_ID = getActiveGarageId();
  * Read-only. Requires admin auth for the active garage.
  */
 export async function GET() {
-  const authResult = await requireAdminForGarage(GARAGE_ID).catch(() => null);
-  if (!authResult) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  const authError = await requireAdminForGarage(GARAGE_ID);
+  if (authError) {
+    return NextResponse.json(
+      { error: authError.message },
+      { status: authError.code === "UNAUTHORIZED" ? 401 : 403 },
+    );
   }
 
   const db = createSupabaseAdminClient();
@@ -165,9 +168,12 @@ export async function GET() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function DELETE(request: NextRequest) {
-  const authResult = await requireAdminForGarage(GARAGE_ID).catch(() => null);
-  if (!authResult) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  const authError = await requireAdminForGarage(GARAGE_ID);
+  if (authError) {
+    return NextResponse.json(
+      { error: authError.message },
+      { status: authError.code === "UNAUTHORIZED" ? 401 : 403 },
+    );
   }
 
   let body: { image_ids?: string[]; dry_run?: boolean };

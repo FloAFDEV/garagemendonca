@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
-import { getUser } from "@/lib/auth/getSession";
+import { getUser, requireAdminForGarage } from "@/lib/auth/getSession";
 import {
   getVariantPaths,
   getOriginalPath,
@@ -66,6 +66,14 @@ export async function POST(request: NextRequest) {
   const { basePath } = body;
   if (!basePath) {
     return NextResponse.json({ error: "Champ requis : basePath" }, { status: 400 });
+  }
+
+  // Autorisation : basePath = "{garageId}/vehicles/{vehicleId}/{uuid}".
+  // L'utilisateur doit être admin du garage extrait du basePath.
+  const garageId = basePath.split("/")[0];
+  const authError = await requireAdminForGarage(garageId);
+  if (authError) {
+    return NextResponse.json({ error: authError.message }, { status: 403 });
   }
 
   const supabase = createSupabaseAdminClient();

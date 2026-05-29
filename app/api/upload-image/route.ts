@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
-import { getUser } from "@/lib/auth/getSession";
+import { getUser, requireAdminForGarage } from "@/lib/auth/getSession";
 
 // ─── Règles de traitement par type ───────────────────────────────
 
@@ -42,6 +42,12 @@ export async function POST(request: NextRequest) {
 
   if (!(type in UPLOAD_CONFIGS)) {
     return NextResponse.json({ error: "Type invalide" }, { status: 400 });
+  }
+
+  // Autorisation : l'utilisateur doit être admin du garage ciblé.
+  const authError = await requireAdminForGarage(garageId);
+  if (authError) {
+    return NextResponse.json({ error: authError.message }, { status: 403 });
   }
 
   const config = UPLOAD_CONFIGS[type];

@@ -96,7 +96,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 		<MainLayout>
 			<script
 				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
 			/>
 			{/* ── Hero ── */}
 			<section className="bg-[#0f172a] pt-24 sm:pt-28 pb-10 sm:pb-14 relative overflow-hidden">

@@ -197,7 +197,7 @@ export default async function VehiculesPage({
     <MainLayout>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       {/* ── Hero ── */}
       <section className="bg-[#0f172a] pt-20 sm:pt-28 pb-10 sm:pb-16 relative overflow-hidden">
