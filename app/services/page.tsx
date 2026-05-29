@@ -69,7 +69,7 @@ export default async function ServicesPage() {
 		<MainLayout>
 			<script
 				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
 			/>
 			{/* ── Hero page ── */}
 			<section className="relative bg-dark-900 overflow-hidden pt-24 pb-14">

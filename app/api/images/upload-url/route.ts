@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/supabaseAdminClient";
-import { getUser } from "@/lib/auth/getSession";
+import { getUser, requireAdminForGarage } from "@/lib/auth/getSession";
 import { getOriginalPath } from "@/lib/utils/storage";
 
 const VEHICLE_BUCKET = "vehicle-images";
@@ -33,6 +33,12 @@ export async function POST(request: NextRequest) {
       { error: "Champs requis : garageId, vehicleId" },
       { status: 400 },
     );
+  }
+
+  // Autorisation : l'utilisateur doit être admin du garage ciblé.
+  const authError = await requireAdminForGarage(garageId);
+  if (authError) {
+    return NextResponse.json({ error: authError.message }, { status: 403 });
   }
 
   // Build a unique base path (no extension) — this becomes the image's permanent identifier

@@ -100,7 +100,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 	return (
 		<MainLayout>
-			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdCar) }} />
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdCar).replace(/</g, "\\u003c") }} />
 
 			<div className="bg-[#f8fafc] min-h-screen">
 				<Container className="pt-20 sm:pt-28 pb-28 sm:pb-8">

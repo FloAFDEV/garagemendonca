@@ -113,11 +113,15 @@ export default function SortablePhotoGrid({ images, onChange }: SortablePhotoGri
     useSensor(KeyboardSensor),
   );
 
+  // IDs DnD = "{index}|{url}" → uniques même si deux URLs sont identiques
+  // (l'index préfixé garantit l'unicité). On extrait l'index du préfixe.
+  const itemIds = images.map((img, i) => `${i}|${img}`);
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      const oldIndex = images.indexOf(active.id as string);
-      const newIndex = images.indexOf(over.id as string);
+      const oldIndex = Number(String(active.id).split("|")[0]);
+      const newIndex = Number(String(over.id).split("|")[0]);
       onChange(arrayMove(images, oldIndex, newIndex));
     }
   }
@@ -126,12 +130,12 @@ export default function SortablePhotoGrid({ images, onChange }: SortablePhotoGri
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={images} strategy={rectSortingStrategy}>
+      <SortableContext items={itemIds} strategy={rectSortingStrategy}>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {images.map((img, idx) => (
             <SortablePhotoItem
-              key={img}
-              id={img}
+              key={itemIds[idx]}
+              id={itemIds[idx]}
               src={img}
               index={idx}
               onRemove={() => onChange(images.filter((_, i) => i !== idx))}

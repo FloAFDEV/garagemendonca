@@ -331,7 +331,7 @@ export default function VehicleGallery({
 			{lightboxOpen && (
 				<Lightbox
 					images={lightboxUrls}
-					initialIndex={activeIdx}
+					initialIndex={Math.max(0, Math.min(activeIdx, lightboxUrls.length - 1))}
 					vehicleName={vehicleName}
 					onClose={() => setLightboxOpen(false)}
 				/>
