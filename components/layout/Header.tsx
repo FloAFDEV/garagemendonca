@@ -177,6 +177,7 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 								isOpen ? "Fermer le menu" : "Ouvrir le menu"
 							}
 							aria-expanded={isOpen}
+							aria-controls="mobile-menu"
 						>
 							{isOpen ? <X size={20} /> : <Menu size={20} />}
 						</button>
@@ -186,6 +187,8 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 				{/* Menu mobile */}
 				<div
 					id="mobile-menu"
+					aria-hidden={!isOpen}
+					inert={!isOpen || undefined}
 					className={clsx(
 						"md:hidden overflow-hidden transition-all duration-300 ease-in-out",
 						isOpen

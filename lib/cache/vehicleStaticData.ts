@@ -19,21 +19,21 @@ import { VEHICLES_PER_PAGE } from "@/lib/vehicles/pagination";
 export const listBrandsCached = unstable_cache(
   (garageId: string) => vehicleDb.listBrands(garageId),
   ["vehicle-brands"],
-  { revalidate: 300 },
+  { revalidate: 300, tags: ["vehicle-catalogue"] },
 );
 
 /** Toutes les catégories du garage — TTL 5 min. */
 export const listCategoriesCached = unstable_cache(
   (garageId: string) => vehicleCategoryRepository.getAll(garageId),
   ["vehicle-categories"],
-  { revalidate: 300 },
+  { revalidate: 300, tags: ["vehicle-catalogue"] },
 );
 
 /** IDs des catégories ayant au moins un véhicule public — TTL 5 min. */
 export const listActiveCategoryIdsCached = unstable_cache(
   (garageId: string) => vehicleDb.listActiveCategoryIds(garageId),
   ["vehicle-active-category-ids"],
-  { revalidate: 300 },
+  { revalidate: 300, tags: ["vehicle-catalogue"] },
 );
 
 /**

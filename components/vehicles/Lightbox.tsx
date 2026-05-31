@@ -54,6 +54,9 @@ export default function Lightbox({
 
 	/* ── DOM refs ─────────────────────────────────────────── */
 	const imgWrapRef = useRef<HTMLDivElement>(null);
+	const dialogRef = useRef<HTMLDivElement>(null);
+	const closeBtnRef = useRef<HTMLButtonElement>(null);
+	const previouslyFocusedRef = useRef<Element | null>(null);
 
 	/* ── Zoom/pan state (refs = no re-render → 60 fps) ───── */
 	const scaleRef = useRef(1);
@@ -118,10 +121,41 @@ export default function Lightbox({
 			if (e.key === "Escape") onCloseRef.current();
 			if (e.key === "ArrowLeft") prevRef.current();
 			if (e.key === "ArrowRight") nextRef.current();
+
+			// Focus trap : confine la tabulation dans la modale
+			if (e.key === "Tab") {
+				const root = dialogRef.current;
+				if (!root) return;
+				const focusables = root.querySelectorAll<HTMLElement>(
+					'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+				);
+				if (focusables.length === 0) return;
+				const first = focusables[0];
+				const last = focusables[focusables.length - 1];
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
 		};
 		window.addEventListener("keydown", handler);
 		return () => window.removeEventListener("keydown", handler);
 	}, []);
+
+	/* ── Focus initial + restauration à la fermeture ───────── */
+	useEffect(() => {
+		if (!isMounted) return;
+		previouslyFocusedRef.current = document.activeElement;
+		closeBtnRef.current?.focus();
+		return () => {
+			if (previouslyFocusedRef.current instanceof HTMLElement) {
+				previouslyFocusedRef.current.focus();
+			}
+		};
+	}, [isMounted]);
 
 	/* ── Preload next image ────────────────────────────────── */
 	useEffect(() => {
@@ -238,6 +272,7 @@ export default function Lightbox({
 				"transition-all duration-300 ease-out",
 				visible ? "opacity-100 scale-100" : "opacity-0 scale-[0.97]",
 			].join(" ")}
+			ref={dialogRef}
 			role="dialog"
 			aria-modal="true"
 			aria-label={`Galerie — ${vehicleName}`}
@@ -254,6 +289,7 @@ export default function Lightbox({
 						</span>
 					)}
 					<button
+						ref={closeBtnRef}
 						onClick={onClose}
 						className="w-10 h-10 bg-white/10 hover:bg-white/25 active:scale-95 rounded-full flex items-center justify-center transition-all"
 						aria-label="Fermer"

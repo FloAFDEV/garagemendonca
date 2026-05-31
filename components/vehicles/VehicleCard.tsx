@@ -218,7 +218,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 						{vehicle.price.toLocaleString("fr-FR")} €
 					</span>
 					{/* Ligne 5 : Année · km */}
-					<p className="text-[10px] text-[#94a3b8] leading-tight">
+					<p className="text-[10px] text-slate-500 leading-tight">
 						{vehicle.year} · {vehicle.mileage.toLocaleString("fr-FR")} km
 					</p>
 				</div>

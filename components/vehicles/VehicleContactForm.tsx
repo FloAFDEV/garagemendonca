@@ -230,9 +230,12 @@ export default function VehicleContactForm({
 					maxRows={20}
 					defaultValue={defaultMessage}
 					error={!!errors.message}
+					aria-required
+					aria-invalid={!!errors.message || undefined}
+					aria-describedby={errors.message ? "vcf-message-error" : undefined}
 				/>
 				{errors.message && (
-					<p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+					<p id="vcf-message-error" className="mt-1 text-xs text-red-500 flex items-center gap-1">
 						<AlertCircle size={12} /> {errors.message}
 					</p>
 				)}
@@ -344,6 +347,9 @@ function Field({
 					type={type}
 					autoComplete={autoComplete}
 					placeholder={placeholder}
+					aria-required={required || undefined}
+					aria-invalid={!!error || undefined}
+					aria-describedby={error ? `${id}-error` : undefined}
 					className={`w-full ${icon ? "pl-9" : "pl-3"} pr-3 py-3.5 text-sm rounded-xl border bg-white focus:outline-none focus:ring-2 transition-colors ${
 						error
 							? "border-red-300 focus:ring-red-200"
@@ -352,7 +358,7 @@ function Field({
 				/>
 			</div>
 			{error && (
-				<p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+				<p id={`${id}-error`} className="mt-1 text-xs text-red-500 flex items-center gap-1">
 					<AlertCircle size={12} /> {error}
 				</p>
 			)}

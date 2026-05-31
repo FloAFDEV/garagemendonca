@@ -9,6 +9,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { unstable_cache } from "next/cache";
 import { Phone, Mail, MapPin, Clock, ExternalLink, CalendarOff } from "lucide-react";
 import Container from "@/components/ui/Container";
 import CookieSettingsButton from "@/components/cookies/CookieSettingsButton";
@@ -17,6 +18,14 @@ import { getActiveGarageId } from "@/lib/config/garage";
 import type { GarageOpeningHours, GarageDay } from "@/types";
 
 const ACTIVE_GARAGE_ID = getActiveGarageId();
+
+// Données quasi-statiques (horaires/coordonnées) — évite 1 lecture Supabase
+// à chaque rendu dynamique (catalogue filtré). TTL 5 min.
+const getGarageCached = unstable_cache(
+	(id: string) => garageRepository.getById(id),
+	["footer-garage"],
+	{ revalidate: 300, tags: ["garage"] },
+);
 
 const DAYS_ORDER: GarageDay[] = [
 	"lundi",
@@ -96,9 +105,7 @@ const footerLinks = {
 
 export default async function Footer() {
 	// Chargement dynamique des horaires (fallback si Supabase indisponible)
-	const garage = await garageRepository
-		.getById(ACTIVE_GARAGE_ID)
-		.catch(() => null);
+	const garage = await getGarageCached(ACTIVE_GARAGE_ID).catch(() => null);
 	const hours = garage?.opening_hours
 		? buildHoursRows(garage.opening_hours)
 		: FALLBACK_HOURS;
