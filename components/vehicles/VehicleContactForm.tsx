@@ -210,7 +210,7 @@ export default function VehicleContactForm({
 				type="tel"
 				label="Téléphone"
 				autoComplete="tel"
-				placeholder="06 12 34 56 78"
+				placeholder="Votre numéro de téléphone"
 				icon={<PhoneCall size={15} />}
 				optional
 			/>
@@ -232,10 +232,15 @@ export default function VehicleContactForm({
 					error={!!errors.message}
 					aria-required
 					aria-invalid={!!errors.message || undefined}
-					aria-describedby={errors.message ? "vcf-message-error" : undefined}
+					aria-describedby={
+						errors.message ? "vcf-message-error" : undefined
+					}
 				/>
 				{errors.message && (
-					<p id="vcf-message-error" className="mt-1 text-xs text-red-500 flex items-center gap-1">
+					<p
+						id="vcf-message-error"
+						className="mt-1 text-xs text-red-500 flex items-center gap-1"
+					>
 						<AlertCircle size={12} /> {errors.message}
 					</p>
 				)}
@@ -358,7 +363,10 @@ function Field({
 				/>
 			</div>
 			{error && (
-				<p id={`${id}-error`} className="mt-1 text-xs text-red-500 flex items-center gap-1">
+				<p
+					id={`${id}-error`}
+					className="mt-1 text-xs text-red-500 flex items-center gap-1"
+				>
 					<AlertCircle size={12} /> {error}
 				</p>
 			)}
