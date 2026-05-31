@@ -626,49 +626,49 @@ export default function VehicleFiltersBar({
             {qUrl && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 «{qUrl}»
-                <button onClick={() => { setSearchInput(""); pushFilters({ q: "" }); }} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => { setSearchInput(""); pushFilters({ q: "" }); }} aria-label="Retirer la recherche" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {fuel && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {fuel}
-                <button onClick={() => pushFilters({ fuel: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ fuel: "" })} aria-label="Retirer le filtre carburant" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {transmission && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {transmission}
-                <button onClick={() => pushFilters({ transmission: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ transmission: "" })} aria-label="Retirer le filtre boîte de vitesses" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {maxKm && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 &lt; {parseInt(maxKm).toLocaleString("fr-FR")} km
-                <button onClick={() => pushFilters({ maxKm: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ maxKm: "" })} aria-label="Retirer le filtre kilométrage" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {minPrice && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 ≥ {parseInt(minPrice).toLocaleString("fr-FR")} €
-                <button onClick={() => pushFilters({ minPrice: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ minPrice: "" })} aria-label="Retirer le filtre prix minimum" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {maxPrice && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 &lt; {parseInt(maxPrice).toLocaleString("fr-FR")} €
-                <button onClick={() => pushFilters({ maxPrice: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ maxPrice: "" })} aria-label="Retirer le filtre prix maximum" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {(minYear || maxYear) && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {minYear && maxYear ? `${minYear} – ${maxYear}` : minYear ? `≥ ${minYear}` : `≤ ${maxYear}`}
-                <button onClick={() => pushFilters({ minYear: "", maxYear: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ minYear: "", maxYear: "" })} aria-label="Retirer le filtre année" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {sort && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {SORT_OPTIONS.find((o) => o.value === sort)?.label ?? sort}
-                <button onClick={() => pushFilters({ sort: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ sort: "" })} aria-label="Retirer le tri" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
           </div>
@@ -855,49 +855,49 @@ export default function VehicleFiltersBar({
             {qUrl && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 «{qUrl}»
-                <button onClick={() => { setSearchInput(""); pushFilters({ q: "" }); }} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => { setSearchInput(""); pushFilters({ q: "" }); }} aria-label="Retirer la recherche" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {fuel && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {fuel}
-                <button onClick={() => pushFilters({ fuel: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ fuel: "" })} aria-label="Retirer le filtre carburant" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {transmission && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {transmission}
-                <button onClick={() => pushFilters({ transmission: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ transmission: "" })} aria-label="Retirer le filtre boîte de vitesses" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {maxKm && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 &lt; {parseInt(maxKm).toLocaleString("fr-FR")} km
-                <button onClick={() => pushFilters({ maxKm: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ maxKm: "" })} aria-label="Retirer le filtre kilométrage" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {minPrice && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 ≥ {parseInt(minPrice).toLocaleString("fr-FR")} €
-                <button onClick={() => pushFilters({ minPrice: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ minPrice: "" })} aria-label="Retirer le filtre prix minimum" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {maxPrice && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 &lt; {parseInt(maxPrice).toLocaleString("fr-FR")} €
-                <button onClick={() => pushFilters({ maxPrice: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ maxPrice: "" })} aria-label="Retirer le filtre prix maximum" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {(minYear || maxYear) && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {minYear && maxYear ? `${minYear} – ${maxYear}` : minYear ? `≥ ${minYear}` : `≤ ${maxYear}`}
-                <button onClick={() => pushFilters({ minYear: "", maxYear: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ minYear: "", maxYear: "" })} aria-label="Retirer le filtre année" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
             {sort && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-600">
                 {SORT_OPTIONS.find((o) => o.value === sort)?.label ?? sort}
-                <button onClick={() => pushFilters({ sort: "" })} className="hover:text-red-500"><X size={10} /></button>
+                <button onClick={() => pushFilters({ sort: "" })} aria-label="Retirer le tri" className="hover:text-red-500"><X size={10} /></button>
               </span>
             )}
           </div>

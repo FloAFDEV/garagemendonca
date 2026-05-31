@@ -98,9 +98,20 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
 	const jsonLdCar = buildVehicleJsonLd(vehicle, vehicleCanonical, displayColor);
 
+	const jsonLdBreadcrumb = {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: [
+			{ "@type": "ListItem", position: 1, name: "Accueil", item: "https://www.garagemendonca.com" },
+			{ "@type": "ListItem", position: 2, name: "Véhicules", item: "https://www.garagemendonca.com/vehicules" },
+			{ "@type": "ListItem", position: 3, name: vehicleName, item: vehicleCanonical },
+		],
+	};
+
 	return (
 		<MainLayout>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdCar).replace(/</g, "\\u003c") }} />
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb).replace(/</g, "\\u003c") }} />
 
 			<div className="bg-[#f8fafc] min-h-screen">
 				<Container className="pt-20 sm:pt-28 pb-28 sm:pb-8">

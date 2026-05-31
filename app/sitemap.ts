@@ -11,6 +11,10 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.garagemendonca.com";
 const GARAGE_ID = getActiveGarageId();
 
+// Date stable par build pour les pages statiques — évite un `lastModified`
+// recalculé à chaque régénération (signal `lastmod` bruité côté Google).
+const BUILD_DATE = new Date();
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	let vehicleEntries: MetadataRoute.Sitemap = [];
 
@@ -29,15 +33,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	}
 
 	return [
-		{ url: BASE_URL,                                lastModified: new Date(), changeFrequency: "weekly",  priority: 1   },
-		{ url: `${BASE_URL}/vehicules`,                 lastModified: new Date(), changeFrequency: "daily",   priority: 0.9 },
-		{ url: `${BASE_URL}/services`,                  lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-		{ url: `${BASE_URL}/contact`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-		{ url: `${BASE_URL}/produit`,                   lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-		{ url: `${BASE_URL}/faq`,                       lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-		{ url: `${BASE_URL}/cgu`,                       lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
-		{ url: `${BASE_URL}/mentions-legales`,          lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
-		{ url: `${BASE_URL}/politique-confidentialite`, lastModified: new Date(), changeFrequency: "yearly",  priority: 0.2 },
+		{ url: BASE_URL,                                lastModified: BUILD_DATE, changeFrequency: "weekly",  priority: 1   },
+		{ url: `${BASE_URL}/vehicules`,                 lastModified: BUILD_DATE, changeFrequency: "daily",   priority: 0.9 },
+		{ url: `${BASE_URL}/services`,                  lastModified: BUILD_DATE, changeFrequency: "monthly", priority: 0.8 },
+		{ url: `${BASE_URL}/contact`,                   lastModified: BUILD_DATE, changeFrequency: "monthly", priority: 0.7 },
+		{ url: `${BASE_URL}/produit`,                   lastModified: BUILD_DATE, changeFrequency: "monthly", priority: 0.6 },
+		{ url: `${BASE_URL}/faq`,                       lastModified: BUILD_DATE, changeFrequency: "monthly", priority: 0.5 },
+		{ url: `${BASE_URL}/cgu`,                       lastModified: BUILD_DATE, changeFrequency: "yearly",  priority: 0.2 },
+		{ url: `${BASE_URL}/mentions-legales`,          lastModified: BUILD_DATE, changeFrequency: "yearly",  priority: 0.2 },
+		{ url: `${BASE_URL}/politique-confidentialite`, lastModified: BUILD_DATE, changeFrequency: "yearly",  priority: 0.2 },
 		...vehicleEntries,
 	];
 }

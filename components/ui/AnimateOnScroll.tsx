@@ -8,6 +8,31 @@ interface Props {
   delay?: number;
 }
 
+// Un seul IntersectionObserver partagé entre toutes les instances
+// (catalogue = N cartes) → réduit le travail main-thread vs 1 observer/carte.
+// threshold/rootMargin identiques à l'implémentation précédente.
+let sharedObserver: IntersectionObserver | null = null;
+const callbacks = new WeakMap<Element, () => void>();
+
+function getSharedObserver(): IntersectionObserver | null {
+  if (typeof IntersectionObserver === "undefined") return null;
+  if (!sharedObserver) {
+    sharedObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            callbacks.get(entry.target)?.();
+            sharedObserver!.unobserve(entry.target);
+            callbacks.delete(entry.target);
+          }
+        }
+      },
+      { threshold: 0.05, rootMargin: "0px 0px 80px 0px" },
+    );
+  }
+  return sharedObserver;
+}
+
 export default function AnimateOnScroll({ children, className = "", delay = 0 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -30,22 +55,19 @@ export default function AnimateOnScroll({ children, className = "", delay = 0 }:
       return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      // threshold bas + rootMargin positif = déclenche 80px AVANT que la card
-      // n'entre dans le viewport → illusion de pré-chargement instantané.
-      // Supprime aussi le flash opacity:0 au retour arrière (les cards
-      // sont déjà "dans la zone" et se déclenchent dès le premier paint).
-      { threshold: 0.05, rootMargin: "0px 0px 80px 0px" }
-    );
+    const observer = getSharedObserver();
+    if (!observer) {
+      // Pas d'IntersectionObserver → afficher directement (fallback).
+      setVisible(true);
+      return;
+    }
 
+    callbacks.set(el, () => setVisible(true));
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.unobserve(el);
+      callbacks.delete(el);
+    };
   }, [reducedMotion]);
 
   return (
