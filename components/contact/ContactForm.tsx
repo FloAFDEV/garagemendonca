@@ -300,7 +300,7 @@ export default function ContactForm({
 						name="phone"
 						type="tel"
 						autoComplete="tel"
-						placeholder="06 12 34 56 78"
+						placeholder="Votre numéro de téléphone"
 						value={form.phone}
 						onChange={handleChange}
 						className="input-field"
