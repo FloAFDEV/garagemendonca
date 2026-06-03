@@ -12,7 +12,6 @@ import Badge from "@/components/ui/Badge";
 import { getLogoSrc } from "@/lib/brandLogos";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { resolveVehicleHref } from "@/lib/utils/slug";
-import VehicleSecondaryBadge, { type VehicleSecondaryStatus } from "@/components/vehicles/VehicleSecondaryBadge";
 
 /* ── Options highlights ─────────────────────────────────────────────────── */
 const HIGHLIGHT_KEYS: (keyof VehicleOptions)[] = [
@@ -78,16 +77,9 @@ function cleanModelText(raw: string, finition?: string | null): string {
 interface VehicleCardProps {
 	vehicle: Vehicle;
 	priority?: boolean;
-	/**
-	 * Badge de statut secondaire (haut-droite), purement présentationnel.
-	 * Optionnel : si absent, aucun badge n'est rendu (comportement inchangé).
-	 * La décision d'affichage appartient au composant parent — aucune logique
-	 * métier n'est introduite ici.
-	 */
-	secondaryStatus?: VehicleSecondaryStatus;
 }
 
-export default function VehicleCard({ vehicle, priority = false, secondaryStatus }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
 	const router = useRouter();
 	const colorLabel = vehicle.color ?? "";
 	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year}${colorLabel ? ` — ${colorLabel}` : ""} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
@@ -177,14 +169,6 @@ export default function VehicleCard({ vehicle, priority = false, secondaryStatus
 							<Star size={8} className="fill-current" aria-hidden="true" />
 							À la une
 						</span>
-					</div>
-				)}
-
-				{/* Badge(s) de statut secondaire — haut-droite, discret.
-				    Rendu uniquement si le parent fournit `secondaryStatus`. */}
-				{secondaryStatus && (
-					<div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-10 flex flex-col items-end gap-1">
-						<VehicleSecondaryBadge status={secondaryStatus} />
 					</div>
 				)}
 
