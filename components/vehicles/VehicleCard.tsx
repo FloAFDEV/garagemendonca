@@ -12,7 +12,6 @@ import Badge from "@/components/ui/Badge";
 import { getLogoSrc } from "@/lib/brandLogos";
 import { getMarketingBadge } from "@/lib/vehicles/helpers";
 import { resolveVehicleHref } from "@/lib/utils/slug";
-import VehicleSecondaryBadge, { type VehicleSecondaryStatus } from "@/components/vehicles/VehicleSecondaryBadge";
 
 /* ── Options highlights ─────────────────────────────────────────────────── */
 const HIGHLIGHT_KEYS: (keyof VehicleOptions)[] = [
@@ -78,16 +77,9 @@ function cleanModelText(raw: string, finition?: string | null): string {
 interface VehicleCardProps {
 	vehicle: Vehicle;
 	priority?: boolean;
-	/**
-	 * Badge de statut secondaire (haut-droite), purement présentationnel.
-	 * Optionnel : si absent, aucun badge n'est rendu (comportement inchangé).
-	 * La décision d'affichage appartient au composant parent — aucune logique
-	 * métier n'est introduite ici.
-	 */
-	secondaryStatus?: VehicleSecondaryStatus;
 }
 
-export default function VehicleCard({ vehicle, priority = false, secondaryStatus }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, priority = false }: VehicleCardProps) {
 	const router = useRouter();
 	const colorLabel = vehicle.color ?? "";
 	const altText = `${vehicle.brand} ${vehicle.model} ${vehicle.year}${colorLabel ? ` — ${colorLabel}` : ""} — ${vehicle.mileage.toLocaleString("fr-FR")} km`;
@@ -180,18 +172,10 @@ export default function VehicleCard({ vehicle, priority = false, secondaryStatus
 					</div>
 				)}
 
-				{/* Badge(s) de statut secondaire — haut-droite, discret.
-				    Rendu uniquement si le parent fournit `secondaryStatus`. */}
-				{secondaryStatus && (
-					<div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 z-10 flex flex-col items-end gap-1">
-						<VehicleSecondaryBadge status={secondaryStatus} />
-					</div>
-				)}
-
 				{marketingBadge && (
-					<div className="absolute bottom-2 left-2 right-2">
-						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm text-white text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md w-full justify-center ${
-							marketingBadge.variant === "arrivage" ? "bg-brand-600/90" : "bg-slate-700/90"
+					<div className="absolute top-2 right-2">
+						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm uppercase text-[10px] sm:text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md ${
+							marketingBadge.variant === "arrivage" ? "bg-amber-600/90 text-white" : "bg-white/85 text-slate-900"
 						}`}>
 							{marketingBadge.label}
 						</span>
