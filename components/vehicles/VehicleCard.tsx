@@ -173,9 +173,9 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 				)}
 
 				{marketingBadge && (
-					<div className="absolute bottom-2 left-2 right-2">
-						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm text-white text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md w-full justify-center ${
-							marketingBadge.variant === "arrivage" ? "bg-brand-600/90" : "bg-slate-700/90"
+					<div className="absolute top-2 right-2">
+						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm uppercase text-[10px] sm:text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md ${
+							marketingBadge.variant === "arrivage" ? "bg-amber-600/90 text-white" : "bg-white/85 text-slate-900"
 						}`}>
 							{marketingBadge.label}
 						</span>
