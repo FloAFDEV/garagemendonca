@@ -6,8 +6,9 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { AdminVehicleRow } from "@/components/admin/AdminVehicleRow";
 import { useAdminTokens } from "@/contexts/AdminThemeContext";
 import { useAdminVehiclesList } from "@/lib/queries/useVehicles";
-import { Vehicle, VehicleStatus } from "@/types";
+import { Vehicle, VehicleStatus, type VehicleCategory } from "@/types";
 import { resolveVehicleHref } from "@/lib/utils/slug";
+import { fetchCategoriesAction } from "@/app/admin/vehicules/actions";
 import {
 	Plus,
 	Search,
@@ -355,12 +356,14 @@ export default function AdminVehiclesPage() {
 	const [filterYear, setFilterYear] = useState(() => ss("admin-vehicles-year", ""));
 	const [filterPriceMax, setFilterPriceMax] = useState(() => ss("admin-vehicles-pricemax", ""));
 	const [filterStatus, setFilterStatus] = useState(() => ss("admin-vehicles-status", ""));
+	const [filterCategory, setFilterCategory] = useState(() => ss("admin-vehicles-category", ""));
 	const [sortBy, setSortBy] = useState<SortKey>(() => ss("admin-vehicles-sort", "date-desc") as SortKey);
 	const [page, setPage] = useState<number>(() => {
 		if (typeof window === "undefined") return 1;
 		return Number(sessionStorage.getItem("admin-vehicles-page")) || 1;
 	});
 	const [showFilters, setShowFilters] = useState(false);
+	const [categories, setCategories] = useState<VehicleCategory[]>([]);
 	const t = useAdminTokens();
 	const isFirstRender = useRef(true);
 	const scrollRestored = useRef(false);
@@ -394,8 +397,9 @@ export default function AdminVehiclesPage() {
 		sessionStorage.setItem("admin-vehicles-year",     filterYear);
 		sessionStorage.setItem("admin-vehicles-pricemax", filterPriceMax);
 		sessionStorage.setItem("admin-vehicles-status",   filterStatus);
+		sessionStorage.setItem("admin-vehicles-category", filterCategory);
 		sessionStorage.setItem("admin-vehicles-sort",     sortBy);
-	}, [page, inputValue, filterBrand, filterYear, filterPriceMax, filterStatus, sortBy]);
+	}, [page, inputValue, filterBrand, filterYear, filterPriceMax, filterStatus, filterCategory, sortBy]);
 
 	// Reset page when filters/search change — skip initial mount to preserve stored page
 	useEffect(() => {
@@ -404,7 +408,7 @@ export default function AdminVehiclesPage() {
 			return;
 		}
 		setPage(1);
-	}, [debouncedSearch, filterBrand, filterYear, filterPriceMax, filterStatus, sortBy]);
+	}, [debouncedSearch, filterBrand, filterYear, filterPriceMax, filterStatus, filterCategory, sortBy]);
 
 	// Restore scroll position once data is loaded
 	useEffect(() => {
@@ -416,10 +420,26 @@ export default function AdminVehiclesPage() {
 		}
 	}, [isLoading]);
 
+	// Catégories du garage — même source que le Front User
+	// (fetchCategoriesAction → vehicleCategoryRepository.getAll).
+	useEffect(() => {
+		fetchCategoriesAction().then(setCategories).catch(() => {});
+	}, []);
+
 	const availableBrands = useMemo(
 		() => Array.from(new Set(vehicles.map((v) => v.brand))).sort(),
 		[vehicles],
 	);
+
+	// Catégories réellement présentes dans les annonces chargées (tous statuts),
+	// calculées sur l'ENSEMBLE des véhicules — pas sur la liste filtrée — comme le Front User.
+	const availableCategories = useMemo(() => {
+		const presentIds = new Set(vehicles.map((v) => v.categoryId).filter(Boolean));
+		return categories.filter((c) => presentIds.has(c.id));
+	}, [vehicles, categories]);
+
+	// Affiché uniquement si ≥2 catégories distinctes présentes (règle identique au Front User).
+	const showCategoryFilter = availableCategories.length > 1;
 
 	const filtered = useMemo(() => {
 		let list = vehicles.filter((v) => {
@@ -435,6 +455,7 @@ export default function AdminVehiclesPage() {
 			if (filterPriceMax && v.price > parseInt(filterPriceMax))
 				return false;
 			if (filterStatus && v.status !== filterStatus) return false;
+			if (filterCategory && v.categoryId !== filterCategory) return false;
 			return true;
 		});
 
@@ -467,6 +488,7 @@ export default function AdminVehiclesPage() {
 		filterYear,
 		filterPriceMax,
 		filterStatus,
+		filterCategory,
 		sortBy,
 	]);
 
@@ -480,7 +502,8 @@ export default function AdminVehiclesPage() {
 		filterBrand ||
 		filterYear ||
 		filterPriceMax ||
-		filterStatus
+		filterStatus ||
+		filterCategory
 	);
 
 	const handleDelete = useCallback((id: string) => {
@@ -612,6 +635,7 @@ export default function AdminVehiclesPage() {
 										filterYear,
 										filterPriceMax,
 										filterStatus,
+										filterCategory,
 									].filter(Boolean).length
 								}
 							</span>
@@ -725,6 +749,35 @@ export default function AdminVehiclesPage() {
 								<option value="sold">Vendu</option>
 							</select>
 						</div>
+						{showCategoryFilter && (
+							<div>
+								<label
+									htmlFor="admin-filter-category"
+									className={clsx(
+										"text-xs mb-1 block",
+										t.txtMuted,
+									)}
+								>
+									Catégorie
+								</label>
+								<select
+									id="admin-filter-category"
+									name="filterCategory"
+									value={filterCategory}
+									onChange={(e) =>
+										setFilterCategory(e.target.value)
+									}
+									className={clsx(selectClass, "w-full")}
+								>
+									<option value="">Toutes</option>
+									{availableCategories.map((c) => (
+										<option key={c.id} value={c.id}>
+											{c.label}
+										</option>
+									))}
+								</select>
+							</div>
+						)}
 						<div className="col-span-2 sm:col-span-4 flex items-center justify-between pt-1">
 							<div>
 								<label
@@ -769,6 +822,7 @@ export default function AdminVehiclesPage() {
 										setFilterYear("");
 										setFilterPriceMax("");
 										setFilterStatus("");
+										setFilterCategory("");
 									}}
 									className={clsx(
 										"text-xs px-3 py-1.5 rounded-xl border transition-colors",
