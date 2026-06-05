@@ -81,6 +81,36 @@ export default function Hero() {
 							</span>
 						</div>
 
+						{/* Badge Top Garage */}
+						{/* Badge Top Garage — lien fiche officielle */}
+						<div className="mb-5 animate-fade-in">
+							<a
+								href="https://garage.top-garage.fr/fr/france-FR/CUST-001176/garage-mendonca/details"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="group relative inline-flex items-center gap-2 bg-white/08 border border-white/15 rounded-full px-3 py-1.5 hover:bg-white/14 hover:border-white/30 hover:scale-[1.03] active:scale-[0.99] transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+								aria-label="Voir la fiche officielle Top Garage (nouvel onglet)"
+							>
+								<Award
+									size={12}
+									className="text-brand-400 flex-shrink-0"
+									aria-hidden="true"
+								/>
+								<span className="text-[11px] font-light text-white/80">
+									Membre du réseau{" "}
+									<strong className="font-medium text-white">
+										Top Garage
+									</strong>
+								</span>
+								<span
+									role="tooltip"
+									className="absolute bottom-full left-0 mb-2 w-56 bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-300 font-light shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-visible:opacity-100 group-focus-visible:visible transition-all duration-200 pointer-events-none z-20"
+								>
+									Voir la fiche officielle Top Garage
+								</span>
+							</a>
+						</div>
+
 						{/* H1
 						  text-4xl             → mobile  (375px) ~36px
 						  md:text-5xl          → laptop  (768px) ~48px  — réduit de 60→48 pour 1366×768

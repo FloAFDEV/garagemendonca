@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 		template: "%s | Garage Auto Mendonca — Drémil-Lafage",
 	},
 	description:
-		"Garage auto à Drémil-Lafage (31) — Mécanique, carrosserie, diagnostic et vente VO depuis 2003. Spécialiste japonaises & boîte automatique. Prix transparents, 9 véhicules de prêt. ☎ 05 32 00 20 38.",
+		"Garage auto à Drémil-Lafage (31) — Mécanique, carrosserie, diagnostic et vente VO depuis 2003. Membre du réseau Top Garage. Spécialiste japonaises & boîte automatique. Prix transparents, 9 véhicules de prêt. ☎ 05 32 00 20 38.",
 	keywords: [
 		"garage automobile Drémil-Lafage",
 		"garagiste Toulouse",
@@ -51,12 +51,15 @@ export const metadata: Metadata = {
 		"devis gratuit mécanique",
 		"contrôle technique",
 		"filtre à particules DPF",
+		"garage Top Garage Drémil-Lafage",
+		"garage réseau Top Garage Toulouse Est",
+		"entretien voiture réseau Top Garage",
 	],
 	// app/icon.png + app/apple-icon.png auto-détectés par Next.js App Router
 	openGraph: {
 		title: "Garage Auto Mendonca — Spécialiste automobile Drémil-Lafage",
 		description:
-			"Garage auto à Drémil-Lafage (31) depuis 2003. Mécanique, carrosserie, vente VO. Spécialiste japonaises · boîte automatique. Expertise technique certifiée.",
+			"Garage auto à Drémil-Lafage (31) depuis 2003. Membre du réseau Top Garage. Mécanique, carrosserie, vente VO. Spécialiste japonaises · boîte automatique.",
 		type: "website",
 		locale: "fr_FR",
 		images: [{ url: "/images/og-image.webp", width: 1200, height: 630, alt: "Garage Auto Mendonca — Drémil-Lafage" }],
@@ -120,6 +123,11 @@ const jsonLd = {
 		{ "@type": "City", name: "Toulouse" },
 		{ "@type": "AdministrativeArea", name: "Haute-Garonne" },
 	],
+	memberOf: {
+		"@type": "Organization",
+		name: "Top Garage",
+		url: "https://garage.top-garage.fr/fr/france-FR/CUST-001176/garage-mendonca/details",
+	},
 	hasOfferCatalog: {
 		"@type": "OfferCatalog",
 		name: "Services automobiles",

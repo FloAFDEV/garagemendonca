@@ -10,7 +10,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { unstable_cache } from "next/cache";
-import { Phone, Mail, MapPin, Clock, ExternalLink, CalendarOff } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, ExternalLink, CalendarOff, Award } from "lucide-react";
 import Container from "@/components/ui/Container";
 import CookieSettingsButton from "@/components/cookies/CookieSettingsButton";
 import { garageRepository } from "@/lib/repositories";
@@ -151,13 +151,28 @@ export default async function Footer() {
 							</div>
 						</Link>
 
-						<p className="font-light text-sm leading-relaxed text-slate-300 mb-5">
+						<p className="font-light text-sm leading-relaxed text-slate-300 mb-4">
 							Spécialiste des voitures japonaises et boîtes
 							automatiques depuis 2003, le Garage Mendonca
 							accueille jeunes conducteurs, seniors et personnes à
 							mobilité réduite. Nous parlons portugais et
 							francais.
 						</p>
+
+						<a
+							href="https://garage.top-garage.fr/fr/france-FR/CUST-001176/garage-mendonca/details"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-2 text-xs font-light text-slate-400 hover:text-slate-300 transition-colors group"
+							aria-label="Garage Mendonca — Membre du réseau Top Garage"
+						>
+							<Award
+								size={12}
+								className="text-brand-500 flex-shrink-0 group-hover:text-brand-400 transition-colors"
+								aria-hidden="true"
+							/>
+							<span>Membre du réseau Top Garage</span>
+						</a>
 					</div>
 
 					{/* Colonne 2 — Services + Nav */}
