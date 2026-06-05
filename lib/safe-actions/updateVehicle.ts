@@ -30,7 +30,7 @@ export async function updateVehicleAction(
     const vehicle = await vehicleDb.update(id, row);
     revalidatePath("/vehicules", "layout"); // invalide /vehicules + tous les /vehicules/[slug]
     revalidatePath("/admin/vehicules");
-    revalidateTag("vehicle-catalogue"); // invalide countPublicCached + listPaginatedCached
+    revalidateTag("vehicle-catalogue", {}); // invalide countPublicCached + listPaginatedCached
     return { data: vehicle };
   } catch (err) {
     return { error: parseSupabaseError(err) };

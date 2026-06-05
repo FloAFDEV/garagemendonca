@@ -61,7 +61,7 @@ export async function createVehicleAction(
     const vehicle = await vehicleDb.create(row);
     revalidatePath("/vehicules");
     revalidatePath("/admin/vehicules");
-    revalidateTag("vehicle-catalogue"); // invalide countPublicCached + listPaginatedCached
+    revalidateTag("vehicle-catalogue", {}); // invalide countPublicCached + listPaginatedCached
     return { data: vehicle };
   } catch (err) {
     return { error: parseSupabaseError(err) };
