@@ -29,12 +29,13 @@ const stats = [
 export default function Hero() {
 	return (
 		/*
-		  h-[100svh]   → hauteur exacte du viewport visible (safe viewport height)
-		               Exclut la toolbar Safari sur iOS. Pas de double-scroll.
-		  min-h-[580px] → plancher pour petits écrans / clavier ouvert
-		  max-h-[920px] → plafond ultrawide (évite un hero de 2000px sur 4K)
+		  min-h-[100svh] → au moins la hauteur du viewport visible (safe viewport
+		                 height — exclut la toolbar Safari iOS). Sur écran court
+		                 (laptop paysage), le hero GRANDIT au lieu de rogner le
+		                 haut du contenu (eyebrow + badge), qui passait sous le header.
+		  max-h-[920px]  → plafond ultrawide (évite un hero de 2000px sur 4K)
 		*/
-		<section className="relative flex flex-col overflow-hidden bg-[#0f172a] h-[100svh] min-h-[580px] max-h-[920px]">
+		<section className="relative flex flex-col overflow-hidden bg-[#0f172a] min-h-[100svh] max-h-[920px]">
 			{/* Image hero avec parallaxe — client component */}
 			<div className="absolute inset-0 z-0 overflow-hidden">
 				<HeroParallax
