@@ -66,7 +66,7 @@ function revalidateAll(_id?: string) {
 	revalidatePath("/vehicules", "layout");      // /vehicules + /vehicules/[slug] + /vehicules/page/[n]
 	revalidatePath("/occasions", "layout");      // /occasions + /occasions/[cat] + /occasions/[cat]/[slug]
 	revalidatePath("/", "page");                 // home (featured vehicles)
-	revalidateTag("vehicle-catalogue");          // invalide countPublicCached + listPaginatedCached
+	revalidateTag("vehicle-catalogue", {});      // invalide countPublicCached + listPaginatedCached
 }
 
 function toDbRow(input: VehicleUpdateInput): Record<string, unknown> {
