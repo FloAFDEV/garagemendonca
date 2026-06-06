@@ -174,7 +174,46 @@ export interface UIMutationResult {
 import type { Vehicle, Message, Garage, ContactReply } from "./index";
 
 const FR_NUMBER = new Intl.NumberFormat("fr-FR");
-const FR_DATE   = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+
+// ── Dates des listes de messages admin : format contextuel + heure ───
+// Aujourd'hui (02/08/2026) • 14:37 / Hier (01/08/2026) • 09:12 / 02/08/2026 • 14:37
+// Fuseau France pour une lecture cohérente côté admin. 100 % natif (Intl), aucune lib.
+const MSG_DATE = new Intl.DateTimeFormat("fr-FR", {
+  day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Paris",
+});
+const MSG_TIME = new Intl.DateTimeFormat("fr-FR", {
+  hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Paris",
+});
+// Clé de jour calendaire (YYYY-MM-DD) en fuseau Europe/Paris pour comparer "aujourd'hui"/"hier".
+const MSG_DAY_KEY = new Intl.DateTimeFormat("en-CA", {
+  year: "numeric", month: "2-digit", day: "2-digit", timeZone: "Europe/Paris",
+});
+
+/**
+ * Formatage contextuel des dates pour les listes de messages admin
+ * (inbox / conversation / réponses). Utilise uniquement le timestamp fourni —
+ * aucune donnée ni logique métier modifiée.
+ */
+export function formatMessageDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(d.getTime())) return "";
+
+  const datePart = MSG_DATE.format(d); // 02/08/2026
+  const tp = MSG_TIME.formatToParts(d);
+  const hh = tp.find((p) => p.type === "hour")?.value ?? "00";
+  const mm = tp.find((p) => p.type === "minute")?.value ?? "00";
+  const timePart = `${hh}:${mm}`; // 14:37
+
+  const dayKey = MSG_DAY_KEY.format(d);
+  const now = new Date();
+  if (dayKey === MSG_DAY_KEY.format(now)) {
+    return `Aujourd'hui (${datePart}) • ${timePart}`;
+  }
+  if (dayKey === MSG_DAY_KEY.format(new Date(now.getTime() - 86_400_000))) {
+    return `Hier (${datePart}) • ${timePart}`;
+  }
+  return `${datePart} • ${timePart}`;
+}
 
 export function toUIVehicle(v: Vehicle): UIVehicle {
   return {
@@ -229,7 +268,7 @@ export function toUIMessage(m: Message, replies?: ContactReply[]): UIMessage {
     isUnread:     !m.is_read,
     admin_notes:  m.admin_notes,
     answered_at:  m.answered_at,
-    formattedDate: FR_DATE.format(new Date(m.created_at)),
+    formattedDate: formatMessageDate(m.created_at),
     created_at:   m.created_at,
     updated_at:   m.updated_at,
     replies:      replies?.map(toUIContactReply),
@@ -243,7 +282,7 @@ export function toUIContactReply(r: ContactReply): UIContactReply {
     sender_type:  r.sender_type,
     content:      r.content,
     created_at:   r.created_at,
-    formattedDate: FR_DATE.format(new Date(r.created_at)),
+    formattedDate: formatMessageDate(r.created_at),
   };
 }
 
