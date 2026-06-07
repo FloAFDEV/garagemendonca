@@ -63,13 +63,17 @@ export default function Hero() {
 			{/* Contenu — min-h-0 permet la compression flex sans overflow */}
 			<div className="relative flex-1 flex items-center min-h-0">
 				{/*
-				  pt : compense navbar fixe + topbar (md+, visible si non scrollé) + bannière (~88px avec image)
-				  Mobile : bannière 38px (pas d'image) + nav 64px + 30px air  = 132px
-				  sm     : bannière 88px (image 64px + py-3) + nav 64px + 12px = 164px
-				  md     : bannière 88px + topbar 32px + nav 72px + 12px air   = 204px
-				  lg     : idem md                                              = 204px
+				  pt : calculé dynamiquement via --header-h (mis à jour par ResizeObserver dans Header.tsx)
+				  Fallback SSR : 200px (couvre le cas bannière visible)
+				  + 20px d'air visuel
 				*/}
-				<Container className="pt-[132px] sm:pt-[164px] md:pt-[224px] lg:pt-[224px] pb-6 md:pb-8">
+				<Container
+					className="pb-6 md:pb-8"
+					style={{
+						paddingTop:
+							"calc(var(--header-h, 200px) + 20px)",
+					}}
+				>
 					<div className="max-w-2xl xl:max-w-3xl">
 						{/* Eyebrow */}
 						<div className="flex items-center gap-3 mb-5 animate-fade-in">

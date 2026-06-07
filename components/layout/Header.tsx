@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, Phone } from "lucide-react";
@@ -20,6 +20,21 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 	const pathname = usePathname();
+	const headerRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		const el = headerRef.current;
+		if (!el) return;
+		const update = () =>
+			document.documentElement.style.setProperty(
+				"--header-h",
+				`${el.offsetHeight}px`,
+			);
+		update();
+		const ro = new ResizeObserver(update);
+		ro.observe(el);
+		return () => ro.disconnect();
+	}, []);
 
 	const isLightPage =
 		pathname === "/vehicules" ||
@@ -41,6 +56,7 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 
 	return (
 		<header
+			ref={headerRef}
 			className={clsx(
 				"fixed top-0 left-0 right-0 z-50 transition-all duration-300",
 				isOpaque
