@@ -197,11 +197,12 @@ function MessageListItem({
 							/>
 						)}
 						<span className={clsx(
-							"text-xs truncate",
+							"text-xs truncate flex-1 min-w-0",
 							isDark ? "text-slate-400" : "text-slate-500",
 						)}>
 							{message.subject ?? "Sans sujet"}
 						</span>
+						<StatusBadge status={message.status} />
 					</div>
 
 					{/* Véhicule concerné — visible directement dans la liste */}
@@ -487,7 +488,7 @@ function MessageDetail({
 							className={clsx(
 								"px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors",
 								displayed.status === s
-									? "border-brand-500 text-brand-600 bg-brand-500/10"
+									? STATUS_LABELS[s]?.color
 									: isDark
 										? "border-dark-700 text-slate-400 hover:border-dark-600 hover:text-slate-300"
 										: "border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700",
