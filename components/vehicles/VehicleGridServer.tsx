@@ -77,7 +77,7 @@ export async function VehicleGridServer({
  */
 function CardSkeleton() {
   return (
-    <div className="flex flex-col h-full bg-white rounded-xl border border-black/[0.07] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_14px_rgba(0,0,0,0.06)] animate-pulse">
+    <div className="flex flex-col h-full bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-card animate-pulse">
       {/* Image — même ratio que VehicleCard */}
       <div className="aspect-[3/2] sm:aspect-[4/3] bg-slate-200" />
 

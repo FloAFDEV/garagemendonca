@@ -115,7 +115,7 @@ export default function Testimonials() {
 							i,
 						) => (
 							<AnimateOnScroll key={name} delay={i * 100}>
-								<div className="relative bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.07)] hover:-translate-y-1 transition-all duration-300 h-full">
+								<div className="relative bg-white rounded-2xl border border-slate-200 p-5 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-transform duration-200 h-full">
 									<Quote
 										size={24}
 										className="text-brand-100 fill-current absolute top-5 right-6"

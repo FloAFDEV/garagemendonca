@@ -35,7 +35,7 @@ export default function MapContact() {
 						className="lg:col-span-2 flex flex-col gap-5"
 					>
 						{/* Adresse */}
-						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow duration-300">
+						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-transform duration-200">
 							<div className="flex items-start gap-4">
 								<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
 									<MapPin
@@ -66,7 +66,7 @@ export default function MapContact() {
 						</div>
 
 						{/* Téléphone & Email */}
-						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow duration-300">
+						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-transform duration-200">
 							<div className="space-y-4">
 								<div className="flex items-center gap-4">
 									<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -111,7 +111,7 @@ export default function MapContact() {
 						</div>
 
 						{/* Horaires */}
-						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow duration-300">
+						<div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-transform duration-200">
 							<div className="flex items-center gap-3 mb-4">
 								<div className="w-10 h-10 bg-brand-50 rounded-xl flex items-center justify-center">
 									<Clock

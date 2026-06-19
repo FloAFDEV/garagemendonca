@@ -129,7 +129,7 @@ export default function ContactForm({
 
 	if (sent) {
 		return (
-			<div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
+			<div className="bg-white rounded-2xl border border-slate-200 shadow-card p-12 text-center">
 				<div
 					className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5"
 					aria-hidden="true"
@@ -171,7 +171,7 @@ export default function ContactForm({
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-5"
+			className="bg-white rounded-2xl border border-slate-200 shadow-card p-8 space-y-5"
 			noValidate
 			aria-label="Formulaire de contact"
 		>

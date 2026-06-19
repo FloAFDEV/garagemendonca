@@ -142,7 +142,7 @@ export default async function ServicesOverview() {
 							<AnimateOnScroll key={service.id} delay={i * 90}>
 								<Link
 									href={`/services#${service.id}`}
-									className="group relative bg-white rounded-xl border border-slate-200 p-6 transition-all duration-300 hover:shadow-[0_6px_24px_rgba(0,0,0,0.07)] hover:-translate-y-1 overflow-hidden flex flex-col h-full"
+									className="group relative bg-white rounded-2xl border border-slate-200 p-6 shadow-card transition-transform duration-200 hover:shadow-card-hover hover:-translate-y-1 overflow-hidden flex flex-col h-full"
 								>
 									{/* Filigrane numéro — décoratif */}
 									<span
@@ -154,7 +154,7 @@ export default async function ServicesOverview() {
 
 									<div className="relative z-10 flex flex-col h-full">
 										{/* Icône */}
-										<div className="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center mb-4 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-all duration-200 flex-shrink-0">
+										<div className="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center mb-4 ring-1 ring-brand-100 group-hover:bg-brand-100 transition-colors duration-200 flex-shrink-0">
 											<Icon
 												size={16}
 												className="text-brand-500"

@@ -115,7 +115,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 			prefetch={false}
 			onMouseEnter={() => router.prefetch(href)}
 			onTouchStart={() => router.prefetch(href)}
-			className="group flex flex-col h-full bg-white rounded-xl border border-black/[0.07] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_14px_rgba(0,0,0,0.06)] transition-all duration-200 hover:shadow-[0_6px_14px_rgba(0,0,0,0.07),0_18px_38px_rgba(0,0,0,0.09)] hover:-translate-y-[5px] focus-visible:ring-2 focus-visible:ring-brand-400"
+			className="group flex flex-col h-full bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-card transition-transform duration-200 hover:shadow-card-hover hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-brand-400"
 			aria-label={`Voir le détail : ${vehicle.brand} ${vehicle.model} ${vehicle.year} — ${priceLabel}`}
 		>
 			{/* ── Image ──────────────────────────────────────────────────────────────
@@ -130,7 +130,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 						sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
 						priority={priority}
 						quality={75}
-						className={`transition-all duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
+						className={`transition-transform duration-500 ${vehicle.status === "sold" ? "grayscale" : "group-hover:scale-105"}`}
 					/>
 				) : marketingBadge?.variant === "arrivage" ? (
 					<Image
