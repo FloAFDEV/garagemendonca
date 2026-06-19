@@ -298,7 +298,7 @@ export default async function Footer() {
 							<div className="flex items-start gap-2 mb-4 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2.5">
 								<CalendarOff size={13} className="text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
 								<div>
-									<p className="text-amber-300 text-xs font-semibold leading-snug">
+									<p className="text-amber-300 text-xs font-medium leading-snug">
 										Fermeture exceptionnelle
 									</p>
 									{closure!.message && (

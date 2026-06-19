@@ -307,7 +307,7 @@ const SearchOverlay = memo(function SearchOverlay({
                                   <p className="text-sm font-medium text-slate-800 truncate">
                                     {v.brand} {v.model}
                                     {v.finition && (
-                                      <span className="text-brand-600 font-semibold ml-1">
+                                      <span className="text-brand-600 font-medium ml-1">
                                         {v.finition}
                                       </span>
                                     )}
@@ -328,7 +328,7 @@ const SearchOverlay = memo(function SearchOverlay({
                                       Vendue
                                     </span>
                                   ) : (
-                                    <span className="text-sm font-semibold text-brand-600">
+                                    <span className="text-sm font-medium text-brand-600">
                                       {v.price.toLocaleString("fr-FR")} €
                                     </span>
                                   )}

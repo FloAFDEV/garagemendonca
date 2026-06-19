@@ -174,7 +174,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 
 				{marketingBadge && (
 					<div className="absolute top-2 right-2">
-						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm uppercase text-[10px] sm:text-[11px] font-semibold tracking-wide px-2.5 py-1 rounded-lg shadow-md ${
+						<span className={`inline-flex items-center gap-1.5 backdrop-blur-sm uppercase text-[10px] sm:text-[11px] font-medium tracking-wide px-2.5 py-1 rounded-lg shadow-md ${
 							marketingBadge.variant === "arrivage" ? "bg-amber-600/90 text-white" : "bg-white/85 text-slate-900"
 						}`}>
 							{marketingBadge.label}
@@ -190,12 +190,12 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 				    Structure strictement identique sur toutes les annonces.            */}
 				<div className="sm:hidden flex flex-col gap-0.5 px-2.5 pt-2.5 pb-2">
 					{/* Ligne 1 : [Marque Modèle] — titre seul, sans badge */}
-					<p className="text-[12px] font-semibold text-[#0f172a] leading-tight truncate">
+					<p className="text-[12px] font-medium text-[#0f172a] leading-tight truncate">
 						{vehicle.brand} {cleanModelText(vehicle.model, finition)}
 					</p>
 					{/* Ligne 2 : Finition — même taille/graisse que le titre, rouge bordeaux */}
 					{finition && (
-						<p className="text-[12px] font-semibold text-brand-600 leading-tight truncate">
+						<p className="text-[12px] font-medium text-brand-600 leading-tight truncate">
 							{finition}
 						</p>
 					)}
@@ -203,9 +203,9 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 					    Si manuelle : span invisible pour préserver la hauteur de ligne
 					    et garantir l'alignement du prix dans la grille.              */}
 					<span
-						className={`self-start whitespace-nowrap text-[9px] font-semibold rounded-full px-1.5 py-0.5 leading-none ${
+						className={`self-start whitespace-nowrap text-[9px] font-medium rounded-full px-1.5 py-0.5 leading-none ${
 							vehicle.transmission === "Automatique"
-								? "text-[#e11d48] bg-[#fff1f2] border border-[#fecdd3]"
+								? "text-brand-500 bg-brand-50 border border-brand-200"
 								: "invisible"
 						}`}
 						aria-label={vehicle.transmission === "Automatique" ? "Boîte automatique" : undefined}
@@ -214,7 +214,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 						Boîte auto
 					</span>
 					{/* Ligne 4 : Prix */}
-					<span className="font-bold text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
+					<span className="font-medium text-[#0f172a] text-sm leading-tight" aria-label={priceLabel}>
 						{vehicle.price.toLocaleString("fr-FR")} €
 					</span>
 					{/* Ligne 5 : Année · km */}
@@ -327,7 +327,7 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
 					{/* Prix + CTA */}
 					<div className="mt-auto pt-2 border-t border-slate-100 space-y-2">
 						<span
-							className="block text-left font-heading font-semibold text-[#0f172a] text-lg leading-tight"
+							className="block text-left font-heading font-medium text-[#0f172a] text-lg leading-tight"
 							aria-label={priceLabel}
 						>
 							{vehicle.price.toLocaleString("fr-FR")} €

@@ -261,7 +261,7 @@ export default function VehicleContactForm({
 						réessayez, ou appelez-nous directement au{" "}
 						<a
 							href="tel:0532002038"
-							className="font-semibold underline"
+							className="font-medium underline"
 						>
 							05 32 00 20 38
 						</a>
@@ -274,7 +274,7 @@ export default function VehicleContactForm({
 			<button
 				type="submit"
 				disabled={mutation.isPending}
-				className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold text-base rounded-xl transition-all shadow-md hover:shadow-lg hover:shadow-brand-500/25"
+				className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-brand-600 hover:bg-brand-700 active:scale-[0.99] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium text-base rounded-xl transition-all shadow-md hover:shadow-lg hover:shadow-brand-500/25"
 			>
 				{mutation.isPending ? (
 					<>

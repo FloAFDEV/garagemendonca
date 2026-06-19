@@ -152,7 +152,7 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 										"font-normal px-4 py-3 rounded-lg transition-all duration-200 text-sm tracking-wide",
 										isOpaque
 											? "text-[#475569] hover:text-[#0f172a] hover:bg-slate-50"
-											: "text-white/80 hover:text-white hover:bg-white/8",
+											: "text-white/80 hover:text-white hover:bg-white/10",
 									)}
 								>
 									{link.label}

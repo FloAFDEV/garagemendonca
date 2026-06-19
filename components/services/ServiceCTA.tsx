@@ -22,7 +22,7 @@ export default function ServiceCTA({ cta_label, cta_url, phone }: Props) {
 			<div className="flex flex-col sm:flex-row items-center justify-center gap-3">
 				<a
 					href={phoneHref}
-					className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-600 text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm"
+					className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white text-brand-600 text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm"
 				>
 					<Phone size={15} aria-hidden="true" />
 					{phone}

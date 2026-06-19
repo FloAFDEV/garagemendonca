@@ -59,7 +59,7 @@ export default function VehicleDetailHeader({
 						{(() => {
 							if (!marketingBadge) return null;
 							return (
-								<span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full ${marketingBadge.variant === "arrivage" ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"}`}>
+								<span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full ${marketingBadge.variant === "arrivage" ? "bg-amber-100 text-amber-700" : "bg-slate-200 text-slate-600"}`}>
 									{marketingBadge.label}
 								</span>
 							);

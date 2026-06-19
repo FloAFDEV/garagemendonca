@@ -541,7 +541,7 @@ export default function VehicleFiltersBar({
         {/* Compteur résultats — UNIQUEMENT si filtre ou recherche actif */}
         {hasFilters && (
           <p className="text-sm text-slate-700">
-            <span className="font-semibold text-brand-600">{totalCount}</span>{" "}
+            <span className="font-medium text-brand-600">{totalCount}</span>{" "}
             résultat{totalCount !== 1 ? "s" : ""}
           </p>
         )}
@@ -718,7 +718,7 @@ export default function VehicleFiltersBar({
         <div className="flex items-center justify-between gap-4 flex-wrap">
           {hasFilters ? (
             <p className="text-sm font-normal text-slate-800 uppercase tracking-wide">
-              <span className="text-brand-600 text-lg font-semibold">{totalCount}</span>{" "}
+              <span className="text-brand-600 text-lg font-medium">{totalCount}</span>{" "}
               résultat{totalCount !== 1 ? "s" : ""}
             </p>
           ) : (

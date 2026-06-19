@@ -63,7 +63,7 @@ export default async function OccasionsPage() {
 
 			{/* ── Hero ── */}
 			<section className="bg-[#0f172a] pt-24 pb-14 relative overflow-hidden">
-				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
 				<Container className="relative">
 					<nav aria-label="Fil d'Ariane" className="mb-6">
 						<ol className="flex items-center gap-2 text-xs text-slate-400">

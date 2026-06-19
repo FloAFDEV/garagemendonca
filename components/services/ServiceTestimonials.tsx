@@ -60,7 +60,7 @@ export default function ServiceTestimonials({ testimonials }: Props) {
 							{t.content}
 						</p>
 						<div className="mt-auto pt-2 border-t border-slate-100">
-							<p className="text-xs font-semibold text-slate-900">
+							<p className="text-xs font-medium text-slate-900">
 								{t.author}
 							</p>
 							<p className="text-[11px] text-slate-400 mt-0.5">

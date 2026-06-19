@@ -154,7 +154,7 @@ export default async function ServicesPage() {
 									<FileCheck2 size={17} className="text-blue-600" aria-hidden="true" />
 								</div>
 								<div>
-									<h3 className="font-heading font-semibold text-slate-900 text-sm leading-snug">
+									<h3 className="font-heading font-medium text-slate-900 text-sm leading-snug">
 										{QUALITY_CONTROL.sections[0].title}
 									</h3>
 									<p className="text-slate-500 text-xs leading-snug mt-0.5">
@@ -179,7 +179,7 @@ export default async function ServicesPage() {
 									<BadgeCheck size={17} className="text-brand-600" aria-hidden="true" />
 								</div>
 								<div>
-									<h3 className="font-heading font-semibold text-slate-900 text-sm leading-snug">
+									<h3 className="font-heading font-medium text-slate-900 text-sm leading-snug">
 										{QUALITY_CONTROL.sections[1].title}
 									</h3>
 									<p className="text-slate-500 text-xs leading-snug mt-0.5">

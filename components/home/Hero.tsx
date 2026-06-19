@@ -46,12 +46,12 @@ export default function Hero() {
 
 			{/* Gradient L→R : protège la colonne texte gauche sur desktop */}
 			<div
-				className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/50 to-black/10 z-1"
+				className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-black/10 z-1"
 				aria-hidden="true"
 			/>
 			{/* Couche plate : sécurité contraste globale */}
 			<div
-				className="absolute inset-0 bg-black/28 z-1"
+				className="absolute inset-0 bg-black/30 z-1"
 				aria-hidden="true"
 			/>
 			{/* Overlay mobile renforcé */}
@@ -93,7 +93,7 @@ export default function Hero() {
 								href="https://garage.top-garage.fr/fr/france-FR/CUST-001176/garage-mendonca/details"
 								target="_blank"
 								rel="noopener noreferrer"
-								className="group relative inline-flex items-center gap-2 bg-white/08 border border-white/15 rounded-full px-3 py-1.5 hover:bg-white/14 hover:border-white/30 hover:scale-[1.03] active:scale-[0.99] transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+								className="group relative inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-3 py-1.5 hover:bg-white/15 hover:border-white/30 hover:scale-[1.03] active:scale-[0.99] transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
 								aria-label="Voir la fiche officielle Top Garage (nouvel onglet)"
 							>
 								<Award
@@ -176,7 +176,7 @@ export default function Hero() {
 						</div>
 
 						{/* Stats — 3 items → grid-cols-3 (l'original avait grid-cols-4, col vide) */}
-						<div className="grid grid-cols-3 gap-3 sm:gap-4 pt-5 border-t border-white/12 animate-fade-in text-white">
+						<div className="grid grid-cols-3 gap-3 sm:gap-4 pt-5 border-t border-white/10 animate-fade-in text-white">
 							{stats.map(({ value, label }) => (
 								<div
 									key={label}
@@ -217,7 +217,7 @@ export default function Hero() {
 				{trustBadges.map(({ Icon, text }) => (
 					<div
 						key={text}
-						className="bg-white/05 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-lg"
+						className="bg-white/5 backdrop-blur-sm border border-white/15 rounded-xl px-4 py-3 flex items-center gap-3 text-white text-sm shadow-lg"
 					>
 						<Icon
 							size={15}

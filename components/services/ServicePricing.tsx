@@ -24,7 +24,7 @@ export default function ServicePricingBlock({ pricing }: Props) {
 							{item.label}
 						</span>
 						<div className="flex items-center gap-2 flex-wrap">
-							<span className="text-sm font-semibold text-slate-900">
+							<span className="text-sm font-medium text-slate-900">
 								{item.price}
 							</span>
 							{isSurDevis(item.price) && (

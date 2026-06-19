@@ -116,7 +116,7 @@ export default async function ProduitPage() {
 			{/* ── Hero ── */}
 			<section className="relative bg-[#0f172a] pt-36 pb-24 overflow-hidden">
 				<div
-					className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/8 rounded-full blur-3xl pointer-events-none"
+					className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-600/10 rounded-full blur-3xl pointer-events-none"
 					aria-hidden="true"
 				/>
 				<Container className="relative">

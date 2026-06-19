@@ -414,7 +414,7 @@ export default function ContactForm({
 						réessayez, ou appelez-nous directement au{" "}
 						<a
 							href="tel:0532002038"
-							className="font-semibold underline"
+							className="font-medium underline"
 						>
 							05 32 00 20 38
 						</a>

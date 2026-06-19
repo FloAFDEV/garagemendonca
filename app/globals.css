@@ -32,7 +32,7 @@
 	}
 
 	:focus-visible {
-		outline: 2px solid #e11d48;
+		@apply outline outline-2 outline-brand-500;
 		outline-offset: 3px;
 		border-radius: 4px;
 	}
@@ -45,7 +45,7 @@
 	/* BUTTON PRIMARY (ROUGE) */
 	.btn-primary {
 		@apply inline-flex items-center justify-center gap-2
-		bg-[#e11d48] hover:bg-[#be123c] active:bg-[#9f1239]
+		bg-brand-500 hover:bg-brand-600 active:bg-brand-700
 		text-white font-medium px-5 py-2.5 rounded-lg
 		transition-all duration-200
 		hover:-translate-y-[2px] active:translate-y-0;
@@ -97,17 +97,17 @@
 
 	/* BRAND ACCENT (ROUGE) */
 	.text-brand {
-		color: #e11d48;
+		@apply text-brand-500;
 	}
 
 	.bg-brand {
-		background-color: #e11d48;
+		@apply bg-brand-500;
 	}
 
 	/* INPUT */
 	.input-field {
 		@apply w-full px-4 py-2.5 rounded-lg border border-slate-200
-		focus:border-[#e11d48] focus:ring-2 focus:ring-[#e11d48]/20
+		focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
 		bg-white text-[#0f172a];
 	}
 
@@ -198,11 +198,11 @@
 
 /* ACTIONS (ROUGE) */
 [data-admin-theme="light"] .focus\:border-brand-500:focus {
-	border-color: #e11d48;
+	border-color: #c8102e; /* brand-500 — identité rouge unique */
 }
 
 [data-admin-theme="light"] .bg-brand-500 {
-	background-color: #e11d48;
+	background-color: #c8102e; /* brand-500 — identité rouge unique */
 }
 
 /* INPUTS ADMIN */
@@ -221,5 +221,5 @@
 
 /* BADGE ACCENT ADMIN */
 [data-admin-theme="light"] .bg-dark-600\/20 {
-	background-color: rgba(225, 29, 72, 0.08);
+	background-color: rgba(200, 16, 46, 0.08); /* brand-500 #c8102e — identité rouge unique */
 }
