@@ -95,12 +95,12 @@ export default function Header({ banner }: { banner?: React.ReactNode }) {
 							Lun–Ven : 08h–12h / 14h–19h
 						</span>
 					</span>
-					<a
-						href="mailto:contact@garagemendonca.com"
+					<Link
+						href="/contact"
 						className="font-light hover:text-slate-300 transition-colors"
 					>
-						contact@garagemendonca.com
-					</a>
+						Nous contacter
+					</Link>
 				</Container>
 			</div>
 

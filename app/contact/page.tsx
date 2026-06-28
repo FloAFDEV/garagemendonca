@@ -40,7 +40,6 @@ const jsonLd = {
 	name: "Garage Auto Mendonca",
 	url: "https://www.garagemendonca.com",
 	telephone: "+33532002038",
-	email: "contact@garagemendonca.com",
 	address: {
 		"@type": "PostalAddress",
 		streetAddress: "6 Avenue de la Mouyssaguese",
@@ -192,13 +191,13 @@ export default async function ContactPage({ searchParams }: PageProps) {
 									</div>
 									<div>
 										<p className="text-xs text-[#475569] font-medium mb-1">
-											Email
+											Par message
 										</p>
 										<a
-											href="mailto:contact@garagemendonca.com"
-											className="font-normal text-[#0f172a] hover:text-brand-600 transition-colors text-sm break-all"
+											href="#contact-form"
+											className="font-normal text-[#0f172a] hover:text-brand-600 transition-colors text-sm"
 										>
-											contact@garagemendonca.com
+											Via le formulaire
 										</a>
 									</div>
 								</div>

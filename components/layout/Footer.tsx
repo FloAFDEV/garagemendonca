@@ -269,12 +269,12 @@ export default async function Footer() {
 									className="text-brand-500 flex-shrink-0"
 									aria-hidden="true"
 								/>
-								<a
-									href="mailto:contact@garagemendonca.com"
-									className="font-light hover:text-brand-400 transition-colors break-all"
+								<Link
+									href="/contact"
+									className="font-light hover:text-brand-400 transition-colors"
 								>
-									contact@garagemendonca.com
-								</a>
+									Nous contacter
+								</Link>
 							</li>
 						</ul>
 					</div>

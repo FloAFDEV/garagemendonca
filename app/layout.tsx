@@ -88,7 +88,6 @@ const jsonLd = {
 		"Spécialiste de la mécanique, carrosserie et vente de véhicules d'occasion japonais à boîte automatique à Drémil-Lafage depuis 2003.",
 	url: "https://www.garagemendonca.com",
 	telephone: "+33532002038",
-	email: "contact@garagemendonca.com",
 	address: {
 		"@type": "PostalAddress",
 		streetAddress: "6 Avenue de la Mouyssaguese",
