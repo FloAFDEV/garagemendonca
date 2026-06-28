@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll";
 import Container from "@/components/ui/Container";
@@ -97,14 +98,14 @@ export default function MapContact() {
 									</div>
 									<div>
 										<p className="ty-label mb-1">
-											Email
+											Contact
 										</p>
-										<a
-											href="mailto:contact@garagemendonca.com"
+										<Link
+											href="/contact"
 											className="font-normal text-[#0f172a] hover:text-brand-600 transition-colors text-sm"
 										>
-											contact@garagemendonca.com
-										</a>
+											Nous contacter
+										</Link>
 									</div>
 								</div>
 							</div>
