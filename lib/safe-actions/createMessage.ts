@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { assertSameOrigin } from "@/lib/auth/csrf";
 import { messageCreateSchema, type MessageCreateInput } from "@/lib/validation/message.schema";
 import { messageToInsert } from "@/lib/mappers/message.mapper";
 import { messageDb } from "@/lib/db/message.repository";
@@ -18,6 +19,12 @@ type CreateMessageResult =
 export async function createMessageAction(
   rawInput: unknown,
 ): Promise<CreateMessageResult> {
+  // 0. Vérification d'origine — même mécanisme que les Server Actions admin
+  //    (lib/auth/csrf.assertSameOrigin). Placée en tête : une requête
+  //    cross-origin est rejetée avant tout traitement, donc avant tout envoi
+  //    d'email (neutralise l'amplification via le canal "origine").
+  await assertSameOrigin();
+
   // 1. Anti-spam honeypot
   const input = rawInput as Record<string, unknown>;
   if (typeof input?.website === "string" && input.website.length > 0) {
@@ -66,7 +73,10 @@ export async function createMessageAction(
     console.error("[createMessage] notify-vehicle-message failed:", err),
   );
 
-  // 6. Confirmation au client (email simple, pas d'accès DB requis)
+  // 6. Confirmation au client (email simple, pas d'accès DB requis).
+  //    Invariant anti-amplification : ce point n'est atteint qu'après une
+  //    insertion réussie. Toute soumission rejetée (origine, honeypot,
+  //    rate-limit, validation, erreur DB) sort en amont sans envoyer d'email.
   void sendContactConfirmation({
     to:        parsed.data.email,
     firstname: parsed.data.firstname,
