@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { z } from "zod";
 import { Send, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
 import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 import AutoResizeTextarea from "@/components/ui/AutoResizeTextarea";
+import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
 // ─── Schéma de validation client-side ────────────────────────────────────────
 const schema = z.object({
@@ -57,6 +58,7 @@ export default function ContactForm({
 	});
 	const [sent, setSent] = useState(false);
 	const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
+	const turnstileTokenRef = useRef<string | null>(null);
 
 	const { mutate, isPending, isError } = useCreateMessage();
 
@@ -120,6 +122,7 @@ export default function ContactForm({
 				subject: parsed.data.subject,
 				message: parsed.data.message,
 				website: parsed.data.website,
+				cf_turnstile_token: turnstileTokenRef.current ?? undefined,
 			},
 			{
 				onSuccess: () => setSent(true),
@@ -398,6 +401,14 @@ export default function ContactForm({
 					</a>
 				</label>
 			</div>
+
+			{/* Turnstile invisible — challenge CF silencieux, zéro friction */}
+			<TurnstileWidget
+				size="invisible"
+				theme="auto"
+				onVerify={(token) => { turnstileTokenRef.current = token; }}
+				onExpire={() => { turnstileTokenRef.current = null; }}
+			/>
 
 			{isError && (
 				<div

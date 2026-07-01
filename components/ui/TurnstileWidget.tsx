@@ -5,11 +5,10 @@ import { useEffect, useRef, useCallback } from "react";
 declare global {
   interface Window {
     turnstile?: {
-      render: (
-        container: HTMLElement,
-        options: Record<string, unknown>,
-      ) => string;
-      reset: (widgetId: string) => void;
+      render:  (container: HTMLElement, options: Record<string, unknown>) => string;
+      reset:   (widgetId: string) => void;
+      remove:  (widgetId: string) => void;
+      execute: (widgetId: string) => void;
     };
   }
 }
@@ -17,14 +16,27 @@ declare global {
 interface TurnstileWidgetProps {
   onVerify: (token: string) => void;
   onExpire: () => void;
+  /** "normal" (défaut) — widget visible. "invisible" — challenge silencieux. */
+  size?: "normal" | "invisible";
+  theme?: "light" | "dark" | "auto";
 }
 
 /**
  * Widget Cloudflare Turnstile.
  * Ne se rend que si NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY est défini.
  * Chargement paresseux du script CF — zéro impact si inactif.
+ *
+ * Modes :
+ *   "normal"    — widget visible (utilisé sur /login)
+ *   "invisible" — challenge silencieux en arrière-plan, zéro friction UX
+ *                 (utilisé sur les formulaires de contact publics)
  */
-export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
+export function TurnstileWidget({
+  onVerify,
+  onExpire,
+  size = "normal",
+  theme = "dark",
+}: TurnstileWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY;
@@ -47,8 +59,8 @@ export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
         widgetIdRef.current = null;
         onExpireRef.current();
       },
-      theme: "dark",
-      size: "normal",
+      theme,
+      size,
     });
   }, [siteKey]); // stable — ne dépend plus des callbacks (passés via refs)
 
@@ -83,6 +95,10 @@ export function TurnstileWidget({ onVerify, onExpire }: TurnstileWidgetProps) {
   }, [siteKey, renderWidget]);
 
   if (!siteKey) return null;
+
+  if (size === "invisible") {
+    return <div ref={containerRef} aria-hidden="true" />;
+  }
 
   return (
     <div className="flex justify-center py-2">

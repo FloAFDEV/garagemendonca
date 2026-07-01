@@ -9,7 +9,7 @@
  * Pattern : validation manuelle Zod (cohérent avec ContactForm.tsx existant).
  */
 
-import { useState, type FormEvent } from "react";
+import { useState, useRef, type FormEvent } from "react";
 import {
 	MessageSquare,
 	Phone,
@@ -23,6 +23,7 @@ import {
 import { z } from "zod";
 import AutoResizeTextarea from "@/components/ui/AutoResizeTextarea";
 import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
+import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
 // ─── Schéma de validation ────────────────────────────────────────────────────
 
@@ -70,6 +71,7 @@ export default function VehicleContactForm({
 	const [success, setSuccess] = useState(false);
 	const [errors, setErrors] = useState<FormErrors>({});
 	const mutation = useCreateMessage();
+	const turnstileTokenRef = useRef<string | null>(null);
 
 	const defaultMessage = isAvailable
 		? `Bonjour,\n\nJe suis intéressé(e) par le véhicule ${vehicleName} et souhaiterais obtenir plus d'informations.\n\nPuis-je organiser un essai ?\n\nMerci d'avance.`
@@ -105,6 +107,7 @@ export default function VehicleContactForm({
 				phone: parsed.data.phone || undefined,
 				message: parsed.data.message,
 				website: parsed.data.website,
+				cf_turnstile_token: turnstileTokenRef.current ?? undefined,
 			});
 			setSuccess(true);
 		} catch {
@@ -164,6 +167,14 @@ export default function VehicleContactForm({
 				className="hidden"
 				tabIndex={-1}
 				autoComplete="off"
+			/>
+
+			{/* Turnstile invisible — challenge CF silencieux, zéro friction */}
+			<TurnstileWidget
+				size="invisible"
+				theme="auto"
+				onVerify={(token) => { turnstileTokenRef.current = token; }}
+				onExpire={() => { turnstileTokenRef.current = null; }}
 			/>
 
 			{/* Prénom + Nom */}
