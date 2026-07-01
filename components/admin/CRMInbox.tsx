@@ -397,34 +397,41 @@ function MessageDetail({
 
 	// Status mutation
 	const statusMut = useMutation({
-		mutationFn: (s: MessageStatusInput) =>
-			updateMessageStatusAction(message.id, garageId, s),
+		mutationFn: async (s: MessageStatusInput) => {
+			const res = await updateMessageStatusAction(message.id, garageId, s);
+			if ("error" in res) throw new Error(res.error.message ?? "Erreur inconnue");
+			return res;
+		},
 		onSuccess: () => {
 			invalidate();
 			toast.success("Statut mis à jour.");
 		},
-		onError: () => toast.error("Impossible de mettre à jour le statut."),
+		onError: (err: Error) => toast.error(err.message || "Impossible de mettre à jour le statut."),
 	});
 
 	// Delete mutation
 	const deleteMut = useMutation({
-		mutationFn: () => deleteMessageAction(message.id, garageId),
+		mutationFn: async () => {
+			const res = await deleteMessageAction(message.id, garageId);
+			if ("error" in res) throw new Error(res.error.message ?? "Erreur inconnue");
+			return res;
+		},
 		onSuccess: () => {
 			setDeleteOpen(false);
 			invalidate();
 			onClose();
 			toast.success("Message supprimé.");
 		},
-		onError: () => {
+		onError: (err: Error) => {
 			setDeleteOpen(false);
-			toast.error("Impossible de supprimer le message.");
+			toast.error(err.message || "Impossible de supprimer le message.");
 		},
 	});
 
 	// Reply mutation
 	const replyMut = useMutation({
-		mutationFn: () =>
-			replyToMessageAction(
+		mutationFn: async () => {
+			const res = await replyToMessageAction(
 				{
 					message_id: message.id,
 					garage_id: garageId,
@@ -432,19 +439,23 @@ function MessageDetail({
 					content: replyText.trim(),
 				},
 				garageId,
-			),
+			);
+			if ("error" in res) throw new Error(res.error.message ?? "Erreur inconnue");
+			return res;
+		},
 		onSuccess: () => {
 			setReplyText("");
 			invalidate();
 			toast.success("Réponse envoyée par email.");
 		},
-		onError: () => toast.error("Erreur lors de l'envoi de la réponse."),
+		onError: (err: Error) => toast.error(err.message || "Erreur lors de l'envoi de la réponse."),
 	});
 
 	// Notes save
 	const saveNotes = useCallback(async () => {
 		if (!notesDirty) return;
-		await updateMessageNotesAction(message.id, garageId, notes || null);
+		const res = await updateMessageNotesAction(message.id, garageId, notes || null);
+		if ("error" in res) { toast.error(res.error.message || "Impossible d'enregistrer les notes."); return; }
 		setNotesDirty(false);
 		toast.success("Notes enregistrées.");
 	}, [message.id, garageId, notes, notesDirty]);
