@@ -21,9 +21,8 @@ export const vehicleKeys = {
 
 /** Filtres applicables à la liste paginée de messages. */
 export interface MessageListFilters {
-  status?:      string;
-  search?:      string;
-  has_vehicle?: boolean;
+  status?: string;
+  search?: string;
 }
 
 export const messageKeys = {

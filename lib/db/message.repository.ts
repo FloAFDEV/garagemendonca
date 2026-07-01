@@ -21,9 +21,8 @@ export interface MessageListOptions {
   status?:      MessageStatusEnum | "all";
   is_read?:     boolean;
   search?:      string;
-  vehicle_id?:  string;
-  has_vehicle?: boolean;
-  limit?:       number;
+  vehicle_id?: string;
+  limit?:      number;
   offset?:      number;
   /** Cursor-based pagination : ISO created_at du dernier item de la page précédente.
    *  Récupère les messages antérieurs à ce curseur (created_at < cursor).
@@ -60,9 +59,6 @@ export const messageDb = {
     }
     if (options?.vehicle_id) {
       q = q.eq("vehicle_id", options.vehicle_id);
-    }
-    if (options?.has_vehicle) {
-      q = q.not("vehicle_id", "is", null);
     }
     if (options?.search) {
       const s = `%${options.search}%`;
