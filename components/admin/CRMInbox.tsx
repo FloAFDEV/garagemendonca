@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { useSearchParams } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { createBrowserClient } from "@supabase/ssr";
 import {
 	Mail,
@@ -273,7 +274,8 @@ function MessageDetail({
 	// unread et stats sont maintenus à jour par le polling de useMessageStats (60s)
 	// et par le canal Realtime du composant parent.
 	const invalidate = useCallback(() => {
-		qc.invalidateQueries({ queryKey: messageKeys.list(garageId) });
+		// lists() invalide toutes les pages de toutes les combinaisons de filtres pour ce garage.
+		qc.invalidateQueries({ queryKey: messageKeys.lists(garageId) });
 		qc.invalidateQueries({ queryKey: messageKeys.detail(message.id) });
 	}, [qc, garageId, message.id]);
 
@@ -341,7 +343,7 @@ function MessageDetail({
 		}
 	}, [message.id, message.is_read, garageId, invalidate]);
 
-	const replies = displayed.replies ?? [];
+	const replies: import("@/types/ui").UIContactReply[] = displayed.replies ?? [];
 
 	return (
 		<div className={clsx("flex flex-col h-full", isDark ? "bg-dark-950" : "bg-slate-50")}>
@@ -671,6 +673,9 @@ interface CRMInboxProps {
 	garageId: string;
 }
 
+/** Nombre de messages par page — clé du LIMIT serveur. */
+const CRM_PAGE_SIZE = 50;
+
 export function CRMInbox({ garageId }: CRMInboxProps) {
 	const searchParams  = useSearchParams();
 	const [filter, setFilter] = useState<
@@ -684,21 +689,57 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 	);
 	const qc = useQueryClient();
 
-	// Liste messages — fetch unique, filtrage côté client
+	// ── Debounce recherche (300 ms) ──────────────────────────────────
+	// Évite d'envoyer une requête serveur à chaque keystroke.
+	const [debouncedSearch, setDebouncedSearch] = useState("");
+	useEffect(() => {
+		const t = setTimeout(() => setDebouncedSearch(search), 300);
+		return () => clearTimeout(t);
+	}, [search]);
+
+	// ── Filtres server-side (mémoïsés pour stabilité du queryKey) ───
+	const queryFilters = useMemo(() => ({
+		status:      filter !== "all" ? filter : undefined,
+		search:      debouncedSearch || undefined,
+		has_vehicle: vehicleOnly || undefined,
+	}), [filter, debouncedSearch, vehicleOnly]);
+
+	// ── Infinite Query paginée ───────────────────────────────────────
+	// Chaque page = 50 messages. Le curseur est le created_at du dernier item.
+	// keepPreviousData : les anciennes données restent affichées pendant
+	// le chargement d'une nouvelle combinaison de filtres.
 	const {
-		data: messages = [],
+		data,
 		isLoading,
 		isError,
 		refetch,
-	} = useQuery({
-		queryKey: messageKeys.list(garageId),
-		queryFn: () => fetchMessagesAction(garageId),
-		staleTime: 2 * 60 * 1000,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isFetching,
+	} = useInfiniteQuery({
+		queryKey:     messageKeys.list(garageId, queryFilters),
+		queryFn:      ({ pageParam }) => fetchMessagesAction(garageId, {
+			limit:       CRM_PAGE_SIZE,
+			cursor:      pageParam as string | undefined,
+			status:      queryFilters.status as "new" | "in_progress" | "answered" | "archived" | undefined,
+			search:      queryFilters.search,
+			has_vehicle: queryFilters.has_vehicle,
+		}),
+		getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+		initialPageParam: undefined as string | undefined,
+		staleTime:        60_000,
+		placeholderData:  keepPreviousData,
 	});
 
-	// Realtime Supabase — invalidation ciblée par garage.
-	// On invalide uniquement list + unread (pas all()) : évite de déclencher
-	// le re-fetch du détail ouvert et des stats pendant la frappe ou la lecture.
+	// ── Données aplaties des pages chargées ─────────────────────────
+	const allMessages = useMemo(
+		() => data?.pages.flatMap((p) => p.messages) ?? [],
+		[data],
+	);
+
+	// ── Realtime Supabase ────────────────────────────────────────────
+	// lists() invalide TOUTES les combinaisons de filtres (prefix match React Query).
 	useEffect(() => {
 		const supabase = createBrowserClient(
 			process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -716,7 +757,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 					filter: `garage_id=eq.${garageId}`,
 				},
 				() => {
-					qc.invalidateQueries({ queryKey: messageKeys.list(garageId) });
+					qc.invalidateQueries({ queryKey: messageKeys.lists(garageId) });
 					qc.invalidateQueries({ queryKey: messageKeys.unread(garageId) });
 				},
 			)
@@ -728,35 +769,44 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		};
 	}, [garageId, qc]);
 
-	// Callback stable : une seule référence pour toute la durée de vie du composant.
-	// Passer cette référence à MessageListItem permet à React.memo d'être efficace.
+	// ── Callbacks stables ────────────────────────────────────────────
 	const handleSelect = useCallback((id: string) => setSelectedId(id), []);
 
 	const selectedMessage = useMemo(
-		() => messages.find((m) => m.id === selectedId) ?? null,
-		[messages, selectedId],
+		() => allMessages.find((m) => m.id === selectedId) ?? null,
+		[allMessages, selectedId],
 	);
 
 	const unreadCount = useMemo(
-		() => messages.filter((m) => !m.is_read && m.status !== "archived").length,
-		[messages],
+		() => allMessages.filter((m) => !m.is_read && m.status !== "archived").length,
+		[allMessages],
 	);
 
-	// Filtrage 100% client — statut, recherche, filtre véhicule
-	const displayed = useMemo(() => messages.filter((m) => {
-		if (filter !== "all" && m.status !== filter) return false;
-		if (vehicleOnly && !m.vehicleId) return false;
-		if (!search) return true;
-		const q = search.toLowerCase();
-		return (
-			m.firstname.toLowerCase().includes(q) ||
-			m.lastname.toLowerCase().includes(q) ||
-			m.email.toLowerCase().includes(q) ||
-			m.subject?.toLowerCase().includes(q) ||
-			m.message.toLowerCase().includes(q) ||
-			(m.vehicleName?.toLowerCase().includes(q) ?? false)
-		);
-	}), [messages, filter, vehicleOnly, search]);
+	// ── Virtualisation ───────────────────────────────────────────────
+	// Seuls ~20-30 items sont dans le DOM même avec 1 500 messages chargés.
+	const listRef = useRef<HTMLDivElement>(null);
+	const virtualCount = hasNextPage ? allMessages.length + 1 : allMessages.length;
+	const virtualizer = useVirtualizer({
+		count:            virtualCount,
+		getScrollElement: () => listRef.current,
+		estimateSize:     () => 92,
+		overscan:         8,
+	});
+
+	// ── Auto-fetch page suivante ─────────────────────────────────────
+	// Déclenche fetchNextPage quand l'utilisateur approche la fin de la liste.
+	const virtualItems = virtualizer.getVirtualItems();
+	useEffect(() => {
+		const lastItem = virtualItems.at(-1);
+		if (!lastItem) return;
+		if (
+			lastItem.index >= allMessages.length - 3 &&
+			hasNextPage &&
+			!isFetchingNextPage
+		) {
+			void fetchNextPage();
+		}
+	}, [virtualItems, allMessages.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
 	// dvh = dynamic viewport height — adapts when mobile browser chrome shows/hides
 	return (
@@ -786,8 +836,9 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 							onClick={() => refetch()}
 							className="p-1.5 rounded-lg hover:bg-dark-800 text-slate-500 hover:text-slate-300 transition-colors"
 							title="Actualiser"
+							aria-label="Actualiser"
 						>
-							<RefreshCw size={15} />
+							<RefreshCw size={15} className={isFetching ? "animate-spin" : ""} />
 						</button>
 					</div>
 
@@ -847,15 +898,12 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 					</button>
 				</div>
 
-				{/* Liste */}
-				<div className="flex-1 overflow-y-auto">
-					{isLoading && (
+				{/* Liste virtualisée — seuls ~20-30 DOM nodes présents à tout moment */}
+				<div ref={listRef} className="flex-1 overflow-y-auto">
+					{isLoading ? (
 						<div className="space-y-0">
 							{Array.from({ length: 5 }).map((_, i) => (
-								<div
-									key={i}
-									className="px-4 py-3 border-b border-dark-800 animate-pulse"
-								>
+								<div key={i} className="px-4 py-3 border-b border-dark-800 animate-pulse">
 									<div className="flex gap-3">
 										<div className="w-10 h-10 rounded-full bg-dark-700" />
 										<div className="flex-1 space-y-2">
@@ -866,41 +914,56 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 								</div>
 							))}
 						</div>
-					)}
-
-					{isError && (
+					) : isError ? (
 						<div className="flex flex-col items-center gap-3 py-12 text-center px-4">
-							<p className="text-slate-400 text-sm">
-								Erreur de chargement
-							</p>
-							<button
-								onClick={() => refetch()}
-								className="text-brand-400 text-sm hover:text-brand-300"
-							>
+							<p className="text-slate-400 text-sm">Erreur de chargement</p>
+							<button onClick={() => refetch()} className="text-brand-400 text-sm hover:text-brand-300">
 								Réessayer
 							</button>
 						</div>
-					)}
-
-					{!isLoading && !isError && displayed.length === 0 && (
+					) : allMessages.length === 0 ? (
 						<div className="flex flex-col items-center gap-3 py-16 text-center px-4">
 							<MailOpen size={32} className="text-slate-600" />
 							<p className="text-slate-500 text-sm">
-								{search
-									? "Aucun résultat pour cette recherche."
-									: "Aucun message dans cette catégorie."}
+								{search ? "Aucun résultat pour cette recherche." : "Aucun message dans cette catégorie."}
 							</p>
 						</div>
+					) : (
+						<div style={{ height: `${virtualizer.getTotalSize()}px`, position: "relative" }}>
+							{virtualizer.getVirtualItems().map((vItem) => {
+								const isLoader = vItem.index > allMessages.length - 1;
+								const msg = allMessages[vItem.index];
+								return (
+									<div
+										key={vItem.key}
+										data-index={vItem.index}
+										ref={virtualizer.measureElement}
+										style={{
+											position: "absolute",
+											top: 0,
+											left: 0,
+											width: "100%",
+											transform: `translateY(${vItem.start}px)`,
+										}}
+									>
+										{isLoader ? (
+											<div className="flex justify-center py-4">
+												{isFetchingNextPage && (
+													<RefreshCw size={15} className="animate-spin text-slate-500" />
+												)}
+											</div>
+										) : (
+											<MessageListItem
+												message={msg}
+												isSelected={selectedId === msg.id}
+												onSelect={handleSelect}
+											/>
+										)}
+									</div>
+								);
+							})}
+						</div>
 					)}
-
-					{displayed.map((msg) => (
-						<MessageListItem
-							key={msg.id}
-							message={msg}
-							isSelected={selectedId === msg.id}
-							onSelect={handleSelect}
-						/>
-					))}
 				</div>
 			</div>
 

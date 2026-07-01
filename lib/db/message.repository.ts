@@ -18,13 +18,17 @@ function adminDb(): Q {
 }
 
 export interface MessageListOptions {
-  status?:     MessageStatusEnum | "all";
-  is_read?:    boolean;
-  search?:     string;
-  vehicle_id?: string;        // filtre par véhicule spécifique
-  has_vehicle?: boolean;      // true = uniquement les messages avec vehicle_id
-  limit?:      number;
-  offset?:     number;
+  status?:      MessageStatusEnum | "all";
+  is_read?:     boolean;
+  search?:      string;
+  vehicle_id?:  string;
+  has_vehicle?: boolean;
+  limit?:       number;
+  offset?:      number;
+  /** Cursor-based pagination : ISO created_at du dernier item de la page précédente.
+   *  Récupère les messages antérieurs à ce curseur (created_at < cursor).
+   *  Prend la priorité sur offset si les deux sont fournis. */
+  cursor?:      string;
 }
 
 export const messageDb = {
@@ -64,13 +68,17 @@ export const messageDb = {
       const s = `%${options.search}%`;
       q = q.or(`firstname.ilike.${s},lastname.ilike.${s},email.ilike.${s},subject.ilike.${s},message.ilike.${s}`);
     }
+    // Cursor-based pagination : filtre created_at < cursor (ordre DESC garanti).
+    // Prend la priorité sur offset si les deux sont fournis.
+    if (options?.cursor) {
+      q = q.lt("created_at", options.cursor);
+    } else if (options?.offset) {
+      const effectiveOffset = options.offset;
+      q = q.range(effectiveOffset, effectiveOffset + (options.limit ?? DEFAULT_MESSAGE_LIMIT) - 1);
+    }
     // Toujours appliquer un LIMIT — ne jamais lire toute la table.
-    // DEFAULT_MESSAGE_LIMIT est le garde-fou ; options.limit permet de l'ajuster
-    // (ex : 50 pour la liste paginée, 1 pour un détail). La pagination future
-    // passera offset + limit explicitement via les options.
     const effectiveLimit = options?.limit ?? DEFAULT_MESSAGE_LIMIT;
     q = q.limit(effectiveLimit);
-    if (options?.offset) q = q.range(options.offset, options.offset + effectiveLimit - 1);
 
     const { data, error } = await q;
     if (error) throw error;
