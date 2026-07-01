@@ -278,7 +278,7 @@ const MessageListItem = memo(function MessageListItem({
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 			className={clsx(
-				"w-full text-left px-4 py-3 border-b transition-colors",
+				"w-full text-left px-4 py-3.5 border-b transition-colors",
 				isDark ? "border-dark-800" : "border-slate-100",
 				isSelected
 					? isDark
@@ -308,17 +308,17 @@ const MessageListItem = memo(function MessageListItem({
 					<div className="flex items-center justify-between gap-2 mb-0.5">
 						<span
 							className={clsx(
-								"text-sm font-semibold truncate",
+								"text-sm truncate",
 								!message.is_read
-									? isDark ? "text-slate-100" : "text-slate-900"
-									: isDark ? "text-dark-400" : "text-slate-600",
+									? `font-semibold ${isDark ? "text-slate-100" : "text-slate-900"}`
+									: `font-medium ${isDark ? "text-slate-400" : "text-slate-600"}`,
 							)}
 						>
 							{message.firstname} {message.lastname}
 						</span>
 						<span className={clsx(
 							"text-xs shrink-0",
-							isDark ? "text-slate-400" : "text-slate-600",
+							isDark ? "text-slate-500" : "text-slate-400",
 						)}>
 							{message.formattedDate}
 						</span>
@@ -347,7 +347,7 @@ const MessageListItem = memo(function MessageListItem({
 							isDark ? "bg-transparent" : "bg-brand-50 border border-brand-200",
 						)}>
 							<Car size={11} className={clsx(isDark ? "text-brand-400" : "text-brand-600", "flex-shrink-0")} />
-							<span className={clsx("text-xs truncate font-medium", isDark ? "text-brand-400" : "text-brand-600")}>
+							<span className={clsx("text-xs truncate", isDark ? "text-brand-400" : "text-brand-600")}>
 								{message.vehicleName}
 							</span>
 						</div>
@@ -579,7 +579,7 @@ function MessageDetail({
 						{message.formattedDate}
 					</span>
 					{message.subject && (
-						<span className="text-slate-400 font-medium">
+						<span className="text-slate-400">
 							{message.subject}
 						</span>
 					)}
