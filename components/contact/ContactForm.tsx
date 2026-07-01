@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { z } from "zod";
 import { Send, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { useCreateMessage } from "@/lib/mutations/useCreateMessage";
 import { ACTIVE_GARAGE_ID as GARAGE_ID } from "@/lib/config/garage";
 import AutoResizeTextarea from "@/components/ui/AutoResizeTextarea";
-import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
 
 // ─── Schéma de validation client-side ────────────────────────────────────────
 const schema = z.object({
@@ -41,9 +40,11 @@ const subjects = [
 export default function ContactForm({
 	vehicule,
 	vehicleId,
+	formToken,
 }: {
 	vehicule?: string;
 	vehicleId?: string;
+	formToken?: string;
 }) {
 	const [form, setForm] = useState({
 		firstname: "",
@@ -58,7 +59,10 @@ export default function ContactForm({
 	});
 	const [sent, setSent] = useState(false);
 	const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
-	const turnstileTokenRef = useRef<string | null>(null);
+	// Time-trap client : vérifie que l'utilisateur a passé au moins 3 s sur le formulaire.
+	// Complète la vérification HMAC côté serveur (premier filtre avant le réseau).
+	const mountTimeRef = useRef<number | null>(null);
+	useEffect(() => { mountTimeRef.current = Date.now(); }, []);
 
 	const { mutate, isPending, isError } = useCreateMessage();
 
@@ -75,9 +79,6 @@ export default function ContactForm({
 		setFieldErrors({});
 
 		// ── Guard : garage_id doit être configuré ──────────────────────────────
-		// GARAGE_ID est la constante build-time NEXT_PUBLIC_GARAGE_ID.
-		// Si elle est vide (env var absente), le message serait sauvé sans garage_id
-		// → invisible dans le dashboard admin et notification Edge Function cassée.
 		if (!GARAGE_ID) {
 			console.error(
 				"[ContactForm] NEXT_PUBLIC_GARAGE_ID non configuré — envoi bloqué.",
@@ -86,6 +87,13 @@ export default function ContactForm({
 				message:
 					"Erreur de configuration. Contactez-nous par téléphone.",
 			});
+			return;
+		}
+
+		// ── Time-trap client — rejet silencieux si < 3 s depuis le chargement ──
+		// Premier filtre avant le réseau ; la vérification HMAC serveur suit.
+		if (mountTimeRef.current !== null && Date.now() - mountTimeRef.current < 3000) {
+			setSent(true); // faux succès silencieux
 			return;
 		}
 
@@ -122,7 +130,7 @@ export default function ContactForm({
 				subject: parsed.data.subject,
 				message: parsed.data.message,
 				website: parsed.data.website,
-				cf_turnstile_token: turnstileTokenRef.current ?? undefined,
+				form_token: formToken,
 			},
 			{
 				onSuccess: () => setSent(true),
@@ -401,14 +409,6 @@ export default function ContactForm({
 					</a>
 				</label>
 			</div>
-
-			{/* Turnstile invisible — challenge CF silencieux, zéro friction */}
-			<TurnstileWidget
-				size="invisible"
-				theme="auto"
-				onVerify={(token) => { turnstileTokenRef.current = token; }}
-				onExpire={() => { turnstileTokenRef.current = null; }}
-			/>
 
 			{isError && (
 				<div
