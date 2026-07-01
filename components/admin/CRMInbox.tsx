@@ -58,22 +58,10 @@ const STATUS_LABELS: Record<
 		icon: React.ComponentType<{ size?: number; className?: string }>;
 	}
 > = {
-	new: { label: "Nouveau", color: "bg-blue-100 text-blue-800 border border-blue-200", icon: Mail },
-	in_progress: {
-		label: "En cours",
-		color: "bg-amber-100 text-amber-800 border border-amber-300",
-		icon: AlertCircle,
-	},
-	answered: {
-		label: "Répondu",
-		color: "bg-emerald-100 text-emerald-800 border border-emerald-200",
-		icon: CheckCircle,
-	},
-	archived: {
-		label: "Archivé",
-		color: "bg-slate-100 text-slate-600 border border-slate-200",
-		icon: Archive,
-	},
+	new:         { label: "Nouveau",  color: "bg-blue-50 text-blue-600",     icon: Mail },
+	in_progress: { label: "En cours", color: "bg-amber-50 text-amber-700",   icon: AlertCircle },
+	answered:    { label: "Répondu",  color: "bg-emerald-50 text-emerald-700", icon: CheckCircle },
+	archived:    { label: "Archivé",  color: "bg-slate-100 text-slate-500",  icon: Archive },
 };
 
 const FILTERS = [
@@ -124,7 +112,7 @@ function StatusBadge({ status }: { status: string }) {
 	return (
 		<span
 			className={clsx(
-				"inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium shrink-0 whitespace-nowrap",
+				"inline-flex items-center gap-1 rounded-full px-1.5 py-px text-xs font-medium shrink-0 whitespace-nowrap",
 				cfg.color,
 			)}
 		>
@@ -311,7 +299,7 @@ const MessageListItem = memo(function MessageListItem({
 								"text-sm truncate",
 								!message.is_read
 									? `font-semibold ${isDark ? "text-slate-100" : "text-slate-900"}`
-									: `font-medium ${isDark ? "text-slate-400" : "text-slate-600"}`,
+									: `font-medium ${isDark ? "text-slate-400" : "text-slate-700"}`,
 							)}
 						>
 							{message.firstname} {message.lastname}
@@ -342,20 +330,17 @@ const MessageListItem = memo(function MessageListItem({
 
 					{/* Véhicule concerné — visible directement dans la liste */}
 					{message.vehicleName && (
-						<div className={clsx(
-							"inline-flex items-center gap-1 mb-1 rounded px-1.5 py-0.5 max-w-full",
-							isDark ? "bg-transparent" : "bg-brand-50 border border-brand-200",
-						)}>
-							<Car size={11} className={clsx(isDark ? "text-brand-400" : "text-brand-600", "flex-shrink-0")} />
-							<span className={clsx("text-xs truncate", isDark ? "text-brand-400" : "text-brand-600")}>
+						<div className="inline-flex items-center gap-1 mb-1 max-w-full">
+							<Car size={10} className={clsx(isDark ? "text-slate-500" : "text-slate-400", "flex-shrink-0")} />
+							<span className={clsx("text-xs truncate", isDark ? "text-slate-500" : "text-slate-500")}>
 								{message.vehicleName}
 							</span>
 						</div>
 					)}
 
 					<p className={clsx(
-						"text-xs truncate leading-relaxed",
-						isDark ? "text-slate-400" : "text-slate-600",
+						"text-xs line-clamp-2 leading-relaxed",
+						isDark ? "text-slate-500" : "text-slate-500",
 					)}>
 						{message.message}
 					</p>
