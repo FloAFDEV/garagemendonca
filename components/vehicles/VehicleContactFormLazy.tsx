@@ -14,8 +14,6 @@
  */
 
 import dynamic from "next/dynamic";
-import type { ComponentProps } from "react";
-import type VehicleContactFormType from "@/components/vehicles/VehicleContactForm";
 
 const VehicleContactForm = dynamic(
   () => import("@/components/vehicles/VehicleContactForm"),
@@ -27,8 +25,4 @@ const VehicleContactForm = dynamic(
   },
 );
 
-export default function VehicleContactFormLazy(
-  props: ComponentProps<typeof VehicleContactFormType>,
-) {
-  return <VehicleContactForm {...props} />;
-}
+export default VehicleContactForm;
