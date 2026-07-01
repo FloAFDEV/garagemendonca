@@ -373,7 +373,8 @@ function MessageDetail({
 	const [notesDirty, setNotesDirty] = useState(false);
 	const [showNotes, setShowNotes] = useState(!!message.admin_notes);
 	const [deleteOpen, setDeleteOpen] = useState(false);
-	const textareaRef = useRef<HTMLTextAreaElement>(null);
+	const textareaRef    = useRef<HTMLTextAreaElement>(null);
+	const markedReadRef  = useRef<string | null>(null);
 
 	// Charger le détail complet avec réponses
 	const { data: fullMessage, isLoading: loadingDetail } = useQuery({
@@ -460,10 +461,12 @@ function MessageDetail({
 		toast.success("Notes enregistrées.");
 	}, [message.id, garageId, notes, notesDirty]);
 
-	// Auto-mark as read on open — déclenché uniquement quand l'id du message change.
-	// invalidate est stable (useCallback + deps stables) donc son inclusion est sûre.
+	// Auto-mark as read on open — une seule fois par message.id.
+	// La ref évite le re-déclenchement quand is_read repasse à false (statut "Nouveau"
+	// remis manuellement) : sans elle, l'effet écraserait aussitôt le changement.
 	useEffect(() => {
-		if (!message.is_read) {
+		if (!message.is_read && markedReadRef.current !== message.id) {
+			markedReadRef.current = message.id;
 			updateMessageStatusAction(message.id, garageId, "in_progress")
 				.then(() => invalidate())
 				.catch(() => {});
