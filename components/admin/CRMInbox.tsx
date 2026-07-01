@@ -139,6 +139,7 @@ function StatusBadge({ status }: { status: string }) {
 // ─────────────────────────────────────────────────────────────────
 
 function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMRect }) {
+	const { isDark } = useAdminTokens();
 	const POPUP_W = 288;
 	const topPx  = Math.max(8, Math.min(rect.top, window.innerHeight - 220));
 	const leftPx = rect.right + 10 + POPUP_W > window.innerWidth
@@ -147,7 +148,12 @@ function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMR
 
 	return (
 		<div
-			className="fixed z-50 rounded-xl border border-dark-700 bg-dark-900 shadow-2xl p-4 space-y-2.5 pointer-events-none"
+			className={clsx(
+				"fixed z-50 rounded-xl border shadow-2xl p-4 space-y-2.5 pointer-events-none",
+				isDark
+					? "bg-dark-900 border-dark-700"
+					: "bg-white border-slate-200",
+			)}
 			style={{ top: topPx, left: leftPx, width: POPUP_W }}
 		>
 			{/* Expéditeur */}
@@ -159,10 +165,18 @@ function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMR
 					{initials(message.firstname, message.lastname)}
 				</div>
 				<div className="min-w-0">
-					<p className="text-sm font-semibold text-slate-200 truncate">
+					<p className={clsx(
+						"text-sm font-semibold truncate",
+						isDark ? "text-slate-100" : "text-slate-900",
+					)}>
 						{message.firstname} {message.lastname}
 					</p>
-					<p className="text-xs text-slate-400 truncate">{message.email}</p>
+					<p className={clsx(
+						"text-xs truncate",
+						isDark ? "text-slate-400" : "text-slate-500",
+					)}>
+						{message.email}
+					</p>
 				</div>
 			</div>
 
@@ -170,14 +184,22 @@ function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMR
 			<div className="flex items-center gap-2 flex-wrap">
 				<StatusBadge status={message.status} />
 				{!message.is_read && (
-					<span className="text-xs text-blue-400 font-medium">● Non lu</span>
+					<span className="text-xs text-blue-500 font-medium">● Non lu</span>
 				)}
-				<span className="text-xs text-slate-400 ml-auto">{message.formattedDate}</span>
+				<span className={clsx(
+					"text-xs ml-auto",
+					isDark ? "text-slate-400" : "text-slate-500",
+				)}>
+					{message.formattedDate}
+				</span>
 			</div>
 
 			{/* Sujet */}
 			{message.subject && (
-				<p className="text-xs font-medium text-slate-300 truncate border-t border-dark-800 pt-2">
+				<p className={clsx(
+					"text-xs font-medium truncate border-t pt-2",
+					isDark ? "text-slate-300 border-dark-800" : "text-slate-700 border-slate-100",
+				)}>
 					{message.subject}
 				</p>
 			)}
@@ -185,13 +207,18 @@ function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMR
 			{/* Véhicule */}
 			{message.vehicleName && (
 				<div className="flex items-center gap-1.5">
-					<Car size={11} className="text-brand-400 flex-shrink-0" />
-					<span className="text-xs text-brand-400 truncate">{message.vehicleName}</span>
+					<Car size={11} className={clsx("flex-shrink-0", isDark ? "text-brand-400" : "text-brand-600")} />
+					<span className={clsx("text-xs truncate", isDark ? "text-brand-400" : "text-brand-600")}>
+						{message.vehicleName}
+					</span>
 				</div>
 			)}
 
 			{/* Aperçu du message */}
-			<p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+			<p className={clsx(
+				"text-xs line-clamp-3 leading-relaxed",
+				isDark ? "text-slate-400" : "text-slate-600",
+			)}>
 				{message.message}
 			</p>
 		</div>
