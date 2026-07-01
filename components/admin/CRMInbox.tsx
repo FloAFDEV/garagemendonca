@@ -330,9 +330,12 @@ const MessageListItem = memo(function MessageListItem({
 
 					{/* Véhicule concerné — visible directement dans la liste */}
 					{message.vehicleName && (
-						<div className="inline-flex items-center gap-1 mb-1 max-w-full">
-							<Car size={10} className={clsx(isDark ? "text-slate-500" : "text-slate-400", "flex-shrink-0")} />
-							<span className={clsx("text-xs truncate", isDark ? "text-slate-500" : "text-slate-500")}>
+						<div className={clsx(
+							"inline-flex items-center gap-1 mb-1 rounded px-1.5 py-0.5 max-w-full",
+							isDark ? "bg-transparent" : "bg-brand-50 border border-brand-200",
+						)}>
+							<Car size={10} className={clsx(isDark ? "text-brand-400" : "text-brand-500", "flex-shrink-0")} />
+							<span className={clsx("text-xs truncate", isDark ? "text-brand-400" : "text-brand-600")}>
 								{message.vehicleName}
 							</span>
 						</div>
