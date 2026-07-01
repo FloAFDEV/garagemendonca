@@ -40,11 +40,9 @@ const subjects = [
 export default function ContactForm({
 	vehicule,
 	vehicleId,
-	formToken,
 }: {
 	vehicule?: string;
 	vehicleId?: string;
-	formToken?: string;
 }) {
 	const [form, setForm] = useState({
 		firstname: "",
@@ -59,8 +57,8 @@ export default function ContactForm({
 	});
 	const [sent, setSent] = useState(false);
 	const [fieldErrors, setFieldErrors] = useState<FormErrors>({});
-	// Time-trap client : vérifie que l'utilisateur a passé au moins 3 s sur le formulaire.
-	// Complète la vérification HMAC côté serveur (premier filtre avant le réseau).
+	// Time-trap client — premier filtre avant réseau, aucun secret requis.
+	// Bloque les bots qui soumettent instantanément sans lire la page.
 	const mountTimeRef = useRef<number | null>(null);
 	useEffect(() => { mountTimeRef.current = Date.now(); }, []);
 
@@ -130,7 +128,6 @@ export default function ContactForm({
 				subject: parsed.data.subject,
 				message: parsed.data.message,
 				website: parsed.data.website,
-				form_token: formToken,
 			},
 			{
 				onSuccess: () => setSent(true),

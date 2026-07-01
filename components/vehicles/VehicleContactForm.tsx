@@ -56,7 +56,6 @@ interface VehicleContactFormProps {
 	vehicleLabel: string; // ex: "Toyota Yaris 2019 · 12 500 €"
 	garageId: string;
 	isAvailable: boolean;
-	formToken?: string;
 }
 
 // ─── Composant ────────────────────────────────────────────────────────────────
@@ -67,7 +66,6 @@ export default function VehicleContactForm({
 	vehicleLabel,
 	garageId,
 	isAvailable,
-	formToken,
 }: VehicleContactFormProps) {
 	const [success, setSuccess] = useState(false);
 	const [errors, setErrors] = useState<FormErrors>({});
@@ -116,7 +114,6 @@ export default function VehicleContactForm({
 				phone: parsed.data.phone || undefined,
 				message: parsed.data.message,
 				website: parsed.data.website,
-				form_token: formToken,
 			});
 			setSuccess(true);
 		} catch {

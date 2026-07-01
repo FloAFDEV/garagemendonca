@@ -21,9 +21,6 @@ export const messageCreateSchema = z.object({
   message:    z.string().min(10, "Message trop court (10 caractères min)").max(3000),
   // honeypot — doit être vide
   website:    z.string().max(0, "Spam détecté").optional(),
-  // Time-trap HMAC — token signé généré côté serveur lors du chargement de la page.
-  // Vérifié dans createMessageAction pour détecter les soumissions trop rapides (< 3 s).
-  form_token: z.string().optional(),
 });
 
 // ─── Mise à jour statut + notes admin ──────────────────────────────
