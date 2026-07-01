@@ -462,15 +462,18 @@ function MessageDetail({
 	}, [message.id, garageId, notes, notesDirty]);
 
 	// Auto-mark as read on open — une seule fois par message.id.
-	// La ref évite le re-déclenchement quand is_read repasse à false (statut "Nouveau"
-	// remis manuellement) : sans elle, l'effet écraserait aussitôt le changement.
+	// Si le message est déjà lu, on verrouille immédiatement la ref pour éviter
+	// qu'un retour manuel à "Nouveau" (is_read: false) re-déclenche l'auto-mark.
 	useEffect(() => {
-		if (!message.is_read && markedReadRef.current !== message.id) {
+		if (message.is_read) {
 			markedReadRef.current = message.id;
-			updateMessageStatusAction(message.id, garageId, "in_progress")
-				.then(() => invalidate())
-				.catch(() => {});
+			return;
 		}
+		if (markedReadRef.current === message.id) return;
+		markedReadRef.current = message.id;
+		updateMessageStatusAction(message.id, garageId, "in_progress")
+			.then(() => invalidate())
+			.catch(() => {});
 	}, [message.id, message.is_read, garageId, invalidate]);
 
 	const replies: import("@/types/ui").UIContactReply[] = displayed.replies ?? [];
