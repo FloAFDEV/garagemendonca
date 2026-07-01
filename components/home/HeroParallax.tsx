@@ -35,12 +35,23 @@ export default function HeroParallax({
 
 	/* ── Parallaxe scroll ── */
 	useEffect(() => {
+		const img = imgRef.current;
+		if (!img) return;
+
+		// Sur mobile (< 640 px) les événements scroll sont livrés après la mise à
+		// jour visuelle du navigateur — le rAF ne peut pas rattraper ce décalage
+		// structurel. On désactive le parallaxe et libère la couche GPU inutilisée.
+		if (window.matchMedia("(max-width: 639px)").matches) {
+			img.style.willChange = "auto";
+			return;
+		}
+
 		const onScroll = () => {
 			cancelAnimationFrame(rafRef.current);
 			rafRef.current = requestAnimationFrame(() => {
-				const img = imgRef.current;
-				if (!img) return;
-				img.style.transform = `translateY(${window.scrollY * 0.28}px)`;
+				const el = imgRef.current;
+				if (!el) return;
+				el.style.transform = `translateY(${window.scrollY * 0.28}px)`;
 			});
 		};
 		window.addEventListener("scroll", onScroll, { passive: true });
