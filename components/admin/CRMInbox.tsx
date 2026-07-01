@@ -105,6 +105,15 @@ function avatarColor(id: string) {
 	return colors[hash % colors.length];
 }
 
+function formatRelativeTime(date: Date): string {
+	const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+	if (seconds < 5)  return "à l'instant";
+	if (seconds < 60) return `il y a ${seconds} s`;
+	const minutes = Math.floor(seconds / 60);
+	if (minutes < 60) return `il y a ${minutes} min`;
+	return `à ${date.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`;
+}
+
 // ─────────────────────────────────────────────────────────────────
 //  StatusBadge
 // ─────────────────────────────────────────────────────────────────
@@ -126,6 +135,70 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
+//  MessageHoverPreview — popup fixe (hors overflow), 800 ms delay
+// ─────────────────────────────────────────────────────────────────
+
+function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMRect }) {
+	const POPUP_W = 288;
+	const topPx  = Math.max(8, Math.min(rect.top, window.innerHeight - 220));
+	const leftPx = rect.right + 10 + POPUP_W > window.innerWidth
+		? rect.left - POPUP_W - 10
+		: rect.right + 10;
+
+	return (
+		<div
+			className="fixed z-50 rounded-xl border border-dark-700 bg-dark-900 shadow-2xl p-4 space-y-2.5 pointer-events-none"
+			style={{ top: topPx, left: leftPx, width: POPUP_W }}
+		>
+			{/* Expéditeur */}
+			<div className="flex items-center gap-2">
+				<div className={clsx(
+					"w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0",
+					avatarColor(message.id),
+				)}>
+					{initials(message.firstname, message.lastname)}
+				</div>
+				<div className="min-w-0">
+					<p className="text-sm font-semibold text-slate-200 truncate">
+						{message.firstname} {message.lastname}
+					</p>
+					<p className="text-xs text-slate-500 truncate">{message.email}</p>
+				</div>
+			</div>
+
+			{/* Badges */}
+			<div className="flex items-center gap-2 flex-wrap">
+				<StatusBadge status={message.status} />
+				{!message.is_read && (
+					<span className="text-xs text-blue-400 font-medium">● Non lu</span>
+				)}
+				<span className="text-xs text-slate-500 ml-auto">{message.formattedDate}</span>
+			</div>
+
+			{/* Sujet */}
+			{message.subject && (
+				<p className="text-xs font-medium text-slate-300 truncate border-t border-dark-800 pt-2">
+					{message.subject}
+				</p>
+			)}
+
+			{/* Véhicule */}
+			{message.vehicleName && (
+				<div className="flex items-center gap-1.5">
+					<Car size={11} className="text-brand-400 flex-shrink-0" />
+					<span className="text-xs text-brand-400 truncate">{message.vehicleName}</span>
+				</div>
+			)}
+
+			{/* Aperçu du message */}
+			<p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
+				{message.message}
+			</p>
+		</div>
+	);
+}
+
+// ─────────────────────────────────────────────────────────────────
 //  MessageListItem
 // ─────────────────────────────────────────────────────────────────
 
@@ -136,19 +209,47 @@ const MessageListItem = memo(function MessageListItem({
 	message,
 	isSelected,
 	onSelect,
+	onPrefetch,
+	onHoverStart,
+	onHoverEnd,
 }: {
 	message: UIMessage;
 	isSelected: boolean;
 	onSelect: (id: string) => void;
+	onPrefetch?: (id: string) => void;
+	onHoverStart?: (msg: UIMessage, rect: DOMRect) => void;
+	onHoverEnd?: () => void;
 }) {
 	const { isDark } = useAdminTokens();
-	// Handler stable : évite de recréer la closure à chaque render du parent.
 	const handleClick = useCallback(() => onSelect(message.id), [onSelect, message.id]);
+	const buttonRef  = useRef<HTMLButtonElement>(null);
+	const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const handleMouseEnter = useCallback(() => {
+		onPrefetch?.(message.id);
+		if (onHoverStart) {
+			hoverTimer.current = setTimeout(() => {
+				if (buttonRef.current) {
+					onHoverStart(message, buttonRef.current.getBoundingClientRect());
+				}
+			}, 800);
+		}
+	}, [message, onPrefetch, onHoverStart]);
+
+	const handleMouseLeave = useCallback(() => {
+		if (hoverTimer.current) { clearTimeout(hoverTimer.current); hoverTimer.current = null; }
+		onHoverEnd?.();
+	}, [onHoverEnd]);
+
+	useEffect(() => () => { if (hoverTimer.current) clearTimeout(hoverTimer.current); }, []);
 
 	return (
 		<button
+			ref={buttonRef}
 			type="button"
 			onClick={handleClick}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
 			className={clsx(
 				"w-full text-left px-4 py-3 border-b transition-colors",
 				isDark ? "border-dark-800" : "border-slate-100",
@@ -513,13 +614,15 @@ function MessageDetail({
 					))}
 				</div>
 
-				{/* Fil des réponses */}
+				{/* Fil des réponses — skeleton pendant le chargement */}
 				{loadingDetail && (
-					<div className="flex justify-center py-4">
-						<RefreshCw
-							size={16}
-							className="animate-spin text-slate-500"
-						/>
+					<div className="space-y-3">
+						<div className="h-2.5 bg-dark-800 rounded animate-pulse w-20" />
+						{[0, 1].map((i) => (
+							<div key={i} className={clsx("flex", i % 2 === 0 ? "justify-end" : "justify-start")}>
+								<div className="max-w-[75%] h-16 bg-dark-800 rounded-xl animate-pulse w-56" />
+							</div>
+						))}
 					</div>
 				)}
 
@@ -689,6 +792,33 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 	);
 	const qc = useQueryClient();
 
+	// ── P1 — Sync feedback ───────────────────────────────────────────
+	const [syncState,  setSyncState]  = useState<"idle" | "syncing" | "synced">("idle");
+	const [lastSyncAt, setLastSyncAt] = useState<Date | null>(null);
+	const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	// Force re-render toutes les 10 s pour garder "il y a X s" à jour.
+	const [, forceTimeUpdate] = useState(0);
+	useEffect(() => {
+		const t = setInterval(() => forceTimeUpdate((n) => n + 1), 10_000);
+		return () => clearInterval(t);
+	}, []);
+	useEffect(() => () => { if (syncTimerRef.current) clearTimeout(syncTimerRef.current); }, []);
+
+	// ── P5 — Largeur configurable ────────────────────────────────────
+	const [widthMode, setWidthMode] = useState<"normal" | "large" | "full">(() => {
+		if (typeof window !== "undefined") {
+			const saved = localStorage.getItem("crm-width-mode");
+			if (saved === "normal" || saved === "large" || saved === "full") return saved;
+		}
+		return "normal";
+	});
+
+	// ── P4 — Hover preview state ─────────────────────────────────────
+	const [hoveredPreview, setHoveredPreview] = useState<{
+		message: UIMessage;
+		rect: DOMRect;
+	} | null>(null);
+
 	// ── Debounce recherche (300 ms) ──────────────────────────────────
 	// Évite d'envoyer une requête serveur à chaque keystroke.
 	const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -769,8 +899,73 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		};
 	}, [garageId, qc]);
 
+	// ── P6 — Auto-refresh intelligent ───────────────────────────────
+	// Actif uniquement si l'onglet est visible. Suspendu sinon.
+	useEffect(() => {
+		const INTERVAL = 60_000;
+		let id: ReturnType<typeof setInterval> | null = null;
+		const start = () => {
+			id = setInterval(() => {
+				if (document.visibilityState === "visible") {
+					void refetch();
+					setLastSyncAt(new Date());
+				}
+			}, INTERVAL);
+		};
+		const onVisibility = () => {
+			if (document.visibilityState === "visible") { start(); }
+			else { if (id) { clearInterval(id); id = null; } }
+		};
+		start();
+		document.addEventListener("visibilitychange", onVisibility);
+		return () => {
+			if (id) clearInterval(id);
+			document.removeEventListener("visibilitychange", onVisibility);
+		};
+	}, [refetch]);
+
 	// ── Callbacks stables ────────────────────────────────────────────
 	const handleSelect = useCallback((id: string) => setSelectedId(id), []);
+
+	// ── P1 — Refresh avec feedback ───────────────────────────────────
+	const handleRefresh = useCallback(async () => {
+		if (syncTimerRef.current) clearTimeout(syncTimerRef.current);
+		setSyncState("syncing");
+		try {
+			await refetch();
+			setLastSyncAt(new Date());
+			setSyncState("synced");
+			syncTimerRef.current = setTimeout(() => setSyncState("idle"), 2000);
+		} catch {
+			setSyncState("idle");
+		}
+	}, [refetch]);
+
+	// ── P7 — Prefetch au survol ──────────────────────────────────────
+	const handlePrefetch = useCallback((messageId: string) => {
+		void qc.prefetchQuery({
+			queryKey: messageKeys.detail(messageId),
+			queryFn:  () => fetchMessageWithRepliesAction(messageId, garageId),
+			staleTime: STALE_TIMES.ADMIN,
+		});
+	}, [qc, garageId]);
+
+	// ── P4 — Hover preview callbacks ─────────────────────────────────
+	const handleHoverStart = useCallback((msg: UIMessage, rect: DOMRect) => {
+		setHoveredPreview({ message: msg, rect });
+	}, []);
+	const handleHoverEnd = useCallback(() => setHoveredPreview(null), []);
+
+	// ── P5 — Width mode ──────────────────────────────────────────────
+	const handleWidthChange = useCallback((mode: "normal" | "large" | "full") => {
+		setWidthMode(mode);
+		localStorage.setItem("crm-width-mode", mode);
+	}, []);
+	const listPanelWidthClass = widthMode === "full"
+		? "lg:w-[520px] xl:w-[580px]"
+		: widthMode === "large"
+		? "lg:w-96 xl:w-[440px]"
+		: "lg:w-80 xl:w-96";
 
 	const selectedMessage = useMemo(
 		() => allMessages.find((m) => m.id === selectedId) ?? null,
@@ -816,8 +1011,8 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 				className={clsx(
 					"flex flex-col bg-dark-900 border-r border-dark-800 transition-all",
 					selectedId
-						? "hidden lg:flex lg:w-80 xl:w-96"
-						: "flex w-full lg:w-80 xl:w-96",
+						? `hidden lg:flex ${listPanelWidthClass}`
+						: `flex w-full ${listPanelWidthClass}`,
 				)}
 			>
 				{/* En-tête liste */}
@@ -832,14 +1027,51 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 								</span>
 							)}
 						</h1>
-						<button
-							onClick={() => refetch()}
-							className="p-1.5 rounded-lg hover:bg-dark-800 text-slate-500 hover:text-slate-300 transition-colors"
-							title="Actualiser"
-							aria-label="Actualiser"
-						>
-							<RefreshCw size={15} className={isFetching ? "animate-spin" : ""} />
-						</button>
+						<div className="flex items-center gap-2">
+							{/* Indication dernière sync */}
+							{lastSyncAt && syncState === "idle" && (
+								<span className="text-xs text-slate-600 hidden sm:block" title={lastSyncAt.toLocaleTimeString("fr-FR")}>
+									{formatRelativeTime(lastSyncAt)}
+								</span>
+							)}
+							{syncState === "syncing" && (
+								<span className="text-xs text-slate-500 hidden sm:block">Synchronisation…</span>
+							)}
+							{syncState === "synced" && (
+								<span className="text-xs text-emerald-500 hidden sm:block">✓ Mis à jour</span>
+							)}
+
+							{/* Bouton refresh */}
+							<button
+								onClick={() => { void handleRefresh(); }}
+								disabled={syncState === "syncing"}
+								className="p-1.5 rounded-lg hover:bg-dark-800 text-slate-500 hover:text-slate-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+								title="Actualiser"
+								aria-label="Actualiser"
+							>
+								<RefreshCw size={15} className={syncState === "syncing" || isFetching ? "animate-spin" : ""} />
+							</button>
+
+							{/* Sélecteur de largeur — P5 */}
+							<div className="hidden lg:flex items-center gap-0.5 bg-dark-800 rounded-lg p-0.5">
+								{(["normal", "large", "full"] as const).map((mode) => (
+									<button
+										key={mode}
+										onClick={() => handleWidthChange(mode)}
+										className={clsx(
+											"px-2 py-0.5 rounded text-xs transition-colors",
+											widthMode === mode
+												? "bg-dark-700 text-slate-200"
+												: "text-slate-600 hover:text-slate-400",
+										)}
+										title={{ normal: "Normale", large: "Large", full: "Maximale" }[mode]}
+										aria-label={`Largeur ${mode}`}
+									>
+										{{ normal: "▥", large: "▤", full: "▣" }[mode]}
+									</button>
+								))}
+							</div>
+						</div>
 					</div>
 
 					{/* Recherche */}
@@ -957,6 +1189,9 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 												message={msg}
 												isSelected={selectedId === msg.id}
 												onSelect={handleSelect}
+												onPrefetch={handlePrefetch}
+												onHoverStart={handleHoverStart}
+												onHoverEnd={handleHoverEnd}
 											/>
 										)}
 									</div>
@@ -995,6 +1230,14 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 					/>
 				) : null}
 			</div>
+
+			{/* ── P4 — Hover preview (portal fixe, hors overflow) ──── */}
+			{hoveredPreview && (
+				<MessageHoverPreview
+					message={hoveredPreview.message}
+					rect={hoveredPreview.rect}
+				/>
+			)}
 		</div>
 	);
 }
