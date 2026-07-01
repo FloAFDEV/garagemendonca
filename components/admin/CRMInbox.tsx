@@ -162,7 +162,7 @@ function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMR
 					<p className="text-sm font-semibold text-slate-200 truncate">
 						{message.firstname} {message.lastname}
 					</p>
-					<p className="text-xs text-slate-500 truncate">{message.email}</p>
+					<p className="text-xs text-slate-400 truncate">{message.email}</p>
 				</div>
 			</div>
 
@@ -172,7 +172,7 @@ function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMR
 				{!message.is_read && (
 					<span className="text-xs text-blue-400 font-medium">● Non lu</span>
 				)}
-				<span className="text-xs text-slate-500 ml-auto">{message.formattedDate}</span>
+				<span className="text-xs text-slate-400 ml-auto">{message.formattedDate}</span>
 			</div>
 
 			{/* Sujet */}
@@ -191,7 +191,7 @@ function MessageHoverPreview({ message, rect }: { message: UIMessage; rect: DOMR
 			)}
 
 			{/* Aperçu du message */}
-			<p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
+			<p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
 				{message.message}
 			</p>
 		</div>
@@ -291,7 +291,7 @@ const MessageListItem = memo(function MessageListItem({
 						</span>
 						<span className={clsx(
 							"text-xs shrink-0",
-							isDark ? "text-slate-500" : "text-slate-400",
+							isDark ? "text-slate-400" : "text-slate-600",
 						)}>
 							{message.formattedDate}
 						</span>
@@ -328,7 +328,7 @@ const MessageListItem = memo(function MessageListItem({
 
 					<p className={clsx(
 						"text-xs truncate leading-relaxed",
-						isDark ? "text-slate-500" : "text-slate-400",
+						isDark ? "text-slate-400" : "text-slate-600",
 					)}>
 						{message.message}
 					</p>
@@ -471,7 +471,7 @@ function MessageDetail({
 					<h2 className={clsx("font-semibold truncate text-sm", isDark ? "text-dark-300" : "text-slate-800")}>
 						{message.firstname} {message.lastname}
 					</h2>
-					<div className={clsx("flex items-center flex-wrap gap-x-3 gap-y-1 text-xs mt-0.5", isDark ? "text-dark-500" : "text-slate-500")}>
+					<div className={clsx("flex items-center flex-wrap gap-x-3 gap-y-1 text-xs mt-0.5", isDark ? "text-dark-400" : "text-slate-600")}>
 						<StatusBadge status={displayed.status} />
 						<a
 							href={`mailto:${message.email}`}
@@ -546,7 +546,7 @@ function MessageDetail({
 			{/* Corps scrollable */}
 			<div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
 				{/* Méta */}
-				<div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+				<div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
 					<span className="flex items-center gap-1">
 						<Clock size={12} />
 						{message.formattedDate}
@@ -628,7 +628,7 @@ function MessageDetail({
 
 				{replies.length > 0 && (
 					<div className="space-y-3">
-						<h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+						<h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
 							Historique
 						</h3>
 						{replies.map((reply) => (
@@ -659,7 +659,7 @@ function MessageDetail({
 											"text-xs mt-1.5",
 											reply.sender_type === "admin"
 												? "text-brand-200"
-												: "text-slate-500",
+												: "text-slate-400",
 										)}
 									>
 										{reply.sender_type === "admin"
@@ -1035,7 +1035,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 								</span>
 							)}
 							{syncState === "syncing" && (
-								<span className="text-xs text-slate-500 hidden sm:block">Synchronisation…</span>
+								<span className="text-xs text-slate-400 hidden sm:block">Synchronisation…</span>
 							)}
 							{syncState === "synced" && (
 								<span className="text-xs text-emerald-500 hidden sm:block">✓ Mis à jour</span>
@@ -1045,7 +1045,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 							<button
 								onClick={() => { void handleRefresh(); }}
 								disabled={syncState === "syncing"}
-								className="p-1.5 rounded-lg hover:bg-dark-800 text-slate-500 hover:text-slate-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+								className="p-1.5 rounded-lg hover:bg-dark-800 text-slate-400 hover:text-slate-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
 								title="Actualiser"
 								aria-label="Actualiser"
 							>
@@ -1078,7 +1078,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 					<div className="relative">
 						<Search
 							size={15}
-							className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+							className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
 						/>
 						<input
 							type="search"
@@ -1090,7 +1090,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 						{search && (
 							<button
 								onClick={() => setSearch("")}
-								className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
 							>
 								<X size={14} />
 							</button>
@@ -1122,7 +1122,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 							"flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors",
 							vehicleOnly
 								? "bg-brand-600/20 border-brand-500 text-brand-300"
-								: "bg-dark-800 border-dark-700 text-slate-500 hover:text-slate-300 hover:border-dark-600",
+								: "bg-dark-800 border-dark-700 text-slate-400 hover:text-slate-200 hover:border-dark-600",
 						)}
 					>
 						<Car size={12} />
@@ -1148,7 +1148,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 						</div>
 					) : isError ? (
 						<div className="flex flex-col items-center gap-3 py-12 text-center px-4">
-							<p className="text-slate-400 text-sm">Erreur de chargement</p>
+							<p className="text-slate-300 text-sm">Erreur de chargement</p>
 							<button onClick={() => refetch()} className="text-brand-400 text-sm hover:text-brand-300">
 								Réessayer
 							</button>
@@ -1217,7 +1217,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 							size={40}
 							className="text-slate-600 mx-auto"
 						/>
-						<p className="text-slate-500 text-sm">
+						<p className="text-slate-400 text-sm">
 							Sélectionnez un message pour le lire
 						</p>
 					</div>
