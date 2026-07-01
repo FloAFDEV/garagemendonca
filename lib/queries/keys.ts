@@ -19,9 +19,20 @@ export const vehicleKeys = {
   detail: (slug: string)            => ["vehicles", "detail", slug]    as const,
 };
 
+/** Filtres applicables à la liste paginée de messages. */
+export interface MessageListFilters {
+  status?:      string;
+  search?:      string;
+  has_vehicle?: boolean;
+}
+
 export const messageKeys = {
   all:    ()                 => ["messages"]                      as const,
-  list:   (garageId: string) => ["messages", "list", garageId]   as const,
+  /** Préfixe pour invalider TOUTES les listes d'un garage (tous filtres confondus). */
+  lists:  (garageId: string) => ["messages", "list", garageId]   as const,
+  /** Clé complète incluant les filtres — utilisée par useInfiniteQuery. */
+  list:   (garageId: string, filters?: MessageListFilters) =>
+    ["messages", "list", garageId, JSON.stringify(filters ?? null)] as const,
   unread: (garageId: string) => ["messages", "unread", garageId] as const,
   stats:  (garageId: string) => ["messages", "stats", garageId]  as const,
   detail: (id: string)       => ["messages", "detail", id]       as const,

@@ -19,9 +19,8 @@ export function useCreateMessage() {
 
     onSuccess: (_data, vars) => {
       if (vars.garage_id) {
-        // Invalider list + unread : le nouveau message doit apparaître dans le CRM
-        // sans attendre le prochain poll ou rechargement manuel.
-        queryClient.invalidateQueries({ queryKey: messageKeys.list(vars.garage_id) });
+        // Invalider TOUTES les listes du garage (via préfixe lists) + unread.
+        queryClient.invalidateQueries({ queryKey: messageKeys.lists(vars.garage_id) });
         queryClient.invalidateQueries({ queryKey: messageKeys.unread(vars.garage_id) });
       }
       toast.success("Votre message a bien été envoyé. Nous vous répondrons rapidement.");
