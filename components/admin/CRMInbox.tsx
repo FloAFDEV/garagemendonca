@@ -785,13 +785,11 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		"all" | "new" | "in_progress" | "answered" | "archived"
 	>("all");
 	const [search,      setSearch]      = useState("");
-	const [vehicleOnly, setVehicleOnly] = useState(false);
 	// Initialise la sélection depuis ?id= (lien direct depuis email de notification)
 	const [selectedId, setSelectedId]   = useState<string | null>(
 		searchParams.get("id"),
 	);
 	const qc = useQueryClient();
-	const { isDark } = useAdminTokens();
 
 	// ── P1 — Sync feedback ───────────────────────────────────────────
 	const [syncState,  setSyncState]  = useState<"idle" | "syncing" | "synced">("idle");
@@ -830,10 +828,9 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 
 	// ── Filtres server-side (mémoïsés pour stabilité du queryKey) ───
 	const queryFilters = useMemo(() => ({
-		status:      filter !== "all" ? filter : undefined,
-		search:      debouncedSearch || undefined,
-		has_vehicle: vehicleOnly || undefined,
-	}), [filter, debouncedSearch, vehicleOnly]);
+		status: filter !== "all" ? filter : undefined,
+		search: debouncedSearch || undefined,
+	}), [filter, debouncedSearch]);
 
 	// ── Infinite Query paginée ───────────────────────────────────────
 	// Chaque page = 50 messages. Le curseur est le created_at du dernier item.
@@ -853,9 +850,8 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		queryFn:      ({ pageParam }) => fetchMessagesAction(garageId, {
 			limit:       CRM_PAGE_SIZE,
 			cursor:      pageParam as string | undefined,
-			status:      queryFilters.status as "new" | "in_progress" | "answered" | "archived" | undefined,
-			search:      queryFilters.search,
-			has_vehicle: queryFilters.has_vehicle,
+			status: queryFilters.status as "new" | "in_progress" | "answered" | "archived" | undefined,
+			search: queryFilters.search,
 		}),
 		getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
 		initialPageParam: undefined as string | undefined,
@@ -1116,23 +1112,6 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 						))}
 					</div>
 
-					{/* Filtre véhicule */}
-					<button
-						onClick={() => setVehicleOnly((v) => !v)}
-						className={clsx(
-							"flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors",
-							vehicleOnly
-								? isDark
-									? "bg-brand-600/20 border-brand-500 text-brand-300"
-									: "bg-brand-50 border-brand-400 text-brand-600"
-								: isDark
-									? "bg-dark-800 border-dark-700 text-slate-400 hover:text-slate-200 hover:bg-dark-700 hover:border-dark-600"
-									: "bg-white border-slate-300 text-slate-600 hover:text-slate-900 hover:bg-slate-100 hover:border-slate-400",
-						)}
-					>
-						<Car size={12} />
-						Avec véhicule
-					</button>
 				</div>
 
 				{/* Liste virtualisée — seuls ~20-30 DOM nodes présents à tout moment */}
