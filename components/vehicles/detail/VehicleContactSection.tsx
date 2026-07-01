@@ -12,6 +12,7 @@
 
 import { MessageSquare } from "lucide-react";
 import VehicleContactFormLazy from "@/components/vehicles/VehicleContactFormLazy";
+import { generateFormToken } from "@/lib/utils/formToken";
 
 interface VehicleContactSectionProps {
 	vehicleId: string;
@@ -21,13 +22,14 @@ interface VehicleContactSectionProps {
 	isAvailable: boolean;
 }
 
-export default function VehicleContactSection({
+export default async function VehicleContactSection({
 	vehicleId,
 	vehicleName,
 	vehicleLabel,
 	garageId,
 	isAvailable,
 }: VehicleContactSectionProps) {
+	const formToken = await generateFormToken();
 	return (
 		<section
 			id="contact-vehicule"
@@ -53,6 +55,7 @@ export default function VehicleContactSection({
 						vehicleLabel={vehicleLabel}
 						garageId={garageId}
 						isAvailable={isAvailable}
+						formToken={formToken}
 					/>
 				</div>
 			</div>

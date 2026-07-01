@@ -4,6 +4,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import Container from "@/components/ui/Container";
 import GmBadge from "@/components/ui/GmBadge";
 import ContactForm from "@/components/contact/ContactForm";
+import { generateFormToken } from "@/lib/utils/formToken";
 import { Phone, Mail, MapPin, Clock, ExternalLink } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -25,13 +26,15 @@ export const metadata: Metadata = {
 	},
 };
 
-function ContactFormWrapper({
+async function ContactFormWrapper({
 	searchParams,
+	formToken,
 }: {
 	searchParams: Record<string, string>;
+	formToken: string;
 }) {
 	const vehicule = searchParams?.vehicule;
-	return <ContactForm vehicule={vehicule} />;
+	return <ContactForm vehicule={vehicule} formToken={formToken} />;
 }
 
 const jsonLd = {
@@ -91,6 +94,7 @@ interface PageProps {
 
 export default async function ContactPage({ searchParams }: PageProps) {
 	const params = await searchParams;
+	const formToken = await generateFormToken();
 	return (
 		<MainLayout>
 			<script
@@ -292,7 +296,7 @@ export default async function ContactPage({ searchParams }: PageProps) {
 									<div className="h-96 bg-white rounded-2xl animate-pulse border border-slate-200" />
 								}
 							>
-								<ContactFormWrapper searchParams={params} />
+								<ContactFormWrapper searchParams={params} formToken={formToken} />
 							</Suspense>
 						</div>
 					</div>

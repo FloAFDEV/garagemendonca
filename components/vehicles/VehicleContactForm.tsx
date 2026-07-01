@@ -9,7 +9,7 @@
  * Pattern : validation manuelle Zod (cohérent avec ContactForm.tsx existant).
  */
 
-import { useState, type FormEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent } from "react";
 import {
 	MessageSquare,
 	Phone,
@@ -56,6 +56,7 @@ interface VehicleContactFormProps {
 	vehicleLabel: string; // ex: "Toyota Yaris 2019 · 12 500 €"
 	garageId: string;
 	isAvailable: boolean;
+	formToken?: string;
 }
 
 // ─── Composant ────────────────────────────────────────────────────────────────
@@ -66,10 +67,14 @@ export default function VehicleContactForm({
 	vehicleLabel,
 	garageId,
 	isAvailable,
+	formToken,
 }: VehicleContactFormProps) {
 	const [success, setSuccess] = useState(false);
 	const [errors, setErrors] = useState<FormErrors>({});
 	const mutation = useCreateMessage();
+	// Time-trap client — premier filtre avant réseau
+	const mountTimeRef = useRef<number | null>(null);
+	useEffect(() => { mountTimeRef.current = Date.now(); }, []);
 
 	const defaultMessage = isAvailable
 		? `Bonjour,\n\nJe suis intéressé(e) par le véhicule ${vehicleName} et souhaiterais obtenir plus d'informations.\n\nPuis-je organiser un essai ?\n\nMerci d'avance.`
@@ -78,6 +83,12 @@ export default function VehicleContactForm({
 	async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setErrors({});
+
+		// Time-trap client — rejet silencieux si < 3 s depuis le chargement
+		if (mountTimeRef.current !== null && Date.now() - mountTimeRef.current < 3000) {
+			setSuccess(true); // faux succès silencieux
+			return;
+		}
 
 		const data = Object.fromEntries(new FormData(e.currentTarget));
 
@@ -105,6 +116,7 @@ export default function VehicleContactForm({
 				phone: parsed.data.phone || undefined,
 				message: parsed.data.message,
 				website: parsed.data.website,
+				form_token: formToken,
 			});
 			setSuccess(true);
 		} catch {

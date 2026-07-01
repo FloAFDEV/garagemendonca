@@ -28,13 +28,33 @@ export class CsrfError extends Error {
   }
 }
 
-export async function assertSameOrigin(): Promise<void> {
+/**
+ * assertSameOrigin — deux modes :
+ *
+ * Mode souple (défaut, strict: false) :
+ *   Autorise les appels sans Origin (Server Components, crons, edge functions).
+ *   Bloque uniquement les Origins cross-site explicites.
+ *   Utilisé pour les Server Actions internes admin.
+ *
+ * Mode strict (strict: true) :
+ *   Rejette en production toute requête sans Origin (appel direct d'endpoint).
+ *   Utilisé pour les formulaires publics (contact) où un Origin est toujours
+ *   présent dans les navigateurs légitimes.
+ */
+export async function assertSameOrigin({ strict = false }: { strict?: boolean } = {}): Promise<void> {
   const h = await headers();
   const origin = h.get("origin");
   const host = h.get("host");
 
-  // Appel direct serveur → pas d'Origin, pas de risque CSRF
-  if (!origin) return;
+  if (!origin) {
+    // Mode strict : en production, absence d'Origin = appel direct suspect
+    if (strict && process.env.NODE_ENV === "production") {
+      console.warn("[csrf] requête sans Origin rejetée (mode strict) — IP:", h.get("x-forwarded-for") ?? "unknown");
+      throw new CsrfError();
+    }
+    // Mode souple : appel serveur légitime
+    return;
+  }
 
   // Sans Host on ne peut pas vérifier — fail-open plutôt que bloquer
   // les déploiements non standard (proxies, edge functions)
