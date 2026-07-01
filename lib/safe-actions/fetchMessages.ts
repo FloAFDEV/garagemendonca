@@ -24,10 +24,12 @@ export async function fetchMessageWithRepliesAction(
   const authError = await requireMemberOfGarage(garageId);
   if (authError) throw new Error(authError.message);
 
-  const message = await messageDb.getById(messageId);
+  // Les deux requêtes sont indépendantes — parallélisation pour éliminer le waterfall.
+  const [message, replies] = await Promise.all([
+    messageDb.getById(messageId),
+    replyDb.listByMessage(messageId),
+  ]);
   if (!message) return null;
-
-  const replies = await replyDb.listByMessage(messageId);
   return toUIMessage(message, replies);
 }
 

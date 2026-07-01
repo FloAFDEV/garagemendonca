@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBrowserClient } from "@supabase/ssr";
@@ -29,6 +29,7 @@ import clsx from "clsx";
 import { toast } from "sonner";
 
 import { messageKeys } from "@/lib/queries/keys";
+import { STALE_TIMES } from "@/lib/queries/config";
 import {
 	fetchMessagesAction,
 	fetchMessageWithRepliesAction,
@@ -127,21 +128,26 @@ function StatusBadge({ status }: { status: string }) {
 //  MessageListItem
 // ─────────────────────────────────────────────────────────────────
 
-function MessageListItem({
+// React.memo : seuls les items dont les props changent re-rendent.
+// Quand on sélectionne un message, seuls les 2 items concernés (l'ancien et le
+// nouveau selectedId) voient isSelected changer → N-2 re-renders économisés.
+const MessageListItem = memo(function MessageListItem({
 	message,
 	isSelected,
-	onClick,
+	onSelect,
 }: {
 	message: UIMessage;
 	isSelected: boolean;
-	onClick: () => void;
+	onSelect: (id: string) => void;
 }) {
 	const { isDark } = useAdminTokens();
+	// Handler stable : évite de recréer la closure à chaque render du parent.
+	const handleClick = useCallback(() => onSelect(message.id), [onSelect, message.id]);
 
 	return (
 		<button
 			type="button"
-			onClick={onClick}
+			onClick={handleClick}
 			className={clsx(
 				"w-full text-left px-4 py-3 border-b transition-colors",
 				isDark ? "border-dark-800" : "border-slate-100",
@@ -228,7 +234,7 @@ function MessageListItem({
 			</div>
 		</button>
 	);
-}
+});
 
 // ─────────────────────────────────────────────────────────────────
 //  MessageDetail
@@ -256,14 +262,20 @@ function MessageDetail({
 	const { data: fullMessage, isLoading: loadingDetail } = useQuery({
 		queryKey: messageKeys.detail(message.id),
 		queryFn: () => fetchMessageWithRepliesAction(message.id, garageId),
+		// staleTime calé sur ADMIN : évite un re-fetch systématique à chaque focus/remount
+		// tout en restant cohérent avec la fréquence de polling de la liste.
+		staleTime: STALE_TIMES.ADMIN,
 	});
 
 	const displayed = fullMessage ?? message;
 
-	// 1 seule invalidation en cascade (couvre list, detail, unread, stats)
+	// Invalidation ciblée : seuls list + detail sont concernés après une action.
+	// unread et stats sont maintenus à jour par le polling de useMessageStats (60s)
+	// et par le canal Realtime du composant parent.
 	const invalidate = useCallback(() => {
-		qc.invalidateQueries({ queryKey: messageKeys.all() });
-	}, [qc]);
+		qc.invalidateQueries({ queryKey: messageKeys.list(garageId) });
+		qc.invalidateQueries({ queryKey: messageKeys.detail(message.id) });
+	}, [qc, garageId, message.id]);
 
 	// Status mutation
 	const statusMut = useMutation({
@@ -319,15 +331,15 @@ function MessageDetail({
 		toast.success("Notes enregistrées.");
 	}, [message.id, garageId, notes, notesDirty]);
 
-	// Auto-mark as read on open
+	// Auto-mark as read on open — déclenché uniquement quand l'id du message change.
+	// invalidate est stable (useCallback + deps stables) donc son inclusion est sûre.
 	useEffect(() => {
 		if (!message.is_read) {
 			updateMessageStatusAction(message.id, garageId, "in_progress")
 				.then(() => invalidate())
 				.catch(() => {});
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [message.id]);
+	}, [message.id, message.is_read, garageId, invalidate]);
 
 	const replies = displayed.replies ?? [];
 
@@ -684,7 +696,9 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		staleTime: 2 * 60 * 1000,
 	});
 
-	// Realtime Supabase
+	// Realtime Supabase — invalidation ciblée par garage.
+	// On invalide uniquement list + unread (pas all()) : évite de déclencher
+	// le re-fetch du détail ouvert et des stats pendant la frappe ou la lecture.
 	useEffect(() => {
 		const supabase = createBrowserClient(
 			process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -692,7 +706,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 		);
 
 		const channel = supabase
-			.channel("crm-messages")
+			.channel(`crm-messages-${garageId}`)
 			.on(
 				"postgres_changes",
 				{
@@ -702,21 +716,31 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 					filter: `garage_id=eq.${garageId}`,
 				},
 				() => {
-					qc.invalidateQueries({ queryKey: messageKeys.all() });
+					qc.invalidateQueries({ queryKey: messageKeys.list(garageId) });
+					qc.invalidateQueries({ queryKey: messageKeys.unread(garageId) });
 				},
 			)
 			.subscribe();
 
 		return () => {
+			channel.unsubscribe();
 			supabase.removeChannel(channel);
 		};
 	}, [garageId, qc]);
 
-	const selectedMessage = messages.find((m) => m.id === selectedId) ?? null;
+	// Callback stable : une seule référence pour toute la durée de vie du composant.
+	// Passer cette référence à MessageListItem permet à React.memo d'être efficace.
+	const handleSelect = useCallback((id: string) => setSelectedId(id), []);
 
-	const unreadCount = messages.filter(
-		(m) => !m.is_read && m.status !== "archived",
-	).length;
+	const selectedMessage = useMemo(
+		() => messages.find((m) => m.id === selectedId) ?? null,
+		[messages, selectedId],
+	);
+
+	const unreadCount = useMemo(
+		() => messages.filter((m) => !m.is_read && m.status !== "archived").length,
+		[messages],
+	);
 
 	// Filtrage 100% client — statut, recherche, filtre véhicule
 	const displayed = useMemo(() => messages.filter((m) => {
@@ -874,7 +898,7 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 							key={msg.id}
 							message={msg}
 							isSelected={selectedId === msg.id}
-							onClick={() => setSelectedId(msg.id)}
+							onSelect={handleSelect}
 						/>
 					))}
 				</div>

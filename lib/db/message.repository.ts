@@ -7,6 +7,10 @@ import type { Message } from "@/types";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Q = any;
 
+/** Nombre maximal de messages ramenés par défaut. Protège contre les full-table scans
+ *  lorsque l'appelant n'explicite pas de LIMIT. Augmenter si la pagination est activée. */
+export const DEFAULT_MESSAGE_LIMIT = 100;
+
 const anonDb = (): Q => getReadClient();
 
 function adminDb(): Q {
@@ -60,8 +64,13 @@ export const messageDb = {
       const s = `%${options.search}%`;
       q = q.or(`firstname.ilike.${s},lastname.ilike.${s},email.ilike.${s},subject.ilike.${s},message.ilike.${s}`);
     }
-    if (options?.limit)  q = q.limit(options.limit);
-    if (options?.offset) q = q.range(options.offset, options.offset + (options.limit ?? 50) - 1);
+    // Toujours appliquer un LIMIT — ne jamais lire toute la table.
+    // DEFAULT_MESSAGE_LIMIT est le garde-fou ; options.limit permet de l'ajuster
+    // (ex : 50 pour la liste paginée, 1 pour un détail). La pagination future
+    // passera offset + limit explicitement via les options.
+    const effectiveLimit = options?.limit ?? DEFAULT_MESSAGE_LIMIT;
+    q = q.limit(effectiveLimit);
+    if (options?.offset) q = q.range(options.offset, options.offset + effectiveLimit - 1);
 
     const { data, error } = await q;
     if (error) throw error;
