@@ -1059,10 +1059,10 @@ export function CRMInbox({ garageId }: CRMInboxProps) {
 										key={mode}
 										onClick={() => handleWidthChange(mode)}
 										className={clsx(
-											"px-2 py-0.5 rounded text-xs transition-colors",
+											"px-2 py-0.5 rounded text-xs font-medium transition-colors",
 											widthMode === mode
-												? "bg-dark-700 text-slate-200"
-												: "text-slate-600 hover:text-slate-400",
+												? "bg-brand-600 text-white"
+												: "text-slate-500 hover:text-slate-200 hover:bg-dark-700",
 										)}
 										title={{ normal: "Normale", large: "Large", full: "Maximale" }[mode]}
 										aria-label={`Largeur ${mode}`}
