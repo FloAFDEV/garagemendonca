@@ -394,6 +394,8 @@ function MessageDetail({
 		// lists() invalide toutes les pages de toutes les combinaisons de filtres pour ce garage.
 		qc.invalidateQueries({ queryKey: messageKeys.lists(garageId) });
 		qc.invalidateQueries({ queryKey: messageKeys.detail(message.id) });
+		qc.invalidateQueries({ queryKey: messageKeys.unread(garageId) });
+		qc.invalidateQueries({ queryKey: messageKeys.stats(garageId) });
 	}, [qc, garageId, message.id]);
 
 	// Status mutation
